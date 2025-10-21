@@ -9,19 +9,19 @@
 /* متغیرهای تم روشن */
 .light-theme {
     --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
     --text-color: white;
-    --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* متغیرهای تم تاریک */
 .dark-theme {
-    --bg-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(0, 255, 255, 0.3);
     --text-color: #00ffff;
-    --shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+    --shadow: 0 0 25px rgba(0, 255, 255, 0.1);
 }
 
 /* استایل پایه */
@@ -33,15 +33,29 @@ body {
     transition: all 0.5s ease;
 }
 
+/* نوار نئونی در تم تاریک */
+.dark-theme::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00ffff, #0080ff, #00ffff);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    z-index: 1000;
+}
+
 /* افکت شیشه‌ای */
 .glass-card {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--glass-bg);
     backdrop-filter: blur(25px);
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     padding: 20px;
     margin: 10px 0;
+    transition: all 0.3s ease;
 }
 
 /* هدر */
@@ -50,6 +64,7 @@ body {
     backdrop-filter: blur(20px);
     padding: 15px 0;
     margin-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .container {
@@ -94,11 +109,19 @@ body {
 .change.positive {
     background: rgba(0, 255, 0, 0.2);
     color: #00ff00;
+    border-left: 4px solid #00b894;
 }
 
 .change.negative {
     background: rgba(255, 0, 0, 0.2);
     color: #ff6b6b;
+    border-left: 4px solid #ff6b6b;
+}
+
+.change.neutral {
+    background: rgba(253, 203, 110, 0.2);
+    color: #fdcb6e;
+    border-left: 4px solid #fdcb6e;
 }
 
 /* سوییچ تم */
@@ -114,6 +137,7 @@ body {
     padding: 10px;
     cursor: pointer;
     backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
 
 .theme-btn.active {
@@ -146,6 +170,11 @@ button {
     cursor: pointer;
     backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
 }
 
 .response {
@@ -172,11 +201,21 @@ button {
     }
 }
 
-/* افکت نئونی برای تم تاریک */
+/* افکت‌های خاص تم تاریک */
 .dark-theme .glass-card {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    box-shadow: 
+        0 0 25px rgba(0, 255, 255, 0.1),
+        inset 0 1px 0 rgba(0, 255, 255, 0.1);
 }
 
 .dark-theme .price-card:hover {
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.2),
+        inset 0 1px 0 rgba(0, 255, 255, 0.2);
+}
+
+.dark-theme button {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: #00ffff;
 }
