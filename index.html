@@ -33,28 +33,31 @@
         </div>
     </header>
 
-    <!-- هایلایت دسته‌بندی‌ها -->
+    <!-- هایلایت دسته‌بندی‌های اصلی -->
     <section class="categories-highlight">
         <div class="categories-container">
+            <!-- دسته اول: رمزارزها -->
             <div class="category-circle active" data-category="crypto">
                 <div class="category-icon">₿</div>
                 <span>رمزارزها</span>
             </div>
+            
+            <!-- دسته دوم: ارزهای خارجی -->
+            <div class="category-circle" data-category="forex">
+                <div class="category-icon">💵</div>
+                <span>ارز خارجی</span>
+            </div>
+            
+            <!-- دسته سوم: طلا و سکه -->
             <div class="category-circle" data-category="gold">
                 <div class="category-icon">🥇</div>
                 <span>طلا و سکه</span>
             </div>
-            <div class="category-circle" data-category="forex">
-                <div class="category-icon">💵</div>
-                <span>ارز جهانی</span>
-            </div>
+            
+            <!-- دسته چهارم: نفت و انرژی -->
             <div class="category-circle" data-category="oil">
                 <div class="category-icon">🛢️</div>
                 <span>نفت و انرژی</span>
-            </div>
-            <div class="category-circle" data-category="stocks">
-                <div class="category-icon">📈</div>
-                <span>سهام جهانی</span>
             </div>
         </div>
     </section>
@@ -68,37 +71,174 @@
             </div>
         </section>
 
-        <!-- قیمت‌های اصلی -->
-        <section class="prices-grid">
-            <div class="price-card glass-card" data-asset="bitcoin">
-                <h3>بیت‌کوین</h3>
-                <p class="price" id="btcPrice">--</p>
-                <span class="change" id="btcChange">--</span>
-            </div>
+        <!-- قیمت‌های اصلی - رمزارزها -->
+        <section class="prices-section" id="crypto-section">
+            <h3 class="section-title">₿ رمزارزها</h3>
+            <div class="prices-grid">
+                <div class="price-card glass-card" data-asset="bitcoin">
+                    <h4>بیت‌کوین</h4>
+                    <p class="price" id="btcPrice">--</p>
+                    <span class="change" id="btcChange">--</span>
+                    <div class="ai-hint" id="btcHint"></div>
+                </div>
 
-            <div class="price-card glass-card" data-asset="gold">
-                <h3>طلای جهانی</h3>
-                <p class="price" id="goldPrice">--</p>
-                <span class="change" id="goldChange">--</span>
-            </div>
+                <div class="price-card glass-card" data-asset="tether">
+                    <h4>تتر</h4>
+                    <p class="price" id="usdtPrice">--</p>
+                    <span class="change" id="usdtChange">--</span>
+                    <div class="ai-hint" id="usdtHint"></div>
+                </div>
 
-            <div class="price-card glass-card" data-asset="oil">
-                <h3>نفت برنت</h3>
-                <p class="price" id="oilPrice">--</p>
-                <span class="change" id="oilChange">--</span>
-            </div>
+                <div class="price-card glass-card" data-asset="ethereum">
+                    <h4>اتریوم</h4>
+                    <p class="price" id="ethPrice">--</p>
+                    <span class="change" id="ethChange">--</span>
+                    <div class="ai-hint" id="ethHint"></div>
+                </div>
 
-            <div class="price-card glass-card" data-asset="usd">
-                <h3>دلار آمریکا</h3>
-                <p class="price" id="usdPrice">--</p>
-                <span class="change" id="usdChange">--</span>
+                <div class="price-card glass-card" data-asset="shiba">
+                    <h4>شیبا</h4>
+                    <p class="price" id="shibPrice">--</p>
+                    <span class="change" id="shibChange">--</span>
+                    <div class="ai-hint" id="shibHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="doge">
+                    <h4>دوج‌کوین</h4>
+                    <p class="price" id="dogePrice">--</p>
+                    <span class="change" id="dogeChange">--</span>
+                    <div class="ai-hint" id="dogeHint"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قیمت‌های اصلی - ارزهای خارجی -->
+        <section class="prices-section" id="forex-section">
+            <h3 class="section-title">💵 ارزهای خارجی</h3>
+            <div class="prices-grid">
+                <div class="price-card glass-card" data-asset="usd">
+                    <h4>دلار آمریکا</h4>
+                    <p class="price" id="usdPrice">--</p>
+                    <span class="change" id="usdChange">--</span>
+                    <div class="ai-hint" id="usdHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="euro">
+                    <h4>یورو اروپا</h4>
+                    <p class="price" id="eurPrice">--</p>
+                    <span class="change" id="eurChange">--</span>
+                    <div class="ai-hint" id="eurHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="lira">
+                    <h4>لیر ترکیه</h4>
+                    <p class="price" id="tryPrice">--</p>
+                    <span class="change" id="tryChange">--</span>
+                    <div class="ai-hint" id="tryHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="aed">
+                    <h4>درهم امارات</h4>
+                    <p class="price" id="aedPrice">--</p>
+                    <span class="change" id="aedChange">--</span>
+                    <div class="ai-hint" id="aedHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="gbp">
+                    <h4>پوند انگلیس</h4>
+                    <p class="price" id="gbpPrice">--</p>
+                    <span class="change" id="gbpChange">--</span>
+                    <div class="ai-hint" id="gbpHint"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قیمت‌های اصلی - طلا و سکه -->
+        <section class="prices-section" id="gold-section">
+            <h3 class="section-title">🥇 طلا و سکه</h3>
+            <div class="prices-grid">
+                <div class="price-card glass-card" data-asset="gold18">
+                    <h4>طلای ۱۸ عیار</h4>
+                    <p class="price" id="gold18Price">--</p>
+                    <span class="change" id="gold18Change">--</span>
+                    <div class="ai-hint" id="gold18Hint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="coin">
+                    <h4>سکه امامی</h4>
+                    <p class="price" id="coinPrice">--</p>
+                    <span class="change" id="coinChange">--</span>
+                    <div class="ai-hint" id="coinHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="bahar">
+                    <h4>سکه بهار</h4>
+                    <p class="price" id="baharPrice">--</p>
+                    <span class="change" id="baharChange">--</span>
+                    <div class="ai-hint" id="baharHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="nesfe">
+                    <h4>نیم‌سکه</h4>
+                    <p class="price" id="nesfePrice">--</p>
+                    <span class="change" id="nesfeChange">--</span>
+                    <div class="ai-hint" id="nesfeHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="world-gold">
+                    <h4>طلای جهانی</h4>
+                    <p class="price" id="worldGoldPrice">--</p>
+                    <span class="change" id="worldGoldChange">--</span>
+                    <div class="ai-hint" id="worldGoldHint"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قیمت‌های اصلی - نفت و انرژی -->
+        <section class="prices-section" id="oil-section">
+            <h3 class="section-title">🛢️ نفت و انرژی</h3>
+            <div class="prices-grid">
+                <div class="price-card glass-card" data-asset="iran-oil">
+                    <h4>نفت ایران</h4>
+                    <p class="price" id="iranOilPrice">--</p>
+                    <span class="change" id="iranOilChange">--</span>
+                    <div class="ai-hint" id="iranOilHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="brent">
+                    <h4>نفت برنت</h4>
+                    <p class="price" id="brentPrice">--</p>
+                    <span class="change" id="brentChange">--</span>
+                    <div class="ai-hint" id="brentHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="wti">
+                    <h4>نفت WTI</h4>
+                    <p class="price" id="wtiPrice">--</p>
+                    <span class="change" id="wtiChange">--</span>
+                    <div class="ai-hint" id="wtiHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="gasoline">
+                    <h4>بنزین آزاد</h4>
+                    <p class="price" id="gasolinePrice">--</p>
+                    <span class="change" id="gasolineChange">--</span>
+                    <div class="ai-hint" id="gasolineHint"></div>
+                </div>
+
+                <div class="price-card glass-card" data-asset="opec">
+                    <h4>نفت اوپک</h4>
+                    <p class="price" id="opecPrice">--</p>
+                    <span class="change" id="opecChange">--</span>
+                    <div class="ai-hint" id="opecHint"></div>
+                </div>
             </div>
         </section>
 
         <!-- تحلیل هوش مصنوعی -->
         <section class="ai-analysis glass-card">
-            <h3>🤖 تحلیل لحظه‌ای هوش مصنوعی</h3>
-            <p id="aiAnalysis">در حال تحلیل بازار...</p>
+            <h3>🤖 تحلیل رابطه‌ای هوش مصنوعی</h3>
+            <p id="aiAnalysis">در حال تحلیل روابط بین بازارها...</p>
         </section>
 
         <!-- اخبار فوری -->
@@ -113,7 +253,7 @@
         <section class="ai-chat glass-card">
             <h3>💬 پرسش از هوش مصنوعی</h3>
             <div class="chat-container">
-                <input type="text" id="questionInput" placeholder="سوال خود را بپرسید...">
+                <input type="text" id="questionInput" placeholder="مثلاً: اگر نفت برود بالا، طلا چه می‌شود؟">
                 <button onclick="askAI()">بپرس</button>
             </div>
             <div id="aiResponse" class="response"></div>
