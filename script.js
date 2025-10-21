@@ -5,16 +5,31 @@ function switchTheme(theme) {
     event.target.classList.add('active');
 }
 
-// هاور هوشمند (اینجا بعداً کامل می‌شه)
-document.querySelectorAll('.price-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
-        // بعداً تحلیل AI نمایش داده می‌شه
-        console.log('هاور روی:', this.dataset.asset);
+// تغییر رنگ تدریجی (۳ ثانیه)
+function smoothColorChange(newColor, element) {
+    element.style.transition = 'all 3s ease';
+    element.style.background = newColor;
+}
+
+// تغییر رنگ هر کارت بر اساس عملکرد
+function updateCardColors() {
+    const cards = document.querySelectorAll('.price-card');
+    
+    cards.forEach(card => {
+        const changeElement = card.querySelector('.change');
+        if (changeElement.classList.contains('positive')) {
+            smoothColorChange('rgba(0, 184, 148, 0.1)', card);
+        } else if (changeElement.classList.contains('negative')) {
+            smoothColorChange('rgba(255, 107, 107, 0.1)', card);
+        } else {
+            smoothColorChange('rgba(253, 203, 110, 0.1)', card);
+        }
     });
-});
+}
 
 // شبیه‌سازی داده (موقت)
 function simulateData() {
+    // قیمت‌ها
     document.getElementById('btcPrice').textContent = '۶۸,۴۲۳ $';
     document.getElementById('btcChange').textContent = '+۲.۱٪';
     document.getElementById('btcChange').className = 'change positive';
@@ -31,9 +46,13 @@ function simulateData() {
     document.getElementById('usdChange').textContent = '+۰.۳٪';
     document.getElementById('usdChange').className = 'change positive';
     
+    // وضعیت بازار
     document.getElementById('marketStatus').textContent = '📊 وضعیت بازار: 📈 صعودی';
     document.getElementById('aiAnalysis').textContent = 'بازار امروز روند صعودی دارد. پیش‌بینی رشد ۲-۳٪ در ۲۴ ساعت آینده.';
     document.getElementById('breakingNews').textContent = 'توییت جدید ترامپ درباره سیاست مالی - تأثیر مثبت روی طلا';
+    
+    // آپدیت رنگ کارت‌ها
+    updateCardColors();
 }
 
 // شبیه‌سازی چت AI
@@ -59,7 +78,5 @@ function askAI() {
 // اجرای اولیه
 simulateData();
 
-// تغییر رنگ بر اساس بازار (آزمایشی)
-setTimeout(() => {
-    document.body.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
-}, 5000);
+// آپدیت دوره‌ای داده (هر ۳۰ ثانیه)
+setInterval(simulateData, 30000);
