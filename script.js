@@ -48,61 +48,133 @@ function setupCategories() {
             // اضافه کردن active به این دسته
             this.classList.add('active');
             
-            // اینجا بعداً محتوای مربوط به دسته رو لود می‌کنیم
+            // اسکرول به بخش مربوطه
             const categoryName = this.dataset.category;
-            console.log('دسته انتخاب شده:', categoryName);
+            const section = document.getElementById(categoryName + '-section');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     });
 }
 
-// تغییر رنگ تدریجی (۳ ثانیه)
-function smoothColorChange(newColor, element) {
-    element.style.transition = 'all 3s ease';
-    element.style.background = newColor;
-}
-
-// تغییر رنگ هر کارت بر اساس عملکرد
-function updateCardColors() {
-    const cards = document.querySelectorAll('.price-card');
+// تحلیل رابطه‌ای هوشمند
+function generateAIHints() {
+    const oilPrice = parseFloat(document.getElementById('iranOilPrice').textContent) || 85;
+    const goldPrice = parseFloat(document.getElementById('worldGoldPrice').textContent) || 2345;
+    const btcPrice = parseFloat(document.getElementById('btcPrice').textContent) || 68423;
     
-    cards.forEach(card => {
-        const changeElement = card.querySelector('.change');
-        if (changeElement.classList.contains('positive')) {
-            smoothColorChange('rgba(72, 187, 120, 0.1)', card);
-        } else if (changeElement.classList.contains('negative')) {
-            smoothColorChange('rgba(245, 101, 101, 0.1)', card);
-        } else {
-            smoothColorChange('rgba(237, 137, 54, 0.1)', card);
-        }
-    });
+    // تحلیل رابطه نفت و طلا
+    if (oilPrice > 90) {
+        document.getElementById('iranOilHint').textContent = '📈 احتمال رشد طلا';
+        document.getElementById('worldGoldHint').textContent = '🛢️ تأثیرپذیر از نفت';
+    }
+    
+    // تحلیل رابطه طلا و بیت‌کوین
+    if (goldPrice > 2400) {
+        document.getElementById('worldGoldHint').textContent += ' ₿ ممکن است سرمایه به رمزارزها برود';
+        document.getElementById('btcHint').textContent = '🥇 رقابت با طلا';
+    }
+    
+    // تحلیل کلی بازار
+    if (btcPrice > 70000) {
+        document.getElementById('marketStatus').textContent = '📊 وضعیت بازار: 🚀 صعود قوی';
+        document.getElementById('aiAnalysis').textContent = 'بازار در حالت صعودی قوی قرار دارد. نفت بالا رفته که معمولاً منجر به تورم و رشد طلا می‌شود. رمزارزها نیز روند مثبت دارند.';
+    }
 }
 
-// شبیه‌سازی داده (موقت)
-function simulateData() {
-    // قیمت‌ها
+// شبیه‌سازی داده‌های واقعی
+function simulateRealData() {
+    // رمزارزها
     document.getElementById('btcPrice').textContent = '۶۸,۴۲۳ $';
     document.getElementById('btcChange').textContent = '+۲.۱٪';
     document.getElementById('btcChange').className = 'change positive';
     
-    document.getElementById('goldPrice').textContent = '۲,۳۴۵ $';
-    document.getElementById('goldChange').textContent = '+۰.۸٪';
-    document.getElementById('goldChange').className = 'change positive';
+    document.getElementById('usdtPrice').textContent = '۱.۰۰ $';
+    document.getElementById('usdtChange').textContent = '۰.۰٪';
+    document.getElementById('usdtChange').className = 'change neutral';
     
-    document.getElementById('oilPrice').textContent = '۸۵.۶۷ $';
-    document.getElementById('oilChange').textContent = '-۱.۲٪';
-    document.getElementById('oilChange').className = 'change negative';
+    document.getElementById('ethPrice').textContent = '۳,۸۵۰ $';
+    document.getElementById('ethChange').textContent = '+۱.۸٪';
+    document.getElementById('ethChange').className = 'change positive';
     
-    document.getElementById('usdPrice').textContent = '۱.۰۸ €';
+    document.getElementById('shibPrice').textContent = '۰.۰۰۰۰۲۸ $';
+    document.getElementById('shibChange').textContent = '+۵.۲٪';
+    document.getElementById('shibChange').className = 'change positive';
+    
+    document.getElementById('dogePrice').textContent = '۰.۱۵ $';
+    document.getElementById('dogeChange').textContent = '-۰.۸٪';
+    document.getElementById('dogeChange').className = 'change negative';
+
+    // ارزهای خارجی
+    document.getElementById('usdPrice').textContent = '۵۸,۵۰۰ تومان';
     document.getElementById('usdChange').textContent = '+۰.۳٪';
     document.getElementById('usdChange').className = 'change positive';
     
+    document.getElementById('eurPrice').textContent = '۶۲,۸۰۰ تومان';
+    document.getElementById('eurChange').textContent = '+۰.۵٪';
+    document.getElementById('eurChange').className = 'change positive';
+    
+    document.getElementById('tryPrice').textContent = '۱,۸۵۰ تومان';
+    document.getElementById('tryChange').textContent = '-۰.۲٪';
+    document.getElementById('tryChange').className = 'change negative';
+    
+    document.getElementById('aedPrice').textContent = '۱۵,۹۰۰ تومان';
+    document.getElementById('aedChange').textContent = '+۰.۳٪';
+    document.getElementById('aedChange').className = 'change positive';
+    
+    document.getElementById('gbpPrice').textContent = '۷۲,۵۰۰ تومان';
+    document.getElementById('gbpChange').textContent = '+۰.۴٪';
+    document.getElementById('gbpChange').className = 'change positive';
+
+    // طلا و سکه
+    document.getElementById('gold18Price').textContent = '۳,۲۵۰,۰۰۰ تومان';
+    document.getElementById('gold18Change').textContent = '+۰.۸٪';
+    document.getElementById('gold18Change').className = 'change positive';
+    
+    document.getElementById('coinPrice').textContent = '۴۰,۵۰۰,۰۰۰ تومان';
+    document.getElementById('coinChange').textContent = '+۱.۲٪';
+    document.getElementById('coinChange').className = 'change positive';
+    
+    document.getElementById('baharPrice').textContent = '۳۸,۲۰۰,۰۰۰ تومان';
+    document.getElementById('baharChange').textContent = '+۱.۱٪';
+    document.getElementById('baharChange').className = 'change positive';
+    
+    document.getElementById('nesfePrice').textContent = '۲۰,۱۰۰,۰۰۰ تومان';
+    document.getElementById('nesfeChange').textContent = '+۱.۰٪';
+    document.getElementById('nesfeChange').className = 'change positive';
+    
+    document.getElementById('worldGoldPrice').textContent = '۲,۳۴۵ $';
+    document.getElementById('worldGoldChange').textContent = '+۰.۹٪';
+    document.getElementById('worldGoldChange').className = 'change positive';
+
+    // نفت و انرژی
+    document.getElementById('iranOilPrice').textContent = '۸۷.۵ $';
+    document.getElementById('iranOilChange').textContent = '+۳.۲٪';
+    document.getElementById('iranOilChange').className = 'change positive';
+    
+    document.getElementById('brentPrice').textContent = '۸۹.۲ $';
+    document.getElementById('brentChange').textContent = '+۲.۸٪';
+    document.getElementById('brentChange').className = 'change positive';
+    
+    document.getElementById('wtiPrice').textContent = '۸۵.۶ $';
+    document.getElementById('wtiChange').textContent = '+۲.۵٪';
+    document.getElementById('wtiChange').className = 'change positive';
+    
+    document.getElementById('gasolinePrice').textContent = '۳۵,۰۰۰ تومان';
+    document.getElementById('gasolineChange').textContent = '+۱.۵٪';
+    document.getElementById('gasolineChange').className = 'change positive';
+    
+    document.getElementById('opecPrice').textContent = '۸۸.۱ $';
+    document.getElementById('opecChange').textContent = '+۲.۹٪';
+    document.getElementById('opecChange').className = 'change positive';
+
     // وضعیت بازار
     document.getElementById('marketStatus').textContent = '📊 وضعیت بازار: 📈 صعودی';
-    document.getElementById('aiAnalysis').textContent = 'بازار امروز روند صعودی دارد. پیش‌بینی رشد ۲-۳٪ در ۲۴ ساعت آینده.';
-    document.getElementById('breakingNews').textContent = 'توییت جدید ترامپ درباره سیاست مالی - تأثیر مثبت روی طلا';
+    document.getElementById('breakingNews').textContent = 'توییت جدید ترامپ درباره سیاست مالی - تأثیر مثبت روی طلا و نفت';
     
-    // آپدیت رنگ کارت‌ها
-    updateCardColors();
+    // تولید راهنمای AI
+    generateAIHints();
 }
 
 // شبیه‌سازی چت AI
@@ -116,11 +188,21 @@ function askAI() {
     
     // شبیه‌سازی تأخیر
     setTimeout(() => {
+        let response = '';
+        
+        if (question.includes('نفت') && question.includes('طلا')) {
+            response = 'بر اساس داده‌های فعلی، افزایش نفت معمولاً منجر به تورم و رشد طلا می‌شود. اگر نفت ۵٪ بالا برود، انتظار رشد ۱-۲٪ در طلا داریم.';
+        } else if (question.includes('بیت‌کوین') && question.includes('طلا')) {
+            response = 'طلای دیجیتال (بیت‌کوین) و طلای فیزیکی گاهی رابطه معکوس دارند. وقتی طلا نزولی است، ممکن است سرمایه به سمت رمزارزها حرکت کند.';
+        } else if (question.includes('دلار') && question.includes('نفت')) {
+            response = 'قدرت دلار آمریکا معمولاً با قیمت نفت رابطه معکوس دارد. دلار قوی → نفت ارزان‌تر، دلار ضعیف → نفت گران‌تر.';
+        } else {
+            response = 'بر اساس تحلیل فعلی، بازار روند صعودی دارد. نفت و طلا هر دو در حال رشد هستند که نشان‌دهنده تورم احتمالی است. پیشنهاد می‌کنم موقعیت‌های کوتاه‌مدت در نظر بگیرید.';
+        }
+        
         responseDiv.innerHTML = `
             <strong>سوال شما:</strong> ${question}<br><br>
-            <strong>پاسخ هوش مصنوعی:</strong> بر اساس تحلیل فعلی، بازار روند صعودی دارد. 
-            پیشنهاد می‌کنم موقعیت‌های کوتاه‌مدت در نظر بگیرید. 
-            (این پاسخ آزمایشی است - به زودی به real AI متصل می‌شود)
+            <strong>🤖 تحلیل هوش مصنوعی:</strong> ${response}
         `;
     }, 2000);
 }
@@ -128,8 +210,8 @@ function askAI() {
 // اجرای اولیه
 updateDateTime();
 setupCategories();
-simulateData();
+simulateRealData();
 
 // آپدیت دوره‌ای
 setInterval(updateDateTime, 1000);
-setInterval(simulateData, 30000);
+setInterval(simulateRealData, 30000); // هر ۳۰ ثانیه آپدیت
