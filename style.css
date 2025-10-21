@@ -1,0 +1,182 @@
+/* Reset و فونت */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* متغیرهای تم روشن */
+.light-theme {
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: white;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* متغیرهای تم تاریک */
+.dark-theme {
+    --bg-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-color: #00ffff;
+    --shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+}
+
+/* استایل پایه */
+body {
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding: 20px;
+    transition: all 0.5s ease;
+}
+
+/* افکت شیشه‌ای */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin: 10px 0;
+}
+
+/* هدر */
+.glass-header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+/* شبکه قیمت‌ها */
+.prices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.price-card {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.price-card:hover {
+    transform: translateY(-5px);
+}
+
+.price {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.change {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+.change.positive {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
+}
+
+.change.negative {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff6b6b;
+}
+
+/* سوییچ تم */
+.theme-switcher {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+.theme-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* چت */
+.chat-container {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#questionInput {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-color);
+    backdrop-filter: blur(10px);
+}
+
+button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    background: var(--glass-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+}
+
+.response {
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--glass-bg);
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+    .prices-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    body {
+        padding: 10px;
+    }
+}
+
+/* افکت نئونی برای تم تاریک */
+.dark-theme .glass-card {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.dark-theme .price-card:hover {
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+}
