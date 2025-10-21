@@ -1,8 +1,58 @@
-// سوییچ تم
-function switchTheme(theme) {
-    document.body.className = theme + '-theme';
-    document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+// ساعت و تاریخ
+function updateDateTime() {
+    const now = new Date();
+    
+    // ساعت
+    const time = now.toLocaleTimeString('fa-IR');
+    document.getElementById('currentTime').textContent = time;
+    
+    // تاریخ
+    const date = now.toLocaleDateString('fa-IR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    document.getElementById('currentDate').textContent = date;
+}
+
+// سوییچ تم با کلید برق
+function toggleTheme() {
+    const isDark = document.body.classList.contains('dark-theme');
+    if (isDark) {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+    } else {
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('dark-theme');
+    }
+}
+
+// حالت ذره‌بین
+function toggleZoom() {
+    document.body.classList.toggle('zoomed');
+}
+
+// نمایش ورود (موقت)
+function showLogin() {
+    alert('سیستم ورود به زودی فعال می‌شود! 🚀');
+}
+
+// تغییر دسته‌بندی
+function setupCategories() {
+    const categories = document.querySelectorAll('.category-circle');
+    
+    categories.forEach(category => {
+        category.addEventListener('click', function() {
+            // حذف active از همه
+            categories.forEach(cat => cat.classList.remove('active'));
+            // اضافه کردن active به این دسته
+            this.classList.add('active');
+            
+            // اینجا بعداً محتوای مربوط به دسته رو لود می‌کنیم
+            const categoryName = this.dataset.category;
+            console.log('دسته انتخاب شده:', categoryName);
+        });
+    });
 }
 
 // تغییر رنگ تدریجی (۳ ثانیه)
@@ -18,11 +68,11 @@ function updateCardColors() {
     cards.forEach(card => {
         const changeElement = card.querySelector('.change');
         if (changeElement.classList.contains('positive')) {
-            smoothColorChange('rgba(0, 184, 148, 0.1)', card);
+            smoothColorChange('rgba(72, 187, 120, 0.1)', card);
         } else if (changeElement.classList.contains('negative')) {
-            smoothColorChange('rgba(255, 107, 107, 0.1)', card);
+            smoothColorChange('rgba(245, 101, 101, 0.1)', card);
         } else {
-            smoothColorChange('rgba(253, 203, 110, 0.1)', card);
+            smoothColorChange('rgba(237, 137, 54, 0.1)', card);
         }
     });
 }
@@ -76,7 +126,10 @@ function askAI() {
 }
 
 // اجرای اولیه
+updateDateTime();
+setupCategories();
 simulateData();
 
-// آپدیت دوره‌ای داده (هر ۳۰ ثانیه)
+// آپدیت دوره‌ای
+setInterval(updateDateTime, 1000);
 setInterval(simulateData, 30000);
