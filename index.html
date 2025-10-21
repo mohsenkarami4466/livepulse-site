@@ -1,11 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa" dir="rtl">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LivePulse - بازار زنده</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>🚀 LivePulse.ir</h1>
-    <p>به زودی بهترین سرویس تحلیل بازار!</p>
-    <p>قیمت‌های لحظه‌ای - تحلیل هوش مصنوعی - اخبار فوری</p>
+<body class="light-theme">
+    <!-- هدر شیشه‌ای -->
+    <header class="glass-header">
+        <div class="container">
+            <h1>🚀 LivePulse</h1>
+            <div class="theme-switcher">
+                <button onclick="switchTheme('light')" class="theme-btn active">☀️</button>
+                <button onclick="switchTheme('dark')" class="theme-btn">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- وضعیت بازار -->
+    <section class="market-status glass-card">
+        <div class="status-indicator" id="marketStatus">
+            📊 وضعیت بازار: در حال دریافت...
+        </div>
+    </section>
+
+    <!-- قیمت‌های اصلی -->
+    <section class="prices-grid">
+        <div class="price-card glass-card" data-asset="bitcoin">
+            <h3>بیت‌کوین</h3>
+            <p class="price" id="btcPrice">--</p>
+            <span class="change" id="btcChange">--</span>
+        </div>
+
+        <div class="price-card glass-card" data-asset="gold">
+            <h3>طلای جهانی</h3>
+            <p class="price" id="goldPrice">--</p>
+            <span class="change" id="goldChange">--</span>
+        </div>
+
+        <div class="price-card glass-card" data-asset="oil">
+            <h3>نفت برنت</h3>
+            <p class="price" id="oilPrice">--</p>
+            <span class="change" id="oilChange">--</span>
+        </div>
+
+        <div class="price-card glass-card" data-asset="usd">
+            <h3>دلار آمریکا</h3>
+            <p class="price" id="usdPrice">--</p>
+            <span class="change" id="usdChange">--</span>
+        </div>
+    </section>
+
+    <!-- تحلیل هوش مصنوعی -->
+    <section class="ai-analysis glass-card">
+        <h3>🤖 تحلیل لحظه‌ای هوش مصنوعی</h3>
+        <p id="aiAnalysis">در حال تحلیل بازار...</p>
+    </section>
+
+    <!-- اخبار فوری -->
+    <section class="news-section">
+        <h3>🔥 اخبار تأثیرگذار</h3>
+        <div class="news-card glass-card">
+            <p id="breakingNews">در حال دریافت آخرین اخبار...</p>
+        </div>
+    </section>
+
+    <!-- چت با هوش مصنوعی -->
+    <section class="ai-chat glass-card">
+        <h3>💬 پرسش از هوش مصنوعی</h3>
+        <div class="chat-container">
+            <input type="text" id="questionInput" placeholder="سوال خود را بپرسید...">
+            <button onclick="askAI()">بپرس</button>
+        </div>
+        <div id="aiResponse" class="response"></div>
+    </section>
+
+    <script src="script.js"></script>
 </body>
 </html>
