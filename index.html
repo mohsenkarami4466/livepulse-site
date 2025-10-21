@@ -7,74 +7,118 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="light-theme">
-    <!-- هدر شیشه‌ای -->
-    <header class="glass-header">
+    <!-- نوار بالایی -->
+    <header class="top-bar">
         <div class="container">
-            <h1>🚀 LivePulse</h1>
-            <div class="theme-switcher">
-                <button onclick="switchTheme('light')" class="theme-btn active">☀️</button>
-                <button onclick="switchTheme('dark')" class="theme-btn">🌙</button>
+            <!-- سمت راست: ساعت و تاریخ -->
+            <div class="time-section">
+                <span id="currentTime">--:--</span>
+                <span id="currentDate">---</span>
+            </div>
+
+            <!-- وسط: عنوان سایت -->
+            <div class="logo-section">
+                <h1>🚀 LivePulse</h1>
+            </div>
+
+            <!-- سمت چپ: کنترل‌ها -->
+            <div class="controls-section">
+                <button class="control-btn" onclick="toggleZoom()">🔍</button>
+                <div class="theme-switch">
+                    <input type="checkbox" id="themeToggle" onclick="toggleTheme()">
+                    <label for="themeToggle" class="theme-slider"></label>
+                </div>
+                <button class="control-btn login-btn" onclick="showLogin()">ورود</button>
             </div>
         </div>
     </header>
 
-    <!-- وضعیت بازار -->
-    <section class="market-status glass-card">
-        <div class="status-indicator" id="marketStatus">
-            📊 وضعیت بازار: در حال دریافت...
+    <!-- هایلایت دسته‌بندی‌ها -->
+    <section class="categories-highlight">
+        <div class="categories-container">
+            <div class="category-circle active" data-category="crypto">
+                <div class="category-icon">₿</div>
+                <span>رمزارزها</span>
+            </div>
+            <div class="category-circle" data-category="gold">
+                <div class="category-icon">🥇</div>
+                <span>طلا و سکه</span>
+            </div>
+            <div class="category-circle" data-category="forex">
+                <div class="category-icon">💵</div>
+                <span>ارز جهانی</span>
+            </div>
+            <div class="category-circle" data-category="oil">
+                <div class="category-icon">🛢️</div>
+                <span>نفت و انرژی</span>
+            </div>
+            <div class="category-circle" data-category="stocks">
+                <div class="category-icon">📈</div>
+                <span>سهام جهانی</span>
+            </div>
         </div>
     </section>
 
-    <!-- قیمت‌های اصلی -->
-    <section class="prices-grid">
-        <div class="price-card glass-card" data-asset="bitcoin">
-            <h3>بیت‌کوین</h3>
-            <p class="price" id="btcPrice">--</p>
-            <span class="change" id="btcChange">--</span>
-        </div>
+    <!-- محتوای اصلی -->
+    <main class="main-content">
+        <!-- وضعیت بازار -->
+        <section class="market-status glass-card">
+            <div class="status-indicator" id="marketStatus">
+                📊 وضعیت بازار: در حال دریافت...
+            </div>
+        </section>
 
-        <div class="price-card glass-card" data-asset="gold">
-            <h3>طلای جهانی</h3>
-            <p class="price" id="goldPrice">--</p>
-            <span class="change" id="goldChange">--</span>
-        </div>
+        <!-- قیمت‌های اصلی -->
+        <section class="prices-grid">
+            <div class="price-card glass-card" data-asset="bitcoin">
+                <h3>بیت‌کوین</h3>
+                <p class="price" id="btcPrice">--</p>
+                <span class="change" id="btcChange">--</span>
+            </div>
 
-        <div class="price-card glass-card" data-asset="oil">
-            <h3>نفت برنت</h3>
-            <p class="price" id="oilPrice">--</p>
-            <span class="change" id="oilChange">--</span>
-        </div>
+            <div class="price-card glass-card" data-asset="gold">
+                <h3>طلای جهانی</h3>
+                <p class="price" id="goldPrice">--</p>
+                <span class="change" id="goldChange">--</span>
+            </div>
 
-        <div class="price-card glass-card" data-asset="usd">
-            <h3>دلار آمریکا</h3>
-            <p class="price" id="usdPrice">--</p>
-            <span class="change" id="usdChange">--</span>
-        </div>
-    </section>
+            <div class="price-card glass-card" data-asset="oil">
+                <h3>نفت برنت</h3>
+                <p class="price" id="oilPrice">--</p>
+                <span class="change" id="oilChange">--</span>
+            </div>
 
-    <!-- تحلیل هوش مصنوعی -->
-    <section class="ai-analysis glass-card">
-        <h3>🤖 تحلیل لحظه‌ای هوش مصنوعی</h3>
-        <p id="aiAnalysis">در حال تحلیل بازار...</p>
-    </section>
+            <div class="price-card glass-card" data-asset="usd">
+                <h3>دلار آمریکا</h3>
+                <p class="price" id="usdPrice">--</p>
+                <span class="change" id="usdChange">--</span>
+            </div>
+        </section>
 
-    <!-- اخبار فوری -->
-    <section class="news-section">
-        <h3>🔥 اخبار تأثیرگذار</h3>
-        <div class="news-card glass-card">
-            <p id="breakingNews">در حال دریافت آخرین اخبار...</p>
-        </div>
-    </section>
+        <!-- تحلیل هوش مصنوعی -->
+        <section class="ai-analysis glass-card">
+            <h3>🤖 تحلیل لحظه‌ای هوش مصنوعی</h3>
+            <p id="aiAnalysis">در حال تحلیل بازار...</p>
+        </section>
 
-    <!-- چت با هوش مصنوعی -->
-    <section class="ai-chat glass-card">
-        <h3>💬 پرسش از هوش مصنوعی</h3>
-        <div class="chat-container">
-            <input type="text" id="questionInput" placeholder="سوال خود را بپرسید...">
-            <button onclick="askAI()">بپرس</button>
-        </div>
-        <div id="aiResponse" class="response"></div>
-    </section>
+        <!-- اخبار فوری -->
+        <section class="news-section">
+            <h3>🔥 اخبار تأثیرگذار</h3>
+            <div class="news-card glass-card">
+                <p id="breakingNews">در حال دریافت آخرین اخبار...</p>
+            </div>
+        </section>
+
+        <!-- چت با هوش مصنوعی -->
+        <section class="ai-chat glass-card">
+            <h3>💬 پرسش از هوش مصنوعی</h3>
+            <div class="chat-container">
+                <input type="text" id="questionInput" placeholder="سوال خود را بپرسید...">
+                <button onclick="askAI()">بپرس</button>
+            </div>
+            <div id="aiResponse" class="response"></div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
