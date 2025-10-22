@@ -1,45 +1,199 @@
-:root{
-  --bg: #0F172A;
-  --card-bg: rgba(255,255,255,0.06);
-  --glass: rgba(255,255,255,0.08);
-  --accent: #0EA5E9;
-  --accent-2: #FFA200;
-  --positive: #10B981;
-  --negative: #EF4444;
-  --muted: #94A3B8;
-  --radius: 12px;
-  --glass-strong: rgba(255,255,255,0.85);
+/* Reset و فونت‌ها */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto; background:linear-gradient(180deg,#071028 0%, #0F172A 100%); color:#E6EEF8; -webkit-font-smoothing:antialiased;}
-.dark .topbar { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
-.topbar { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; position:sticky; top:0; z-index:40; border-bottom:1px solid rgba(255,255,255,0.03); backdrop-filter: blur(8px); }
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:48px;height:48px}
-.brand-text{display:flex;flex-direction:row;gap:6px;align-items:center}
-.brand-text .live{font-weight:700;color:#fff}
-.brand-text .pulse{font-weight:700;color:var(--accent)}
-.controls{display:flex;gap:12px;align-items:center}
-.btn{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;cursor:pointer}
-.btn.primary{background:linear-gradient(90deg,var(--accent),#88FFAA);color:#072030;border:none;font-weight:700}
-.container{display:grid;grid-template-columns: 1fr 320px;gap:18px;padding:18px;max-width:1200px;margin:20px auto}
-.categories{display:flex;gap:8px;justify-content:flex-end;margin-bottom:8px}
-.cat{background:transparent;border:none;padding:8px 14px;border-radius:10px;color:var(--muted);cursor:pointer}
-.cat.active{background:linear-gradient(90deg, rgba(14,165,233,0.14), rgba(136,255,170,0.06)); color:var(--accent);border:1px solid rgba(14,165,233,0.12)}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.card{background:var(--card-bg);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);backdrop-filter: blur(8px);min-height:90px;display:flex;flex-direction:column;justify-content:space-between}
-.card .title{display:flex;justify-content:space-between;align-items:center}
-.symbol{font-weight:700}
-.price{font-weight:800;font-size:18px}
-.delta{font-weight:700}
-.delta.up{color:var(--positive)}
-.delta.down{color:var(--negative)}
-.rightpane{padding:14px;border-radius:12px;min-height:200px;position:sticky;top:80px}
-.ai-hint{padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(14,165,233,0.06), rgba(136,255,170,0.03));color:var(--accent);margin-bottom:12px}
-.small{font-size:13px;color:var(--muted)}
-.footer{padding:12px;text-align:center;margin:18px;border-radius:10px;opacity:0.9}
-@media (max-width:900px){
-  .container{grid-template-columns:1fr; padding:12px}
-  .grid{grid-template-columns:1fr}
-  .rightpane{position:relative;top:0}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* هدر */
+.header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 2rem 0;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, #00b4db, #0083b0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* بخش اصلی */
+.main {
+    padding: 3rem 0;
+}
+
+/* کارت‌های بازار */
+.market-section {
+    margin-bottom: 3rem;
+}
+
+.market-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.change {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.change.positive {
+    background: rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+}
+
+.change.negative {
+    background: rgba(244, 67, 54, 0.3);
+    color: #F44336;
+}
+
+/* تحلیل AI */
+.ai-section {
+    margin-bottom: 3rem;
+}
+
+.ai-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.analysis-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.analysis-result h3 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.sentiment {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.sentiment.positive {
+    color: #4CAF50;
+}
+
+.analysis-text {
+    opacity: 0.9;
+    line-height: 1.8;
+}
+
+.confidence {
+    background: rgba(0, 180, 219, 0.3);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* نمودار */
+.chart-section {
+    margin-bottom: 3rem;
+}
+
+.chart-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.chart-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* فوتر */
+.footer {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .analysis-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .container {
+        padding: 0 15px;
+    }
 }
