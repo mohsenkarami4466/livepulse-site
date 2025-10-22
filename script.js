@@ -1,136 +1,110 @@
-// script.js — LivePulse basic logic
-const API_ENDPOINTS = {
-  crypto: '/api/crypto',   // <- replace with your worker/Netlify function or Cloudflare worker
-  fx: '/api/fx',
-  gold: '/api/gold',
-  oil: '/api/oil',
+// داده‌های نمونه برای بازار
+const marketData = {
+    btc: { price: 45234.56, change: 2.34 },
+    eth: { price: 3123.45, change: 1.89 },
+    gold: { price: 1987.65, change: -0.45 }
 };
 
-const SAMPLE = {
-  crypto: [
-    {symbol:'BTC', name:'Bitcoin', price: 46320, change: 2.4},
-    {symbol:'ETH', name:'Ethereum', price: 3200, change: -1.1},
-    {symbol:'USDT', name:'Tether', price: 1.00, change: 0.0},
-    {symbol:'DOGE', name:'Dogecoin', price: 0.14, change: 5.2},
-    {symbol:'SHIB', name:'Shiba', price: 0.000007, change: -0.2},
-  ],
-  fx: [
-    {symbol:'USD', name:'دلار', price: 42000, change: 0.2},
-    {symbol:'EUR', name:'یورو', price: 45000, change: -0.1},
-    {symbol:'GBP', name:'پوند', price: 52000, change: 0.5},
-    {symbol:'AED', name:'درهم', price: 11400, change: 0.1},
-    {symbol:'TRY', name:'لیر', price: 2200, change: -0.8},
-  ],
-  gold: [
-    {symbol:'G18', name:'طلای ۱۸', price: 1250000, change: 0.3},
-    {symbol:'SEEK', name:'سکه امامی', price: 21000000, change: -0.5},
-    {symbol:'BAHAR', name:'بهار آزادی', price: 11000000, change: 0.2},
-    {symbol:'HALF', name:'نیم سکه', price: 5600000, change: -0.1},
-    {symbol:'G1oz', name:'طلای جهانی', price: 1920, change: 1.1},
-  ],
-  oil: [
-    {symbol:'BRN', name:'Brent', price: 84.2, change: 0.9},
-    {symbol:'WTI', name:'WTI', price: 79.4, change: -0.5},
-    {symbol:'IRN', name:'نفت ایران', price: 75.0, change: 0.3},
-    {symbol:'GAS', name:'بنزین', price: 1.07, change: 0.1},
-    {symbol:'OPEC', name:'اوپک', price: 82.0, change: 0.2},
-  ]
+// شبیه‌سازی تحلیل AI
+const aiAnalysis = {
+    sentiment: 'positive',
+    confidence: 87,
+    message: 'تحلیل AI نشان می‌دهد روند صعودی در کوتاه‌مدت ادامه خواهد دارد'
 };
 
-const POLL_INTERVAL = 15000; // ms
-
-const grid = document.getElementById('grid');
-const cats = document.querySelectorAll('.cat');
-const aiHint = document.getElementById('aiHint');
-const statusEl = document.getElementById('status');
-const timeEl = document.getElementById('time');
-let active = 'crypto';
-
-// utility: format numbers
-function fmt(n){
-  if (Math.abs(n) >= 1000) return n.toLocaleString();
-  return n;
+// تابع برای آپدیت قیمت‌ها
+function updatePrices() {
+    document.getElementById('btc-price').textContent = `$${marketData.btc.price.toLocaleString()}`;
+    document.getElementById('eth-price').textContent = `$${marketData.eth.price.toLocaleString()}`;
+    document.getElementById('gold-price').textContent = `$${marketData.gold.price.toLocaleString()}`;
 }
 
-// initial render
-function renderList(cat, list){
-  grid.innerHTML = '';
-  list.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <div class="title">
-        <div>
-          <div class="symbol">${item.symbol} <span style="color:var(--muted);font-weight:500;font-size:13px"> ${item.name}</span></div>
-        </div>
-        <div class="price">${fmt(item.price)}</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-        <div class="small">آخرین به‌روزرسانی: الان</div>
-        <div class="delta ${item.change>=0 ? 'up' : 'down'}">${item.change>=0? '+'+item.change+'%': item.change+'%'}</div>
-      </div>
-    `;
-    // hover -> AI hint demo
-    card.addEventListener('mouseenter', ()=> {
-      aiHint.textContent = `[AI] تحلیل فوری: ${item.symbol} — ${generateHint(cat, item)}`;
+// تابع برای شبیه‌سازی تغییرات قیمت
+function simulatePriceChanges() {
+    setInterval(() => {
+        // تغییرات کوچک تصادفی در قیمت‌ها
+        marketData.btc.price *= (1 + (Math.random() - 0.5) * 0.01);
+        marketData.eth.price *= (1 + (Math.random() - 0.5) * 0.01);
+        marketData.gold.price *= (1 + (Math.random() - 0.5) * 0.005);
+        
+        updatePrices();
+        
+        // لاگ برای دیدن تغییرات در کنسول
+        console.log('Prices updated:', marketData);
+    }, 5000); // هر ۵ ثانیه آپدیت شود
+}
+
+// تابع برای رسم نمودار ساده
+function drawSimpleChart() {
+    const canvas = document.getElementById('marketChart');
+    const ctx = canvas.getContext('2d');
+    
+    // پاک کردن کانواس
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // داده‌های نمونه برای نمودار
+    const data = [65, 59, 80, 81, 56, 55, 70, 75, 72, 68, 76, 82];
+    
+    // تنظیمات نمودار
+    ctx.strokeStyle = '#00b4db';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    
+    const maxValue = Math.max(...data);
+    const minValue = Math.min(...data);
+    const range = maxValue - minValue;
+    const width = canvas.width - 40;
+    const height = canvas.height - 40;
+    
+    // رسم خط نمودار
+    data.forEach((value, index) => {
+        const x = 20 + (index / (data.length - 1)) * width;
+        const y = 20 + height - ((value - minValue) / range) * height;
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
     });
-    grid.appendChild(card);
-  });
+    
+    ctx.stroke();
+    
+    // نقاط روی نمودار
+    ctx.fillStyle = '#0083b0';
+    data.forEach((value, index) => {
+        const x = 20 + (index / (data.length - 1)) * width;
+        const y = 20 + height - ((value - minValue) / range) * height;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+    });
 }
 
-// sample hint generator (replace with AI call)
-function generateHint(cat, item){
-  if(cat === 'crypto'){
-    if(item.change > 2) return `${item.symbol} رشد سریع داشته؛ توجه به حجم معاملات.`;
-    if(item.change < -1) return `${item.symbol} در اصلاح؛ ممکنه فرصت خرید کوتاه‌مدت باشد.`;
-    return `${item.symbol} نوسان معمول.`;
-  }
-  if(cat === 'oil'){
-    if(item.change > 0.7) return `افزایش نفت → فشار صعودی بر قیمت بنزین و احتمالا افزایش طلا.`;
-    return `نوسان اندک در نفت.`;
-  }
-  return `تغییر ${item.change}% — بررسی بیشتر توصیه می‌شود.`;
+// تابع اصلی برای راه‌اندازی
+function initializeApp() {
+    console.log('🚀 LivePulse Application Starting...');
+    
+    // آپدیت اولیه قیمت‌ها
+    updatePrices();
+    
+    // شروع شبیه‌سازی تغییرات قیمت
+    simulatePriceChanges();
+    
+    // رسم نمودار
+    drawSimpleChart();
+    
+    // آپدیت دوره‌ای نمودار
+    setInterval(drawSimpleChart, 10000);
+    
+    console.log('✅ LivePulse Application Started Successfully!');
 }
 
-// fetch real data (placeholder)
-async function fetchData(cat){
-  statusEl.textContent = 'درحال دریافت';
-  try{
-    // TODO: replace with real endpoint (Cloudflare Worker or Netlify function)
-    // const res = await fetch(API_ENDPOINTS[cat]);
-    // const data = await res.json();
-    // for demo we use SAMPLE
-    await sleep(200);
-    statusEl.textContent = 'زنده';
-    return SAMPLE[cat];
-  }catch(e){
-    statusEl.textContent = 'خطا';
-    console.error(e);
-    return SAMPLE[cat];
-  }
-}
+// راه‌اندازی برنامه وقتی صفحه لود شد
+document.addEventListener('DOMContentLoaded', initializeApp);
 
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-async function update(){
-  const list = await fetchData(active);
-  renderList(active, list);
-  document.querySelectorAll('.cat').forEach(b=>b.classList.toggle('active', b.dataset.cat === active));
-  // update clock
-  timeEl.textContent = new Date().toLocaleTimeString('fa-IR');
-}
-
-// init
-cats.forEach(b=>{
-  b.addEventListener('click', ()=>{
-    active = b.dataset.cat;
-    update();
-  });
+// هندل خطاها
+window.addEventListener('error', (event) => {
+    console.error('❌ Application Error:', event.error);
 });
-document.getElementById('themeToggle').addEventListener('click', ()=>{
-  document.body.classList.toggle('dark');
-});
-
-// poller
-update();
-setInterval(update, POLL_INTERVAL);
