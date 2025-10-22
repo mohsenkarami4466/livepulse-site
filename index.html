@@ -1,54 +1,77 @@
-<!doctype html>
-<html lang="fa" dir="rtl">
+<!DOCTYPE html>
+<html lang="fa">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LivePulse — بازار زنده</title>
-  <meta name="description" content="LivePulse — نبض زنده بازارها؛ رمزارز، ارز، طلا و نفت با تحلیل هوش مصنوعی." />
-  <link rel="icon" href="/assets/favicon.png" />
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <meta name="theme-color" content="#0F172A" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LivePulse - بازار زنده و تحلیل هوش مصنوعی</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="dark">
-  <header class="topbar glass">
-    <div class="brand">
-      <!-- inline svg fallback -->
-      <img src="/assets/logo.svg" alt="LivePulse" class="logo" />
-      <div class="brand-text"><span class="live">Live</span><span class="pulse">Pulse</span></div>
-    </div>
-    <div class="controls">
-      <div id="time" class="time">—:—</div>
-      <button id="themeToggle" class="btn">تم</button>
-    </div>
-  </header>
+<body>
+    <!-- هدر اصلی -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">📊 LivePulse</h1>
+            <p class="tagline">داده‌های زنده بازار و تحلیل پیشرفته AI</p>
+        </div>
+    </header>
 
-  <main class="container">
-    <section class="categories">
-      <button class="cat active" data-cat="crypto">₿ رمزارزها</button>
-      <button class="cat" data-cat="fx">💵 ارزها</button>
-      <button class="cat" data-cat="gold">🥇 طلا و سکه</button>
-      <button class="cat" data-cat="oil">🛢️ نفت و انرژی</button>
-    </section>
+    <!-- محتوای اصلی -->
+    <main class="main">
+        <div class="container">
+            <!-- بخش داده‌های بازار -->
+            <section class="market-section">
+                <h2>📈 داده‌های زنده بازار</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <h3>بیت‌کوین (BTC)</h3>
+                        <div class="price" id="btc-price">$۴۵,۲۳۴.۵۶</div>
+                        <div class="change positive">+۲.۳۴٪</div>
+                    </div>
+                    <div class="card">
+                        <h3>اتریوم (ETH)</h3>
+                        <div class="price" id="eth-price">$۳,۱۲۳.۴۵</div>
+                        <div class="change positive">+۱.۸۹٪</div>
+                    </div>
+                    <div class="card">
+                        <h3>طلا</h3>
+                        <div class="price" id="gold-price">$۱,۹۸۷.۶۵</div>
+                        <div class="change negative">-۰.۴۵٪</div>
+                    </div>
+                </div>
+            </section>
 
-    <section class="grid" id="grid">
-      <!-- cards injected by script -->
-    </section>
+            <!-- بخش تحلیل AI -->
+            <section class="ai-section">
+                <h2>🤖 تحلیل هوش مصنوعی</h2>
+                <div class="analysis-card">
+                    <div class="analysis-result">
+                        <h3>پیش‌بینی بازار</h3>
+                        <p class="sentiment positive">📊 sentiment مثبت</p>
+                        <p class="analysis-text">تحلیل AI نشان می‌دهد روند صعودی در کوتاه‌مدت ادامه خواهد داشت</p>
+                    </div>
+                    <div class="confidence">
+                        <span>اعتماد: ۸۷٪</span>
+                    </div>
+                </div>
+            </section>
 
-    <aside class="rightpane glass">
-      <div class="ai-hint" id="aiHint">هوش مصنوعی: آماده</div>
-      <div class="small">اتصال: <span id="status">آفلاین</span></div>
-      <div class="cta">
-        <button id="subscribe" class="btn primary">عضویت VIP</button>
-      </div>
-    </aside>
-  </main>
+            <!-- نمودار ساده -->
+            <section class="chart-section">
+                <h2>📊 نمودار روند</h2>
+                <div class="chart-container">
+                    <canvas id="marketChart" width="400" height="200"></canvas>
+                </div>
+            </section>
+        </div>
+    </main>
 
-  <footer class="footer glass">
-    © LivePulse — نبض زنده بازارها
-  </footer>
+    <!-- فوتر -->
+    <footer class="footer">
+        <div class="container">
+            <p>© ۲۰۲۴ LivePulse - تمام حقوق محفوظ است</p>
+        </div>
+    </footer>
 
-  <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
