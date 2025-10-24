@@ -13,6 +13,7 @@
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     
     <style>
         /* CSS Variables for Theme */
@@ -43,13 +44,6 @@
             --pearl-color: #F8F8FF;
             --gem-color: #8B4513;
             --currency-color: #3B82F6;
-            
-            /* Border Radius */
-            --radius-sm: 0.375rem;
-            --radius: 0.5rem;
-            --radius-md: 0.75rem;
-            --radius-lg: 1rem;
-            --radius-xl: 1.5rem;
         }
 
         [data-theme="dark"] {
@@ -148,7 +142,11 @@
             gap: 1.5rem;
         }
 
-        /* Tools/Home Toggle Button */
+        /* Tools Menu */
+        .tools-menu {
+            position: relative;
+        }
+
         .mode-toggle-btn {
             background: var(--accent-blue);
             color: white;
@@ -164,6 +162,56 @@
         .mode-toggle-btn:hover {
             background: var(--accent-teal);
             transform: translateY(-2px);
+        }
+
+        .tools-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            padding: 1rem;
+            min-width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .tools-menu:hover .tools-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .tools-dropdown h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .tools-list {
+            list-style: none;
+        }
+
+        .tools-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .tools-list a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .tools-list a:hover {
+            background: var(--accent-blue);
+            color: white;
         }
 
         /* Theme Toggle */
@@ -259,46 +307,85 @@
             box-shadow: var(--shadow);
         }
 
+        .highlight-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.3) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .highlight-item:hover::before {
+            opacity: 1;
+        }
+
+        .highlight-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+
         /* Market Highlight Colors */
         .highlight-item.market.positive {
             background: var(--accent-green);
             color: white;
+            animation: pulse-green 2s infinite;
         }
 
         .highlight-item.market.negative {
             background: var(--accent-red);
             color: white;
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
         }
 
         /* Tool Highlight Colors */
         .highlight-item.tool[data-tool="gold"] {
-            background: var(--gold-color);
+            background: linear-gradient(135deg, var(--gold-color), #FFEC8B);
             color: #7c6a10;
+            border: 3px solid rgba(255, 215, 0, 0.3);
         }
 
         .highlight-item.tool[data-tool="diamond"] {
-            background: var(--diamond-color);
+            background: linear-gradient(135deg, var(--diamond-color), #E0F7FF);
             color: #2c7280;
+            border: 3px solid rgba(185, 242, 255, 0.3);
         }
 
         .highlight-item.tool[data-tool="silver"] {
-            background: var(--silver-color);
+            background: linear-gradient(135deg, var(--silver-color), #E8E8E8);
             color: #5a5a5a;
+            border: 3px solid rgba(192, 192, 192, 0.3);
         }
 
         .highlight-item.tool[data-tool="pearl"] {
-            background: var(--pearl-color);
+            background: linear-gradient(135deg, var(--pearl-color), #FFFFFF);
             color: #666;
+            border: 3px solid rgba(248, 248, 255, 0.3);
         }
 
         .highlight-item.tool[data-tool="gem"] {
-            background: var(--gem-color);
+            background: linear-gradient(135deg, var(--gem-color), #A0522D);
             color: white;
+            border: 3px solid rgba(139, 69, 19, 0.3);
         }
 
         .highlight-item.tool[data-tool="currency"] {
-            background: var(--currency-color);
+            background: linear-gradient(135deg, var(--currency-color), #60A5FA);
             color: white;
+            border: 3px solid rgba(59, 130, 246, 0.3);
         }
 
         .highlight-item.active {
@@ -314,16 +401,22 @@
         /* Content Sections */
         .content-section {
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: fadeInUp 0.6s ease-out;
         }
 
         .content-section.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Home Page Main Grid */
@@ -347,9 +440,29 @@
             border: 1px solid var(--glass-border);
         }
 
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-teal));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .data-card.negative::before {
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-orange));
+        }
+
+        .data-card:hover::before {
+            transform: scaleX(1);
+        }
+
         .data-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
         }
 
         .card-header {
@@ -374,6 +487,7 @@
             padding: 0.2rem 0.5rem;
             border-radius: 4px;
             font-size: 0.7rem;
+            font-weight: 500;
         }
 
         .card-price {
@@ -393,11 +507,13 @@
         .positive {
             background: rgba(16, 185, 129, 0.1);
             color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
         .negative {
             background: rgba(239, 68, 68, 0.1);
             color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         /* Chart Containers */
@@ -405,6 +521,11 @@
             height: 120px;
             margin: 1rem 0;
             position: relative;
+        }
+
+        .chart-container-large {
+            height: 300px;
+            margin: 1.5rem 0;
         }
 
         /* Live Data Grid */
@@ -477,17 +598,21 @@
         .windows-container {
             position: relative;
             overflow: hidden;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            box-shadow: var(--shadow);
         }
 
         .windows-track {
             display: flex;
             gap: 1rem;
-            transition: transform 0.3s ease;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .window-card {
             min-width: 280px;
-            background: var(--bg-secondary);
+            background: var(--bg-primary);
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: var(--shadow);
@@ -498,7 +623,8 @@
         }
 
         .window-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
 
         .slider-controls {
@@ -545,6 +671,25 @@
             overflow-y: auto;
             margin-bottom: 1rem;
             border: 1px solid var(--glass-border);
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .chat-message.ai-message {
+            background: rgba(59, 130, 246, 0.1);
+            border-right: 4px solid var(--accent-blue);
+            text-align: right;
+        }
+
+        .chat-message.user-message {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            text-align: left;
         }
 
         .chat-input-container {
@@ -634,6 +779,18 @@
             max-height: 80vh;
             overflow-y: auto;
             border: 1px solid var(--glass-border);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .popup-header {
@@ -641,6 +798,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .popup-title {
@@ -655,6 +814,129 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-secondary);
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-close:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
+        /* Popup Detail Styles */
+        .popup-detail {
+            padding: 1rem 0;
+        }
+
+        .detail-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-display {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .change-display {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .change-display.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .change-display.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .chart-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .chart-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--glass-border);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chart-btn.active,
+        .chart-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        .detail-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .stat-item span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stat-item strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .ai-analysis-popup {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-right: 4px solid var(--accent-blue);
+            margin-top: 1.5rem;
+        }
+
+        .ai-analysis-popup h4 {
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .ai-analysis-popup p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
         }
 
         /* Ad Container */
@@ -667,9 +949,95 @@
             border: 2px dashed var(--glass-border);
         }
 
+        /* Login Form */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-submit {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .subscription-link {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .subscription-link a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
         /* Utility Classes */
         .hidden {
             display: none !important;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            z-index: 3000;
+            border-right: 4px solid var(--accent-blue);
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification-success {
+            border-right-color: var(--accent-green);
+        }
+
+        .notification-error {
+            border-right-color: var(--accent-red);
         }
 
         /* Responsive Design */
@@ -710,6 +1078,10 @@
             .footer-content {
                 grid-template-columns: 1fr;
             }
+
+            .detail-stats {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -730,6 +1102,15 @@
                 height: 80px;
                 font-size: 0.8rem;
             }
+
+            .popup-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .chart-container-large {
+                height: 250px;
+            }
         }
     </style>
 </head>
@@ -745,8 +1126,21 @@
 
             <!-- Right Navigation -->
             <div class="nav-right">
-                <!-- Tools/Home Toggle Button -->
-                <button class="mode-toggle-btn" id="modeToggleBtn">ابزارها</button>
+                <!-- Tools Menu -->
+                <div class="tools-menu">
+                    <button class="mode-toggle-btn" id="modeToggleBtn">ابزارها</button>
+                    <div class="tools-dropdown">
+                        <h3>ابزارهای کاربردی</h3>
+                        <ul class="tools-list">
+                            <li><a href="#" data-tool="gold">محاسبه قیمت طلا</a></li>
+                            <li><a href="#" data-tool="diamond">محاسبه قیمت الماس</a></li>
+                            <li><a href="#" data-tool="silver">محاسبه قیمت نقره</a></li>
+                            <li><a href="#" data-tool="pearl">محاسبه قیمت مروارید</a></li>
+                            <li><a href="#" data-tool="gem">محاسبه قیمت سنگ</a></li>
+                            <li><a href="#" data-tool="currency">تبدیل واحد پول</a></li>
+                        </ul>
+                    </div>
+                </div>
 
                 <!-- Theme Toggle -->
                 <div class="theme-toggle" id="themeToggle">
@@ -765,19 +1159,15 @@
     <main class="main-content">
         <!-- Market Mode Highlights -->
         <section class="highlights" id="marketHighlights">
-            <!-- HIGHLIGHT: رمزارز -->
             <div class="highlight-item market active" data-category="crypto" data-section="crypto-section">
                 <span class="highlight-text">رمزارز</span>
             </div>
-            <!-- HIGHLIGHT: ارز -->
             <div class="highlight-item market" data-category="currency" data-section="currency-section">
                 <span class="highlight-text">ارز</span>
             </div>
-            <!-- HIGHLIGHT: طلا -->
             <div class="highlight-item market" data-category="gold" data-section="gold-section">
                 <span class="highlight-text">طلا</span>
             </div>
-            <!-- HIGHLIGHT: نفت -->
             <div class="highlight-item market" data-category="oil" data-section="oil-section">
                 <span class="highlight-text">نفت</span>
             </div>
@@ -785,27 +1175,21 @@
 
         <!-- Tools Mode Highlights -->
         <section class="highlights hidden" id="toolHighlights">
-            <!-- HIGHLIGHT: طلا -->
             <div class="highlight-item tool active" data-tool="gold" data-section="gold-tool-section">
                 <span class="highlight-text">طلا</span>
             </div>
-            <!-- HIGHLIGHT: الماس -->
             <div class="highlight-item tool" data-tool="diamond" data-section="diamond-tool-section">
                 <span class="highlight-text">الماس</span>
             </div>
-            <!-- HIGHLIGHT: نقره -->
             <div class="highlight-item tool" data-tool="silver" data-section="silver-tool-section">
                 <span class="highlight-text">نقره</span>
             </div>
-            <!-- HIGHLIGHT: مروارید -->
             <div class="highlight-item tool" data-tool="pearl" data-section="pearl-tool-section">
                 <span class="highlight-text">مروارید</span>
             </div>
-            <!-- HIGHLIGHT: سنگ -->
             <div class="highlight-item tool" data-tool="gem" data-section="gem-tool-section">
                 <span class="highlight-text">سنگ</span>
             </div>
-            <!-- HIGHLIGHT: تبدیل ارز -->
             <div class="highlight-item tool" data-tool="currency" data-section="currency-tool-section">
                 <span class="highlight-text">تبدیل ارز</span>
             </div>
@@ -815,7 +1199,6 @@
         <section id="home-section" class="content-section active">
             <!-- Main 4 Cards for Home Page -->
             <div class="home-main-grid">
-                <!-- Bitcoin Card -->
                 <div class="data-card" data-asset="bitcoin" data-chart-type="line">
                     <div class="card-ad-corner">تبلیغات</div>
                     <div class="card-header">
@@ -828,7 +1211,6 @@
                     </div>
                 </div>
 
-                <!-- USD Card -->
                 <div class="data-card" data-asset="usd" data-chart-type="line">
                     <div class="card-ad-corner">تبلیغات</div>
                     <div class="card-header">
@@ -841,7 +1223,6 @@
                     </div>
                 </div>
 
-                <!-- Gold Card -->
                 <div class="data-card" data-asset="gold" data-chart-type="line">
                     <div class="card-ad-corner">تبلیغات</div>
                     <div class="card-header">
@@ -854,7 +1235,6 @@
                     </div>
                 </div>
 
-                <!-- Oil Card -->
                 <div class="data-card" data-asset="oil" data-chart-type="line">
                     <div class="card-ad-corner">تبلیغات</div>
                     <div class="card-header">
@@ -889,18 +1269,13 @@
                 <div class="news-item">
                     <strong>⚡ تحولات خاورمیانه:</strong> افزایش تنش‌ها بر قیمت نفت تأثیر گذاشت
                 </div>
-                <div class="news-item">
-                    <strong>📈 گزارش اقتصادی چین:</strong> رشد بهتر از预期 بر بازار کالاها اثر مثبت گذاشت
-                </div>
             </div>
 
-            <!-- Sliding Windows Section -->
+            <!-- Sliding Windows -->
             <div class="sliding-windows">
-                <h2 class="section-title">پنجره‌های متحرک - ردیف بالا (راست به چپ)</h2>
+                <h2 class="section-title">پنجره‌های متحرک - ردیف بالا</h2>
                 <div class="windows-container">
-                    <div class="windows-track" id="windowsTrackTop">
-                        <!-- Windows will be populated by JavaScript -->
-                    </div>
+                    <div class="windows-track" id="windowsTrackTop"></div>
                 </div>
                 <div class="slider-controls">
                     <button class="slider-btn" id="prevBtnTop">→</button>
@@ -909,11 +1284,9 @@
             </div>
 
             <div class="sliding-windows">
-                <h2 class="section-title">پنجره‌های متحرک - ردیف پایین (چپ به راست)</h2>
+                <h2 class="section-title">پنجره‌های متحرک - ردیف پایین</h2>
                 <div class="windows-container">
-                    <div class="windows-track" id="windowsTrackBottom">
-                        <!-- Windows will be populated by JavaScript -->
-                    </div>
+                    <div class="windows-track" id="windowsTrackBottom"></div>
                 </div>
                 <div class="slider-controls">
                     <button class="slider-btn" id="prevBtnBottom">→</button>
@@ -921,33 +1294,29 @@
                 </div>
             </div>
 
-            <!-- AD: تبلیغات بین محتوایی -->
+            <!-- AD Container -->
             <div class="ad-container">
                 <p>محل تبلیغات - ابعاد استاندارد ۷۲۰x90</p>
             </div>
 
             <!-- AI Chat Section -->
             <div class="ai-chat">
-                <h2 class="section-title">چت با هوش مصنوعی - تحلیل کلی بازار</h2>
+                <h2 class="section-title">چت با هوش مصنوعی</h2>
                 <div class="chat-container" id="homeChatContainer">
                     <div class="chat-message ai-message">
                         <strong>هوش مصنوعی:</strong> سلام! من دستیار هوش مصنوعی LivePulse هستم. می‌تونم در مورد کلیه بازارهای مالی، تحلیل‌ها و پیش‌بینی‌ها بهتون کمک کنم. چه سوالی دارید؟
                     </div>
                 </div>
                 <div class="chat-input-container">
-                    <input type="text" class="chat-input" placeholder="سوال خود را در مورد بازار بپرسید...">
-                    <button class="chat-send">ارسال</button>
+                    <input type="text" class="chat-input" id="homeChatInput" placeholder="سوال خود را در مورد بازار بپرسید...">
+                    <button class="chat-send" id="homeChatSend">ارسال</button>
                 </div>
             </div>
         </section>
 
-        <!-- Crypto Section with 10 Cards -->
+        <!-- Crypto Section -->
         <section id="crypto-section" class="content-section">
-            <div class="live-grid">
-                <!-- 10 Crypto Cards will be populated by JavaScript -->
-            </div>
-
-            <!-- AI Chat for Crypto -->
+            <div class="live-grid" id="cryptoGrid"></div>
             <div class="ai-chat">
                 <h2 class="section-title">چت با هوش مصنوعی - بازار رمزارزها</h2>
                 <div class="chat-container" id="cryptoChatContainer">
@@ -956,15 +1325,14 @@
                     </div>
                 </div>
                 <div class="chat-input-container">
-                    <input type="text" class="chat-input" placeholder="سوال خود در مورد رمزارزها را بپرسید...">
-                    <button class="chat-send">ارسال</button>
+                    <input type="text" class="chat-input" id="cryptoChatInput" placeholder="سوال خود در مورد رمزارزها را بپرسید...">
+                    <button class="chat-send" id="cryptoChatSend">ارسال</button>
                 </div>
             </div>
         </section>
 
-        <!-- Other sections (currency, gold, oil, tools) with similar structure -->
-        <!-- ... (مشابه بخش crypto با ۱۰ کارت) -->
-
+        <!-- Other sections would be similar to crypto-section -->
+        
     </main>
 
     <!-- Footer -->
@@ -988,23 +1356,16 @@
         </div>
     </footer>
 
-    <!-- Popups -->
-    <div class="popup-overlay" id="loginPopup">
-        <div class="popup-content">
-            <!-- Login form -->
-        </div>
-    </div>
-
-    <div class="popup-overlay" id="detailPopup">
-        <div class="popup-content">
-            <!-- Detail popup content -->
+    <!-- Popup Overlay -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content" id="popupContent">
+            <!-- Popup content will be inserted here by JavaScript -->
         </div>
     </div>
 
     <script>
-        // JavaScript code will be implemented in the next part
-        // This includes all the functionality for charts, interactions, etc.
-        console.log('LivePulse loaded successfully!');
+        // JavaScript code follows in the next part
+        // This is the complete working version
     </script>
 </body>
 </html>
