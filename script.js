@@ -1,86 +1,84 @@
-// app.js - LivePulse Financial System - COMPLETE WORKING VERSION
-class LivePulseApp {
+// app.js
+/**
+ * سامانه مالی هوشمند - اسکریپت اصلی
+ * مدیریت حالت‌های مختلف، تعاملات کاربر و اتصال به API
+ */
+
+class FinancialApp {
     constructor() {
-        this.currentMode = 'market';
-        this.currentSection = 'home-section';
+        this.currentMode = 'market'; // 'market' or 'tools'
+        this.currentSection = 'crypto-section';
         this.marketData = {};
         this.userPreferences = {};
         this.chatHistories = {};
-        this.adRotationIntervals = new Map();
-        this.hoverTimeouts = new Map();
-        this.charts = new Map();
         
-        this.cryptoAssets = [
-            'بیت‌کوین', 'اتریوم', 'تتر', 'بایننس کوین', 'کاردانو',
-            'سولانا', 'ریپل', 'پولکادات', 'دوج کوین', 'شیبا اینو'
-        ];
-        
-        this.currencyAssets = [
-            'دلار آمریکا', 'یورو', 'پوند', 'ین ژاپن', 'فرانک سوئیس',
-            'دلار کانادا', 'دلار استرالیا', 'یوان چین', 'روبل روسیه', 'لیر ترکیه'
-        ];
-        
-        this.goldAssets = [
-            'طلای ۱۸ عیار', 'سکه امامی', 'سکه بهار آزادی', 'نیم‌سکه', 'ربع‌سکه',
-            'سکه گرمی', 'طلای جهانی', 'مثقال طلا', 'طلای دست دوم', 'طلای آب‌شده'
-        ];
-        
-        this.oilAssets = [
-            'نفت برنت', 'نفت وست تگزاس', 'بنزین آزاد', 'بنزین سهمیه‌ای', 'گازوئیل',
-            'نفت اوپک', 'نفت ایران', 'نفت خام', 'نفت سنگین', 'نفت پالایشگاه'
-        ];
-
         this.init();
     }
 
+    /**
+     * مقداردهی اولیه برنامه
+     */
     init() {
         this.loadUserPreferences();
         this.setupEventListeners();
-        this.initializeCharts();
         this.loadMarketData();
-        this.initializeSlidingWindows();
-        this.setupAdSystem();
-        this.initializeAllChats();
-        this.populateMarketSections();
+        this.setupServiceWorker();
+        this.initializeChats();
         
-        console.log('✅ LivePulse سامانه مالی کاملاً راه‌اندازی شد');
+        console.log('💰 سامانه مالی هوشمند راه‌اندازی شد');
     }
 
+    /**
+     * بارگذاری تنظیمات کاربر از localStorage
+     */
     loadUserPreferences() {
-        const savedTheme = localStorage.getItem('livepulse_theme') || 'light';
-        const savedMode = localStorage.getItem('livepulse_mode') || 'market';
+        const savedTheme = localStorage.getItem('financialApp_theme') || 'light';
+        const savedMode = localStorage.getItem('financialApp_mode') || 'market';
         
         this.userPreferences = {
             theme: savedTheme,
-            mode: savedMode
+            mode: savedMode,
+            fontSize: localStorage.getItem('financialApp_fontSize') || 'normal'
         };
 
         this.applyUserPreferences();
     }
 
+    /**
+     * اعمال تنظیمات کاربر روی صفحه
+     */
     applyUserPreferences() {
+        // اعمال تم
         document.body.setAttribute('data-theme', this.userPreferences.theme);
         
+        // اعمال حالت اولیه
         if (this.userPreferences.mode === 'tools') {
             this.switchToToolsMode();
         } else {
             this.switchToMarketMode();
         }
+
+        // اعمال سایز فونت
+        document.documentElement.style.fontSize = this.getFontSizeValue(this.userPreferences.fontSize);
     }
 
+    /**
+     * تنظیم شنونده‌های رویداد
+     */
     setupEventListeners() {
         this.setupThemeToggle();
         this.setupModeToggle();
         this.setupHighlightInteractions();
-        this.setupCardInteractions();
+        this.setupDataCardInteractions();
         this.setupChatSystems();
         this.setupLoginSystem();
         this.setupSliderControls();
         this.setupResponsiveHandlers();
-        
-        console.log('✅ همه event listeners تنظیم شدند');
     }
 
+    /**
+     * مدیریت تغییر تم
+     */
     setupThemeToggle() {
         const themeToggle = document.getElementById('themeToggle');
         
@@ -90,33 +88,41 @@ class LivePulseApp {
                 this.switchTheme(theme);
             }
         });
+
+        // پشتیبانی از تغییر تم سیستم
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', (e) => {
+            if (!localStorage.getItem('financialApp_theme')) {
+                this.switchTheme(e.matches ? 'dark' : 'light');
+            }
+        });
     }
 
+    /**
+     * تغییر تم
+     */
     switchTheme(theme) {
         document.body.setAttribute('data-theme', theme);
         this.userPreferences.theme = theme;
-        localStorage.setItem('livepulse_theme', theme);
+        localStorage.setItem('financialApp_theme', theme);
+        
         this.showNotification(`تم ${theme === 'dark' ? 'تاریک' : 'روشن'} فعال شد`, 'success');
     }
 
+    /**
+     * مدیریت تغییر حالت بین بازار و ابزار
+     */
     setupModeToggle() {
         const modeToggleBtn = document.getElementById('modeToggleBtn');
         const logoBtn = document.getElementById('logoBtn');
 
         modeToggleBtn.addEventListener('click', () => this.toggleMode());
         logoBtn.addEventListener('click', () => this.handleLogoClick());
-        
-        // Tools menu items
-        document.querySelectorAll('.tools-list a').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const tool = e.target.getAttribute('data-tool');
-                this.switchToToolsMode();
-                this.switchSection(`${tool}-tool-section`);
-            });
-        });
     }
 
+    /**
+     * تغییر حالت بین بازار و ابزار
+     */
     toggleMode() {
         if (this.currentMode === 'market') {
             this.switchToToolsMode();
@@ -125,36 +131,60 @@ class LivePulseApp {
         }
     }
 
+    /**
+     * تغییر به حالت ابزار
+     */
     switchToToolsMode() {
         this.currentMode = 'tools';
         document.getElementById('modeToggleBtn').textContent = 'خانه';
+        
+        // نمایش هایلایت‌های ابزار
         document.getElementById('marketHighlights').classList.add('hidden');
         document.getElementById('toolHighlights').classList.remove('hidden');
+        
+        // فعال‌سازی اولین ابزار
         this.switchSection('gold-tool-section');
+        
         this.userPreferences.mode = 'tools';
-        localStorage.setItem('livepulse_mode', 'tools');
+        localStorage.setItem('financialApp_mode', 'tools');
+        
         this.showNotification('حالت ابزارهای محاسباتی فعال شد', 'info');
     }
 
+    /**
+     * تغییر به حالت بازار
+     */
     switchToMarketMode() {
         this.currentMode = 'market';
         document.getElementById('modeToggleBtn').textContent = 'ابزارها';
+        
+        // نمایش هایلایت‌های بازار
         document.getElementById('toolHighlights').classList.add('hidden');
         document.getElementById('marketHighlights').classList.remove('hidden');
-        this.switchSection('home-section');
+        
+        // فعال‌سازی اولین بخش بازار
+        this.switchSection('crypto-section');
+        
         this.userPreferences.mode = 'market';
-        localStorage.setItem('livepulse_mode', 'market');
+        localStorage.setItem('financialApp_mode', 'market');
+        
         this.showNotification('حالت تحلیل بازار فعال شد', 'info');
     }
 
+    /**
+     * مدیریت کلیک روی لوگو
+     */
     handleLogoClick() {
         if (this.currentMode === 'tools') {
             this.switchToMarketMode();
         } else {
-            this.switchSection('home-section');
+            this.switchSection('crypto-section');
         }
     }
 
+    /**
+     * مدیریت تعاملات هایلایت‌ها
+     */
     setupHighlightInteractions() {
         const highlights = document.querySelectorAll('.highlight-item');
         
@@ -163,106 +193,172 @@ class LivePulseApp {
                 const sectionId = highlight.getAttribute('data-section');
                 this.handleHighlightClick(highlight, sectionId);
             });
+
+            // افکت hover پیشرفته
+            highlight.addEventListener('mouseenter', (e) => {
+                this.createRippleEffect(e);
+            });
         });
-        
-        // Simulate market changes for highlights
-        setInterval(() => {
-            this.simulateMarketChanges();
-        }, 5000);
     }
 
+    /**
+     * مدیریت کلیک روی هایلایت
+     */
     handleHighlightClick(highlight, sectionId) {
+        // حذف حالت فعال از همه هایلایت‌های مرتبط
         const relatedHighlights = this.currentMode === 'market' ? 
             document.querySelectorAll('.highlight-item.market') : 
             document.querySelectorAll('.highlight-item.tool');
         
         relatedHighlights.forEach(h => h.classList.remove('active'));
+        
+        // فعال کردن هایلایت انتخاب شده
         highlight.classList.add('active');
+        
+        // تغییر بخش
         this.switchSection(sectionId);
+        
+        // ثبت تحلیل کاربر
+        this.trackUserBehavior('highlight_click', {
+            mode: this.currentMode,
+            section: sectionId
+        });
     }
 
+    /**
+     * تغییر بخش فعال
+     */
     switchSection(sectionId) {
+        // مخفی کردن همه بخش‌ها
         document.querySelectorAll('.content-section').forEach(section => {
             section.classList.remove('active');
         });
         
+        // نمایش بخش انتخاب شده
         const targetSection = document.getElementById(sectionId);
         if (targetSection) {
             targetSection.classList.add('active');
             this.currentSection = sectionId;
+            
+            // بارگذاری داده‌های مربوطه
             this.loadSectionData(sectionId);
         }
     }
 
-    setupCardInteractions() {
-        // Use event delegation for better performance
-        document.addEventListener('mouseenter', (e) => {
-            const card = e.target.closest('.data-card, .window-card');
-            if (card && !this.hoverTimeouts.has(card)) {
-                const timeoutId = setTimeout(() => {
-                    this.showCardDetailPopup(card);
-                }, 500);
-                this.hoverTimeouts.set(card, timeoutId);
+    /**
+     * بارگذاری داده‌های بخش
+     */
+    async loadSectionData(sectionId) {
+        try {
+            // نمایش حالت بارگذاری
+            this.showLoadingState(sectionId, true);
+            
+            let data;
+            
+            if (sectionId.includes('-tool-')) {
+                // بارگذاری داده‌های ابزار
+                data = await this.loadToolData(sectionId);
+            } else {
+                // بارگذاری داده‌های بازار
+                data = await this.loadMarketSectionData(sectionId);
             }
-        }, true);
-
-        document.addEventListener('mouseleave', (e) => {
-            const card = e.target.closest('.data-card, .window-card');
-            if (card && this.hoverTimeouts.has(card)) {
-                clearTimeout(this.hoverTimeouts.get(card));
-                this.hoverTimeouts.delete(card);
-            }
-        }, true);
-
-        document.addEventListener('click', (e) => {
-            const card = e.target.closest('.data-card, .window-card');
-            if (card) {
-                // Clear hover timeout if exists
-                if (this.hoverTimeouts.has(card)) {
-                    clearTimeout(this.hoverTimeouts.get(card));
-                    this.hoverTimeouts.delete(card);
-                }
-                this.showCardDetailPopup(card);
-            }
-        });
-
-        // Touch support
-        document.addEventListener('touchstart', (e) => {
-            const card = e.target.closest('.data-card, .window-card');
-            if (card) {
-                e.preventDefault();
-                this.showCardDetailPopup(card);
-            }
-        }, { passive: false });
+            
+            // به‌روزرسانی رابط کاربری
+            this.updateSectionUI(sectionId, data);
+            
+        } catch (error) {
+            console.error('خطا در بارگذاری داده‌ها:', error);
+            this.showError(sectionId, 'خطا در بارگذاری داده‌ها');
+        } finally {
+            this.showLoadingState(sectionId, false);
+        }
     }
 
+    /**
+     * مدیریت تعاملات کارت‌های داده
+     */
+    setupDataCardInteractions() {
+        const dataCards = document.querySelectorAll('.data-card, .window-card');
+        
+        dataCards.forEach(card => {
+            let hoverTimeout;
+            
+            // هاور برای اطلاعات تکمیلی
+            card.addEventListener('mouseenter', (e) => {
+                hoverTimeout = setTimeout(() => {
+                    this.showCardTooltip(card, e);
+                }, 800);
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                clearTimeout(hoverTimeout);
+                this.hideCardTooltip();
+            });
+            
+            // کلیک برای اطلاعات کامل
+            card.addEventListener('click', (e) => {
+                this.showCardDetailPopup(card);
+            });
+            
+            // لمس برای موبایل
+            card.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.showCardDetailPopup(card);
+            }, { passive: false });
+        });
+    }
+
+    /**
+     * نمایش تولتیپ کارت
+     */
+    showCardTooltip(card, event) {
+        // پیاده‌سازی تولتیپ پیشرفته
+        const tooltip = this.createTooltip(card, event);
+        document.body.appendChild(tooltip);
+    }
+
+    /**
+     * ایجاد تولتیپ
+     */
+    createTooltip(card, event) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'advanced-tooltip';
+        tooltip.innerHTML = `
+            <div class="tooltip-content">
+                <h4>اطلاعات تکمیلی</h4>
+                <p>برای مشاهده جزئیات کامل کلیک کنید</p>
+            </div>
+        `;
+        
+        const rect = card.getBoundingClientRect();
+        tooltip.style.position = 'fixed';
+        tooltip.style.top = `${rect.top - 10}px`;
+        tooltip.style.left = `${rect.left + rect.width / 2}px`;
+        tooltip.style.transform = 'translateX(-50%) translateY(-100%)';
+        
+        return tooltip;
+    }
+
+    /**
+     * نمایش پاپ‌آپ جزئیات کارت
+     */
     showCardDetailPopup(card) {
         const assetName = card.querySelector('.card-title')?.textContent || 'دارایی';
         const price = card.querySelector('.card-price')?.textContent || '---';
         const change = card.querySelector('.card-change')?.textContent || '---';
-        const isPositive = change.includes('+');
         
         const popupContent = `
             <div class="popup-detail">
                 <div class="detail-header">
                     <h3>${assetName}</h3>
                     <div class="price-display">${price}</div>
-                    <div class="change-display ${isPositive ? 'positive' : 'negative'}">${change}</div>
-                </div>
-                
-                <div class="ad-container">
-                    <p>تبلیغات - اینجا بنر تبلیغاتی نمایش داده می‌شود</p>
-                </div>
-                
-                <div class="chart-controls">
-                    <button class="chart-btn active" data-type="candlestick">کندل</button>
-                    <button class="chart-btn" data-type="line">خطی</button>
-                    <button class="chart-btn" data-type="bar">میله‌ای</button>
+                    <div class="change-display ${change.includes('+') ? 'positive' : 'negative'}">${change}</div>
                 </div>
                 
                 <div class="detail-content">
-                    <div class="chart-container-large">
-                        <canvas id="detailChart"></canvas>
+                    <div class="chart-placeholder">
+                        <p>📊 نمودار قیمت - به زودی</p>
+                        <small>این بخش با اتصال به API کامل خواهد شد</small>
                     </div>
                     
                     <div class="detail-stats">
@@ -278,577 +374,98 @@ class LivePulseApp {
                             <span>حجم معاملات:</span>
                             <strong>${this.formatNumber(Math.random() * 1000)}M</strong>
                         </div>
-                        <div class="stat-item">
-                            <span>تغییرات ۲۴h:</span>
-                            <strong class="${isPositive ? 'positive' : 'negative'}">${change}</strong>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="ai-analysis-popup">
-                    <h4>تحلیل هوش مصنوعی:</h4>
-                    <p>${this.generateAIAnalysis(assetName, isPositive)}</p>
+                <div class="detail-actions">
+                    <button class="btn-secondary" onclick="app.addToWatchlist('${assetName}')">
+                        💾 افزودن به دیده‌بان
+                    </button>
+                    <button class="btn-primary" onclick="app.shareAsset('${assetName}')">
+                        🔗 اشتراک‌گذاری
+                    </button>
                 </div>
             </div>
         `;
         
-        this.showPopup(`جزئیات ${assetName}`, popupContent, () => {
-            this.initializeDetailChart('detailChart', assetName);
-            this.setupChartControls();
-            this.startAdRotation('popupAd');
-        });
+        this.showPopup('جزئیات دارایی', popupContent);
     }
 
-    initializeCharts() {
-        // Home page line charts
-        this.createLineChart('bitcoinChart', '#10b981');
-        this.createLineChart('usdChart', '#ef4444');
-        this.createLineChart('goldChart', '#f59e0b');
-        this.createLineChart('oilChart', '#3b82f6');
-    }
-
-    createLineChart(canvasId, color) {
-        const ctx = document.getElementById(canvasId)?.getContext('2d');
-        if (!ctx) return;
-
-        const isPositive = Math.random() > 0.5;
-        const data = this.generateChartData(20, isPositive);
-        
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: 'Price',
-                    data: data.values,
-                    borderColor: color,
-                    backgroundColor: color + '20',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { display: false },
-                    y: { display: false }
-                },
-                interaction: { intersect: false }
-            }
-        });
-
-        this.charts.set(canvasId, chart);
-    }
-
-    createCandleChart(canvasId, assetName) {
-        const ctx = document.getElementById(canvasId)?.getContext('2d');
-        if (!ctx) return;
-
-        const data = this.generateCandleData(20);
-        
-        const chart = new Chart(ctx, {
-            type: 'candlestick',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: assetName,
-                    data: data.candles
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { display: false },
-                    y: { display: false }
-                }
-            }
-        });
-
-        this.charts.set(canvasId, chart);
-    }
-
-    initializeDetailChart(canvasId, assetName) {
-        const ctx = document.getElementById(canvasId)?.getContext('2d');
-        if (!ctx) return;
-
-        const data = this.generateCandleData(50);
-        
-        this.detailChart = new Chart(ctx, {
-            type: 'candlestick',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: assetName,
-                    data: data.candles
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const point = context.raw;
-                                return `O: ${point.o} H: ${point.h} L: ${point.l} C: ${point.c}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    setupChartControls() {
-        document.querySelectorAll('.chart-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                
-                if (this.detailChart) {
-                    const chartType = e.target.getAttribute('data-type');
-                    this.detailChart.config.type = chartType;
-                    this.detailChart.update();
-                }
-            });
-        });
-    }
-
-    generateChartData(count, isPositive) {
-        let value = 100;
-        const values = [];
-        const labels = [];
-        
-        for (let i = 0; i < count; i++) {
-            values.push(value);
-            labels.push('');
-            const change = (Math.random() - 0.4) * 4;
-            value += isPositive ? Math.abs(change) : -Math.abs(change);
-        }
-        
-        return { values, labels };
-    }
-
-    generateCandleData(count) {
-        const candles = [];
-        const labels = [];
-        let price = 100;
-        
-        for (let i = 0; i < count; i++) {
-            const open = price;
-            const change = (Math.random() - 0.5) * 8;
-            const close = price + change;
-            const high = Math.max(open, close) + Math.random() * 4;
-            const low = Math.min(open, close) - Math.random() * 4;
-            
-            candles.push({ o: open, h: high, l: low, c: close });
-            labels.push('');
-            price = close;
-        }
-        
-        return { candles, labels };
-    }
-
-    populateMarketSections() {
-        this.populateSection('crypto-section', this.cryptoAssets);
-        this.populateSection('currency-section', this.currencyAssets);
-        this.populateSection('gold-section', this.goldAssets);
-        this.populateSection('oil-section', this.oilAssets);
-    }
-
-    populateSection(sectionId, assets) {
-        const section = document.getElementById(sectionId);
-        if (!section) return;
-
-        const grid = section.querySelector('.live-grid');
-        if (!grid) return;
-
-        grid.innerHTML = '';
-        
-        assets.forEach((asset, index) => {
-            const isPositive = Math.random() > 0.5;
-            const change = (Math.random() * 5).toFixed(2);
-            const price = this.generateAssetPrice(asset);
-            
-            const card = document.createElement('div');
-            card.className = 'data-card';
-            card.setAttribute('data-asset', asset);
-            card.setAttribute('data-chart-type', 'candlestick');
-            card.innerHTML = `
-                <div class="card-ad-corner">تبلیغات</div>
-                <div class="card-header">
-                    <div class="card-title">${asset}</div>
-                </div>
-                <div class="card-price">${price}</div>
-                <div class="card-change ${isPositive ? 'positive' : 'negative'}">
-                    ${isPositive ? '+' : ''}${change}%
-                </div>
-                <div class="chart-container">
-                    <canvas id="${this.sanitizeId(asset)}Chart"></canvas>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-
-        // Initialize charts after a short delay
-        setTimeout(() => {
-            assets.forEach(asset => {
-                this.createCandleChart(`${this.sanitizeId(asset)}Chart`, asset);
-            });
-        }, 100);
-    }
-
-    initializeSlidingWindows() {
-        this.initializeWindowTrack('windowsTrackTop', this.cryptoAssets.slice(0, 6));
-        this.initializeWindowTrack('windowsTrackBottom', this.currencyAssets.slice(0, 6));
-    }
-
-    initializeWindowTrack(trackId, assets) {
-        const track = document.getElementById(trackId);
-        if (!track) return;
-
-        track.innerHTML = '';
-        
-        assets.forEach(asset => {
-            const isPositive = Math.random() > 0.5;
-            const change = (Math.random() * 5).toFixed(2);
-            const price = this.generateAssetPrice(asset);
-            
-            const card = document.createElement('div');
-            card.className = 'window-card';
-            card.innerHTML = `
-                <div class="card-ad-corner">تبلیغات</div>
-                <div class="card-header">
-                    <div class="card-title">${asset}</div>
-                </div>
-                <div class="card-price">${price}</div>
-                <div class="card-change ${isPositive ? 'positive' : 'negative'}">
-                    ${isPositive ? '+' : ''}${change}%
-                </div>
-                <div class="chart-container">
-                    <canvas id="sliding${this.sanitizeId(asset)}Chart"></canvas>
-                </div>
-            `;
-            track.appendChild(card);
-        });
-
-        // Initialize charts
-        setTimeout(() => {
-            assets.forEach(asset => {
-                this.createCandleChart(`sliding${this.sanitizeId(asset)}Chart`, asset);
-            });
-        }, 100);
-    }
-
-    setupSliderControls() {
-        this.setupSingleSlider('windowsTrackTop', 'prevBtnTop', 'nextBtnTop');
-        this.setupSingleSlider('windowsTrackBottom', 'prevBtnBottom', 'nextBtnBottom');
-    }
-
-    setupSingleSlider(trackId, prevBtnId, nextBtnId) {
-        const track = document.getElementById(trackId);
-        const prevBtn = document.getElementById(prevBtnId);
-        const nextBtn = document.getElementById(nextBtnId);
-        
-        if (!track || !prevBtn || !nextBtn) return;
-
-        let position = 0;
-        const cardWidth = 280 + 16; // width + gap
-
-        nextBtn.addEventListener('click', () => {
-            position = Math.max(position - cardWidth, -(track.scrollWidth - track.parentElement.offsetWidth));
-            track.style.transform = `translateX(${position}px)`;
-        });
-
-        prevBtn.addEventListener('click', () => {
-            position = Math.min(position + cardWidth, 0);
-            track.style.transform = `translateX(${position}px)`;
-        });
-    }
-
-    setupAdSystem() {
-        // Initialize ad rotation for all ad containers
-        document.querySelectorAll('.ad-container, .card-ad-corner').forEach(adContainer => {
-            this.startAdRotation(adContainer);
-        });
-    }
-
-    startAdRotation(container) {
-        // Clear existing interval
-        if (this.adRotationIntervals.has(container)) {
-            clearInterval(this.adRotationIntervals.get(container));
-        }
-
-        // Start new rotation every 30 seconds
-        const interval = setInterval(() => {
-            this.rotateAd(container);
-        }, 30000);
-
-        this.adRotationIntervals.set(container, interval);
-    }
-
-    rotateAd(container) {
-        const ads = [
-            'تبلیغات - محصولات مالی',
-            'تبلیغات - کارگزاری آنلاین', 
-            'تبلیغات - آموزش سرمایه‌گذاری',
-            'تبلیغات - صندوق‌های سرمایه‌گذاری',
-            'تبلیغات - بیمه‌های عمر',
-            'تبلیغات - مشاوره مالیاتی'
-        ];
-        
-        const randomAd = ads[Math.floor(Math.random() * ads.length)];
-        
-        if (container.classList.contains('card-ad-corner')) {
-            container.textContent = randomAd;
-        } else {
-            container.innerHTML = `<p>${randomAd}</p>`;
-        }
-    }
-
+    /**
+     * مدیریت سیستم چت
+     */
     setupChatSystems() {
         this.initializeAllChats();
         this.setupChatInputs();
     }
 
+    /**
+     * مقداردهی اولیه همه چت‌ها
+     */
     initializeAllChats() {
-        const chatSections = ['home', 'crypto', 'currency', 'gold', 'oil'];
+        const chatSections = [
+            'crypto', 'currency', 'gold', 'oil',
+            'gold-tool', 'diamond-tool', 'silver-tool', 
+            'pearl-tool', 'gem-tool', 'currency-tool'
+        ];
+        
         chatSections.forEach(section => {
             this.chatHistories[section] = JSON.parse(
                 localStorage.getItem(`chat_${section}`) || '[]'
             );
+            
+            // بارگذاری تاریخچه چت
             this.loadChatHistory(section);
         });
     }
 
+    /**
+     * تنظیم ورودی‌های چت
+     */
     setupChatInputs() {
-        const setupChat = (section) => {
-            const input = document.getElementById(`${section}ChatInput`);
-            const sendBtn = document.getElementById(`${section}ChatSend`);
-            const container = document.getElementById(`${section}ChatContainer`);
-
-            if (input && sendBtn && container) {
-                const sendMessage = () => {
-                    const message = input.value.trim();
-                    if (!message) return;
-
-                    this.addChatMessage(section, 'user', message, container);
-                    input.value = '';
-
-                    setTimeout(() => {
-                        const response = this.generateAIResponse(section, message);
-                        this.addChatMessage(section, 'ai', response, container);
-                    }, 1000 + Math.random() * 2000);
-                };
-
-                sendBtn.addEventListener('click', sendMessage);
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage();
-                    }
-                });
-            }
-        };
-
-        ['home', 'crypto', 'currency', 'gold', 'oil'].forEach(setupChat);
-    }
-
-    addChatMessage(section, sender, message, container) {
-        if (!container) {
-            container = document.getElementById(`${section}ChatContainer`);
-            if (!container) return;
-        }
-
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${sender}-message`;
-        messageDiv.innerHTML = `<strong>${sender === 'ai' ? 'هوش مصنوعی' : 'شما'}:</strong> ${message}`;
-        
-        container.appendChild(messageDiv);
-        container.scrollTop = container.scrollHeight;
-
-        this.chatHistories[section].push({ sender, message, timestamp: new Date().toISOString() });
-        localStorage.setItem(`chat_${section}`, JSON.stringify(this.chatHistories[section]));
-    }
-
-    loadChatHistory(section) {
-        const container = document.getElementById(`${section}ChatContainer`);
-        if (!container) return;
-
-        this.chatHistories[section].forEach(msg => {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${msg.sender}-message`;
-            messageDiv.innerHTML = `<strong>${msg.sender === 'ai' ? 'هوش مصنوعی' : 'شما'}:</strong> ${msg.message}`;
-            container.appendChild(messageDiv);
-        });
-        
-        container.scrollTop = container.scrollHeight;
-    }
-
-    setupLoginSystem() {
-        const loginBtn = document.getElementById('loginBtn');
-        
-        loginBtn.addEventListener('click', () => {
-            this.showPopup('ورود به سیستم', `
-                <form class="login-form" id="loginForm">
-                    <div class="form-group">
-                        <label class="form-label">نام کاربری یا ایمیل</label>
-                        <input type="text" class="form-input" placeholder="username@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">رمز عبور</label>
-                        <input type="password" class="form-input" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="form-submit">ورود</button>
-                    <div class="subscription-link">
-                        <a href="#">خرید اشتراک</a>
-                    </div>
-                </form>
-            `, () => {
-                document.getElementById('loginForm').addEventListener('submit', (e) => {
+        document.querySelectorAll('.chat-input-container').forEach(container => {
+            const input = container.querySelector('.chat-input');
+            const sendBtn = container.querySelector('.chat-send');
+            const chatContainer = container.previousElementSibling;
+            
+            const section = this.getChatSectionFromContainer(container);
+            
+            sendBtn.addEventListener('click', () => {
+                this.handleChatSend(section, input, chatContainer);
+            });
+            
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    this.showNotification('ورود موفقیت‌آمیز بود!', 'success');
-                    this.closePopup();
-                });
+                    this.handleChatSend(section, input, chatContainer);
+                }
             });
         });
     }
 
-    setupResponsiveHandlers() {
-        window.addEventListener('resize', this.debounce(() => {
-            this.handleResize();
-        }, 250));
-    }
-
-    handleResize() {
-        // Update chart sizes on resize
-        this.charts.forEach(chart => {
-            chart.resize();
-        });
-        if (this.detailChart) {
-            this.detailChart.resize();
-        }
-    }
-
-    showPopup(title, content, onOpen = null) {
-        const popupOverlay = document.getElementById('popupOverlay');
-        const popupContent = document.getElementById('popupContent');
+    /**
+     * مدیریت ارسال پیام چت
+     */
+    async handleChatSend(section, input, chatContainer) {
+        const message = input.value.trim();
+        if (!message) return;
         
-        if (!popupOverlay || !popupContent) return;
-
-        popupContent.innerHTML = `
-            <div class="popup-header">
-                <h3 class="popup-title">${title}</h3>
-                <button class="popup-close" id="popupClose">×</button>
-            </div>
-            <div class="popup-body">
-                ${content}
-            </div>
-        `;
-
-        popupOverlay.style.display = 'flex';
-
-        // Setup close button
-        document.getElementById('popupClose').addEventListener('click', () => {
-            this.closePopup();
-        });
-
-        // Close on background click
-        popupOverlay.addEventListener('click', (e) => {
-            if (e.target === popupOverlay) {
-                this.closePopup();
-            }
-        });
-
-        // Close on ESC key
-        const escHandler = (e) => {
-            if (e.key === 'Escape') {
-                this.closePopup();
-                document.removeEventListener('keydown', escHandler);
-            }
-        };
-        document.addEventListener('keydown', escHandler);
-
-        if (onOpen) onOpen();
-    }
-
-    closePopup() {
-        const popupOverlay = document.getElementById('popupOverlay');
-        if (popupOverlay) {
-            popupOverlay.style.display = 'none';
-            
-            // Clear detail chart
-            if (this.detailChart) {
-                this.detailChart.destroy();
-                this.detailChart = null;
-            }
-        }
-    }
-
-    // Utility methods
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.textContent = message;
+        // افزودن پیام کاربر
+        this.addChatMessage(section, 'user', message, chatContainer);
+        input.value = '';
         
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 4000);
+        // شبیه‌سازی پاسخ هوش مصنوعی
+        setTimeout(async () => {
+            const response = await this.generateAIResponse(section, message);
+            this.addChatMessage(section, 'ai', response, chatContainer);
+        }, 1000 + Math.random() * 2000);
     }
 
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-
-    formatNumber(num) {
-        return new Intl.NumberFormat('fa-IR').format(num);
-    }
-
-    generateRandomPrice(basePrice, higher = true) {
-        const base = parseFloat(basePrice.replace(/[^\d.]/g, ''));
-        const variation = higher ? 
-            base * (1 + Math.random() * 0.1) : 
-            base * (1 - Math.random() * 0.1);
-        
-        return this.formatNumber(Math.round(variation));
-    }
-
-    generateAssetPrice(asset) {
-        const prices = {
-            'بیت‌کوین': '$' + this.formatNumber(45000 + Math.random() * 10000),
-            'اتریوم': '$' + this.formatNumber(2000 + Math.random() * 1000),
-            'دلار آمریکا': this.formatNumber(50000 + Math.random() * 10000) + ' تومان',
-            'طلای جهانی': '$' + this.formatNumber(1800 + Math.random() * 200),
-            'نفت برنت': '$' + (80 + Math.random() * 10).toFixed(2)
-        };
-        
-        return prices[asset] || '$' + this.formatNumber(100 + Math.random() * 100);
-    }
-
-    sanitizeId(str) {
-        return str.replace(/\s+/g, '').replace(/[^\w]/g, '');
-    }
-
-    generateAIResponse(section, userMessage) {
+    /**
+     * تولید پاسخ هوش مصنوعی
+     */
+    async generateAIResponse(section, userMessage) {
+        // در نسخه واقعی به API هوش مصنوعی متصل می‌شود
         const responses = {
             'crypto': [
                 "تحلیل فعلی بازار رمزارزها نشان‌دهنده روند صعودی ملایم است.",
@@ -865,11 +482,6 @@ class LivePulseApp {
                 "پیش‌بینی می‌شود طلا به ۲,۰۲۰ دلار برسد.",
                 "سکه امامی ممکن است نوسانات فصلی را تجربه کند."
             ],
-            'oil': [
-                "قیمت نفت تحت تأثیر تحولات خاورمیانه در نوسان است.",
-                "پیش‌بینی می‌شود نفت در محدوده ۸۰-۸۵ دلار تثبیت شود.",
-                "تولید اوپک بر قیمت نفت تأثیر مستقیم دارد."
-            ],
             'default': [
                 "سوال خوبی پرسیدید! برای پاسخ دقیق‌تر به داده‌های بیشتری نیاز دارم.",
                 "این موضوع نیاز به تحلیل تخصصی دارد.",
@@ -877,54 +489,339 @@ class LivePulseApp {
             ]
         };
         
-        const sectionKey = responses[section] ? section : 'default';
-        const availableResponses = responses[sectionKey];
+        const sectionKey = section.includes('-tool') ? 'tools' : section.split('-')[0];
+        const availableResponses = responses[sectionKey] || responses.default;
         
         return availableResponses[Math.floor(Math.random() * availableResponses.length)];
     }
 
-    generateAIAnalysis(assetName, isPositive) {
-        const analyses = {
-            'بیت‌کوین': 'بیت‌کوین در مسیر صعودی قرار دارد و انتظار می‌رود به ۵۰,۰۰۰ دلار برسد.',
-            'دلار آمریکا': 'نرخ دلار تحت تأثیر سیاست‌های بانک مرکزی در نوسان است.',
-            'طلای جهانی': 'طلای جهانی به عنوان پناهگاه امن در شرایط تورمی جذاب است.',
-            'نفت برنت': 'قیمت نفت تحت تأثیر تولید اوپک و تقاضای جهانی است.'
-        };
+    /**
+     * افزودن پیام به چت
+     */
+    addChatMessage(section, sender, message, container) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${sender}-message`;
+        messageDiv.innerHTML = `<strong>${sender === 'ai' ? 'هوش مصنوعی' : 'شما'}:</strong> ${message}`;
         
-        return analyses[assetName] || 
-               `این دارایی در مسیر ${isPositive ? 'صعودی' : 'نزولی'} قرار دارد و ${isPositive ? 'انتظار رشد' : 'نیاز به احتیاط'} دارد.`;
+        container.appendChild(messageDiv);
+        container.scrollTop = container.scrollHeight;
+        
+        // ذخیره در تاریخچه
+        this.chatHistories[section].push({ sender, message, timestamp: new Date().toISOString() });
+        localStorage.setItem(`chat_${section}`, JSON.stringify(this.chatHistories[section]));
     }
 
-    simulateMarketChanges() {
-        const marketHighlights = document.querySelectorAll('.highlight-item.market');
-        marketHighlights.forEach(highlight => {
-            const isPositive = Math.random() > 0.5;
-            highlight.classList.toggle('positive', isPositive);
-            highlight.classList.toggle('negative', !isPositive);
+    /**
+     * مدیریت سیستم ورود
+     */
+    setupLoginSystem() {
+        const loginBtn = document.getElementById('loginBtn');
+        const loginPopup = document.getElementById('loginPopup');
+        const loginClose = document.getElementById('loginClose');
+        const loginForm = document.querySelector('.login-form');
+        
+        loginBtn.addEventListener('click', () => this.showLoginPopup());
+        loginClose.addEventListener('click', () => this.hideLoginPopup());
+        
+        loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        
+        // بستن پاپ‌آپ با کلیک خارج
+        loginPopup.addEventListener('click', (e) => {
+            if (e.target === loginPopup) this.hideLoginPopup();
         });
     }
 
-    loadSectionData(sectionId) {
-        console.log(`📊 Loading data for section: ${sectionId}`);
+    /**
+     * نمایش پاپ‌آپ ورود
+     */
+    showLoginPopup() {
+        document.getElementById('loginPopup').style.display = 'flex';
     }
 
-    loadMarketData() {
+    /**
+     * مدیریت فرم ورود
+     */
+    async handleLogin(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(event.target);
+        const username = formData.get('username');
+        const password = formData.get('password');
+        
+        try {
+            // شبیه‌سازی احراز هویت
+            await this.authenticateUser(username, password);
+            this.showNotification('ورود موفقیت‌آمیز بود!', 'success');
+            this.hideLoginPopup();
+            
+        } catch (error) {
+            this.showNotification('خطا در ورود. لطفاً مجدداً تلاش کنید.', 'error');
+        }
+    }
+
+    /**
+     * مدیریت اسلایدرها
+     */
+    setupSliderControls() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const windowsTrack = document.getElementById('windowsTrack');
+        
+        if (prevBtn && nextBtn && windowsTrack) {
+            let currentPosition = 0;
+            
+            nextBtn.addEventListener('click', () => {
+                const cardWidth = document.querySelector('.window-card').offsetWidth + 16;
+                currentPosition = Math.max(currentPosition - cardWidth, 
+                    -(windowsTrack.scrollWidth - windowsTrack.parentElement.offsetWidth));
+                windowsTrack.style.transform = `translateX(${currentPosition}px)`;
+            });
+            
+            prevBtn.addEventListener('click', () => {
+                const cardWidth = document.querySelector('.window-card').offsetWidth + 16;
+                currentPosition = Math.min(currentPosition + cardWidth, 0);
+                windowsTrack.style.transform = `translateX(${currentPosition}px)`;
+            });
+        }
+    }
+
+    /**
+     * مدیریت ریسپانسیو
+     */
+    setupResponsiveHandlers() {
+        window.addEventListener('resize', this.debounce(() => {
+            this.handleResize();
+        }, 250));
+        
+        // تشخیص دستگاه تچ
+        this.setupTouchHandlers();
+    }
+
+    /**
+     * بارگذاری داده‌های بازار
+     */
+    async loadMarketData() {
+        try {
+            // شبیه‌سازی بارگذاری داده‌های واقعی
+            this.marketData = {
+                crypto: await this.fetchCryptoData(),
+                currency: await this.fetchCurrencyData(),
+                gold: await this.fetchGoldData(),
+                oil: await this.fetchOilData()
+            };
+            
+            this.updateAllMarketDisplays();
+            
+        } catch (error) {
+            console.error('خطا در بارگذاری داده‌های بازار:', error);
+        }
+    }
+
+    /**
+     * شبیه‌سازی داده‌های رمزارز
+     */
+    async fetchCryptoData() {
+        return {
+            bitcoin: { price: 45280, change: 2.45 },
+            ethereum: { price: 2450, change: 3.21 },
+            tether: { price: 1.00, change: 0.01 }
+        };
+    }
+
+    /**
+     * شبیه‌سازی داده‌های ارز
+     */
+    async fetchCurrencyData() {
+        return {
+            usd: { price: 58420, change: -0.85 },
+            eur: { price: 62180, change: 0.92 },
+            aed: { price: 15900, change: -0.45 }
+        };
+    }
+
+    /**
+     * utility functions
+     */
+    
+    /**
+     * نمایش نوتیفیکیشن
+     */
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">${this.getNotificationIcon(type)}</span>
+                <span class="notification-message">${message}</span>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // خودکار پاک شود
         setTimeout(() => {
-            this.showNotification('داده‌های بازار به‌روز شد', 'success');
-        }, 2000);
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    /**
+     * نمایش پاپ‌آپ
+     */
+    showPopup(title, content) {
+        const popup = document.createElement('div');
+        popup.className = 'popup-overlay';
+        popup.innerHTML = `
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h3 class="popup-title">${title}</h3>
+                    <button class="popup-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                </div>
+                <div class="popup-body">
+                    ${content}
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        // بستن با ESC
+        const closeHandler = (e) => {
+            if (e.key === 'Escape') {
+                popup.remove();
+                document.removeEventListener('keydown', closeHandler);
+            }
+        };
+        document.addEventListener('keydown', closeHandler);
+    }
+
+    /**
+     * ایجاد افکت ریپل
+     */
+    createRippleEffect(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement('span');
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+        
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+        circle.classList.add('ripple');
+        
+        const ripple = button.getElementsByClassName('ripple')[0];
+        if (ripple) {
+            ripple.remove();
+        }
+        
+        button.appendChild(circle);
+    }
+
+    /**
+     * تابع کمکی debounce
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    /**
+     * فرمت اعداد
+     */
+    formatNumber(num) {
+        return new Intl.NumberFormat('fa-IR').format(num);
+    }
+
+    /**
+     * تولید قیمت تصادفی
+     */
+    generateRandomPrice(basePrice, higher = true) {
+        const base = parseFloat(basePrice.replace(/[^\d.]/g, ''));
+        const variation = higher ? 
+            base * (1 + Math.random() * 0.1) : 
+            base * (1 - Math.random() * 0.1);
+        
+        return this.formatNumber(Math.round(variation));
+    }
+
+    /**
+     * راه‌اندازی Service Worker
+     */
+    setupServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('Service Worker ثبت شد:', registration);
+                })
+                .catch(error => {
+                    console.log('خطا در ثبت Service Worker:', error);
+                });
+        }
+    }
+
+    /**
+     * ردیابی رفتار کاربر
+     */
+    trackUserBehavior(action, data) {
+        // در نسخه واقعی به analytics متصل می‌شود
+        console.log('User Behavior:', { action, data, timestamp: new Date().toISOString() });
+    }
+
+    /**
+     * دریافت سایز فونت
+     */
+    getFontSizeValue(size) {
+        const sizes = {
+            'small': '14px',
+            'normal': '16px',
+            'large': '18px',
+            'x-large': '20px'
+        };
+        return sizes[size] || sizes.normal;
+    }
+
+    /**
+     * دریافت آیکون نوتیفیکیشن
+     */
+    getNotificationIcon(type) {
+        const icons = {
+            'success': '✅',
+            'error': '❌',
+            'warning': '⚠️',
+            'info': 'ℹ️'
+        };
+        return icons[type] || icons.info;
+    }
+
+    /**
+     * دریافت بخش چت از container
+     */
+    getChatSectionFromContainer(container) {
+        const chatSection = container.closest('.ai-chat');
+        return chatSection ? chatSection.id.replace('ChatContainer', '') : 'general';
     }
 }
 
-// Initialize the application when DOM is ready
+// راه‌اندازی برنامه وقتی DOM آماده است
 document.addEventListener('DOMContentLoaded', () => {
-    window.livePulseApp = new LivePulseApp();
+    window.app = new FinancialApp();
 });
 
-// Global error handling
+// مدیریت خطاهای全局
 window.addEventListener('error', (event) => {
     console.error('خطای全局:', event.error);
 });
 
+// مدیریت rejection promise
 window.addEventListener('unhandledrejection', (event) => {
     console.error('Promise rejection:', event.reason);
 });
