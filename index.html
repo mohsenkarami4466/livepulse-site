@@ -1,77 +1,1415 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LivePulse - بازار زنده و تحلیل هوش مصنوعی</title>
-    <link rel="stylesheet" href="style.css">
+    <title>سامانه مالی هوشمند - تحلیل بازارهای جهانی</title>
+    <meta name="description" content="سامانه جامع تحلیل بازارهای مالی، ارز، طلا، رمزارز و نفت با هوش مصنوعی">
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <style>
+        /* CSS Variables for Theme */
+        :root {
+            /* Light Theme */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-teal: #14b8a6;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            
+            /* Tool Highlight Colors */
+            --gold-color: #FFD700;
+            --diamond-color: #B9F2FF;
+            --silver-color: #C0C0C0;
+            --pearl-color: #F8F8FF;
+            --gem-color: #8B4513;
+            --currency-color: #3B82F6;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-blue: #60a5fa;
+            --accent-green: #34d399;
+            --accent-red: #f87171;
+            --accent-teal: #2dd4bf;
+            --glass-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            
+            /* Tool Highlight Colors - Dark Mode */
+            --gold-color: #FFC400;
+            --diamond-color: #99E6FF;
+            --silver-color: #A0A0A0;
+            --pearl-color: #E8E8E8;
+            --gem-color: #6B3410;
+            --currency-color: #60A5FA;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        /* Glass Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        /* Tools/Home Toggle Button */
+        .mode-toggle-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .mode-toggle-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-radius: 25px;
+            padding: 0.25rem;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid var(--glass-border);
+        }
+
+        .theme-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .theme-slider {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 50%;
+            height: calc(100% - 0.5rem);
+            background: var(--accent-blue);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        [data-theme="dark"] .theme-slider {
+            right: 50%;
+        }
+
+        /* Login Button */
+        .login-btn {
+            background: transparent;
+            border: 2px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Highlights Section */
+        .highlights {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .highlight-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow);
+        }
+
+        /* Market Highlight Colors (Dynamic) */
+        .highlight-item.market.positive {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .highlight-item.market.negative {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        /* Tool Highlight Colors (Fixed) */
+        .highlight-item.tool[data-tool="gold"] {
+            background: var(--gold-color);
+            color: var(--text-primary);
+        }
+
+        .highlight-item.tool[data-tool="diamond"] {
+            background: var(--diamond-color);
+            color: var(--text-primary);
+        }
+
+        .highlight-item.tool[data-tool="silver"] {
+            background: var(--silver-color);
+            color: var(--text-primary);
+        }
+
+        .highlight-item.tool[data-tool="pearl"] {
+            background: var(--pearl-color);
+            color: var(--text-primary);
+        }
+
+        .highlight-item.tool[data-tool="gem"] {
+            background: var(--gem-color);
+            color: white;
+        }
+
+        .highlight-item.tool[data-tool="currency"] {
+            background: var(--currency-color);
+            color: white;
+        }
+
+        .highlight-item.active {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .highlight-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Live Data Grid */
+        .live-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .data-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-green);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .data-card.negative::before {
+            background: var(--accent-red);
+        }
+
+        .data-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .card-change {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .positive {
+            color: var(--accent-green);
+        }
+
+        .negative {
+            color: var(--accent-red);
+        }
+
+        /* AI Analysis Section */
+        .ai-analysis {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '🤖';
+            font-size: 1.1rem;
+        }
+
+        .analysis-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Tool Calculator Section */
+        .tool-calculator {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .calculator-placeholder {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 2rem 0;
+        }
+
+        /* Sliding Windows */
+        .sliding-windows {
+            margin-bottom: 3rem;
+        }
+
+        .windows-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .windows-track {
+            display: flex;
+            gap: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .window-card {
+            min-width: 280px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .window-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .slider-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .slider-btn:hover {
+            background: var(--accent-teal);
+            transform: scale(1.1);
+        }
+
+        /* AI Chat */
+        .ai-chat {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+        }
+
+        .chat-container {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .chat-send {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            background: var(--accent-teal);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Popup Overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .popup-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .popup-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Login Form */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .form-submit {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .form-submit:hover {
+            background: var(--accent-teal);
+        }
+
+        .subscription-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .subscription-link a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .nav-right {
+                gap: 1rem;
+            }
+
+            .mode-toggle-btn, .login-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+                margin-top: 70px;
+            }
+
+            .highlights {
+                gap: 1rem;
+            }
+
+            .highlight-item {
+                width: 80px;
+                height: 80px;
+                font-size: 0.9rem;
+            }
+
+            .live-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.5rem 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .nav-right {
+                gap: 0.5rem;
+            }
+
+            .highlight-item {
+                width: 70px;
+                height: 70px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- هدر اصلی -->
+    <!-- Glass Header -->
     <header class="header">
-        <div class="container">
-            <h1 class="logo">📊 LivePulse</h1>
-            <p class="tagline">داده‌های زنده بازار و تحلیل پیشرفته AI</p>
+        <div class="header-container">
+            <!-- Logo - Click to return to home -->
+            <a class="logo" id="logoBtn">
+                <div class="logo-icon">F</div>
+                سامانه مالی
+            </a>
+
+            <!-- Right Navigation -->
+            <div class="nav-right">
+                <!-- Tools/Home Toggle Button -->
+                <button class="mode-toggle-btn" id="modeToggleBtn">ابزارها</button>
+
+                <!-- Theme Toggle -->
+                <div class="theme-toggle" id="themeToggle">
+                    <button class="theme-btn" data-theme="light">☀️</button>
+                    <button class="theme-btn" data-theme="dark">🌙</button>
+                    <div class="theme-slider"></div>
+                </div>
+
+                <!-- Login Button -->
+                <button class="login-btn" id="loginBtn">ورود</button>
+            </div>
         </div>
     </header>
 
-    <!-- محتوای اصلی -->
-    <main class="main">
-        <div class="container">
-            <!-- بخش داده‌های بازار -->
-            <section class="market-section">
-                <h2>📈 داده‌های زنده بازار</h2>
-                <div class="cards-container">
-                    <div class="card">
-                        <h3>بیت‌کوین (BTC)</h3>
-                        <div class="price" id="btc-price">$۴۵,۲۳۴.۵۶</div>
-                        <div class="change positive">+۲.۳۴٪</div>
-                    </div>
-                    <div class="card">
-                        <h3>اتریوم (ETH)</h3>
-                        <div class="price" id="eth-price">$۳,۱۲۳.۴۵</div>
-                        <div class="change positive">+۱.۸۹٪</div>
-                    </div>
-                    <div class="card">
-                        <h3>طلا</h3>
-                        <div class="price" id="gold-price">$۱,۹۸۷.۶۵</div>
-                        <div class="change negative">-۰.۴۵٪</div>
-                    </div>
-                </div>
-            </section>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Market Mode Highlights -->
+        <section class="highlights" id="marketHighlights">
+            <!-- HIGHLIGHT: رمزارز -->
+            <div class="highlight-item market active" data-category="crypto" data-section="crypto-section">
+                <span class="highlight-text">رمزارز</span>
+            </div>
+            <!-- HIGHLIGHT: ارز -->
+            <div class="highlight-item market" data-category="currency" data-section="currency-section">
+                <span class="highlight-text">ارز</span>
+            </div>
+            <!-- HIGHLIGHT: طلا -->
+            <div class="highlight-item market" data-category="gold" data-section="gold-section">
+                <span class="highlight-text">طلا</span>
+            </div>
+            <!-- HIGHLIGHT: نفت -->
+            <div class="highlight-item market" data-category="oil" data-section="oil-section">
+                <span class="highlight-text">نفت</span>
+            </div>
+        </section>
 
-            <!-- بخش تحلیل AI -->
-            <section class="ai-section">
-                <h2>🤖 تحلیل هوش مصنوعی</h2>
-                <div class="analysis-card">
-                    <div class="analysis-result">
-                        <h3>پیش‌بینی بازار</h3>
-                        <p class="sentiment positive">📊 sentiment مثبت</p>
-                        <p class="analysis-text">تحلیل AI نشان می‌دهد روند صعودی در کوتاه‌مدت ادامه خواهد داشت</p>
-                    </div>
-                    <div class="confidence">
-                        <span>اعتماد: ۸۷٪</span>
-                    </div>
-                </div>
-            </section>
+        <!-- Tools Mode Highlights -->
+        <section class="highlights hidden" id="toolHighlights">
+            <!-- HIGHLIGHT: طلا -->
+            <div class="highlight-item tool active" data-tool="gold" data-section="gold-tool-section">
+                <span class="highlight-text">طلا</span>
+            </div>
+            <!-- HIGHLIGHT: الماس -->
+            <div class="highlight-item tool" data-tool="diamond" data-section="diamond-tool-section">
+                <span class="highlight-text">الماس</span>
+            </div>
+            <!-- HIGHLIGHT: نقره -->
+            <div class="highlight-item tool" data-tool="silver" data-section="silver-tool-section">
+                <span class="highlight-text">نقره</span>
+            </div>
+            <!-- HIGHLIGHT: مروارید -->
+            <div class="highlight-item tool" data-tool="pearl" data-section="pearl-tool-section">
+                <span class="highlight-text">مروارید</span>
+            </div>
+            <!-- HIGHLIGHT: سنگ -->
+            <div class="highlight-item tool" data-tool="gem" data-section="gem-tool-section">
+                <span class="highlight-text">سنگ</span>
+            </div>
+            <!-- HIGHLIGHT: تبدیل ارز -->
+            <div class="highlight-item tool" data-tool="currency" data-section="currency-tool-section">
+                <span class="highlight-text">تبدیل ارز</span>
+            </div>
+        </section>
 
-            <!-- نمودار ساده -->
-            <section class="chart-section">
-                <h2>📊 نمودار روند</h2>
-                <div class="chart-container">
-                    <canvas id="marketChart" width="400" height="200"></canvas>
+        <!-- Market Content Sections -->
+        
+        <!-- Crypto Section -->
+        <section id="crypto-section" class="content-section active">
+            <!-- Live Crypto Data Grid -->
+            <div class="live-grid">
+                <!-- API: قیمت بیت‌کوین -->
+                <div class="data-card" data-asset="bitcoin">
+                    <div class="card-header">
+                        <div class="card-title">بیت‌کوین</div>
+                    </div>
+                    <div class="card-price">$۴۵,۲۸۰</div>
+                    <div class="card-change positive">+۲.۴۵٪</div>
                 </div>
-            </section>
+
+                <!-- API: قیمت اتریوم -->
+                <div class="data-card" data-asset="ethereum">
+                    <div class="card-header">
+                        <div class="card-title">اتریوم</div>
+                    </div>
+                    <div class="card-price">$۲,۴۵۰</div>
+                    <div class="card-change positive">+۳.۲۱٪</div>
+                </div>
+
+                <!-- API: قیمت تتر -->
+                <div class="data-card" data-asset="tether">
+                    <div class="card-header">
+                        <div class="card-title">تتر</div>
+                    </div>
+                    <div class="card-price">$۱.۰۰</div>
+                    <div class="card-change positive">+۰.۰۱٪</div>
+                </div>
+            </div>
+
+            <!-- AI Analysis for Crypto -->
+            <div class="ai-analysis">
+                <h2 class="section-title">تحلیل هوش مصنوعی بازار رمزارزها</h2>
+                <div class="analysis-content">
+                    <!-- API: تحلیل هوش مصنوعی -->
+                    <p>بازار رمزارزها در هفته جاری روند صعودی ملایمی را تجربه کرده است. بیت‌کوین توانسته سطح مقاومت ۴۵,۰۰۰ دلار را بشکند و در صورت حفظ این سطح، هدف بعدی ۴۸,۰۰۰ دلار خواهد بود.</p>
+                    <p>اتریوم نیز با رشد خوبی همراه شده و انتظار می‌رود در صورت شکست مقاومت ۲,۵۰۰ دلاری، به سطوح بالاتر صعود کند.</p>
+                </div>
+            </div>
+
+            <!-- AI Chat for Crypto -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - بازار رمزارزها</h2>
+                <div class="chat-container" id="cryptoChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! در مورد بازار رمزارزها سوالی دارید؟ می‌تونم در مورد تحلیل بیت‌کوین، اتریوم و سایر ارزهای دیجیتال کمک کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد رمزارزها را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Currency Section -->
+        <section id="currency-section" class="content-section">
+            <!-- Live Currency Data Grid -->
+            <div class="live-grid">
+                <!-- API: قیمت دلار -->
+                <div class="data-card" data-asset="usd">
+                    <div class="card-header">
+                        <div class="card-title">دلار آمریکا</div>
+                    </div>
+                    <div class="card-price">۵۸,۴۲۰ تومان</div>
+                    <div class="card-change negative">-۰.۸۵٪</div>
+                </div>
+
+                <!-- API: قیمت یورو -->
+                <div class="data-card" data-asset="eur">
+                    <div class="card-header">
+                        <div class="card-title">یورو</div>
+                    </div>
+                    <div class="card-price">۶۲,۱۸۰ تومان</div>
+                    <div class="card-change positive">+۰.۹۲٪</div>
+                </div>
+
+                <!-- API: قیمت درهم -->
+                <div class="data-card" data-asset="aed">
+                    <div class="card-header">
+                        <div class="card-title">درهم امارات</div>
+                    </div>
+                    <div class="card-price">۱۵,۹۰۰ تومان</div>
+                    <div class="card-change negative">-۰.۴۵٪</div>
+                </div>
+            </div>
+
+            <!-- AI Chat for Currency -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - بازار ارز</h2>
+                <div class="chat-container" id="currencyChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! می‌تونم در مورد نرخ ارزها، تحلیل بازار و پیش‌بینی نرخ دلار، یورو و سایر ارزها کمکتون کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد بازار ارز را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gold Section -->
+        <section id="gold-section" class="content-section">
+            <!-- Live Gold Data Grid -->
+            <div class="live-grid">
+                <!-- API: قیمت طلای جهانی -->
+                <div class="data-card" data-asset="gold">
+                    <div class="card-header">
+                        <div class="card-title">طلای جهانی</div>
+                    </div>
+                    <div class="card-price">$۱,۹۸۵</div>
+                    <div class="card-change positive">+۱.۲۳٪</div>
+                </div>
+
+                <!-- API: قیمت سکه امامی -->
+                <div class="data-card" data-asset="coin">
+                    <div class="card-header">
+                        <div class="card-title">سکه امامی</div>
+                    </div>
+                    <div class="card-price">۳۲,۴۵۰,۰۰۰ تومان</div>
+                    <div class="card-change negative">-۱.۱۵٪</div>
+                </div>
+
+                <!-- API: قیمت طلای ۱۸ عیار -->
+                <div class="data-card" data-asset="gold18">
+                    <div class="card-header">
+                        <div class="card-title">طلای ۱۸ عیار</div>
+                    </div>
+                    <div class="card-price">۲,۱۸۰,۰۰۰ تومان</div>
+                    <div class="card-change positive">+۰.۷۸٪</div>
+                </div>
+            </div>
+
+            <!-- AI Chat for Gold -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - بازار طلا</h2>
+                <div class="chat-container" id="goldChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! در مورد قیمت طلا، سکه، تحلیل بازار طلا و پیش‌بینی‌ها سوالی دارید؟ در خدمت شما هستم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد بازار طلا را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Oil Section -->
+        <section id="oil-section" class="content-section">
+            <!-- Live Oil Data Grid -->
+            <div class="live-grid">
+                <!-- API: قیمت نفت برنت -->
+                <div class="data-card" data-asset="oil">
+                    <div class="card-header">
+                        <div class="card-title">نفت برنت</div>
+                    </div>
+                    <div class="card-price">$۸۲.۴۵</div>
+                    <div class="card-change negative">-۱.۵۶٪</div>
+                </div>
+
+                <!-- API: قیمت نفت وست تگزاس -->
+                <div class="data-card" data-asset="wti">
+                    <div class="card-header">
+                        <div class="card-title">نفت وست تگزاس</div>
+                    </div>
+                    <div class="card-price">$۷۸.۲۰</div>
+                    <div class="card-change negative">-۱.۸۹٪</div>
+                </div>
+
+                <!-- API: قیمت بنزین -->
+                <div class="data-card" data-asset="gasoline">
+                    <div class="card-header">
+                        <div class="card-title">بنزین آزاد</div>
+                    </div>
+                    <div class="card-price">۴۵,۰۰۰ تومان</div>
+                    <div class="card-change positive">+۲.۳۴٪</div>
+                </div>
+            </div>
+
+            <!-- AI Chat for Oil -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - بازار نفت</h2>
+                <div class="chat-container" id="oilChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! در مورد قیمت نفت، بنزین، تحلیل بازار انرژی و تأثیر عوامل جهانی سوالی دارید؟ آماده پاسخگویی هستم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد بازار نفت را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tool Content Sections -->
+        
+        <!-- Gold Tool Section -->
+        <section id="gold-tool-section" class="content-section">
+            <div class="tool-calculator">
+                <h2 class="section-title">محاسبه قیمت طلا</h2>
+                <div class="calculator-placeholder">
+                    🛠️ این بخش در دست طراحی است
+                    <br>
+                    <small>ماشین حساب پیشرفته محاسبه قیمت طلا به زودی راه‌اندازی می‌شود</small>
+                </div>
+            </div>
+
+            <!-- AI Chat for Gold Tool -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - محاسبه طلا</h2>
+                <div class="chat-container" id="goldToolChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! می‌تونم در مورد محاسبه قیمت طلا، تبدیل عیارهای مختلف و محاسبات مربوط به طلا کمکتون کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد محاسبه طلا را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Diamond Tool Section -->
+        <section id="diamond-tool-section" class="content-section">
+            <div class="tool-calculator">
+                <h2 class="section-title">محاسبه قیمت الماس</h2>
+                <div class="calculator-placeholder">
+                    🛠️ این بخش در دست طراحی است
+                    <br>
+                    <small>ماشین حساب پیشرفته محاسبه قیمت الماس به زودی راه‌اندازی می‌شود</small>
+                </div>
+            </div>
+
+            <!-- AI Chat for Diamond Tool -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - محاسبه الماس</h2>
+                <div class="chat-container" id="diamondToolChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! می‌تونم در مورد محاسبه قیمت الماس، معیارهای 4C (رنگ، شفافیت، تراش، قیراط) و ارزش‌گذاری الماس کمکتون کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد محاسبه الماس را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Silver Tool Section -->
+        <section id="silver-tool-section" class="content-section">
+            <div class="tool-calculator">
+                <h2 class="section-title">محاسبه قیمت نقره</h2>
+                <div class="calculator-placeholder">
+                    🛠️ این بخش در دست طراحی است
+                    <br>
+                    <small>ماشین حساب پیشرفته محاسبه قیمت نقره به زودی راه‌اندازی می‌شود</small>
+                </div>
+            </div>
+
+            <!-- AI Chat for Silver Tool -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - محاسبه نقره</h2>
+                <div class="chat-container" id="silverToolChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! می‌تونم در مورد محاسبه قیمت نقره، تبدیل واحدهای مختلف و محاسبات مربوط به نقره کمکتون کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد محاسبه نقره را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pearl Tool Section -->
+        <section id="pearl-tool-section" class="content-section">
+            <div class="tool-calculator">
+                <h2 class="section-title">محاسبه قیمت مروارید</h2>
+                <div class="calculator-placeholder">
+                    🛠️ این بخش در دست طراحی است
+                    <br>
+                    <small>ماشین حساب پیشرفته محاسبه قیمت مروارید به زودی راه‌اندازی می‌شود</small>
+                </div>
+            </div>
+
+            <!-- AI Chat for Pearl Tool -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - محاسبه مروارید</h2>
+                <div class="chat-container" id="pearlToolChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! می‌تونم در مورد محاسبه قیمت مروارید، معیارهای کیفیت (درخشش، شکل، اندازه، سطح) و ارزش‌گذاری مروارید کمکتون کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد محاسبه مروارید را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gem Tool Section -->
+        <section id="gem-tool-section" class="content-section">
+            <div class="tool-calculator">
+                <h2 class="section-title">محاسبه قیمت سنگ</h2>
+                <div class="calculator-placeholder">
+                    🛠️ این بخش در دست طراحی است
+                    <br>
+                    <small>ماشین حساب پیشرفته محاسبه قیمت سنگ‌های قیمتی به زودی راه‌اندازی می‌شود</small>
+                </div>
+            </div>
+
+            <!-- AI Chat for Gem Tool -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - محاسبه سنگ</h2>
+                <div class="chat-container" id="gemToolChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! می‌تونم در مورد محاسبه قیمت سنگ‌های قیمتی، شناسایی سنگ‌ها و ارزش‌گذاری آن‌ها کمکتون کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد محاسبه سنگ را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Currency Tool Section -->
+        <section id="currency-tool-section" class="content-section">
+            <div class="tool-calculator">
+                <h2 class="section-title">تبدیل واحد پول</h2>
+                <div class="calculator-placeholder">
+                    🛠️ این بخش در دست طراحی است
+                    <br>
+                    <small>مبدل پیشرفته واحدهای پولی به زودی راه‌اندازی می‌شود</small>
+                </div>
+            </div>
+
+            <!-- AI Chat for Currency Tool -->
+            <div class="ai-chat">
+                <h2 class="section-title">چت با هوش مصنوعی - تبدیل ارز</h2>
+                <div class="chat-container" id="currencyToolChatContainer">
+                    <div class="chat-message ai-message">
+                        <strong>هوش مصنوعی:</strong> سلام! می‌تونم در مورد تبدیل واحدهای پولی، نرخ‌های تبدیل و محاسبات مالی بین‌المللی کمکتون کنم.
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="سوال خود در مورد تبدیل ارز را بپرسید...">
+                    <button class="chat-send">ارسال</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- AD: تبلیغات بین محتوایی -->
+        <div class="ad-container" style="text-align: center; margin: 2rem 0; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+            <!-- AD: جایگزین با کد تبلیغاتی -->
+            <p style="color: var(--text-secondary);">جایگاه تبلیغاتی - برای نمایش تبلیغات</p>
         </div>
     </main>
 
-    <!-- فوتر -->
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>© ۲۰۲۴ LivePulse - تمام حقوق محفوظ است</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>درباره ما</h3>
+                <p>سامانه هوشمند تحلیل بازارهای مالی با استفاده از پیشرفته‌ترین تکنولوژی‌های هوش مصنوعی</p>
+            </div>
+            <div class="footer-section">
+                <h3>تماس با ما</h3>
+                <p>ایمیل: info@financialai.ir</p>
+                <p>تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</p>
+            </div>
+            <div class="footer-section">
+                <h3>لینک‌های مفید</h3>
+                <a href="#">قوانین و مقررات</a>
+                <a href="#">حریم خصوصی</a>
+                <a href="#">سوالات متداول</a>
+            </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Login Popup -->
+    <div class="popup-overlay" id="loginPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">ورود به حساب کاربری</h3>
+                <button class="popup-close" id="loginClose">×</button>
+            </div>
+            <form class="login-form">
+                <div class="form-group">
+                    <label class="form-label">نام کاربری یا ایمیل</label>
+                    <input type="text" class="form-input" placeholder="username@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">رمز عبور</label>
+                    <input type="password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="form-submit">ورود</button>
+                <div class="subscription-link">
+                    <a href="subscription.html">خرید اشتراک</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Detail Popup -->
+    <div class="popup-overlay" id="dataPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title" id="popupAssetTitle">جزئیات دارایی</h3>
+                <button class="popup-close" id="dataClose">×</button>
+            </div>
+            <div id="popupContent">
+                <!-- API: محتوای پاپ‌آپ با داده‌های تکمیلی -->
+                <div style="text-align: center; padding: 2rem;">
+                    <p>در حال بارگذاری اطلاعات تکمیلی...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let currentMode = 'market'; // 'market' or 'tools'
+        let currentSection = 'crypto-section';
+
+        // DOM Elements
+        const modeToggleBtn = document.getElementById('modeToggleBtn');
+        const logoBtn = document.getElementById('logoBtn');
+        const marketHighlights = document.getElementById('marketHighlights');
+        const toolHighlights = document.getElementById('toolHighlights');
+        const contentSections = document.querySelectorAll('.content-section');
+        const highlightItems = document.querySelectorAll('.highlight-item');
+
+        // Theme Management
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', (e) => {
+            if (e.target.classList.contains('theme-btn')) {
+                const theme = e.target.getAttribute('data-theme');
+                body.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            }
+        });
+
+        // Mode Toggle Functionality
+        modeToggleBtn.addEventListener('click', toggleMode);
+
+        function toggleMode() {
+            if (currentMode === 'market') {
+                // Switch to Tools Mode
+                currentMode = 'tools';
+                modeToggleBtn.textContent = 'خانه';
+                marketHighlights.classList.add('hidden');
+                toolHighlights.classList.remove('hidden');
+                
+                // Activate first tool section
+                switchSection('gold-tool-section');
+                
+            } else {
+                // Switch to Market Mode
+                currentMode = 'market';
+                modeToggleBtn.textContent = 'ابزارها';
+                toolHighlights.classList.add('hidden');
+                marketHighlights.classList.remove('hidden');
+                
+                // Activate first market section
+                switchSection('crypto-section');
+            }
+        }
+
+        // Logo click to return to market mode
+        logoBtn.addEventListener('click', () => {
+            if (currentMode === 'tools') {
+                toggleMode();
+            } else {
+                // If already in market mode, go to crypto section
+                switchSection('crypto-section');
+            }
+        });
+
+        // Highlight Item Click Handler
+        highlightItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionId = item.getAttribute('data-section');
+                
+                // Remove active class from all highlights in current mode
+                if (currentMode === 'market') {
+                    document.querySelectorAll('.highlight-item.market').forEach(hi => {
+                        hi.classList.remove('active');
+                    });
+                } else {
+                    document.querySelectorAll('.highlight-item.tool').forEach(hi => {
+                        hi.classList.remove('active');
+                    });
+                }
+                
+                // Add active class to clicked highlight
+                item.classList.add('active');
+                
+                // Switch to corresponding section
+                switchSection(sectionId);
+            });
+        });
+
+        // Section Switching Function
+        function switchSection(sectionId) {
+            // Hide all sections
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                currentSection = sectionId;
+            }
+        }
+
+        // Login Popup
+        const loginBtn = document.getElementById('loginBtn');
+        const loginPopup = document.getElementById('loginPopup');
+        const loginClose = document.getElementById('loginClose');
+
+        loginBtn.addEventListener('click', () => {
+            loginPopup.style.display = 'flex';
+        });
+
+        loginClose.addEventListener('click', () => {
+            loginPopup.style.display = 'none';
+        });
+
+        // Data Card Click Handler
+        const dataCards = document.querySelectorAll('.data-card');
+        const dataPopup = document.getElementById('dataPopup');
+        const dataClose = document.getElementById('dataClose');
+        const popupAssetTitle = document.getElementById('popupAssetTitle');
+        const popupContent = document.getElementById('popupContent');
+
+        dataCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const assetName = card.querySelector('.card-title').textContent;
+                popupAssetTitle.textContent = `جزئیات ${assetName}`;
+                
+                // API: این بخش با داده‌های واقعی جایگزین شود
+                popupContent.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-teal);">📊</div>
+                        <h4 style="margin-bottom: 1rem; color: var(--text-primary);">نمودار و اطلاعات تکمیلی</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                            این بخش با اتصال به API داده‌های واقعی تکمیل خواهد شد.
+                        </p>
+                        <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <p style="margin: 0.5rem 0;">قیمت فعلی: <strong>${card.querySelector('.card-price').textContent}</strong></p>
+                            <p style="margin: 0.5rem 0;">تغییرات: <strong>${card.querySelector('.card-change').textContent}</strong></p>
+                        </div>
+                    </div>
+                `;
+                
+                dataPopup.style.display = 'flex';
+            });
+        });
+
+        dataClose.addEventListener('click', () => {
+            dataPopup.style.display = 'none';
+        });
+
+        // Close popups when clicking outside
+        [loginPopup, dataPopup].forEach(popup => {
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) {
+                    popup.style.display = 'none';
+                }
+            });
+        });
+
+        // Simulate market data changes (for demo)
+        function simulateMarketChanges() {
+            if (currentMode === 'market') {
+                const marketHighlights = document.querySelectorAll('.highlight-item.market');
+                marketHighlights.forEach(highlight => {
+                    const isPositive = Math.random() > 0.5;
+                    highlight.classList.toggle('positive', isPositive);
+                    highlight.classList.toggle('negative', !isPositive);
+                });
+            }
+        }
+
+        // Simulate market changes every 10 seconds
+        setInterval(simulateMarketChanges, 10000);
+
+        console.log('سامانه مالی هوشمند با موفقیت بارگذاری شد!');
+        console.log('حالت فعلی:', currentMode);
+        console.log('بخش فعال:', currentSection);
+    </script>
 </body>
 </html>
