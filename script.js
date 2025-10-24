@@ -1,4 +1,4 @@
-// app.js - LivePulse Financial System
+// app.js - LivePulse Financial System - COMPLETE WORKING VERSION
 class LivePulseApp {
     constructor() {
         this.currentMode = 'market';
@@ -8,7 +8,28 @@ class LivePulseApp {
         this.chatHistories = {};
         this.adRotationIntervals = new Map();
         this.hoverTimeouts = new Map();
+        this.charts = new Map();
         
+        this.cryptoAssets = [
+            'بیت‌کوین', 'اتریوم', 'تتر', 'بایننس کوین', 'کاردانو',
+            'سولانا', 'ریپل', 'پولکادات', 'دوج کوین', 'شیبا اینو'
+        ];
+        
+        this.currencyAssets = [
+            'دلار آمریکا', 'یورو', 'پوند', 'ین ژاپن', 'فرانک سوئیس',
+            'دلار کانادا', 'دلار استرالیا', 'یوان چین', 'روبل روسیه', 'لیر ترکیه'
+        ];
+        
+        this.goldAssets = [
+            'طلای ۱۸ عیار', 'سکه امامی', 'سکه بهار آزادی', 'نیم‌سکه', 'ربع‌سکه',
+            'سکه گرمی', 'طلای جهانی', 'مثقال طلا', 'طلای دست دوم', 'طلای آب‌شده'
+        ];
+        
+        this.oilAssets = [
+            'نفت برنت', 'نفت وست تگزاس', 'بنزین آزاد', 'بنزین سهمیه‌ای', 'گازوئیل',
+            'نفت اوپک', 'نفت ایران', 'نفت خام', 'نفت سنگین', 'نفت پالایشگاه'
+        ];
+
         this.init();
     }
 
@@ -20,8 +41,9 @@ class LivePulseApp {
         this.initializeSlidingWindows();
         this.setupAdSystem();
         this.initializeAllChats();
+        this.populateMarketSections();
         
-        console.log('LivePulse سامانه مالی راه‌اندازی شد');
+        console.log('✅ LivePulse سامانه مالی کاملاً راه‌اندازی شد');
     }
 
     loadUserPreferences() {
@@ -41,6 +63,8 @@ class LivePulseApp {
         
         if (this.userPreferences.mode === 'tools') {
             this.switchToToolsMode();
+        } else {
+            this.switchToMarketMode();
         }
     }
 
@@ -53,6 +77,8 @@ class LivePulseApp {
         this.setupLoginSystem();
         this.setupSliderControls();
         this.setupResponsiveHandlers();
+        
+        console.log('✅ همه event listeners تنظیم شدند');
     }
 
     setupThemeToggle() {
@@ -79,6 +105,16 @@ class LivePulseApp {
 
         modeToggleBtn.addEventListener('click', () => this.toggleMode());
         logoBtn.addEventListener('click', () => this.handleLogoClick());
+        
+        // Tools menu items
+        document.querySelectorAll('.tools-list a').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tool = e.target.getAttribute('data-tool');
+                this.switchToToolsMode();
+                this.switchSection(`${tool}-tool-section`);
+            });
+        });
     }
 
     toggleMode() {
@@ -128,6 +164,11 @@ class LivePulseApp {
                 this.handleHighlightClick(highlight, sectionId);
             });
         });
+        
+        // Simulate market changes for highlights
+        setInterval(() => {
+            this.simulateMarketChanges();
+        }, 5000);
     }
 
     handleHighlightClick(highlight, sectionId) {
@@ -154,41 +195,45 @@ class LivePulseApp {
     }
 
     setupCardInteractions() {
-        const dataCards = document.querySelectorAll('.data-card, .window-card');
-        
-        dataCards.forEach(card => {
-            // Hover with 0.5 second delay for auto-open
-            card.addEventListener('mouseenter', (e) => {
+        // Use event delegation for better performance
+        document.addEventListener('mouseenter', (e) => {
+            const card = e.target.closest('.data-card, .window-card');
+            if (card && !this.hoverTimeouts.has(card)) {
                 const timeoutId = setTimeout(() => {
                     this.showCardDetailPopup(card);
                 }, 500);
                 this.hoverTimeouts.set(card, timeoutId);
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                const timeoutId = this.hoverTimeouts.get(card);
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                    this.hoverTimeouts.delete(card);
-                }
-            });
-            
-            // Click for immediate open
-            card.addEventListener('click', (e) => {
-                const timeoutId = this.hoverTimeouts.get(card);
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
+            }
+        }, true);
+
+        document.addEventListener('mouseleave', (e) => {
+            const card = e.target.closest('.data-card, .window-card');
+            if (card && this.hoverTimeouts.has(card)) {
+                clearTimeout(this.hoverTimeouts.get(card));
+                this.hoverTimeouts.delete(card);
+            }
+        }, true);
+
+        document.addEventListener('click', (e) => {
+            const card = e.target.closest('.data-card, .window-card');
+            if (card) {
+                // Clear hover timeout if exists
+                if (this.hoverTimeouts.has(card)) {
+                    clearTimeout(this.hoverTimeouts.get(card));
                     this.hoverTimeouts.delete(card);
                 }
                 this.showCardDetailPopup(card);
-            });
-            
-            // Touch for mobile
-            card.addEventListener('touchstart', (e) => {
+            }
+        });
+
+        // Touch support
+        document.addEventListener('touchstart', (e) => {
+            const card = e.target.closest('.data-card, .window-card');
+            if (card) {
                 e.preventDefault();
                 this.showCardDetailPopup(card);
-            }, { passive: false });
-        });
+            }
+        }, { passive: false });
     }
 
     showCardDetailPopup(card) {
@@ -210,7 +255,7 @@ class LivePulseApp {
                 </div>
                 
                 <div class="chart-controls">
-                    <button class="chart-btn active" data-type="candle">کندل</button>
+                    <button class="chart-btn active" data-type="candlestick">کندل</button>
                     <button class="chart-btn" data-type="line">خطی</button>
                     <button class="chart-btn" data-type="bar">میله‌ای</button>
                 </div>
@@ -233,12 +278,16 @@ class LivePulseApp {
                             <span>حجم معاملات:</span>
                             <strong>${this.formatNumber(Math.random() * 1000)}M</strong>
                         </div>
+                        <div class="stat-item">
+                            <span>تغییرات ۲۴h:</span>
+                            <strong class="${isPositive ? 'positive' : 'negative'}">${change}</strong>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="ai-analysis-popup">
                     <h4>تحلیل هوش مصنوعی:</h4>
-                    <p>این دارایی در مسیر صعودی قرار دارد و انتظار می‌رود در روزهای آینده رشد بیشتری را تجربه کند.</p>
+                    <p>${this.generateAIAnalysis(assetName, isPositive)}</p>
                 </div>
             </div>
         `;
@@ -246,7 +295,7 @@ class LivePulseApp {
         this.showPopup(`جزئیات ${assetName}`, popupContent, () => {
             this.initializeDetailChart('detailChart', assetName);
             this.setupChartControls();
-            this.startAdRotation('detailPopup');
+            this.startAdRotation('popupAd');
         });
     }
 
@@ -256,9 +305,6 @@ class LivePulseApp {
         this.createLineChart('usdChart', '#ef4444');
         this.createLineChart('goldChart', '#f59e0b');
         this.createLineChart('oilChart', '#3b82f6');
-        
-        // Initialize crypto section with candle charts
-        this.initializeSectionCharts('crypto-section');
     }
 
     createLineChart(canvasId, color) {
@@ -268,7 +314,7 @@ class LivePulseApp {
         const isPositive = Math.random() > 0.5;
         const data = this.generateChartData(20, isPositive);
         
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: data.labels,
@@ -294,6 +340,8 @@ class LivePulseApp {
                 interaction: { intersect: false }
             }
         });
+
+        this.charts.set(canvasId, chart);
     }
 
     createCandleChart(canvasId, assetName) {
@@ -302,7 +350,7 @@ class LivePulseApp {
 
         const data = this.generateCandleData(20);
         
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'candlestick',
             data: {
                 labels: data.labels,
@@ -321,6 +369,8 @@ class LivePulseApp {
                 }
             }
         });
+
+        this.charts.set(canvasId, chart);
     }
 
     initializeDetailChart(canvasId, assetName) {
@@ -406,18 +456,71 @@ class LivePulseApp {
         return { candles, labels };
     }
 
-    initializeSlidingWindows() {
-        this.initializeWindowTrack('windowsTrackTop', 'top');
-        this.initializeWindowTrack('windowsTrackBottom', 'bottom');
+    populateMarketSections() {
+        this.populateSection('crypto-section', this.cryptoAssets);
+        this.populateSection('currency-section', this.currencyAssets);
+        this.populateSection('gold-section', this.goldAssets);
+        this.populateSection('oil-section', this.oilAssets);
     }
 
-    initializeWindowTrack(trackId, direction) {
+    populateSection(sectionId, assets) {
+        const section = document.getElementById(sectionId);
+        if (!section) return;
+
+        const grid = section.querySelector('.live-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+        
+        assets.forEach((asset, index) => {
+            const isPositive = Math.random() > 0.5;
+            const change = (Math.random() * 5).toFixed(2);
+            const price = this.generateAssetPrice(asset);
+            
+            const card = document.createElement('div');
+            card.className = 'data-card';
+            card.setAttribute('data-asset', asset);
+            card.setAttribute('data-chart-type', 'candlestick');
+            card.innerHTML = `
+                <div class="card-ad-corner">تبلیغات</div>
+                <div class="card-header">
+                    <div class="card-title">${asset}</div>
+                </div>
+                <div class="card-price">${price}</div>
+                <div class="card-change ${isPositive ? 'positive' : 'negative'}">
+                    ${isPositive ? '+' : ''}${change}%
+                </div>
+                <div class="chart-container">
+                    <canvas id="${this.sanitizeId(asset)}Chart"></canvas>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // Initialize charts after a short delay
+        setTimeout(() => {
+            assets.forEach(asset => {
+                this.createCandleChart(`${this.sanitizeId(asset)}Chart`, asset);
+            });
+        }, 100);
+    }
+
+    initializeSlidingWindows() {
+        this.initializeWindowTrack('windowsTrackTop', this.cryptoAssets.slice(0, 6));
+        this.initializeWindowTrack('windowsTrackBottom', this.currencyAssets.slice(0, 6));
+    }
+
+    initializeWindowTrack(trackId, assets) {
         const track = document.getElementById(trackId);
         if (!track) return;
 
-        const assets = ['بیت‌کوین', 'اتریوم', 'دلار', 'یورو', 'طلای جهانی', 'سکه امامی', 'نفت برنت', 'بنزین'];
+        track.innerHTML = '';
         
         assets.forEach(asset => {
+            const isPositive = Math.random() > 0.5;
+            const change = (Math.random() * 5).toFixed(2);
+            const price = this.generateAssetPrice(asset);
+            
             const card = document.createElement('div');
             card.className = 'window-card';
             card.innerHTML = `
@@ -425,21 +528,21 @@ class LivePulseApp {
                 <div class="card-header">
                     <div class="card-title">${asset}</div>
                 </div>
-                <div class="card-price">${this.generateRandomPrice('100')}</div>
-                <div class="card-change ${Math.random() > 0.5 ? 'positive' : 'negative'}">
-                    ${Math.random() > 0.5 ? '+' : ''}${(Math.random() * 5).toFixed(2)}%
+                <div class="card-price">${price}</div>
+                <div class="card-change ${isPositive ? 'positive' : 'negative'}">
+                    ${isPositive ? '+' : ''}${change}%
                 </div>
                 <div class="chart-container">
-                    <canvas id="${asset.replace(/\s/g, '')}Chart"></canvas>
+                    <canvas id="sliding${this.sanitizeId(asset)}Chart"></canvas>
                 </div>
             `;
             track.appendChild(card);
         });
 
-        // Initialize charts for window cards
+        // Initialize charts
         setTimeout(() => {
             assets.forEach(asset => {
-                this.createCandleChart(`${asset.replace(/\s/g, '')}Chart`, asset);
+                this.createCandleChart(`sliding${this.sanitizeId(asset)}Chart`, asset);
             });
         }, 100);
     }
@@ -496,7 +599,9 @@ class LivePulseApp {
             'تبلیغات - محصولات مالی',
             'تبلیغات - کارگزاری آنلاین', 
             'تبلیغات - آموزش سرمایه‌گذاری',
-            'تبلیغات - صندوق‌های سرمایه‌گذاری'
+            'تبلیغات - صندوق‌های سرمایه‌گذاری',
+            'تبلیغات - بیمه‌های عمر',
+            'تبلیغات - مشاوره مالیاتی'
         ];
         
         const randomAd = ads[Math.floor(Math.random() * ads.length)];
@@ -524,41 +629,43 @@ class LivePulseApp {
     }
 
     setupChatInputs() {
-        document.querySelectorAll('.chat-input-container').forEach(container => {
-            const input = container.querySelector('.chat-input');
-            const sendBtn = container.querySelector('.chat-send');
-            
-            const section = this.getChatSectionFromContainer(container);
-            
-            sendBtn.addEventListener('click', () => {
-                this.handleChatSend(section, input);
-            });
-            
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    this.handleChatSend(section, input);
-                }
-            });
-        });
+        const setupChat = (section) => {
+            const input = document.getElementById(`${section}ChatInput`);
+            const sendBtn = document.getElementById(`${section}ChatSend`);
+            const container = document.getElementById(`${section}ChatContainer`);
+
+            if (input && sendBtn && container) {
+                const sendMessage = () => {
+                    const message = input.value.trim();
+                    if (!message) return;
+
+                    this.addChatMessage(section, 'user', message, container);
+                    input.value = '';
+
+                    setTimeout(() => {
+                        const response = this.generateAIResponse(section, message);
+                        this.addChatMessage(section, 'ai', response, container);
+                    }, 1000 + Math.random() * 2000);
+                };
+
+                sendBtn.addEventListener('click', sendMessage);
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+        };
+
+        ['home', 'crypto', 'currency', 'gold', 'oil'].forEach(setupChat);
     }
 
-    handleChatSend(section, input) {
-        const message = input.value.trim();
-        if (!message) return;
-
-        this.addChatMessage(section, 'user', message);
-        input.value = '';
-
-        setTimeout(() => {
-            const response = this.generateAIResponse(section, message);
-            this.addChatMessage(section, 'ai', response);
-        }, 1000 + Math.random() * 2000);
-    }
-
-    addChatMessage(section, sender, message) {
-        const container = document.getElementById(`${section}ChatContainer`);
-        if (!container) return;
+    addChatMessage(section, sender, message, container) {
+        if (!container) {
+            container = document.getElementById(`${section}ChatContainer`);
+            if (!container) return;
+        }
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${sender}-message`;
@@ -571,52 +678,46 @@ class LivePulseApp {
         localStorage.setItem(`chat_${section}`, JSON.stringify(this.chatHistories[section]));
     }
 
-    generateAIResponse(section, userMessage) {
-        const responses = {
-            'crypto': [
-                "تحلیل فعلی بازار رمزارزها نشان‌دهنده روند صعودی ملایم است.",
-                "بیت‌کوین در حال تست مقاومت ۴۵,۰۰۰ دلاری است.",
-                "انتظار می‌رود اتریوم در صورت شکست ۲,۵۰۰ دلار رشد کند."
-            ],
-            'currency': [
-                "نرخ ارزها تحت تأثیر اخبار سیاسی در نوسان است.",
-                "دلار ممکن است در محدوده ۵۸-۶۰ هزار تومان تثبیت شود.",
-                "یورو نسبت به دلار آمریکا در حال تقویت است."
-            ],
-            'default': [
-                "سوال خوبی پرسیدید! برای پاسخ دقیق‌تر به داده‌های بیشتری نیاز دارم.",
-                "این موضوع نیاز به تحلیل تخصصی دارد.",
-                "لطفاً سوال خود را با جزئیات بیشتری مطرح کنید."
-            ]
-        };
+    loadChatHistory(section) {
+        const container = document.getElementById(`${section}ChatContainer`);
+        if (!container) return;
+
+        this.chatHistories[section].forEach(msg => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${msg.sender}-message`;
+            messageDiv.innerHTML = `<strong>${msg.sender === 'ai' ? 'هوش مصنوعی' : 'شما'}:</strong> ${msg.message}`;
+            container.appendChild(messageDiv);
+        });
         
-        const sectionKey = responses[section] ? section : 'default';
-        const availableResponses = responses[sectionKey];
-        
-        return availableResponses[Math.floor(Math.random() * availableResponses.length)];
+        container.scrollTop = container.scrollHeight;
     }
 
     setupLoginSystem() {
         const loginBtn = document.getElementById('loginBtn');
-        const loginPopup = document.getElementById('loginPopup');
         
         loginBtn.addEventListener('click', () => {
             this.showPopup('ورود به سیستم', `
-                <form class="login-form">
+                <form class="login-form" id="loginForm">
                     <div class="form-group">
-                        <label>نام کاربری یا ایمیل</label>
-                        <input type="text" placeholder="username@example.com" required>
+                        <label class="form-label">نام کاربری یا ایمیل</label>
+                        <input type="text" class="form-input" placeholder="username@example.com" required>
                     </div>
                     <div class="form-group">
-                        <label>رمز عبور</label>
-                        <input type="password" placeholder="••••••••" required>
+                        <label class="form-label">رمز عبور</label>
+                        <input type="password" class="form-input" placeholder="••••••••" required>
                     </div>
                     <button type="submit" class="form-submit">ورود</button>
                     <div class="subscription-link">
                         <a href="#">خرید اشتراک</a>
                     </div>
                 </form>
-            `);
+            `, () => {
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.showNotification('ورود موفقیت‌آمیز بود!', 'success');
+                    this.closePopup();
+                });
+            });
         });
     }
 
@@ -628,28 +729,31 @@ class LivePulseApp {
 
     handleResize() {
         // Update chart sizes on resize
+        this.charts.forEach(chart => {
+            chart.resize();
+        });
         if (this.detailChart) {
             this.detailChart.resize();
         }
     }
 
     showPopup(title, content, onOpen = null) {
-        const popup = document.getElementById('detailPopup');
-        if (!popup) return;
+        const popupOverlay = document.getElementById('popupOverlay');
+        const popupContent = document.getElementById('popupContent');
+        
+        if (!popupOverlay || !popupContent) return;
 
-        popup.innerHTML = `
-            <div class="popup-content">
-                <div class="popup-header">
-                    <h3 class="popup-title">${title}</h3>
-                    <button class="popup-close" id="popupClose">×</button>
-                </div>
-                <div class="popup-body">
-                    ${content}
-                </div>
+        popupContent.innerHTML = `
+            <div class="popup-header">
+                <h3 class="popup-title">${title}</h3>
+                <button class="popup-close" id="popupClose">×</button>
+            </div>
+            <div class="popup-body">
+                ${content}
             </div>
         `;
 
-        popup.style.display = 'flex';
+        popupOverlay.style.display = 'flex';
 
         // Setup close button
         document.getElementById('popupClose').addEventListener('click', () => {
@@ -657,8 +761,8 @@ class LivePulseApp {
         });
 
         // Close on background click
-        popup.addEventListener('click', (e) => {
-            if (e.target === popup) {
+        popupOverlay.addEventListener('click', (e) => {
+            if (e.target === popupOverlay) {
                 this.closePopup();
             }
         });
@@ -676,36 +780,22 @@ class LivePulseApp {
     }
 
     closePopup() {
-        const popup = document.getElementById('detailPopup');
-        if (popup) {
-            popup.style.display = 'none';
+        const popupOverlay = document.getElementById('popupOverlay');
+        if (popupOverlay) {
+            popupOverlay.style.display = 'none';
             
-            // Clear ad rotation for popup
-            if (this.adRotationIntervals.has('detailPopup')) {
-                clearInterval(this.adRotationIntervals.get('detailPopup'));
-                this.adRotationIntervals.delete('detailPopup');
+            // Clear detail chart
+            if (this.detailChart) {
+                this.detailChart.destroy();
+                this.detailChart = null;
             }
         }
     }
 
+    // Utility methods
     showNotification(message, type = 'info') {
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
-        notification.style.cssText = `
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            z-index: 3000;
-            border-right: 4px solid ${type === 'success' ? 'var(--accent-green)' : 
-                                  type === 'error' ? 'var(--accent-red)' : 
-                                  'var(--accent-blue)'};
-        `;
         notification.textContent = message;
         
         document.body.appendChild(notification);
@@ -717,7 +807,6 @@ class LivePulseApp {
         }, 4000);
     }
 
-    // Utility functions
     debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -743,51 +832,90 @@ class LivePulseApp {
         return this.formatNumber(Math.round(variation));
     }
 
-    getChatSectionFromContainer(container) {
-        const chatSection = container.closest('.ai-chat');
-        return chatSection ? chatSection.id.replace('ChatContainer', '') : 'home';
+    generateAssetPrice(asset) {
+        const prices = {
+            'بیت‌کوین': '$' + this.formatNumber(45000 + Math.random() * 10000),
+            'اتریوم': '$' + this.formatNumber(2000 + Math.random() * 1000),
+            'دلار آمریکا': this.formatNumber(50000 + Math.random() * 10000) + ' تومان',
+            'طلای جهانی': '$' + this.formatNumber(1800 + Math.random() * 200),
+            'نفت برنت': '$' + (80 + Math.random() * 10).toFixed(2)
+        };
+        
+        return prices[asset] || '$' + this.formatNumber(100 + Math.random() * 100);
+    }
+
+    sanitizeId(str) {
+        return str.replace(/\s+/g, '').replace(/[^\w]/g, '');
+    }
+
+    generateAIResponse(section, userMessage) {
+        const responses = {
+            'crypto': [
+                "تحلیل فعلی بازار رمزارزها نشان‌دهنده روند صعودی ملایم است.",
+                "بیت‌کوین در حال تست مقاومت ۴۵,۰۰۰ دلاری است.",
+                "انتظار می‌رود اتریوم در صورت شکست ۲,۵۰۰ دلار رشد کند."
+            ],
+            'currency': [
+                "نرخ ارزها تحت تأثیر اخبار سیاسی در نوسان است.",
+                "دلار ممکن است در محدوده ۵۸-۶۰ هزار تومان تثبیت شود.",
+                "یورو نسبت به دلار آمریکا در حال تقویت است."
+            ],
+            'gold': [
+                "طلای جهانی تحت تأثیر تورم جهانی در حال رشد است.",
+                "پیش‌بینی می‌شود طلا به ۲,۰۲۰ دلار برسد.",
+                "سکه امامی ممکن است نوسانات فصلی را تجربه کند."
+            ],
+            'oil': [
+                "قیمت نفت تحت تأثیر تحولات خاورمیانه در نوسان است.",
+                "پیش‌بینی می‌شود نفت در محدوده ۸۰-۸۵ دلار تثبیت شود.",
+                "تولید اوپک بر قیمت نفت تأثیر مستقیم دارد."
+            ],
+            'default': [
+                "سوال خوبی پرسیدید! برای پاسخ دقیق‌تر به داده‌های بیشتری نیاز دارم.",
+                "این موضوع نیاز به تحلیل تخصصی دارد.",
+                "لطفاً سوال خود را با جزئیات بیشتری مطرح کنید."
+            ]
+        };
+        
+        const sectionKey = responses[section] ? section : 'default';
+        const availableResponses = responses[sectionKey];
+        
+        return availableResponses[Math.floor(Math.random() * availableResponses.length)];
+    }
+
+    generateAIAnalysis(assetName, isPositive) {
+        const analyses = {
+            'بیت‌کوین': 'بیت‌کوین در مسیر صعودی قرار دارد و انتظار می‌رود به ۵۰,۰۰۰ دلار برسد.',
+            'دلار آمریکا': 'نرخ دلار تحت تأثیر سیاست‌های بانک مرکزی در نوسان است.',
+            'طلای جهانی': 'طلای جهانی به عنوان پناهگاه امن در شرایط تورمی جذاب است.',
+            'نفت برنت': 'قیمت نفت تحت تأثیر تولید اوپک و تقاضای جهانی است.'
+        };
+        
+        return analyses[assetName] || 
+               `این دارایی در مسیر ${isPositive ? 'صعودی' : 'نزولی'} قرار دارد و ${isPositive ? 'انتظار رشد' : 'نیاز به احتیاط'} دارد.`;
+    }
+
+    simulateMarketChanges() {
+        const marketHighlights = document.querySelectorAll('.highlight-item.market');
+        marketHighlights.forEach(highlight => {
+            const isPositive = Math.random() > 0.5;
+            highlight.classList.toggle('positive', isPositive);
+            highlight.classList.toggle('negative', !isPositive);
+        });
     }
 
     loadSectionData(sectionId) {
-        // Simulate data loading
-        console.log(`Loading data for section: ${sectionId}`);
+        console.log(`📊 Loading data for section: ${sectionId}`);
     }
 
     loadMarketData() {
-        // Simulate market data loading
         setTimeout(() => {
             this.showNotification('داده‌های بازار به‌روز شد', 'success');
         }, 2000);
     }
-
-    initializeSectionCharts(sectionId) {
-        // Initialize charts for specific sections
-        const section = document.getElementById(sectionId);
-        if (section) {
-            section.querySelectorAll('.chart-container canvas').forEach((canvas, index) => {
-                setTimeout(() => {
-                    this.createCandleChart(canvas.id, `Asset ${index + 1}`);
-                }, index * 100);
-            });
-        }
-    }
-
-    loadChatHistory(section) {
-        const container = document.getElementById(`${section}ChatContainer`);
-        if (!container) return;
-
-        this.chatHistories[section].forEach(msg => {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${msg.sender}-message`;
-            messageDiv.innerHTML = `<strong>${msg.sender === 'ai' ? 'هوش مصنوعی' : 'شما'}:</strong> ${msg.message}`;
-            container.appendChild(messageDiv);
-        });
-        
-        container.scrollTop = container.scrollHeight;
-    }
 }
 
-// Initialize the application
+// Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.livePulseApp = new LivePulseApp();
 });
