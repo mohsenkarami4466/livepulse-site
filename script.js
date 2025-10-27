@@ -1,827 +1,792 @@
-// app.js
-/**
- * سامانه مالی هوشمند - اسکریپت اصلی
- * مدیریت حالت‌های مختلف، تعاملات کاربر و اتصال به API
- */
+// ==================== //
+// 🎯 فایل script.js - کامل و حرفه‌ای
+// ==================== //
 
-class FinancialApp {
-    constructor() {
-        this.currentMode = 'market'; // 'market' or 'tools'
-        this.currentSection = 'crypto-section';
-        this.marketData = {};
-        this.userPreferences = {};
-        this.chatHistories = {};
-        
-        this.init();
+// 📍 داده‌های تستی برای شروع کار
+// 🔗 بعداً با API واقعی جایگزین می‌شوند
+
+const sampleData = {
+    // 💰 داده‌های نمونه برای رمزارزها
+    crypto: [
+        { id: 'bitcoin', name: 'بیت‌کوین', symbol: 'BTC', price: 45230, change: 2.5, chart: 'up' },
+        { id: 'ethereum', name: 'اتریوم', symbol: 'ETH', price: 2850, change: 1.2, chart: 'up' },
+        { id: 'tether', name: 'تتر', symbol: 'USDT', price: 1.00, change: 0.1, chart: 'stable' },
+        { id: 'bnb', name: 'بی‌ان‌بی', symbol: 'BNB', price: 320, change: -0.5, chart: 'down' },
+        { id: 'solana', name: 'سولانا', symbol: 'SOL', price: 105, change: 3.2, chart: 'up' },
+        { id: 'cardano', name: 'کاردانو', symbol: 'ADA', price: 0.52, change: -1.8, chart: 'down' },
+        { id: 'xrp', name: 'ریپل', symbol: 'XRP', price: 0.58, change: 0.8, chart: 'up' },
+        { id: 'dogecoin', name: 'دوج‌کوین', symbol: 'DOGE', price: 0.085, change: 5.2, chart: 'up' },
+        { id: 'polkadot', name: 'پولکادات', symbol: 'DOT', price: 7.2, change: -0.3, chart: 'down' },
+        { id: 'litecoin', name: 'لایت‌کوین', symbol: 'LTC', price: 72.5, change: 1.1, chart: 'up' }
+    ],
+
+    // 💵 داده‌های نمونه برای ارزها
+    currency: [
+        { id: 'usd', name: 'دلار آمریکا', symbol: 'USD', price: 58000, change: 0.5, chart: 'up' },
+        { id: 'eur', name: 'یورو', symbol: 'EUR', price: 62000, change: -0.2, chart: 'down' },
+        { id: 'gbp', name: 'پوند', symbol: 'GBP', price: 73000, change: 0.3, chart: 'up' },
+        { id: 'aed', name: 'درهم امارات', symbol: 'AED', price: 15800, change: 0.1, chart: 'stable' },
+        { id: 'try', name: 'لیر ترکیه', symbol: 'TRY', price: 1800, change: -1.2, chart: 'down' },
+        { id: 'cad', name: 'دلار کانادا', symbol: 'CAD', price: 42000, change: 0.4, chart: 'up' },
+        { id: 'aud', name: 'دلار استرالیا', symbol: 'AUD', price: 38000, change: -0.6, chart: 'down' },
+        { id: 'cny', name: 'یوان چین', symbol: 'CNY', price: 8000, change: 0.2, chart: 'up' },
+        { id: 'jpy', name: 'ین ژاپن', symbol: 'JPY', price: 380, change: -0.1, chart: 'down' },
+        { id: 'chf', name: 'فرانک سوئیس', symbol: 'CHF', price: 65000, change: 0.7, chart: 'up' }
+    ],
+
+    // 🥇 داده‌های نمونه برای طلا
+    gold: [
+        { id: 'sekee-emami', name: 'سکه امامی', symbol: 'SEKEE', price: 32000000, change: 1.2, chart: 'up' },
+        { id: 'sekee-bahar', name: 'سکه بهار', symbol: 'BAHAR', price: 31000000, change: 0.8, chart: 'up' },
+        { id: 'gerami18', name: 'طلای 18 عیار', symbol: 'GOLD18', price: 2850000, change: 0.5, chart: 'up' },
+        { id: 'gerami24', name: 'طلای 24 عیار', symbol: 'GOLD24', price: 3750000, change: 0.6, chart: 'up' },
+        { id: 'nesfe-sekee', name: 'نیم سکه', symbol: 'NESFE', price: 16500000, change: 1.1, chart: 'up' },
+        { id: 'rob-sekee', name: 'ربع سکه', symbol: 'ROB', price: 8500000, change: 0.9, chart: 'up' },
+        { id: 'gerami17', name: 'طلای 17 عیار', symbol: 'GOLD17', price: 2700000, change: 0.4, chart: 'up' },
+        { id: 'gerami21', name: 'طلای 21 عیار', symbol: 'GOLD21', price: 3350000, change: 0.7, chart: 'up' },
+        { id: 'sekee-tam', name: 'سکه تمام', symbol: 'TAM', price: 32500000, change: 1.3, chart: 'up' },
+        { id: 'mesghal', name: 'مثقال طلا', symbol: 'MESGHAL', price: 18500000, change: 0.8, chart: 'up' }
+    ],
+
+    // 📈 داده‌های نمونه برای نفت
+    oil: [
+        { id: 'brent', name: 'نفت برنت', symbol: 'BRENT', price: 82.5, change: -1.2, chart: 'down' },
+        { id: 'wti', name: 'نفت وست تگزاس', symbol: 'WTI', price: 78.3, change: -0.8, chart: 'down' },
+        { id: 'opec', name: 'سبد اوپک', symbol: 'OPEC', price: 80.1, change: -1.0, chart: 'down' }
+    ],
+
+    // 🔄 نرخ تبدیل ارز برای مبدل
+    exchangeRates: {
+        USD: 58000,
+        EUR: 62000,
+        GBP: 73000,
+        IRR: 1,
+        TRY: 1800,
+        AED: 15800,
+        CAD: 42000,
+        AUD: 38000,
+        CNY: 8000,
+        JPY: 380,
+        CHF: 65000
     }
+};
 
-    /**
-     * مقداردهی اولیه برنامه
-     */
-    init() {
-        this.loadUserPreferences();
-        this.setupEventListeners();
-        this.loadMarketData();
-        this.setupServiceWorker();
-        this.initializeChats();
-        
-        console.log('💰 سامانه مالی هوشمند راه‌اندازی شد');
+// 🎯 وضعیت کلی برنامه
+const appState = {
+    currentTheme: 'light',
+    currentView: 'home',
+    currentCategory: 'crypto',
+    currentTool: 'gold-calc',
+    openModals: 0,
+    maxModals: {
+        home: 4,
+        category: 2
+    },
+    userUsage: {
+        chat: 0,
+        tools: 0
     }
+};
 
-    /**
-     * بارگذاری تنظیمات کاربر از localStorage
-     */
-    loadUserPreferences() {
-        const savedTheme = localStorage.getItem('financialApp_theme') || 'light';
-        const savedMode = localStorage.getItem('financialApp_mode') || 'market';
-        
-        this.userPreferences = {
-            theme: savedTheme,
-            mode: savedMode,
-            fontSize: localStorage.getItem('financialApp_fontSize') || 'normal'
-        };
-
-        this.applyUserPreferences();
-    }
-
-    /**
-     * اعمال تنظیمات کاربر روی صفحه
-     */
-    applyUserPreferences() {
-        // اعمال تم
-        document.body.setAttribute('data-theme', this.userPreferences.theme);
-        
-        // اعمال حالت اولیه
-        if (this.userPreferences.mode === 'tools') {
-            this.switchToToolsMode();
-        } else {
-            this.switchToMarketMode();
-        }
-
-        // اعمال سایز فونت
-        document.documentElement.style.fontSize = this.getFontSizeValue(this.userPreferences.fontSize);
-    }
-
-    /**
-     * تنظیم شنونده‌های رویداد
-     */
-    setupEventListeners() {
-        this.setupThemeToggle();
-        this.setupModeToggle();
-        this.setupHighlightInteractions();
-        this.setupDataCardInteractions();
-        this.setupChatSystems();
-        this.setupLoginSystem();
-        this.setupSliderControls();
-        this.setupResponsiveHandlers();
-    }
-
-    /**
-     * مدیریت تغییر تم
-     */
-    setupThemeToggle() {
-        const themeToggle = document.getElementById('themeToggle');
-        
-        themeToggle.addEventListener('click', (e) => {
-            if (e.target.classList.contains('theme-btn')) {
-                const theme = e.target.getAttribute('data-theme');
-                this.switchTheme(theme);
-            }
-        });
-
-        // پشتیبانی از تغییر تم سیستم
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        mediaQuery.addEventListener('change', (e) => {
-            if (!localStorage.getItem('financialApp_theme')) {
-                this.switchTheme(e.matches ? 'dark' : 'light');
-            }
-        });
-    }
-
-    /**
-     * تغییر تم
-     */
-    switchTheme(theme) {
-        document.body.setAttribute('data-theme', theme);
-        this.userPreferences.theme = theme;
-        localStorage.setItem('financialApp_theme', theme);
-        
-        this.showNotification(`تم ${theme === 'dark' ? 'تاریک' : 'روشن'} فعال شد`, 'success');
-    }
-
-    /**
-     * مدیریت تغییر حالت بین بازار و ابزار
-     */
-    setupModeToggle() {
-        const modeToggleBtn = document.getElementById('modeToggleBtn');
-        const logoBtn = document.getElementById('logoBtn');
-
-        modeToggleBtn.addEventListener('click', () => this.toggleMode());
-        logoBtn.addEventListener('click', () => this.handleLogoClick());
-    }
-
-    /**
-     * تغییر حالت بین بازار و ابزار
-     */
-    toggleMode() {
-        if (this.currentMode === 'market') {
-            this.switchToToolsMode();
-        } else {
-            this.switchToMarketMode();
-        }
-    }
-
-    /**
-     * تغییر به حالت ابزار
-     */
-    switchToToolsMode() {
-        this.currentMode = 'tools';
-        document.getElementById('modeToggleBtn').textContent = 'خانه';
-        
-        // نمایش هایلایت‌های ابزار
-        document.getElementById('marketHighlights').classList.add('hidden');
-        document.getElementById('toolHighlights').classList.remove('hidden');
-        
-        // فعال‌سازی اولین ابزار
-        this.switchSection('gold-tool-section');
-        
-        this.userPreferences.mode = 'tools';
-        localStorage.setItem('financialApp_mode', 'tools');
-        
-        this.showNotification('حالت ابزارهای محاسباتی فعال شد', 'info');
-    }
-
-    /**
-     * تغییر به حالت بازار
-     */
-    switchToMarketMode() {
-        this.currentMode = 'market';
-        document.getElementById('modeToggleBtn').textContent = 'ابزارها';
-        
-        // نمایش هایلایت‌های بازار
-        document.getElementById('toolHighlights').classList.add('hidden');
-        document.getElementById('marketHighlights').classList.remove('hidden');
-        
-        // فعال‌سازی اولین بخش بازار
-        this.switchSection('crypto-section');
-        
-        this.userPreferences.mode = 'market';
-        localStorage.setItem('financialApp_mode', 'market');
-        
-        this.showNotification('حالت تحلیل بازار فعال شد', 'info');
-    }
-
-    /**
-     * مدیریت کلیک روی لوگو
-     */
-    handleLogoClick() {
-        if (this.currentMode === 'tools') {
-            this.switchToMarketMode();
-        } else {
-            this.switchSection('crypto-section');
-        }
-    }
-
-    /**
-     * مدیریت تعاملات هایلایت‌ها
-     */
-    setupHighlightInteractions() {
-        const highlights = document.querySelectorAll('.highlight-item');
-        
-        highlights.forEach(highlight => {
-            highlight.addEventListener('click', (e) => {
-                const sectionId = highlight.getAttribute('data-section');
-                this.handleHighlightClick(highlight, sectionId);
-            });
-
-            // افکت hover پیشرفته
-            highlight.addEventListener('mouseenter', (e) => {
-                this.createRippleEffect(e);
-            });
-        });
-    }
-
-    /**
-     * مدیریت کلیک روی هایلایت
-     */
-    handleHighlightClick(highlight, sectionId) {
-        // حذف حالت فعال از همه هایلایت‌های مرتبط
-        const relatedHighlights = this.currentMode === 'market' ? 
-            document.querySelectorAll('.highlight-item.market') : 
-            document.querySelectorAll('.highlight-item.tool');
-        
-        relatedHighlights.forEach(h => h.classList.remove('active'));
-        
-        // فعال کردن هایلایت انتخاب شده
-        highlight.classList.add('active');
-        
-        // تغییر بخش
-        this.switchSection(sectionId);
-        
-        // ثبت تحلیل کاربر
-        this.trackUserBehavior('highlight_click', {
-            mode: this.currentMode,
-            section: sectionId
-        });
-    }
-
-    /**
-     * تغییر بخش فعال
-     */
-    switchSection(sectionId) {
-        // مخفی کردن همه بخش‌ها
-        document.querySelectorAll('.content-section').forEach(section => {
-            section.classList.remove('active');
-        });
-        
-        // نمایش بخش انتخاب شده
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-            this.currentSection = sectionId;
-            
-            // بارگذاری داده‌های مربوطه
-            this.loadSectionData(sectionId);
-        }
-    }
-
-    /**
-     * بارگذاری داده‌های بخش
-     */
-    async loadSectionData(sectionId) {
-        try {
-            // نمایش حالت بارگذاری
-            this.showLoadingState(sectionId, true);
-            
-            let data;
-            
-            if (sectionId.includes('-tool-')) {
-                // بارگذاری داده‌های ابزار
-                data = await this.loadToolData(sectionId);
-            } else {
-                // بارگذاری داده‌های بازار
-                data = await this.loadMarketSectionData(sectionId);
-            }
-            
-            // به‌روزرسانی رابط کاربری
-            this.updateSectionUI(sectionId, data);
-            
-        } catch (error) {
-            console.error('خطا در بارگذاری داده‌ها:', error);
-            this.showError(sectionId, 'خطا در بارگذاری داده‌ها');
-        } finally {
-            this.showLoadingState(sectionId, false);
-        }
-    }
-
-    /**
-     * مدیریت تعاملات کارت‌های داده
-     */
-    setupDataCardInteractions() {
-        const dataCards = document.querySelectorAll('.data-card, .window-card');
-        
-        dataCards.forEach(card => {
-            let hoverTimeout;
-            
-            // هاور برای اطلاعات تکمیلی
-            card.addEventListener('mouseenter', (e) => {
-                hoverTimeout = setTimeout(() => {
-                    this.showCardTooltip(card, e);
-                }, 800);
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                clearTimeout(hoverTimeout);
-                this.hideCardTooltip();
-            });
-            
-            // کلیک برای اطلاعات کامل
-            card.addEventListener('click', (e) => {
-                this.showCardDetailPopup(card);
-            });
-            
-            // لمس برای موبایل
-            card.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                this.showCardDetailPopup(card);
-            }, { passive: false });
-        });
-    }
-
-    /**
-     * نمایش تولتیپ کارت
-     */
-    showCardTooltip(card, event) {
-        // پیاده‌سازی تولتیپ پیشرفته
-        const tooltip = this.createTooltip(card, event);
-        document.body.appendChild(tooltip);
-    }
-
-    /**
-     * ایجاد تولتیپ
-     */
-    createTooltip(card, event) {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'advanced-tooltip';
-        tooltip.innerHTML = `
-            <div class="tooltip-content">
-                <h4>اطلاعات تکمیلی</h4>
-                <p>برای مشاهده جزئیات کامل کلیک کنید</p>
-            </div>
-        `;
-        
-        const rect = card.getBoundingClientRect();
-        tooltip.style.position = 'fixed';
-        tooltip.style.top = `${rect.top - 10}px`;
-        tooltip.style.left = `${rect.left + rect.width / 2}px`;
-        tooltip.style.transform = 'translateX(-50%) translateY(-100%)';
-        
-        return tooltip;
-    }
-
-    /**
-     * نمایش پاپ‌آپ جزئیات کارت
-     */
-    showCardDetailPopup(card) {
-        const assetName = card.querySelector('.card-title')?.textContent || 'دارایی';
-        const price = card.querySelector('.card-price')?.textContent || '---';
-        const change = card.querySelector('.card-change')?.textContent || '---';
-        
-        const popupContent = `
-            <div class="popup-detail">
-                <div class="detail-header">
-                    <h3>${assetName}</h3>
-                    <div class="price-display">${price}</div>
-                    <div class="change-display ${change.includes('+') ? 'positive' : 'negative'}">${change}</div>
-                </div>
-                
-                <div class="detail-content">
-                    <div class="chart-placeholder">
-                        <p>📊 نمودار قیمت - به زودی</p>
-                        <small>این بخش با اتصال به API کامل خواهد شد</small>
-                    </div>
-                    
-                    <div class="detail-stats">
-                        <div class="stat-item">
-                            <span>بالاترین قیمت:</span>
-                            <strong>${this.generateRandomPrice(price)}</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span>پایین‌ترین قیمت:</span>
-                            <strong>${this.generateRandomPrice(price, false)}</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span>حجم معاملات:</span>
-                            <strong>${this.formatNumber(Math.random() * 1000)}M</strong>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="detail-actions">
-                    <button class="btn-secondary" onclick="app.addToWatchlist('${assetName}')">
-                        💾 افزودن به دیده‌بان
-                    </button>
-                    <button class="btn-primary" onclick="app.shareAsset('${assetName}')">
-                        🔗 اشتراک‌گذاری
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        this.showPopup('جزئیات دارایی', popupContent);
-    }
-
-    /**
-     * مدیریت سیستم چت
-     */
-    setupChatSystems() {
-        this.initializeAllChats();
-        this.setupChatInputs();
-    }
-
-    /**
-     * مقداردهی اولیه همه چت‌ها
-     */
-    initializeAllChats() {
-        const chatSections = [
-            'crypto', 'currency', 'gold', 'oil',
-            'gold-tool', 'diamond-tool', 'silver-tool', 
-            'pearl-tool', 'gem-tool', 'currency-tool'
-        ];
-        
-        chatSections.forEach(section => {
-            this.chatHistories[section] = JSON.parse(
-                localStorage.getItem(`chat_${section}`) || '[]'
-            );
-            
-            // بارگذاری تاریخچه چت
-            this.loadChatHistory(section);
-        });
-    }
-
-    /**
-     * تنظیم ورودی‌های چت
-     */
-    setupChatInputs() {
-        document.querySelectorAll('.chat-input-container').forEach(container => {
-            const input = container.querySelector('.chat-input');
-            const sendBtn = container.querySelector('.chat-send');
-            const chatContainer = container.previousElementSibling;
-            
-            const section = this.getChatSectionFromContainer(container);
-            
-            sendBtn.addEventListener('click', () => {
-                this.handleChatSend(section, input, chatContainer);
-            });
-            
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    this.handleChatSend(section, input, chatContainer);
-                }
-            });
-        });
-    }
-
-    /**
-     * مدیریت ارسال پیام چت
-     */
-    async handleChatSend(section, input, chatContainer) {
-        const message = input.value.trim();
-        if (!message) return;
-        
-        // افزودن پیام کاربر
-        this.addChatMessage(section, 'user', message, chatContainer);
-        input.value = '';
-        
-        // شبیه‌سازی پاسخ هوش مصنوعی
-        setTimeout(async () => {
-            const response = await this.generateAIResponse(section, message);
-            this.addChatMessage(section, 'ai', response, chatContainer);
-        }, 1000 + Math.random() * 2000);
-    }
-
-    /**
-     * تولید پاسخ هوش مصنوعی
-     */
-    async generateAIResponse(section, userMessage) {
-        // در نسخه واقعی به API هوش مصنوعی متصل می‌شود
-        const responses = {
-            'crypto': [
-                "تحلیل فعلی بازار رمزارزها نشان‌دهنده روند صعودی ملایم است.",
-                "بیت‌کوین در حال تست مقاومت ۴۵,۰۰۰ دلاری است.",
-                "انتظار می‌رود اتریوم در صورت شکست ۲,۵۰۰ دلار رشد کند."
-            ],
-            'currency': [
-                "نرخ ارزها تحت تأثیر اخبار سیاسی در نوسان است.",
-                "دلار ممکن است در محدوده ۵۸-۶۰ هزار تومان تثبیت شود.",
-                "یورو نسبت به دلار آمریکا در حال تقویت است."
-            ],
-            'gold': [
-                "طلای جهانی تحت تأثیر تورم جهانی در حال رشد است.",
-                "پیش‌بینی می‌شود طلا به ۲,۰۲۰ دلار برسد.",
-                "سکه امامی ممکن است نوسانات فصلی را تجربه کند."
-            ],
-            'default': [
-                "سوال خوبی پرسیدید! برای پاسخ دقیق‌تر به داده‌های بیشتری نیاز دارم.",
-                "این موضوع نیاز به تحلیل تخصصی دارد.",
-                "لطفاً سوال خود را با جزئیات بیشتری مطرح کنید."
-            ]
-        };
-        
-        const sectionKey = section.includes('-tool') ? 'tools' : section.split('-')[0];
-        const availableResponses = responses[sectionKey] || responses.default;
-        
-        return availableResponses[Math.floor(Math.random() * availableResponses.length)];
-    }
-
-    /**
-     * افزودن پیام به چت
-     */
-    addChatMessage(section, sender, message, container) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${sender}-message`;
-        messageDiv.innerHTML = `<strong>${sender === 'ai' ? 'هوش مصنوعی' : 'شما'}:</strong> ${message}`;
-        
-        container.appendChild(messageDiv);
-        container.scrollTop = container.scrollHeight;
-        
-        // ذخیره در تاریخچه
-        this.chatHistories[section].push({ sender, message, timestamp: new Date().toISOString() });
-        localStorage.setItem(`chat_${section}`, JSON.stringify(this.chatHistories[section]));
-    }
-
-    /**
-     * مدیریت سیستم ورود
-     */
-    setupLoginSystem() {
-        const loginBtn = document.getElementById('loginBtn');
-        const loginPopup = document.getElementById('loginPopup');
-        const loginClose = document.getElementById('loginClose');
-        const loginForm = document.querySelector('.login-form');
-        
-        loginBtn.addEventListener('click', () => this.showLoginPopup());
-        loginClose.addEventListener('click', () => this.hideLoginPopup());
-        
-        loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-        
-        // بستن پاپ‌آپ با کلیک خارج
-        loginPopup.addEventListener('click', (e) => {
-            if (e.target === loginPopup) this.hideLoginPopup();
-        });
-    }
-
-    /**
-     * نمایش پاپ‌آپ ورود
-     */
-    showLoginPopup() {
-        document.getElementById('loginPopup').style.display = 'flex';
-    }
-
-    /**
-     * مدیریت فرم ورود
-     */
-    async handleLogin(event) {
-        event.preventDefault();
-        
-        const formData = new FormData(event.target);
-        const username = formData.get('username');
-        const password = formData.get('password');
-        
-        try {
-            // شبیه‌سازی احراز هویت
-            await this.authenticateUser(username, password);
-            this.showNotification('ورود موفقیت‌آمیز بود!', 'success');
-            this.hideLoginPopup();
-            
-        } catch (error) {
-            this.showNotification('خطا در ورود. لطفاً مجدداً تلاش کنید.', 'error');
-        }
-    }
-
-    /**
-     * مدیریت اسلایدرها
-     */
-    setupSliderControls() {
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const windowsTrack = document.getElementById('windowsTrack');
-        
-        if (prevBtn && nextBtn && windowsTrack) {
-            let currentPosition = 0;
-            
-            nextBtn.addEventListener('click', () => {
-                const cardWidth = document.querySelector('.window-card').offsetWidth + 16;
-                currentPosition = Math.max(currentPosition - cardWidth, 
-                    -(windowsTrack.scrollWidth - windowsTrack.parentElement.offsetWidth));
-                windowsTrack.style.transform = `translateX(${currentPosition}px)`;
-            });
-            
-            prevBtn.addEventListener('click', () => {
-                const cardWidth = document.querySelector('.window-card').offsetWidth + 16;
-                currentPosition = Math.min(currentPosition + cardWidth, 0);
-                windowsTrack.style.transform = `translateX(${currentPosition}px)`;
-            });
-        }
-    }
-
-    /**
-     * مدیریت ریسپانسیو
-     */
-    setupResponsiveHandlers() {
-        window.addEventListener('resize', this.debounce(() => {
-            this.handleResize();
-        }, 250));
-        
-        // تشخیص دستگاه تچ
-        this.setupTouchHandlers();
-    }
-
-    /**
-     * بارگذاری داده‌های بازار
-     */
-    async loadMarketData() {
-        try {
-            // شبیه‌سازی بارگذاری داده‌های واقعی
-            this.marketData = {
-                crypto: await this.fetchCryptoData(),
-                currency: await this.fetchCurrencyData(),
-                gold: await this.fetchGoldData(),
-                oil: await this.fetchOilData()
-            };
-            
-            this.updateAllMarketDisplays();
-            
-        } catch (error) {
-            console.error('خطا در بارگذاری داده‌های بازار:', error);
-        }
-    }
-
-    /**
-     * شبیه‌سازی داده‌های رمزارز
-     */
-    async fetchCryptoData() {
-        return {
-            bitcoin: { price: 45280, change: 2.45 },
-            ethereum: { price: 2450, change: 3.21 },
-            tether: { price: 1.00, change: 0.01 }
-        };
-    }
-
-    /**
-     * شبیه‌سازی داده‌های ارز
-     */
-    async fetchCurrencyData() {
-        return {
-            usd: { price: 58420, change: -0.85 },
-            eur: { price: 62180, change: 0.92 },
-            aed: { price: 15900, change: -0.45 }
-        };
-    }
-
-    /**
-     * utility functions
-     */
+// 📍 المنت‌های DOM
+const elements = {
+    app: document.getElementById('app'),
+    themeToggle: document.getElementById('themeToggle'),
+    viewToggle: document.getElementById('viewToggle'),
+    loginBtn: document.getElementById('loginBtn'),
+    homeLogo: document.getElementById('homeLogo'),
     
-    /**
-     * نمایش نوتیفیکیشن
-     */
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <span class="notification-icon">${this.getNotificationIcon(type)}</span>
-                <span class="notification-message">${message}</span>
-                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // خودکار پاک شود
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 5000);
-    }
+    // بخش‌های نمایش
+    homeView: document.getElementById('homeView'),
+    toolsView: document.getElementById('toolsView'),
+    
+    // هایلایت‌ها
+    highlightCircles: document.querySelectorAll('.highlight-circle'),
+    toolCircles: document.querySelectorAll('[data-tool]'),
+    
+    // کانتینر کارت‌ها
+    homeCardsContainer: document.getElementById('homeCardsContainer'),
+    toolsContainer: document.getElementById('toolsContainer'),
+    
+    // مودال‌ها
+    loginModal: document.getElementById('loginModal'),
+    priceModal: document.getElementById('priceModal'),
+    closeModal: document.getElementById('closeModal'),
+    closePriceModal: document.getElementById('closePriceModal'),
+    
+    // چت
+    chatInput: document.getElementById('chatInput'),
+    sendMessage: document.getElementById('sendMessage'),
+    chatMessages: document.getElementById('chatMessages'),
+    chatUsage: document.getElementById('chatUsage'),
+    
+    // ابزارها
+    goldResult: document.getElementById('goldResult'),
+    diamondResult: document.getElementById('diamondResult'),
+    conversionResult: document.getElementById('conversionResult')
+};
 
-    /**
-     * نمایش پاپ‌آپ
-     */
-    showPopup(title, content) {
-        const popup = document.createElement('div');
-        popup.className = 'popup-overlay';
-        popup.innerHTML = `
-            <div class="popup-content">
-                <div class="popup-header">
-                    <h3 class="popup-title">${title}</h3>
-                    <button class="popup-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
-                </div>
-                <div class="popup-body">
-                    ${content}
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(popup);
-        
-        // بستن با ESC
-        const closeHandler = (e) => {
-            if (e.key === 'Escape') {
-                popup.remove();
-                document.removeEventListener('keydown', closeHandler);
-            }
-        };
-        document.addEventListener('keydown', closeHandler);
-    }
+// ==================== //
+// 🎛️ مدیریت وضعیت برنامه
+// ==================== //
 
-    /**
-     * ایجاد افکت ریپل
-     */
-    createRippleEffect(event) {
-        const button = event.currentTarget;
-        const circle = document.createElement('span');
-        const diameter = Math.max(button.clientWidth, button.clientHeight);
-        const radius = diameter / 2;
-        
-        circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
-        circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
-        circle.classList.add('ripple');
-        
-        const ripple = button.getElementsByClassName('ripple')[0];
-        if (ripple) {
-            ripple.remove();
-        }
-        
-        button.appendChild(circle);
-    }
+/**
+ * 📖 مقداردهی اولیه برنامه
+ * 🔧 این تابع وقتی صفحه لود شد اجرا می‌شود
+ */
+function initializeApp() {
+    console.log('🚀 برنامه LivePulse در حال راه‌اندازی...');
+    
+    // بارگذاری وضعیت از localStorage
+    loadUserState();
+    
+    // تنظیم تم اولیه
+    setTheme(appState.currentTheme);
+    
+    // نمایش نمای اولیه
+    showView(appState.currentView);
+    
+    // تولید کارت‌های اولیه
+    generateHomeCards();
+    
+    // تنظیم ایونت‌لیستنرها
+    setupEventListeners();
+    
+    // شبیه‌سازی به‌روزرسانی قیمت‌ها
+    startPriceUpdates();
+    
+    console.log('✅ برنامه آماده است!');
+}
 
-    /**
-     * تابع کمکی debounce
-     */
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
+/**
+ * 💾 بارگذاری وضعیت کاربر از localStorage
+ */
+function loadUserState() {
+    const savedTheme = localStorage.getItem('livepulse-theme');
+    const savedUsage = localStorage.getItem('livepulse-usage');
+    
+    if (savedTheme) {
+        appState.currentTheme = savedTheme;
     }
-
-    /**
-     * فرمت اعداد
-     */
-    formatNumber(num) {
-        return new Intl.NumberFormat('fa-IR').format(num);
-    }
-
-    /**
-     * تولید قیمت تصادفی
-     */
-    generateRandomPrice(basePrice, higher = true) {
-        const base = parseFloat(basePrice.replace(/[^\d.]/g, ''));
-        const variation = higher ? 
-            base * (1 + Math.random() * 0.1) : 
-            base * (1 - Math.random() * 0.1);
-        
-        return this.formatNumber(Math.round(variation));
-    }
-
-    /**
-     * راه‌اندازی Service Worker
-     */
-    setupServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(registration => {
-                    console.log('Service Worker ثبت شد:', registration);
-                })
-                .catch(error => {
-                    console.log('خطا در ثبت Service Worker:', error);
-                });
-        }
-    }
-
-    /**
-     * ردیابی رفتار کاربر
-     */
-    trackUserBehavior(action, data) {
-        // در نسخه واقعی به analytics متصل می‌شود
-        console.log('User Behavior:', { action, data, timestamp: new Date().toISOString() });
-    }
-
-    /**
-     * دریافت سایز فونت
-     */
-    getFontSizeValue(size) {
-        const sizes = {
-            'small': '14px',
-            'normal': '16px',
-            'large': '18px',
-            'x-large': '20px'
-        };
-        return sizes[size] || sizes.normal;
-    }
-
-    /**
-     * دریافت آیکون نوتیفیکیشن
-     */
-    getNotificationIcon(type) {
-        const icons = {
-            'success': '✅',
-            'error': '❌',
-            'warning': '⚠️',
-            'info': 'ℹ️'
-        };
-        return icons[type] || icons.info;
-    }
-
-    /**
-     * دریافت بخش چت از container
-     */
-    getChatSectionFromContainer(container) {
-        const chatSection = container.closest('.ai-chat');
-        return chatSection ? chatSection.id.replace('ChatContainer', '') : 'general';
+    
+    if (savedUsage) {
+        appState.userUsage = JSON.parse(savedUsage);
+        updateUsageDisplay();
     }
 }
 
-// راه‌اندازی برنامه وقتی DOM آماده است
-document.addEventListener('DOMContentLoaded', () => {
-    window.app = new FinancialApp();
+/**
+ * 💾 ذخیره وضعیت کاربر در localStorage
+ */
+function saveUserState() {
+    localStorage.setItem('livepulse-theme', appState.currentTheme);
+    localStorage.setItem('livepulse-usage', JSON.stringify(appState.userUsage));
+}
+
+// ==================== //
+// 🎨 مدیریت تم (تاریک/روشن)
+// ==================== //
+
+/**
+ * 🌙 تغییر تم بین تاریک و روشن
+ */
+function toggleTheme() {
+    const newTheme = appState.currentTheme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+}
+
+/**
+ * 🎨 اعمال تم مشخص
+ * @param {string} theme - 'light' یا 'dark'
+ */
+function setTheme(theme) {
+    appState.currentTheme = theme;
+    elements.app.setAttribute('data-theme', theme);
+    
+    // آپدیت آیکون دکمه تم
+    const themeIcon = elements.themeToggle.querySelector('.theme-icon');
+    themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+    
+    // ذخیره در localStorage
+    localStorage.setItem('livepulse-theme', theme);
+    
+    console.log(`🎨 تم تغییر کرد به: ${theme}`);
+}
+
+// ==================== //
+// 🔄 مدیریت نمایش (خانه/ابزار)
+// ==================== //
+
+/**
+ * 🏠 تغییر بین نمای خانه و ابزار
+ */
+function toggleView() {
+    const newView = appState.currentView === 'home' ? 'tools' : 'home';
+    showView(newView);
+}
+
+/**
+ * 📱 نمایش نمای مشخص
+ * @param {string} view - 'home' یا 'tools'
+ */
+function showView(view) {
+    // مخفی کردن همه نماها
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    
+    // نمایش نمای انتخاب شده
+    if (view === 'home') {
+        elements.homeView.classList.add('active');
+        elements.viewToggle.querySelector('.view-text').textContent = 'ابزار';
+        appState.currentView = 'home';
+        generateHomeCards();
+    } else {
+        elements.toolsView.classList.add('active');
+        elements.viewToggle.querySelector('.view-text').textContent = 'خانه';
+        appState.currentView = 'tools';
+        activateTool(appState.currentTool);
+    }
+    
+    console.log(`📱 نمایش تغییر کرد به: ${view}`);
+}
+
+// ==================== //
+// 🏠 بخش خانه - کارت‌های قیمت
+// ==================== //
+
+/**
+ * 🎴 تولید کارت‌های قیمت برای صفحه خانه
+ */
+function generateHomeCards() {
+    elements.homeCardsContainer.innerHTML = '';
+    
+    // انتخاب ۶ مورد از مهم‌ترین آیتم‌ها از هر دسته
+    const featuredItems = [
+        sampleData.crypto[0],    // بیت‌کوین
+        sampleData.currency[0],  // دلار
+        sampleData.gold[0],      // سکه امامی
+        sampleData.oil[0],       // نفت برنت
+        sampleData.crypto[1],    // اتریوم
+        sampleData.currency[1]   // یورو
+    ];
+    
+    featuredItems.forEach(item => {
+        const card = createPriceCard(item);
+        elements.homeCardsContainer.appendChild(card);
+    });
+}
+
+/**
+ * 🎴 ایجاد یک کارت قیمت
+ * @param {Object} item - آیتم قیمت
+ * @returns {HTMLElement} المنت کارت
+ */
+function createPriceCard(item) {
+    const card = document.createElement('div');
+    card.className = `price-card glass-card ${item.chart}`;
+    card.setAttribute('data-symbol', item.symbol);
+    
+    const changeClass = item.change >= 0 ? 'positive' : 'negative';
+    const changeIcon = item.change >= 0 ? '📈' : '📉';
+    
+    card.innerHTML = `
+        <div class="card-header">
+            <h3>${item.name}</h3>
+            <span class="price-change ${changeClass}">
+                ${changeIcon} ${Math.abs(item.change)}%
+            </span>
+        </div>
+        <div class="card-content">
+            <p class="current-price">${formatPrice(item.price, item.symbol)}</p>
+            <div class="mini-chart ${item.chart}"></div>
+        </div>
+        <div class="ad-space">
+            <div class="ad-banner">📍 محل تبلیغات ${item.name}</div>
+        </div>
+    `;
+    
+    // اضافه کردن ایونت‌لیستنر برای کلیک
+    card.addEventListener('click', () => openPriceDetail(item));
+    
+    // اضافه کردن ایونت‌لیستنر برای هاور (دسکتاپ)
+    card.addEventListener('mouseenter', handleCardHover);
+    card.addEventListener('mouseleave', handleCardHover);
+    
+    return card;
+}
+
+/**
+ * 🔍 باز کردن مودال جزئیات قیمت
+ * @param {Object} item - آیتم قیمت
+ */
+function openPriceDetail(item) {
+    if (appState.openModals >= appState.maxModals[appState.currentView]) {
+        alert(`⚠️ شما نمی‌توانید بیشتر از ${appState.maxModals[appState.currentView]} پنجره باز کنید.`);
+        return;
+    }
+    
+    const modalContent = document.getElementById('modalContent');
+    const changeClass = item.change >= 0 ? 'positive' : 'negative';
+    
+    modalContent.innerHTML = `
+        <div class="detail-header">
+            <h2>${item.name} (${item.symbol})</h2>
+            <div class="detail-price">
+                <span class="price-large">${formatPrice(item.price, item.symbol)}</span>
+                <span class="price-change ${changeClass}">${item.change >= 0 ? '+' : ''}${item.change}%</span>
+            </div>
+        </div>
+        
+        <div class="detail-chart">
+            <div class="chart-placeholder">
+                📊 نمودار قیمت ${item.name}
+                <br>
+                <small>📍 بعداً با API واقعی پر می‌شود</small>
+            </div>
+        </div>
+        
+        <div class="ai-analysis-section">
+            <h4>🤖 تحلیل هوش مصنوعی</h4>
+            <p>این تحلیل نمونه برای ${item.name} است. در نسخه نهایی از n8n دریافت می‌شود.</p>
+            <div class="ai-suggestion">
+                <strong>پیشنهاد:</strong> 
+                ${item.change >= 0 ? '📈 شرایط مناسب برای خرید' : '📉 احتیاط در خرید'}
+            </div>
+        </div>
+        
+        <div class="ad-space">
+            <div class="ad-banner">📍 محل تبلیغات تحلیل ${item.name}</div>
+        </div>
+    `;
+    
+    elements.priceModal.classList.add('active');
+    appState.openModals++;
+}
+
+// ==================== //
+// 🛠️ بخش ابزارها
+// ==================== //
+
+/**
+ * 🛠️ فعال‌سازی ابزار مشخص
+ * @param {string} toolId - شناسه ابزار
+ */
+function activateTool(toolId) {
+    // مخفی کردن همه ابزارها
+    document.querySelectorAll('.tool-section').forEach(tool => {
+        tool.classList.remove('active');
+    });
+    
+    // فعال‌سازی ابزار انتخاب شده
+    const targetTool = document.getElementById(toolId + 'Tool');
+    if (targetTool) {
+        targetTool.classList.add('active');
+        appState.currentTool = toolId;
+    }
+    
+    // آپدیت هایلایت‌های ابزار
+    document.querySelectorAll('[data-tool]').forEach(circle => {
+        circle.classList.remove('active');
+    });
+    document.querySelector(`[data-tool="${toolId}"]`).classList.add('active');
+}
+
+/**
+ * 🥇 محاسبه قیمت طلا
+ */
+function calculateGoldPrice() {
+    if (!checkUsageLimit('tools')) return;
+    
+    const weight = parseFloat(document.getElementById('goldWeight').value) || 0;
+    const carat = parseInt(document.getElementById('goldCarat').value) || 24;
+    const wage = parseFloat(document.getElementById('goldWage').value) || 0;
+    
+    if (weight <= 0) {
+        elements.goldResult.innerHTML = '<div class="error">⚠️ لطفا وزن را وارد کنید</div>';
+        return;
+    }
+    
+    // قیمت پایه طلای ۲۴ عیار (تومان)
+    const basePrice24 = 3750000;
+    const caratRatio = carat / 24;
+    const basePrice = basePrice24 * caratRatio * weight;
+    const wageAmount = basePrice * (wage / 100);
+    const finalPrice = basePrice + wageAmount;
+    
+    elements.goldResult.innerHTML = `
+        <div class="success">
+            <h4>💰 نتیجه محاسبه:</h4>
+            <p>قیمت طلای ${carat} عیار: ${formatPrice(finalPrice, 'IRR')}</p>
+            <p>وزن: ${weight} گرم</p>
+            <p>اجرت: ${wage}%</p>
+            <small>🕒 قیمت لحظه‌ای: ${formatPrice(basePrice24, 'IRR')} برای طلای ۲۴ عیار</small>
+        </div>
+    `;
+    
+    incrementUsage('tools');
+}
+
+/**
+ * 💎 آنالیز الماس از روی عکس
+ */
+function analyzeDiamond() {
+    if (!checkUsageLimit('tools')) return;
+    
+    const fileInput = document.getElementById('diamondImage');
+    
+    if (!fileInput.files.length) {
+        elements.diamondResult.innerHTML = '<div class="error">⚠️ لطفا عکس الماس را انتخاب کنید</div>';
+        return;
+    }
+    
+    elements.diamondResult.innerHTML = `
+        <div class="loading">
+            🔍 در حال آنالیز تصویر...
+        </div>
+    `;
+    
+    // شبیه‌سازی پردازش تصویر
+    setTimeout(() => {
+        const results = {
+            quality: 'عالی',
+            carat: 1.2,
+            color: 'D',
+            clarity: 'IF',
+            estimatedPrice: 85000000
+        };
+        
+        elements.diamondResult.innerHTML = `
+            <div class="success">
+                <h4>💎 نتیجه آنالیز الماس:</h4>
+                <p>کیفیت: ${results.quality}</p>
+                <p>قیراط: ${results.carat}</p>
+                <p>رنگ: ${results.color}</p>
+                <p>شفافیت: ${results.clarity}</p>
+                <p>💰 قیمت تخمینی: ${formatPrice(results.estimatedPrice, 'IRR')}</p>
+                <small>📍 این تحلیل نمونه است. در نسخه نهایی از هوش مصنوعی استفاده می‌شود</small>
+            </div>
+        `;
+        
+        incrementUsage('tools');
+    }, 2000);
+}
+
+/**
+ * 🔄 تبدیل ارز
+ */
+function convertCurrency() {
+    const fromCurrency = document.getElementById('fromCurrency').value;
+    const toCurrency = document.getElementById('toCurrency').value;
+    const amount = parseFloat(document.getElementById('amount').value) || 0;
+    
+    if (amount <= 0) {
+        elements.conversionResult.textContent = '⚠️ مبلغ را وارد کنید';
+        return;
+    }
+    
+    const fromRate = sampleData.exchangeRates[fromCurrency];
+    const toRate = sampleData.exchangeRates[toCurrency];
+    
+    if (fromCurrency === 'IRR') {
+        // تبدیل از ریال به ارز دیگر
+        const result = amount / toRate;
+        elements.conversionResult.textContent = `${result.toFixed(4)} ${toCurrency}`;
+    } else if (toCurrency === 'IRR') {
+        // تبدیل از ارز دیگر به ریال
+        const result = amount * fromRate;
+        elements.conversionResult.textContent = `${formatPrice(result, 'IRR')}`;
+    } else {
+        // تبدیل بین دو ارز خارجی
+        const result = (amount * fromRate) / toRate;
+        elements.conversionResult.textContent = `${result.toFixed(4)} ${toCurrency}`;
+    }
+}
+
+// ==================== //
+// 💬 بخش چت هوش مصنوعی
+// ==================== //
+
+/**
+ * 💬 ارسال پیام به چت
+ */
+function sendChatMessage() {
+    if (!checkUsageLimit('chat')) return;
+    
+    const message = elements.chatInput.value.trim();
+    if (!message) return;
+    
+    // اضافه کردن پیام کاربر
+    addChatMessage(message, 'user');
+    elements.chatInput.value = '';
+    
+    // شبیه‌سازی پاسخ هوش مصنوعی
+    simulateAIResponse(message);
+    
+    incrementUsage('chat');
+    updateUsageDisplay();
+}
+
+/**
+ * 🤖 شبیه‌سازی پاسخ هوش مصنوعی
+ * @param {string} userMessage - پیام کاربر
+ */
+function simulateAIResponse(userMessage) {
+    // نمایش وضعیت در حال پردازش
+    const thinkingMessage = addChatMessage('🤔 در حال تحلیل سوال شما...', 'ai');
+    
+    setTimeout(() => {
+        // حذف پیام "در حال پردازش"
+        thinkingMessage.remove();
+        
+        // تولید پاسخ نمونه
+        const responses = [
+            `بر اساس تحلیل من از بازار، شرایط فعلی مناسب به نظر می‌رسد.`,
+            `پیشنهاد می‌کنم در تصمیم‌گیری‌های مالی احتیاط کنید.`,
+            `تحلیل تکنیکال نشان‌دهنده روند صعودی در کوتاه‌مدت است.`,
+            `با توجه به اخبار اخیر، ممکن است نوساناتی در بازار ایجاد شود.`,
+            `این یک تحلیل نمونه است. در نسخه نهایی از هوش مصنوعی پیشرفته استفاده می‌شود.`
+        ];
+        
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        const fullResponse = `سوال شما: "${userMessage}"\n\n${randomResponse}\n\n📍 این پاسخ نمونه است و از n8n دریافت خواهد شد.`;
+        
+        addChatMessage(fullResponse, 'ai');
+    }, 1500);
+}
+
+/**
+ * 💬 اضافه کردن پیام به چت
+ * @param {string} text - متن پیام
+ * @param {string} sender - 'user' یا 'ai'
+ * @returns {HTMLElement} المنت پیام
+ */
+function addChatMessage(text, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `${sender}-message`;
+    messageDiv.innerHTML = `<p>${text}</p>`;
+    
+    elements.chatMessages.appendChild(messageDiv);
+    elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+    
+    return messageDiv;
+}
+
+// ==================== //
+// ⚙️ ابزارهای کمکی
+// ==================== //
+
+/**
+ * 💰 فرمت‌دهی قیمت
+ * @param {number} price - قیمت
+ * @param {string} symbol - نماد ارز
+ * @returns {string} قیمت فرمت‌شده
+ */
+function formatPrice(price, symbol) {
+    if (symbol === 'IRR' || price > 1000) {
+        return new Intl.NumberFormat('fa-IR').format(price) + ' تومان';
+    } else if (price < 1) {
+        return '$' + price.toFixed(4);
+    } else {
+        return '$' + new Intl.NumberFormat('en-US').format(price.toFixed(2));
+    }
+}
+
+/**
+ * ✅ بررسی محدودیت استفاده
+ * @param {string} type - نوع استفاده ('chat' یا 'tools')
+ * @returns {boolean} آیا می‌تواند استفاده کند
+ */
+function checkUsageLimit(type) {
+    if (appState.userUsage[type] >= 4) {
+        alert(`⚠️ شما از ${type === 'chat' ? 'چت' : 'ابزار'} رایگان خود استفاده کرده‌اید. لطفا اشتراک خریداری کنید.`);
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 📈 افزایش شمارنده استفاده
+ * @param {string} type - نوع استفاده
+ */
+function incrementUsage(type) {
+    appState.userUsage[type]++;
+    saveUserState();
+}
+
+/**
+ * 🔢 آپدیت نمایش استفاده
+ */
+function updateUsageDisplay() {
+    elements.chatUsage.textContent = appState.userUsage.chat;
+}
+
+/**
+ * 🖱️ مدیریت هاور روی کارت
+ */
+function handleCardHover(event) {
+    if (event.type === 'mouseenter') {
+        event.currentTarget.style.transform = 'translateY(-5px) scale(1.02)';
+    } else {
+        event.currentTarget.style.transform = 'translateY(0) scale(1)';
+    }
+}
+
+// ==================== //
+// 🔄 به‌روزرسانی قیمت‌ها
+// ==================== //
+
+/**
+ * 🔄 شروع به‌روزرسانی قیمت‌ها
+ */
+function startPriceUpdates() {
+    // شبیه‌سازی به‌روزرسانی قیمت هر ۳۰ ثانیه
+    setInterval(() => {
+        updateAllPrices();
+    }, 30000);
+}
+
+/**
+ * 📊 آپدیت همه قیمت‌ها
+ */
+function updateAllPrices() {
+    // در نسخه واقعی اینجا API فراخوانی می‌شود
+    console.log('🔄 در حال به‌روزرسانی قیمت‌ها...');
+    
+    // شبیه‌سازی تغییرات کوچک قیمت
+    Object.keys(sampleData).forEach(category => {
+        if (Array.isArray(sampleData[category])) {
+            sampleData[category].forEach(item => {
+                // تغییر تصادفی بین -0.5% تا +0.5%
+                const change = (Math.random() - 0.5) * 0.1;
+                item.change += change;
+                item.price *= (1 + change);
+                
+                // به‌روزرسانی نمودار
+                item.chart = change >= 0 ? 'up' : 'down';
+            });
+        }
+    });
+    
+    // اگر در صفحه خانه هستیم، کارت‌ها رو آپدیت کنیم
+    if (appState.currentView === 'home') {
+        generateHomeCards();
+    }
+}
+
+// ==================== //
+// 🎛️ تنظیم ایونت‌لیستنرها
+// ==================== //
+
+/**
+ * 🎯 تنظیم همه ایونت‌لیستنرها
+ */
+function setupEventListeners() {
+    // دکمه تغییر تم
+    elements.themeToggle.addEventListener('click', toggleTheme);
+    
+    // دکمه تغییر نمای خانه/ابزار
+    elements.viewToggle.addEventListener('click', toggleView);
+    
+    // دکمه ورود
+    elements.loginBtn.addEventListener('click', () => {
+        elements.loginModal.classList.add('active');
+    });
+    
+    // لوگو برای بازگشت به خانه
+    elements.homeLogo.addEventListener('click', () => {
+        showView('home');
+    });
+    
+    // بستن مودال‌ها
+    elements.closeModal.addEventListener('click', () => {
+        elements.loginModal.classList.remove('active');
+    });
+    
+    elements.closePriceModal.addEventListener('click', () => {
+        elements.priceModal.classList.remove('active');
+        appState.openModals = Math.max(0, appState.openModals - 1);
+    });
+    
+    // بستن مودال با کلیک خارج
+    elements.loginModal.addEventListener('click', (e) => {
+        if (e.target === elements.loginModal) {
+            elements.loginModal.classList.remove('active');
+        }
+    });
+    
+    elements.priceModal.addEventListener('click', (e) => {
+        if (e.target === elements.priceModal) {
+            elements.priceModal.classList.remove('active');
+            appState.openModals = Math.max(0, appState.openModals - 1);
+        }
+    });
+    
+    // هایلایت‌های خانه
+    elements.highlightCircles.forEach(circle => {
+        circle.addEventListener('click', (e) => {
+            const category = e.currentTarget.getAttribute('data-category');
+            
+            // آپدیت هایلایت فعال
+            elements.highlightCircles.forEach(c => c.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            
+            appState.currentCategory = category;
+            console.log(`🎯 دسته انتخاب شد: ${category}`);
+            
+            // در نسخه کامل اینجا کارت‌های مربوطه نمایش داده می‌شوند
+        });
+    });
+    
+    // هایلایت‌های ابزار
+    elements.toolCircles.forEach(circle => {
+        circle.addEventListener('click', (e) => {
+            const toolId = e.currentTarget.getAttribute('data-tool');
+            activateTool(toolId);
+        });
+    });
+    
+    // چت
+    elements.sendMessage.addEventListener('click', sendChatMessage);
+    elements.chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
+    
+    // فرم ورود
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('🔐 سیستم ورود در نسخه نهایی پیاده‌سازی می‌شود.');
+        elements.loginModal.classList.remove('active');
+    });
+    
+    // دکمه خرید اشتراک
+    document.getElementById('goToSubscription').addEventListener('click', () => {
+        alert('💳 صفحه خرید اشتراک در نسخه نهایی پیاده‌سازی می‌شود.');
+        elements.loginModal.classList.remove('active');
+    });
+    
+    // ارسال نظر
+    document.getElementById('submitFeedback').addEventListener('click', () => {
+        const feedback = document.getElementById('feedbackText').value;
+        if (feedback.trim()) {
+            alert('✅ نظر شما با موفقیت ثبت شد. با تشکر!');
+            document.getElementById('feedbackText').value = '';
+        } else {
+            alert('⚠️ لطفا نظر خود را بنویسید.');
+        }
+    });
+}
+
+// ==================== //
+// 🚀 راه‌اندازی برنامه
+// ==================== //
+
+// 📖 وقتی DOM کاملاً لود شد
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+// 🔧 هندلر خطاهای全局
+window.addEventListener('error', (e) => {
+    console.error('❌ خطا در برنامه:', e.error);
 });
 
-// مدیریت خطاهای全局
-window.addEventListener('error', (event) => {
-    console.error('خطای全局:', event.error);
-});
-
-// مدیریت rejection promise
-window.addEventListener('unhandledrejection', (event) => {
-    console.error('Promise rejection:', event.reason);
-});
+console.log('📄 فایل JavaScript لود شد - آماده راه‌اندازی...');
