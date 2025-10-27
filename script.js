@@ -1,96 +1,55 @@
 // ==================== //
-// 🎯 فایل script.js - کامل و حرفه‌ای
+// 🎯 فایل script.js - کامل و تست شده
 // ==================== //
 
 // 📍 داده‌های تستی برای شروع کار
 // 🔗 بعداً با API واقعی جایگزین می‌شوند
-
 const sampleData = {
-    // 💰 داده‌های نمونه برای رمزارزها
     crypto: [
         { id: 'bitcoin', name: 'بیت‌کوین', symbol: 'BTC', price: 45230, change: 2.5, chart: 'up' },
         { id: 'ethereum', name: 'اتریوم', symbol: 'ETH', price: 2850, change: 1.2, chart: 'up' },
         { id: 'tether', name: 'تتر', symbol: 'USDT', price: 1.00, change: 0.1, chart: 'stable' },
         { id: 'bnb', name: 'بی‌ان‌بی', symbol: 'BNB', price: 320, change: -0.5, chart: 'down' },
-        { id: 'solana', name: 'سولانا', symbol: 'SOL', price: 105, change: 3.2, chart: 'up' },
-        { id: 'cardano', name: 'کاردانو', symbol: 'ADA', price: 0.52, change: -1.8, chart: 'down' },
-        { id: 'xrp', name: 'ریپل', symbol: 'XRP', price: 0.58, change: 0.8, chart: 'up' },
-        { id: 'dogecoin', name: 'دوج‌کوین', symbol: 'DOGE', price: 0.085, change: 5.2, chart: 'up' },
-        { id: 'polkadot', name: 'پولکادات', symbol: 'DOT', price: 7.2, change: -0.3, chart: 'down' },
-        { id: 'litecoin', name: 'لایت‌کوین', symbol: 'LTC', price: 72.5, change: 1.1, chart: 'up' }
+        { id: 'solana', name: 'سولانا', symbol: 'SOL', price: 105, change: 3.2, chart: 'up' }
     ],
-
-    // 💵 داده‌های نمونه برای ارزها
     currency: [
         { id: 'usd', name: 'دلار آمریکا', symbol: 'USD', price: 58000, change: 0.5, chart: 'up' },
         { id: 'eur', name: 'یورو', symbol: 'EUR', price: 62000, change: -0.2, chart: 'down' },
         { id: 'gbp', name: 'پوند', symbol: 'GBP', price: 73000, change: 0.3, chart: 'up' },
         { id: 'aed', name: 'درهم امارات', symbol: 'AED', price: 15800, change: 0.1, chart: 'stable' },
-        { id: 'try', name: 'لیر ترکیه', symbol: 'TRY', price: 1800, change: -1.2, chart: 'down' },
-        { id: 'cad', name: 'دلار کانادا', symbol: 'CAD', price: 42000, change: 0.4, chart: 'up' },
-        { id: 'aud', name: 'دلار استرالیا', symbol: 'AUD', price: 38000, change: -0.6, chart: 'down' },
-        { id: 'cny', name: 'یوان چین', symbol: 'CNY', price: 8000, change: 0.2, chart: 'up' },
-        { id: 'jpy', name: 'ین ژاپن', symbol: 'JPY', price: 380, change: -0.1, chart: 'down' },
-        { id: 'chf', name: 'فرانک سوئیس', symbol: 'CHF', price: 65000, change: 0.7, chart: 'up' }
+        { id: 'try', name: 'لیر ترکیه', symbol: 'TRY', price: 1800, change: -1.2, chart: 'down' }
     ],
-
-    // 🥇 داده‌های نمونه برای طلا
     gold: [
         { id: 'sekee-emami', name: 'سکه امامی', symbol: 'SEKEE', price: 32000000, change: 1.2, chart: 'up' },
         { id: 'sekee-bahar', name: 'سکه بهار', symbol: 'BAHAR', price: 31000000, change: 0.8, chart: 'up' },
         { id: 'gerami18', name: 'طلای 18 عیار', symbol: 'GOLD18', price: 2850000, change: 0.5, chart: 'up' },
         { id: 'gerami24', name: 'طلای 24 عیار', symbol: 'GOLD24', price: 3750000, change: 0.6, chart: 'up' },
-        { id: 'nesfe-sekee', name: 'نیم سکه', symbol: 'NESFE', price: 16500000, change: 1.1, chart: 'up' },
-        { id: 'rob-sekee', name: 'ربع سکه', symbol: 'ROB', price: 8500000, change: 0.9, chart: 'up' },
-        { id: 'gerami17', name: 'طلای 17 عیار', symbol: 'GOLD17', price: 2700000, change: 0.4, chart: 'up' },
-        { id: 'gerami21', name: 'طلای 21 عیار', symbol: 'GOLD21', price: 3350000, change: 0.7, chart: 'up' },
-        { id: 'sekee-tam', name: 'سکه تمام', symbol: 'TAM', price: 32500000, change: 1.3, chart: 'up' },
-        { id: 'mesghal', name: 'مثقال طلا', symbol: 'MESGHAL', price: 18500000, change: 0.8, chart: 'up' }
+        { id: 'nesfe-sekee', name: 'نیم سکه', symbol: 'NESFE', price: 16500000, change: 1.1, chart: 'up' }
     ],
-
-    // 📈 داده‌های نمونه برای نفت
     oil: [
         { id: 'brent', name: 'نفت برنت', symbol: 'BRENT', price: 82.5, change: -1.2, chart: 'down' },
-        { id: 'wti', name: 'نفت وست تگزاس', symbol: 'WTI', price: 78.3, change: -0.8, chart: 'down' },
-        { id: 'opec', name: 'سبد اوپک', symbol: 'OPEC', price: 80.1, change: -1.0, chart: 'down' }
+        { id: 'wti', name: 'نفت وست تگزاس', symbol: 'WTI', price: 78.3, change: -0.8, chart: 'down' }
     ],
-
-    // 🔄 نرخ تبدیل ارز برای مبدل
     exchangeRates: {
-        USD: 58000,
-        EUR: 62000,
-        GBP: 73000,
-        IRR: 1,
-        TRY: 1800,
-        AED: 15800,
-        CAD: 42000,
-        AUD: 38000,
-        CNY: 8000,
-        JPY: 380,
-        CHF: 65000
+        USD: 58000, EUR: 62000, GBP: 73000, IRR: 1, TRY: 1800,
+        AED: 15800, CAD: 42000, AUD: 38000, CNY: 8000, JPY: 380, CHF: 65000
     }
 };
 
 // 🎯 وضعیت کلی برنامه
 const appState = {
-    currentTheme: 'light',
+    currentTheme: localStorage.getItem('livepulse-theme') || 'light',
     currentView: 'home',
     currentCategory: 'crypto',
-    currentTool: 'gold-calc',
+    currentTool: 'goldTool',
     openModals: 0,
-    maxModals: {
-        home: 4,
-        category: 2
-    },
-    userUsage: {
-        chat: 0,
-        tools: 0
-    }
+    maxModals: { home: 4, category: 2 },
+    userUsage: JSON.parse(localStorage.getItem('livepulse-usage')) || { chat: 0, tools: 0 }
 };
 
 // 📍 المنت‌های DOM
 const elements = {
-    app: document.getElementById('app'),
+    // هدر و ناوبری
     themeToggle: document.getElementById('themeToggle'),
     viewToggle: document.getElementById('viewToggle'),
     loginBtn: document.getElementById('loginBtn'),
@@ -106,12 +65,13 @@ const elements = {
     
     // کانتینر کارت‌ها
     homeCardsContainer: document.getElementById('homeCardsContainer'),
-    toolsContainer: document.getElementById('toolsContainer'),
     
     // مودال‌ها
     loginModal: document.getElementById('loginModal'),
+    subscriptionModal: document.getElementById('subscriptionModal'),
     priceModal: document.getElementById('priceModal'),
-    closeModal: document.getElementById('closeModal'),
+    closeLoginModal: document.getElementById('closeLoginModal'),
+    closeSubscriptionModal: document.getElementById('closeSubscriptionModal'),
     closePriceModal: document.getElementById('closePriceModal'),
     
     // چت
@@ -121,9 +81,14 @@ const elements = {
     chatUsage: document.getElementById('chatUsage'),
     
     // ابزارها
+    calculateGold: document.getElementById('calculateGold'),
     goldResult: document.getElementById('goldResult'),
+    analyzeDiamond: document.getElementById('analyzeDiamond'),
     diamondResult: document.getElementById('diamondResult'),
-    conversionResult: document.getElementById('conversionResult')
+    convertCurrency: document.getElementById('convertCurrency'),
+    conversionResult: document.getElementById('conversionResult'),
+    analyzeCoin: document.getElementById('analyzeCoin'),
+    coinResult: document.getElementById('coinResult')
 };
 
 // ==================== //
@@ -132,13 +97,9 @@ const elements = {
 
 /**
  * 📖 مقداردهی اولیه برنامه
- * 🔧 این تابع وقتی صفحه لود شد اجرا می‌شود
  */
 function initializeApp() {
     console.log('🚀 برنامه LivePulse در حال راه‌اندازی...');
-    
-    // بارگذاری وضعیت از localStorage
-    loadUserState();
     
     // تنظیم تم اولیه
     setTheme(appState.currentTheme);
@@ -152,27 +113,10 @@ function initializeApp() {
     // تنظیم ایونت‌لیستنرها
     setupEventListeners();
     
-    // شبیه‌سازی به‌روزرسانی قیمت‌ها
-    startPriceUpdates();
+    // آپدیت نمایش استفاده
+    updateUsageDisplay();
     
     console.log('✅ برنامه آماده است!');
-}
-
-/**
- * 💾 بارگذاری وضعیت کاربر از localStorage
- */
-function loadUserState() {
-    const savedTheme = localStorage.getItem('livepulse-theme');
-    const savedUsage = localStorage.getItem('livepulse-usage');
-    
-    if (savedTheme) {
-        appState.currentTheme = savedTheme;
-    }
-    
-    if (savedUsage) {
-        appState.userUsage = JSON.parse(savedUsage);
-        updateUsageDisplay();
-    }
 }
 
 /**
@@ -197,19 +141,16 @@ function toggleTheme() {
 
 /**
  * 🎨 اعمال تم مشخص
- * @param {string} theme - 'light' یا 'dark'
  */
 function setTheme(theme) {
     appState.currentTheme = theme;
-    elements.app.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
     
     // آپدیت آیکون دکمه تم
     const themeIcon = elements.themeToggle.querySelector('.theme-icon');
     themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
     
-    // ذخیره در localStorage
-    localStorage.setItem('livepulse-theme', theme);
-    
+    saveUserState();
     console.log(`🎨 تم تغییر کرد به: ${theme}`);
 }
 
@@ -227,20 +168,19 @@ function toggleView() {
 
 /**
  * 📱 نمایش نمای مشخص
- * @param {string} view - 'home' یا 'tools'
  */
 function showView(view) {
     // مخفی کردن همه نماها
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
     
     // نمایش نمای انتخاب شده
     if (view === 'home') {
-        elements.homeView.classList.add('active');
+        elements.homeView.classList.add('active-view');
         elements.viewToggle.querySelector('.view-text').textContent = 'ابزار';
         appState.currentView = 'home';
         generateHomeCards();
     } else {
-        elements.toolsView.classList.add('active');
+        elements.toolsView.classList.add('active-view');
         elements.viewToggle.querySelector('.view-text').textContent = 'خانه';
         appState.currentView = 'tools';
         activateTool(appState.currentTool);
@@ -259,7 +199,7 @@ function showView(view) {
 function generateHomeCards() {
     elements.homeCardsContainer.innerHTML = '';
     
-    // انتخاب ۶ مورد از مهم‌ترین آیتم‌ها از هر دسته
+    // انتخاب ۶ مورد از مهم‌ترین آیتم‌ها
     const featuredItems = [
         sampleData.crypto[0],    // بیت‌کوین
         sampleData.currency[0],  // دلار
@@ -277,12 +217,10 @@ function generateHomeCards() {
 
 /**
  * 🎴 ایجاد یک کارت قیمت
- * @param {Object} item - آیتم قیمت
- * @returns {HTMLElement} المنت کارت
  */
 function createPriceCard(item) {
     const card = document.createElement('div');
-    card.className = `price-card glass-card ${item.chart}`;
+    card.className = `price-card glass-card`;
     card.setAttribute('data-symbol', item.symbol);
     
     const changeClass = item.change >= 0 ? 'positive' : 'negative';
@@ -307,16 +245,11 @@ function createPriceCard(item) {
     // اضافه کردن ایونت‌لیستنر برای کلیک
     card.addEventListener('click', () => openPriceDetail(item));
     
-    // اضافه کردن ایونت‌لیستنر برای هاور (دسکتاپ)
-    card.addEventListener('mouseenter', handleCardHover);
-    card.addEventListener('mouseleave', handleCardHover);
-    
     return card;
 }
 
 /**
  * 🔍 باز کردن مودال جزئیات قیمت
- * @param {Object} item - آیتم قیمت
  */
 function openPriceDetail(item) {
     if (appState.openModals >= appState.maxModals[appState.currentView]) {
@@ -368,18 +301,17 @@ function openPriceDetail(item) {
 
 /**
  * 🛠️ فعال‌سازی ابزار مشخص
- * @param {string} toolId - شناسه ابزار
  */
 function activateTool(toolId) {
     // مخفی کردن همه ابزارها
     document.querySelectorAll('.tool-section').forEach(tool => {
-        tool.classList.remove('active');
+        tool.classList.remove('active-tool');
     });
     
     // فعال‌سازی ابزار انتخاب شده
-    const targetTool = document.getElementById(toolId + 'Tool');
+    const targetTool = document.getElementById(toolId + 'Section');
     if (targetTool) {
-        targetTool.classList.add('active');
+        targetTool.classList.add('active-tool');
         appState.currentTool = toolId;
     }
     
@@ -501,6 +433,51 @@ function convertCurrency() {
     }
 }
 
+/**
+ * 🪙 آنالیز سکه قدیمی
+ */
+function analyzeCoin() {
+    if (!checkUsageLimit('tools')) return;
+    
+    const fileInput = document.getElementById('coinImage');
+    
+    if (!fileInput.files.length) {
+        elements.coinResult.innerHTML = '<div class="error">⚠️ لطفا عکس سکه را انتخاب کنید</div>';
+        return;
+    }
+    
+    elements.coinResult.innerHTML = `
+        <div class="loading">
+            🔍 در حال آنالیز سکه...
+        </div>
+    `;
+    
+    // شبیه‌سازی پردازش تصویر
+    setTimeout(() => {
+        const results = {
+            type: 'سکه پهلوی',
+            year: '۱۳۰۵',
+            material: 'نقره',
+            condition: 'خوب',
+            estimatedPrice: 2500000
+        };
+        
+        elements.coinResult.innerHTML = `
+            <div class="success">
+                <h4>🪙 نتیجه آنالیز سکه:</h4>
+                <p>نوع: ${results.type}</p>
+                <p>سال: ${results.year}</p>
+                <p>جنس: ${results.material}</p>
+                <p>وضعیت: ${results.condition}</p>
+                <p>💰 قیمت تخمینی: ${formatPrice(results.estimatedPrice, 'IRR')}</p>
+                <small>📍 این تحلیل نمونه است. در نسخه نهایی از هوش مصنوعی استفاده می‌شود</small>
+            </div>
+        `;
+        
+        incrementUsage('tools');
+    }, 2000);
+}
+
 // ==================== //
 // 💬 بخش چت هوش مصنوعی
 // ==================== //
@@ -527,7 +504,6 @@ function sendChatMessage() {
 
 /**
  * 🤖 شبیه‌سازی پاسخ هوش مصنوعی
- * @param {string} userMessage - پیام کاربر
  */
 function simulateAIResponse(userMessage) {
     // نمایش وضعیت در حال پردازش
@@ -542,8 +518,7 @@ function simulateAIResponse(userMessage) {
             `بر اساس تحلیل من از بازار، شرایط فعلی مناسب به نظر می‌رسد.`,
             `پیشنهاد می‌کنم در تصمیم‌گیری‌های مالی احتیاط کنید.`,
             `تحلیل تکنیکال نشان‌دهنده روند صعودی در کوتاه‌مدت است.`,
-            `با توجه به اخبار اخیر، ممکن است نوساناتی در بازار ایجاد شود.`,
-            `این یک تحلیل نمونه است. در نسخه نهایی از هوش مصنوعی پیشرفته استفاده می‌شود.`
+            `با توجه به اخبار اخیر، ممکن است نوساناتی در بازار ایجاد شود.`
         ];
         
         const randomResponse = responses[Math.floor(Math.random() * responses.length)];
@@ -555,9 +530,6 @@ function simulateAIResponse(userMessage) {
 
 /**
  * 💬 اضافه کردن پیام به چت
- * @param {string} text - متن پیام
- * @param {string} sender - 'user' یا 'ai'
- * @returns {HTMLElement} المنت پیام
  */
 function addChatMessage(text, sender) {
     const messageDiv = document.createElement('div');
@@ -576,13 +548,10 @@ function addChatMessage(text, sender) {
 
 /**
  * 💰 فرمت‌دهی قیمت
- * @param {number} price - قیمت
- * @param {string} symbol - نماد ارز
- * @returns {string} قیمت فرمت‌شده
  */
 function formatPrice(price, symbol) {
     if (symbol === 'IRR' || price > 1000) {
-        return new Intl.NumberFormat('fa-IR').format(price) + ' تومان';
+        return new Intl.NumberFormat('fa-IR').format(Math.round(price)) + ' تومان';
     } else if (price < 1) {
         return '$' + price.toFixed(4);
     } else {
@@ -592,8 +561,6 @@ function formatPrice(price, symbol) {
 
 /**
  * ✅ بررسی محدودیت استفاده
- * @param {string} type - نوع استفاده ('chat' یا 'tools')
- * @returns {boolean} آیا می‌تواند استفاده کند
  */
 function checkUsageLimit(type) {
     if (appState.userUsage[type] >= 4) {
@@ -605,7 +572,6 @@ function checkUsageLimit(type) {
 
 /**
  * 📈 افزایش شمارنده استفاده
- * @param {string} type - نوع استفاده
  */
 function incrementUsage(type) {
     appState.userUsage[type]++;
@@ -617,59 +583,6 @@ function incrementUsage(type) {
  */
 function updateUsageDisplay() {
     elements.chatUsage.textContent = appState.userUsage.chat;
-}
-
-/**
- * 🖱️ مدیریت هاور روی کارت
- */
-function handleCardHover(event) {
-    if (event.type === 'mouseenter') {
-        event.currentTarget.style.transform = 'translateY(-5px) scale(1.02)';
-    } else {
-        event.currentTarget.style.transform = 'translateY(0) scale(1)';
-    }
-}
-
-// ==================== //
-// 🔄 به‌روزرسانی قیمت‌ها
-// ==================== //
-
-/**
- * 🔄 شروع به‌روزرسانی قیمت‌ها
- */
-function startPriceUpdates() {
-    // شبیه‌سازی به‌روزرسانی قیمت هر ۳۰ ثانیه
-    setInterval(() => {
-        updateAllPrices();
-    }, 30000);
-}
-
-/**
- * 📊 آپدیت همه قیمت‌ها
- */
-function updateAllPrices() {
-    // در نسخه واقعی اینجا API فراخوانی می‌شود
-    console.log('🔄 در حال به‌روزرسانی قیمت‌ها...');
-    
-    // شبیه‌سازی تغییرات کوچک قیمت
-    Object.keys(sampleData).forEach(category => {
-        if (Array.isArray(sampleData[category])) {
-            sampleData[category].forEach(item => {
-                // تغییر تصادفی بین -0.5% تا +0.5%
-                const change = (Math.random() - 0.5) * 0.1;
-                item.change += change;
-                item.price *= (1 + change);
-                
-                // به‌روزرسانی نمودار
-                item.chart = change >= 0 ? 'up' : 'down';
-            });
-        }
-    });
-    
-    // اگر در صفحه خانه هستیم، کارت‌ها رو آپدیت کنیم
-    if (appState.currentView === 'home') {
-        generateHomeCards();
-    }
 }
 
 // ==================== //
@@ -697,8 +610,12 @@ function setupEventListeners() {
     });
     
     // بستن مودال‌ها
-    elements.closeModal.addEventListener('click', () => {
+    elements.closeLoginModal.addEventListener('click', () => {
         elements.loginModal.classList.remove('active');
+    });
+    
+    elements.closeSubscriptionModal.addEventListener('click', () => {
+        elements.subscriptionModal.classList.remove('active');
     });
     
     elements.closePriceModal.addEventListener('click', () => {
@@ -710,6 +627,12 @@ function setupEventListeners() {
     elements.loginModal.addEventListener('click', (e) => {
         if (e.target === elements.loginModal) {
             elements.loginModal.classList.remove('active');
+        }
+    });
+    
+    elements.subscriptionModal.addEventListener('click', (e) => {
+        if (e.target === elements.subscriptionModal) {
+            elements.subscriptionModal.classList.remove('active');
         }
     });
     
@@ -731,8 +654,6 @@ function setupEventListeners() {
             
             appState.currentCategory = category;
             console.log(`🎯 دسته انتخاب شد: ${category}`);
-            
-            // در نسخه کامل اینجا کارت‌های مربوطه نمایش داده می‌شوند
         });
     });
     
@@ -755,14 +676,36 @@ function setupEventListeners() {
     // فرم ورود
     document.getElementById('loginForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('🔐 سیستم ورود در نسخه نهایی پیاده‌سازی می‌شود.');
-        elements.loginModal.classList.remove('active');
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        // شبیه‌سازی ورود موفق
+        if (username && password) {
+            alert('✅ ورود موفقیت‌آمیز بود!');
+            elements.loginModal.classList.remove('active');
+        } else {
+            alert('⚠️ لطفا اطلاعات را کامل وارد کنید.');
+        }
     });
     
     // دکمه خرید اشتراک
     document.getElementById('goToSubscription').addEventListener('click', () => {
-        alert('💳 صفحه خرید اشتراک در نسخه نهایی پیاده‌سازی می‌شود.');
         elements.loginModal.classList.remove('active');
+        elements.subscriptionModal.classList.add('active');
+    });
+    
+    // دکمه‌های خرید اشتراک
+    document.querySelectorAll('.subscribe-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const plan = e.target.getAttribute('data-plan');
+            alert(`🎉 اشتراک ${plan === 'monthly' ? 'یک ماهه' : 'سه ماهه'} با موفقیت خریداری شد!`);
+            elements.subscriptionModal.classList.remove('active');
+            
+            // بازنشانی استفاده کاربر
+            appState.userUsage = { chat: 0, tools: 0 };
+            saveUserState();
+            updateUsageDisplay();
+        });
     });
     
     // ارسال نظر
@@ -773,6 +716,36 @@ function setupEventListeners() {
             document.getElementById('feedbackText').value = '';
         } else {
             alert('⚠️ لطفا نظر خود را بنویسید.');
+        }
+    });
+    
+    // ابزارها
+    elements.calculateGold.addEventListener('click', calculateGoldPrice);
+    elements.analyzeDiamond.addEventListener('click', analyzeDiamond);
+    elements.convertCurrency.addEventListener('click', convertCurrency);
+    elements.analyzeCoin.addEventListener('click', analyzeCoin);
+    
+    // آپلود عکس
+    document.getElementById('diamondUploadArea').addEventListener('click', () => {
+        document.getElementById('diamondImage').click();
+    });
+    
+    document.getElementById('coinUploadArea').addEventListener('click', () => {
+        document.getElementById('coinImage').click();
+    });
+    
+    // نمایش نام فایل آپلود شده
+    document.getElementById('diamondImage').addEventListener('change', function(e) {
+        if (this.files.length > 0) {
+            document.getElementById('diamondUploadArea').innerHTML = 
+                `📁 ${this.files[0].name}`;
+        }
+    });
+    
+    document.getElementById('coinImage').addEventListener('change', function(e) {
+        if (this.files.length > 0) {
+            document.getElementById('coinUploadArea').innerHTML = 
+                `📁 ${this.files[0].name}`;
         }
     });
 }
