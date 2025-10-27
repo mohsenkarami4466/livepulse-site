@@ -6,233 +6,81 @@
     <title>LivePulse.ir - قیمت لحظه‌ای ارز، طلا و رمزارز</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <!-- 🎨 تم سایت - تاریک یا روشن -->
-    <div id="app" class="light-theme">
-        
-        <!-- 🔝 هدر شیشه‌ای مات -->
-        <header class="glass-header">
-            <div class="header-container">
-                
-                <!-- 🏷️ لوگو و نام سایت -->
-                <div class="logo-section">
-                    <div class="logo" id="homeLogo">LP</div>
-                    <h1 class="site-name">LivePulse.ir</h1>
-                </div>
+<body data-theme="light">
+    <!-- 🔝 هدر شیشه‌ای مات -->
+    <header class="glass-header">
+        <div class="header-container">
+            
+            <!-- 🏷️ لوگو و نام سایت -->
+            <div class="logo-section" id="homeLogo">
+                <div class="logo">LP</div>
+                <h1 class="site-name">LivePulse.ir</h1>
+            </div>
 
-                <!-- 🎛️ منوی کنترلی سمت چپ -->
-                <div class="control-menu">
-                    <!-- 🌙 دکمه تغییر تم -->
-                    <button class="theme-toggle" id="themeToggle">
-                        <span class="theme-icon">🌙</span>
-                    </button>
-                    
-                    <!-- 🛠️ دکمه ابزار/خانه -->
-                    <button class="view-toggle" id="viewToggle">
-                        <span class="view-text">ابزار</span>
-                    </button>
-                    
-                    <!-- 🔐 دکمه ورود -->
-                    <button class="login-btn" id="loginBtn">ورود</button>
+            <!-- 🎛️ منوی کنترلی سمت چپ -->
+            <div class="control-menu">
+                <!-- 🌙 دکمه تغییر تم -->
+                <button class="theme-toggle" id="themeToggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                
+                <!-- 🛠️ دکمه ابزار/خانه -->
+                <button class="view-toggle" id="viewToggle">
+                    <span class="view-text">ابزار</span>
+                </button>
+                
+                <!-- 🔐 دکمه ورود -->
+                <button class="login-btn" id="loginBtn">ورود</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== -->
+    <!-- 🏠 بخش خانه (HOME) -->
+    <!-- ==================== -->
+    <div id="homeView" class="view active-view">
+        <!-- 🔘 هایلایت‌های اصلی - 6 دایره -->
+        <section class="highlights-section">
+            <div class="highlights-container">
+                <div class="highlight-circle active" data-category="crypto">
+                    <span>رمزارز</span>
+                </div>
+                <div class="highlight-circle" data-category="currency">
+                    <span>ارز</span>
+                </div>
+                <div class="highlight-circle" data-category="gold">
+                    <span>طلا</span>
+                </div>
+                <div class="highlight-circle" data-category="forex">
+                    <span>فارکس</span>
+                </div>
+                <div class="highlight-circle" data-category="stock">
+                    <span>بورس</span>
+                </div>
+                <div class="highlight-circle" data-category="oil">
+                    <span>نفت</span>
                 </div>
             </div>
-        </header>
+        </section>
 
-        <!-- ==================== -->
-        <!-- 🏠 بخش خانه (HOME) -->
-        <!-- ==================== -->
-        <div id="homeView" class="view active">
-            <!-- 🔘 هایلایت‌های اصلی - 6 دایره -->
-            <section class="highlights-section">
-                <div class="highlights-container">
-                    <div class="highlight-circle active" data-category="crypto">
-                        <span>رمزارز</span>
-                    </div>
-                    <div class="highlight-circle" data-category="currency">
-                        <span>ارز</span>
-                    </div>
-                    <div class="highlight-circle" data-category="gold">
-                        <span>طلا</span>
-                    </div>
-                    <div class="highlight-circle" data-category="forex">
-                        <span>فارکس</span>
-                    </div>
-                    <div class="highlight-circle" data-category="stock">
-                        <span>بورس</span>
-                    </div>
-                    <div class="highlight-circle" data-category="oil">
-                        <span>نفت</span>
-                    </div>
-                </div>
-            </section>
+        <!-- 📊 بخش کارت‌های قیمت در خانه -->
+        <main class="main-content">
+            <div class="cards-container" id="homeCardsContainer">
+                <!-- کارت‌ها توسط JavaScript تولید می‌شوند -->
+            </div>
+        </main>
 
-            <!-- 📊 بخش کارت‌های قیمت در خانه -->
-            <main class="main-content">
-                <div class="cards-container" id="homeCardsContainer">
-                    <!-- 🎴 کارت‌های خانه به صورت داینامیک ساخته می‌شوند -->
-                </div>
-            </main>
-        </div>
-
-        <!-- ==================== -->
-        <!-- 🛠️ بخش ابزار (TOOLS) -->
-        <!-- ==================== -->
-        <div id="toolsView" class="view">
-            <!-- 🔘 هایلایت‌های ابزار - 6 دایره -->
-            <section class="highlights-section tools-highlights">
-                <div class="highlights-container">
-                    <div class="highlight-circle active" data-tool="gold-calc">
-                        <span>طلا</span>
-                    </div>
-                    <div class="highlight-circle" data-tool="diamond-calc">
-                        <span>الماس</span>
-                    </div>
-                    <div class="highlight-circle" data-tool="silver-calc">
-                        <span>نقره</span>
-                    </div>
-                    <div class="highlight-circle" data-tool="pearl-calc">
-                        <span>مروارید</span>
-                    </div>
-                    <div class="highlight-circle" data-tool="gem-calc">
-                        <span>سنگ</span>
-                    </div>
-                    <div class="highlight-circle" data-tool="coin-calc">
-                        <span>سکه</span>
-                    </div>
-                    <div class="highlight-circle" data-tool="currency-convert">
-                        <span>تبدیل ارز</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 🧮 بخش ابزارهای محاسباتی -->
-            <main class="tools-content">
-                <div class="tool-container" id="toolsContainer">
-                    
-                    <!-- 🥇 ابزار محاسبه طلا -->
-                    <div class="tool-section active" id="goldTool">
-                        <div class="tool-card glass-card">
-                            <h3>🧮 محاسبه قیمت طلا</h3>
-                            <div class="tool-form">
-                                <div class="input-group">
-                                    <label>وزن طلا (گرم):</label>
-                                    <input type="number" id="goldWeight" placeholder="مثلاً 5" step="0.1">
-                                </div>
-                                <div class="input-group">
-                                    <label>عیار طلا:</label>
-                                    <select id="goldCarat">
-                                        <option value="24">۲۴ (طلای خالص)</option>
-                                        <option value="18">۱۸</option>
-                                        <option value="14">۱۴</option>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <label>اجرت و کارمزد (٪):</label>
-                                    <input type="number" id="goldWage" placeholder="مثلاً 7" value="7">
-                                </div>
-                                <button class="calculate-btn" onclick="calculateGoldPrice()">محاسبه قیمت</button>
-                                <div class="result-box" id="goldResult">
-                                    <!-- نتیجه محاسبه طلا اینجا نمایش داده می‌شود -->
-                                </div>
-                            </div>
-                            <div class="ad-space">
-                                <div class="ad-banner">📍 محل تبلیغات ابزار طلا</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 💎 ابزار تشخیص الماس -->
-                    <div class="tool-section" id="diamondTool">
-                        <div class="tool-card glass-card">
-                            <h3>💎 تشخیص الماس از روی عکس</h3>
-                            <div class="upload-section">
-                                <div class="upload-area" id="diamondUploadArea">
-                                    <span>📸 عکس الماس را آپلود کنید</span>
-                                    <input type="file" id="diamondImage" accept="image/*" hidden>
-                                </div>
-                                <button class="analyze-btn" onclick="analyzeDiamond()">آنالیز تصویر</button>
-                                <div class="analysis-result" id="diamondResult">
-                                    <!-- نتیجه تحلیل الماس اینجا نمایش داده می‌شود -->
-                                </div>
-                            </div>
-                            <div class="ad-space">
-                                <div class="ad-banner">📍 محل تبلیغات ابزار الماس</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 🔄 ابزار تبدیل ارز -->
-                    <div class="tool-section" id="currencyTool">
-                        <div class="tool-card glass-card">
-                            <h3>🔄 تبدیل ارز لحظه‌ای</h3>
-                            <div class="converter-form">
-                                <div class="converter-row">
-                                    <div class="currency-input">
-                                        <label>از ارز:</label>
-                                        <select id="fromCurrency">
-                                            <option value="USD">دلار آمریکا (USD)</option>
-                                            <option value="EUR">یورو (EUR)</option>
-                                            <option value="GBP">پوند (GBP)</option>
-                                            <option value="IRR">ریال ایران (IRR)</option>
-                                            <option value="TRY">لیر ترکیه (TRY)</option>
-                                        </select>
-                                    </div>
-                                    <div class="currency-input">
-                                        <label>مبلغ:</label>
-                                        <input type="number" id="amount" placeholder="100" value="100">
-                                    </div>
-                                </div>
-                                <div class="converter-row">
-                                    <div class="currency-input">
-                                        <label>به ارز:</label>
-                                        <select id="toCurrency">
-                                            <option value="IRR">ریال ایران (IRR)</option>
-                                            <option value="USD">دلار آمریکا (USD)</option>
-                                            <option value="EUR">یورو (EUR)</option>
-                                            <option value="GBP">پوند (GBP)</option>
-                                            <option value="TRY">لیر ترکیه (TRY)</option>
-                                        </select>
-                                    </div>
-                                    <div class="currency-input">
-                                        <label>نتیجه:</label>
-                                        <div class="result-display" id="conversionResult">
-                                            -- 
-                                        </div>
-                                    </div>
-                                </div>
-                                <button class="convert-btn" onclick="convertCurrency()">تبدیل کن</button>
-                            </div>
-                            <div class="ad-space">
-                                <div class="ad-banner">📍 محل تبلیغات تبدیل ارز</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 📍 ابزارهای دیگر (سکه، مروارید، سنگ) -->
-                    <div class="tool-section" id="otherTools">
-                        <!-- سایر ابزارها به همین شکل اضافه می‌شوند -->
-                    </div>
-
-                </div>
-            </main>
-        </div>
-
-        <!-- ==================== -->
-        <!-- 🔄 بخش‌های مشترک -->
-        <!-- ==================== -->
-
-        <!-- 💬 بخش چت هوش مصنوعی (مشترک بین خانه و ابزار) -->
+        <!-- 💬 بخش چت هوش مصنوعی -->
         <section class="ai-chat-section">
             <div class="chat-container glass-card">
                 <h3>💬 چت با هوش مصنوعی</h3>
                 <div class="chat-messages" id="chatMessages">
                     <div class="ai-message">
-                        <p>سلام! من هوش مصنوعی LivePulse هستم. چطور می‌تونم کمک کنم؟</p>
+                        <p>سلام! من هوش مصنوعی LivePulse هستم. در مورد بازار مالی و قیمت‌ها می‌تونم کمکتون کنم.</p>
                     </div>
                 </div>
                 <div class="chat-input-container">
-                    <input type="text" id="chatInput" placeholder="سوال خود را بپرسید..." 
-                           maxlength="4" data-usage="chat">
+                    <input type="text" id="chatInput" placeholder="سوال خود را بپرسید...">
                     <button id="sendMessage">ارسال</button>
                 </div>
                 <div class="usage-counter">
@@ -241,39 +89,41 @@
             </div>
         </section>
 
-        <!-- 📰 بخش تحلیل و اخبار (مشترک) -->
+        <!-- 📰 بخش تحلیل و اخبار -->
         <section class="analysis-section">
             <div class="analysis-container">
                 <div class="ai-analysis glass-card">
                     <h3>🤖 تحلیل هوش مصنوعی بازار</h3>
-                    <p id="aiAnalysisText">این تحلیل نمونه هوش مصنوعی است. بعداً از n8n دریافت می‌شود.</p>
+                    <p id="aiAnalysisText">تحلیل نمونه: بازار امروز با نوسانات ملایم همراه است. پیشنهاد می‌شود در تصمیم‌گیری‌ها احتیاط کنید.</p>
                 </div>
                 
                 <div class="news-section glass-card">
                     <h3>📰 اخبار مهم بازار</h3>
                     <div class="news-list" id="newsList">
-                        <!-- اخبار به صورت داینامیک -->
+                        <div class="news-item">• افزایش قیمت نفت در بازارهای جهانی</div>
+                        <div class="news-item">• تصمیمات جدید فدرال رزرو آمریکا</div>
+                        <div class="news-item">• رشد شاخص بورس تهران</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 🎠 بخش اسلایدر تبلیغات (مشترک) -->
+        <!-- 🎠 بخش اسلایدر تبلیغات -->
         <section class="slider-section">
             <div class="slider-container">
                 <button class="slider-btn prev-btn">‹</button>
                 
                 <div class="slider-track">
-                    <div class="slider-item">📍 تبلیغ 1</div>
-                    <div class="slider-item">📍 تبلیغ 2</div>
-                    <div class="slider-item">📍 تبلیغ 3</div>
+                    <div class="slider-item">📍 تبلیغات بنری ۱</div>
+                    <div class="slider-item">📍 تبلیغات بنری ۲</div>
+                    <div class="slider-item">📍 تبلیغات بنری ۳</div>
                 </div>
                 
                 <button class="slider-btn next-btn">›</button>
             </div>
         </section>
 
-        <!-- 💌 بخش نظرات (مشترک) -->
+        <!-- 💌 بخش نظرات -->
         <section class="feedback-section">
             <div class="feedback-container glass-card">
                 <h3>💌 ارسال نظر به ما</h3>
@@ -281,48 +131,237 @@
                 <button id="submitFeedback">ارسال نظر</button>
             </div>
         </section>
+    </div>
 
-        <!-- 🔻 فوتر (مشترک) -->
-        <footer class="main-footer">
-            <div class="footer-content">
-                <div class="contact-info">
-                    <p>📧 Email: info@livepulse.ir</p>
-                    <p>📞 Phone: +98 912 345 6789</p>
+    <!-- ==================== -->
+    <!-- 🛠️ بخش ابزار (TOOLS) -->
+    <!-- ==================== -->
+    <div id="toolsView" class="view">
+        <!-- 🔘 هایلایت‌های ابزار -->
+        <section class="highlights-section tools-highlights">
+            <div class="highlights-container">
+                <div class="highlight-circle active" data-tool="goldTool">
+                    <span>طلا</span>
                 </div>
-                <div class="footer-links">
-                    <a href="#">قوانین</a>
-                    <a href="#">درباره ما</a>
-                    <a href="#">تماس با ما</a>
+                <div class="highlight-circle" data-tool="diamondTool">
+                    <span>الماس</span>
+                </div>
+                <div class="highlight-circle" data-tool="silverTool">
+                    <span>نقره</span>
+                </div>
+                <div class="highlight-circle" data-tool="pearlTool">
+                    <span>مروارید</span>
+                </div>
+                <div class="highlight-circle" data-tool="gemTool">
+                    <span>سنگ</span>
+                </div>
+                <div class="highlight-circle" data-tool="coinTool">
+                    <span>سکه</span>
+                </div>
+                <div class="highlight-circle" data-tool="currencyTool">
+                    <span>تبدیل ارز</span>
                 </div>
             </div>
-        </footer>
+        </section>
 
-        <!-- 🔲 مودال ورود (مشترک) -->
-        <div class="modal-overlay" id="loginModal">
-            <div class="login-modal glass-card">
-                <button class="close-modal" id="closeModal">×</button>
-                <h3>ورود به حساب کاربری</h3>
-                <form id="loginForm">
-                    <input type="text" placeholder="ایمیل یا شماره تلفن" required>
-                    <input type="password" placeholder="رمز عبور" required>
-                    <button type="submit">ورود</button>
-                </form>
-                <button class="subscription-btn" id="goToSubscription">
-                    🔓 خرید اشتراک
-                </button>
+        <!-- 🧮 بخش ابزارهای محاسباتی -->
+        <main class="tools-content">
+            
+            <!-- 🥇 ابزار محاسبه طلا -->
+            <div class="tool-section active-tool" id="goldToolSection">
+                <div class="tool-card glass-card">
+                    <h3>🧮 محاسبه قیمت طلا</h3>
+                    <div class="tool-form">
+                        <div class="input-group">
+                            <label>وزن طلا (گرم):</label>
+                            <input type="number" id="goldWeight" placeholder="مثلاً 5" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>عیار طلا:</label>
+                            <select id="goldCarat">
+                                <option value="24">۲۴ (طلای خالص)</option>
+                                <option value="18">۱۸</option>
+                                <option value="14">۱۴</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>اجرت و کارمزد (٪):</label>
+                            <input type="number" id="goldWage" placeholder="مثلاً 7" value="7">
+                        </div>
+                        <button class="calculate-btn" id="calculateGold">محاسبه قیمت</button>
+                        <div class="result-box" id="goldResult">
+                            <!-- نتیجه اینجا نمایش داده می‌شود -->
+                        </div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ابزار طلا</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 💎 ابزار تشخیص الماس -->
+            <div class="tool-section" id="diamondToolSection">
+                <div class="tool-card glass-card">
+                    <h3>💎 تشخیص الماس از روی عکس</h3>
+                    <div class="upload-section">
+                        <div class="upload-area" id="diamondUploadArea">
+                            <span>📸 عکس الماس را آپلود کنید</span>
+                            <input type="file" id="diamondImage" accept="image/*" hidden>
+                        </div>
+                        <button class="analyze-btn" id="analyzeDiamond">آنالیز تصویر</button>
+                        <div class="analysis-result" id="diamondResult">
+                            <!-- نتیجه تحلیل اینجا نمایش داده می‌شود -->
+                        </div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ابزار الماس</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔄 ابزار تبدیل ارز -->
+            <div class="tool-section" id="currencyToolSection">
+                <div class="tool-card glass-card">
+                    <h3>🔄 تبدیل ارز لحظه‌ای</h3>
+                    <div class="converter-form">
+                        <div class="converter-row">
+                            <div class="currency-input">
+                                <label>از ارز:</label>
+                                <select id="fromCurrency">
+                                    <option value="USD">دلار آمریکا (USD)</option>
+                                    <option value="EUR">یورو (EUR)</option>
+                                    <option value="GBP">پوند (GBP)</option>
+                                    <option value="IRR">ریال ایران (IRR)</option>
+                                    <option value="TRY">لیر ترکیه (TRY)</option>
+                                </select>
+                            </div>
+                            <div class="currency-input">
+                                <label>مبلغ:</label>
+                                <input type="number" id="amount" placeholder="100" value="100">
+                            </div>
+                        </div>
+                        <div class="converter-row">
+                            <div class="currency-input">
+                                <label>به ارز:</label>
+                                <select id="toCurrency">
+                                    <option value="IRR">ریال ایران (IRR)</option>
+                                    <option value="USD">دلار آمریکا (USD)</option>
+                                    <option value="EUR">یورو (EUR)</option>
+                                    <option value="GBP">پوند (GBP)</option>
+                                    <option value="TRY">لیر ترکیه (TRY)</option>
+                                </select>
+                            </div>
+                            <div class="currency-input">
+                                <label>نتیجه:</label>
+                                <div class="result-display" id="conversionResult">--</div>
+                            </div>
+                        </div>
+                        <button class="convert-btn" id="convertCurrency">تبدیل کن</button>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات تبدیل ارز</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🪙 ابزار سکه‌های قدیمی -->
+            <div class="tool-section" id="coinToolSection">
+                <div class="tool-card glass-card">
+                    <h3>🪙 تشخیص سکه‌های قدیمی</h3>
+                    <div class="upload-section">
+                        <div class="upload-area" id="coinUploadArea">
+                            <span>📸 عکس سکه را آپلود کنید</span>
+                            <input type="file" id="coinImage" accept="image/*" hidden>
+                        </div>
+                        <button class="analyze-btn" id="analyzeCoin">آنالیز سکه</button>
+                        <div class="analysis-result" id="coinResult">
+                            <!-- نتیجه تحلیل اینجا نمایش داده می‌شود -->
+                        </div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ابزار سکه</div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- 💬 بخش چت هوش مصنوعی (در ابزار) -->
+        <section class="ai-chat-section">
+            <div class="chat-container glass-card">
+                <h3>💬 چت با هوش مصنوعی در مورد ابزارها</h3>
+                <div class="chat-messages" id="toolsChatMessages">
+                    <div class="ai-message">
+                        <p>سلام! در مورد محاسبات طلا، تشخیص الماس یا تبدیل ارز می‌تونم راهنماییتون کنم.</p>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="toolsChatInput" placeholder="سوال خود را بپرسید...">
+                    <button id="sendToolsMessage">ارسال</button>
+                </div>
+                <div class="usage-counter">
+                    💡 استفاده شده: <span id="toolsChatUsage">0</span> از 4 بار (رایگان)
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 🔻 فوتر (مشترک) -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="contact-info">
+                <p>📧 Email: info@livepulse.ir</p>
+                <p>📞 Phone: +98 912 345 6789</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">قوانین</a>
+                <a href="#">درباره ما</a>
+                <a href="#">تماس با ما</a>
             </div>
         </div>
+    </footer>
 
-        <!-- 🔲 مودال پنجره بزرگ قیمت (مشترک) -->
-        <div class="modal-overlay" id="priceModal">
-            <div class="price-detail-modal glass-card">
-                <button class="close-modal" id="closePriceModal">×</button>
-                <div id="modalContent">
-                    <!-- محتوای مودال توسط JavaScript پر می‌شود -->
+    <!-- 🔲 مودال ورود -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-modal glass-card">
+            <button class="close-modal" id="closeLoginModal">×</button>
+            <h3>ورود به حساب کاربری</h3>
+            <form id="loginForm">
+                <input type="text" id="loginUsername" placeholder="ایمیل یا شماره تلفن" required>
+                <input type="password" id="loginPassword" placeholder="رمز عبور" required>
+                <button type="submit">ورود</button>
+            </form>
+            <button class="subscription-btn" id="goToSubscription">
+                🔓 خرید اشتراک
+            </button>
+        </div>
+    </div>
+
+    <!-- 🔲 مودال خرید اشتراک -->
+    <div class="modal-overlay" id="subscriptionModal">
+        <div class="subscription-modal glass-card">
+            <button class="close-modal" id="closeSubscriptionModal">×</button>
+            <h3>🔓 خرید اشتراک ویژه</h3>
+            <div class="subscription-options">
+                <div class="subscription-option">
+                    <h4>اشتراک یک ماهه</h4>
+                    <p>دسترسی نامحدود به تمام ابزارها</p>
+                    <p>چت نامحدود با هوش مصنوعی</p>
+                    <p>تحلیل‌های پیشرفته</p>
+                    <button class="subscribe-btn" data-plan="monthly">خرید - ۲۹,۰۰۰ تومان</button>
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- 🔲 مودال پنجره بزرگ قیمت -->
+    <div class="modal-overlay" id="priceModal">
+        <div class="price-detail-modal glass-card">
+            <button class="close-modal" id="closePriceModal">×</button>
+            <div id="modalContent">
+                <!-- محتوای مودال توسط JavaScript پر می‌شود -->
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
