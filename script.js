@@ -55,8 +55,14 @@ const elements = {
     loginBtn: document.getElementById('loginBtn'),
     homeLogo: document.getElementById('homeLogo'),
     
-    // بخش‌های نمایش
+    // 🆕 بخش‌های نمایش (VIEWهای جدید اضافه شد)
     homeView: document.getElementById('homeView'),
+    cryptoView: document.getElementById('cryptoView'),
+    currencyView: document.getElementById('currencyView'),
+    goldView: document.getElementById('goldView'),
+    forexView: document.getElementById('forexView'),
+    stockView: document.getElementById('stockView'),
+    oilView: document.getElementById('oilView'),
     toolsView: document.getElementById('toolsView'),
     
     // هایلایت‌ها
@@ -64,7 +70,7 @@ const elements = {
     toolCircles: document.querySelectorAll('[data-tool]'),
     
     // کانتینر کارت‌ها
-    homeCardsContainer: document.getElementById('homeCardsContainer'),
+    homeCardsContainer: document.getElementById('homeMainCards'),
     
     // مودال‌ها
     loginModal: document.getElementById('loginModal'),
@@ -174,16 +180,42 @@ function showView(view) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
     
     // نمایش نمای انتخاب شده
-    if (view === 'home') {
-        elements.homeView.classList.add('active-view');
-        elements.viewToggle.querySelector('.view-text').textContent = 'ابزار';
-        appState.currentView = 'home';
-        generateHomeCards();
-    } else {
-        elements.toolsView.classList.add('active-view');
-        elements.viewToggle.querySelector('.view-text').textContent = 'خانه';
-        appState.currentView = 'tools';
-        activateTool(appState.currentTool);
+    const viewElements = {
+        'home': elements.homeView,
+        'tools': elements.toolsView,
+        'crypto': elements.cryptoView,
+        'currency': elements.currencyView,
+        'gold': elements.goldView,
+        'forex': elements.forexView,
+        'stock': elements.stockView,
+        'oil': elements.oilView
+    };
+    
+    if (viewElements[view]) {
+        viewElements[view].classList.add('active-view');
+        appState.currentView = view;
+        
+        // 🆕 انتقال هایلایت‌های اصلی فقط به صفحات اصلی (نه ابزار)
+        if (view !== 'tools') {
+            const mainHighlights = document.querySelector('.highlights-section:not(.tools-highlights)');
+            if (mainHighlights && viewElements[view] && !viewElements[view].contains(mainHighlights)) {
+                viewElements[view].insertBefore(mainHighlights, viewElements[view].firstChild);
+            }
+        }
+        
+        // آپدیت متن دکمه viewToggle
+        if (view === 'home' || view === 'tools') {
+            elements.viewToggle.querySelector('.view-text').textContent = 
+                view === 'home' ? 'ابزار' : 'خانه';
+        }
+        
+        // تنظیم ایونت‌لیستنر برای کارت‌های این صفحه
+        setTimeout(() => setupAllCardListeners(), 100);
+        
+        // اگر home بود کارت‌ها رو آپدیت کن
+        if (view === 'home') {
+            generateHomeCards();
+        }
     }
     
     console.log(`📱 نمایش تغییر کرد به: ${view}`);
@@ -647,13 +679,16 @@ function setupEventListeners() {
     elements.highlightCircles.forEach(circle => {
         circle.addEventListener('click', (e) => {
             const category = e.currentTarget.getAttribute('data-category');
-            
-            // آپدیت هایلایت فعال
-            elements.highlightCircles.forEach(c => c.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            
-            appState.currentCategory = category;
-            console.log(`🎯 دسته انتخاب شد: ${category}`);
+        
+        // آپدیت هایلایت فعال
+        elements.highlightCircles.forEach(c => c.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        
+        // 🆕 انتقال به صفحه مربوطه
+        showView(category);
+        
+        appState.currentCategory = category;
+        console.log(`🎯 دسته انتخاب شد: ${category}`);
         });
     });
     
@@ -748,6 +783,36 @@ function setupEventListeners() {
                 `📁 ${this.files[0].name}`;
         }
     });
+}
+
+// ==================== //
+// 🃏 مدیریت کارت‌ها در همه صفحات
+// ==================== //
+
+/**
+ * 🎯 تنظیم ایونت‌لیستنر برای همه کارت‌های قیمت
+ */
+function setupAllCardListeners() {
+    // پیدا کردن همه کارت‌ها در همه صفحات
+    const allPriceCards = document.querySelectorAll('.price-card');
+    
+    allPriceCards.forEach(card => {
+        // حذف ایونت‌لیستنرهای قبلی (اگر هستن)
+        card.replaceWith(card.cloneNode(true));
+    });
+    
+    // دوباره پیدا کردن و اضافه کردن ایونت‌لیستنر
+    document.querySelectorAll('.price-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const symbol = this.getAttribute('data-symbol');
+            const cardTitle = this.querySelector('h3').textContent;
+            
+            // نمایش پیام ساده برای تست
+            alert(`🔄 جزئیات ${cardTitle} (${symbol})\n\nاین قسمت برای همه کارت‌ها درست شد!`);
+        });
+    });
+    
+    console.log(`🎯 ایونت‌لیستنر برای ${allPriceCards.length} کارت تنظیم شد`);
 }
 
 // ==================== //
