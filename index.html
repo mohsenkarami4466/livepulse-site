@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="light">
+    
     <!-- 🔝 هدر شیشه‌ای مات -->
     <header class="glass-header">
         <div class="header-container">
@@ -64,73 +65,905 @@
         </section>
 
         <!-- 📊 بخش کارت‌های قیمت در خانه -->
-        <main class="main-content">
-            <div class="cards-container" id="homeCardsContainer">
-                <!-- کارت‌ها توسط JavaScript تولید می‌شوند -->
+         <main class="main-content">
+            <div class="cards-container" id="homeMainCards">
+                <!-- ۶ کارت اول توسط JavaScript ساخته میشن -->
             </div>
         </main>
-
-        <!-- 💬 بخش چت هوش مصنوعی -->
-        <section class="ai-chat-section">
-            <div class="chat-container glass-card">
-                <h3>💬 چت با هوش مصنوعی</h3>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="ai-message">
-                        <p>سلام! من هوش مصنوعی LivePulse هستم. در مورد بازار مالی و قیمت‌ها می‌تونم کمکتون کنم.</p>
+    </div>
+            
+    <!-- ==================== -->
+    <!-- 🪙 بخش رمزارز (CRYPTO) -->
+    <!-- ==================== -->
+    <div id="cryptoView" class="view">
+        <main class="main-content">
+            <div class="cards-container" id="cryptoCategory">
+                <div class="price-card glass-card" data-symbol="BTC">
+                    <div class="card-header">
+                        <h3>بیت‌کوین</h3>
+                        <span class="price-change positive">+2.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$45,230</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
                     </div>
                 </div>
-                <div class="chat-input-container">
-                    <input type="text" id="chatInput" placeholder="سوال خود را بپرسید...">
-                    <button id="sendMessage">ارسال</button>
-                </div>
-                <div class="usage-counter">
-                    💡 استفاده شده: <span id="chatUsage">0</span> از 4 بار (رایگان)
-                </div>
-            </div>
-        </section>
 
-        <!-- 📰 بخش تحلیل و اخبار -->
-        <section class="analysis-section">
-            <div class="analysis-container">
-                <div class="ai-analysis glass-card">
-                    <h3>🤖 تحلیل هوش مصنوعی بازار</h3>
-                    <p id="aiAnalysisText">تحلیل نمونه: بازار امروز با نوسانات ملایم همراه است. پیشنهاد می‌شود در تصمیم‌گیری‌ها احتیاط کنید.</p>
+                <div class="price-card glass-card" data-symbol="ETH">
+                    <div class="card-header">
+                        <h3>اتریوم</h3>
+                        <span class="price-change positive">+1.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$2,850</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                    </div>
                 </div>
-                
-                <div class="news-section glass-card">
-                    <h3>📰 اخبار مهم بازار</h3>
-                    <div class="news-list" id="newsList">
-                        <div class="news-item">• افزایش قیمت نفت در بازارهای جهانی</div>
-                        <div class="news-item">• تصمیمات جدید فدرال رزرو آمریکا</div>
-                        <div class="news-item">• رشد شاخص بورس تهران</div>
+
+                <div class="price-card glass-card" data-symbol="TRX">
+                    <div class="card-header">
+                        <h3>ترون</h3>
+                        <span class="price-change negative">-0.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$0.105</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                     </div>
+                </div>
+
+                <div class="price-card glass-card" data-symbol="DOGE">
+                    <div class="card-header">
+                        <h3>دوج‌کوین</h3>
+                        <span class="price-change positive">+5.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$0.085</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                    </div>
+                </div>
+
+                <div class="price-card glass-card" data-symbol="XRP">
+                    <div class="card-header">
+                        <h3>ریپل</h3>
+                        <span class="price-change positive">+0.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$0.58</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="ADA">
+                    <div class="card-header">
+                        <h3>کاردانو</h3>
+                        <span class="price-change negative">-1.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$0.52</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="SOL">
+                    <div class="card-header">
+                        <h3>سولانا</h3>
+                        <span class="price-change positive">+3.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$105</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="OP">
+                    <div class="card-header">
+                        <h3>اپتیمیسم</h3>
+                        <span class="price-change positive">+2.1%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$3.25</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="ETC">
+                    <div class="card-header">
+                        <h3>اتنا</h3>
+                        <span class="price-change negative">-0.7%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$26.40</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="AVAX">
+                    <div class="card-header">
+                        <h3>آوالانچ</h3>
+                        <span class="price-change positive">+1.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$34.80</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات رمزارز</div>
                     </div>
                 </div>
             </div>
-        </section>
+        </main>
+    </div>
 
-        <!-- 🎠 بخش اسلایدر تبلیغات -->
-        <section class="slider-section">
-            <div class="slider-container">
-                <button class="slider-btn prev-btn">‹</button>
-                
-                <div class="slider-track">
-                    <div class="slider-item">📍 تبلیغات بنری ۱</div>
-                    <div class="slider-item">📍 تبلیغات بنری ۲</div>
-                    <div class="slider-item">📍 تبلیغات بنری ۳</div>
+    <!-- ==================== -->
+    <!-- 💰 بخش ارز (CURRENCY) -->
+    <!-- ==================== -->
+    <div id="currencyView" class="view">
+        <main class="main-content">
+            <div class="cards-container" id="currencyCategory">
+                <div class="price-card glass-card" data-symbol="USD">
+                    <div class="card-header">
+                        <h3>دلار آمریکا</h3>
+                        <span class="price-change positive">+0.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">58,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
                 </div>
-                
-                <button class="slider-btn next-btn">›</button>
+    
+                <div class="price-card glass-card" data-symbol="EUR">
+                    <div class="card-header">
+                        <h3>یورو</h3>
+                        <span class="price-change negative">-0.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">62,000 تومان</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="AED">
+                    <div class="card-header">
+                        <h3>درهم امارات</h3>
+                        <span class="price-change positive">+0.1%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">15,800 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="TRY">
+                    <div class="card-header">
+                        <h3>لیر ترکیه</h3>
+                        <span class="price-change negative">-1.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">1,800 تومان</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="CNY">
+                    <div class="card-header">
+                        <h3>یوان چین</h3>
+                        <span class="price-change positive">+0.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">8,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="GBP">
+                    <div class="card-header">
+                        <h3>پوند انگلیس</h3>
+                        <span class="price-change positive">+0.3%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">73,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="IQD">
+                    <div class="card-header">
+                        <h3>دینار عراق</h3>
+                        <span class="price-change negative">-0.4%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">40 تومان</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="RUB">
+                    <div class="card-header">
+                        <h3>روبل روسیه</h3>
+                        <span class="price-change positive">+0.6%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">600 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="CHF">
+                    <div class="card-header">
+                        <h3>فرانک سوئیس</h3>
+                        <span class="price-change positive">+0.7%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">65,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="QAR">
+                    <div class="card-header">
+                        <h3>ریال قطر</h3>
+                        <span class="price-change positive">+0.1%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">15,500 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ارز</div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </main>
+    </div>
 
-        <!-- 💌 بخش نظرات -->
-        <section class="feedback-section">
-            <div class="feedback-container glass-card">
-                <h3>💌 ارسال نظر به ما</h3>
-                <textarea id="feedbackText" placeholder="نظرات و پیشنهادات خود را بنویسید..."></textarea>
-                <button id="submitFeedback">ارسال نظر</button>
+    <!-- ==================== -->
+    <!-- 🥇 بخش طلا (GOLD) -->
+    <!-- ==================== -->
+    <div id="goldView" class="view">
+        <main class="main-content">
+            <div class="cards-container" id="goldCategory">
+                <div class="price-card glass-card" data-symbol="GOLD18">
+                    <div class="card-header">
+                        <h3>طلای ۱۸ عیار</h3>
+                        <span class="price-change positive">+0.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">2,850,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="SEKEE">
+                    <div class="card-header">
+                        <h3>سکه امامی</h3>
+                        <span class="price-change positive">+1.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">32,000,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="NESFE">
+                    <div class="card-header">
+                        <h3>نیم‌سکه</h3>
+                        <span class="price-change positive">+1.1%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">16,500,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="ROB">
+                    <div class="card-header">
+                        <h3>ربع‌سکه</h3>
+                        <span class="price-change positive">+0.9%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">8,500,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="GRAMI">
+                    <div class="card-header">
+                        <h3>سکه گرمی</h3>
+                        <span class="price-change positive">+0.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">3,200,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="ABI">
+                    <div class="card-header">
+                        <h3>طلای آب‌شده</h3>
+                        <span class="price-change positive">+0.6%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">3,750,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+   
+                <div class="price-card glass-card" data-symbol="SHMSH">
+                    <div class="card-header">
+                        <h3>شمش طلا</h3>
+                        <span class="price-change positive">+0.7%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">3,800,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="WORLD">
+                    <div class="card-header">
+                        <h3>طلای جهانی</h3>
+                        <span class="price-change positive">+0.4%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$1,980</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="HANDMADE">
+                    <div class="card-header">
+                        <h3>طلای دست‌ساز</h3>
+                        <span class="price-change positive">+1.0%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">3,100,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card" data-symbol="WHITE">
+                    <div class="card-header">
+                        <h3>طلای سفید</h3>
+                        <span class="price-change positive">+0.3%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">2,900,000 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات طلا</div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </main>
+    </div>
+
+    <!-- ==================== -->
+    <!-- 📈 بخش فارکس (FOREX) -->
+    <!-- ==================== -->
+    <div id="forexView" class="view">
+        <main class="main-content">
+            <div class="cards-container" id="forexCategory">
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>آلپاری</h3>
+                        <span class="price-change positive">+0.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>آمارکتس</h3>
+                        <span class="price-change negative">-0.3%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>ارانته</h3>
+                        <span class="price-change positive">+1.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>لایت فایننس</h3>
+                        <span class="price-change positive">+0.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>اف ایکس پرو</h3>
+                        <span class="price-change negative">-0.7%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>اپوفایننس</h3>
+                        <span class="price-change positive">+0.9%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>دبلیو ام مارکتس</h3>
+                        <span class="price-change positive">+0.6%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>ای پلنت</h3>
+                        <span class="price-change negative">-0.4%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>آرون گروپس</h3>
+                        <span class="price-change positive">+1.1%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>اوربکس</h3>
+                        <span class="price-change positive">+0.7%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات فارکس</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== -->
+    <!-- 📊 بخش بورس (STOCK) -->
+    <!-- ==================== -->
+    <div id="stockView" class="view">
+        <main class="main-content">
+            <div class="cards-container" id="stockCategory">
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>فولاد</h3>
+                        <span class="price-change positive">+1.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">4,250 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>فملی</h3>
+                        <span class="price-change negative">-0.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">580 تومان</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>شستا</h3>
+                        <span class="price-change positive">+2.1%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">3,150 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+  
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>خودرو</h3>
+                        <span class="price-change positive">+0.9%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">1,850 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>اپل</h3>
+                        <span class="price-change positive">+1.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$185</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>تسلا</h3>
+                        <span class="price-change negative">-2.3%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$245</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>آمازون</h3>
+                        <span class="price-change positive">+0.7%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$178</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>گوگل</h3>
+                        <span class="price-change positive">+1.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$152</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>مایکروسافت</h3>
+                        <span class="price-change positive">+0.9%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$415</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+  
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>صنایع خلاق</h3>
+                        <span class="price-change positive">+3.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">2,850 تومان</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات بورس</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== -->
+    <!-- 🛢️ بخش نفت (OIL) -->
+    <!-- ==================== -->
+    <div id="oilView" class="view">
+        <main class="main-content">
+            <div class="cards-container" id="oilCategory">
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>نفت سنگین ایران</h3>
+                        <span class="price-change negative">-1.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$78.50</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>نفت سبک ایران</h3>
+                        <span class="price-change negative">-0.9%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$81.20</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>نفت برنت</h3>
+                        <span class="price-change negative">-1.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$82.50</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>نفت وست‌تگزاس</h3>
+                        <span class="price-change negative">-1.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$78.30</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>تولید روزانه ایران</h3>
+                        <span class="price-change positive">+0.3%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">3.2M بشکه</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+    
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>صادرات نفت ایران</h3>
+                        <span class="price-change positive">+2.1%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">1.8M بشکه</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>قیمت جهانی نفت</h3>
+                        <span class="price-change negative">-1.0%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">$80.40</p>
+                        <div class="mini-chart down"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>اوپک</h3>
+                        <span class="price-change positive">+0.5%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>پالایشگاه‌ها</h3>
+                        <span class="price-change positive">+0.8%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">---</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+ 
+                <div class="price-card glass-card">
+                    <div class="card-header">
+                        <h3>تقاضای جهانی</h3>
+                        <span class="price-change positive">+1.2%</span>
+                    </div>
+                    <div class="card-content">
+                        <p class="current-price">102M بشکه</p>
+                        <div class="mini-chart up"></div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات نفت</div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <!-- ==================== -->
@@ -143,11 +976,11 @@
                 <div class="highlight-circle active" data-tool="goldTool">
                     <span>طلا</span>
                 </div>
-                <div class="highlight-circle" data-tool="diamondTool">
-                    <span>الماس</span>
-                </div>
                 <div class="highlight-circle" data-tool="silverTool">
                     <span>نقره</span>
+                </div>
+                <div class="highlight-circle" data-tool="diamondTool">
+                    <span>الماس</span>
                 </div>
                 <div class="highlight-circle" data-tool="pearlTool">
                     <span>مروارید</span>
@@ -195,6 +1028,38 @@
                     </div>
                     <div class="ad-space">
                         <div class="ad-banner">📍 محل تبلیغات ابزار طلا</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🩶 ابزار محاسبه نقره -->
+            <div class="tool-section" id="silverToolSection">
+                <div class="tool-card glass-card">
+                    <h3>🪙 محاسبه قیمت نقره</h3>
+                    <div class="tool-form">
+                        <div class="input-group">
+                            <label>وزن نقره (گرم):</label>
+                            <input type="number" id="silverWeight" placeholder="مثلاً 10" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>عیار نقره:</label>
+                            <select id="silverCarat">
+                                <option value="999">۹۹۹ (نقره خالص)</option>
+                                <option value="925">۹۲۵ (استرلینگ)</option>
+                                <option value="800">۸۰۰</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>اجرت و کارمزد (٪):</label>
+                            <input type="number" id="silverWage" placeholder="مثلاً 5" value="5">
+                        </div>
+                        <button class="calculate-btn" id="calculateSilver">محاسبه قیمت</button>
+                        <div class="result-box" id="silverResult">
+                            <!-- نتیجه اینجا نمایش داده می‌شود -->
+                        </div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ابزار نقره</div>
                     </div>
                 </div>
             </div>
@@ -285,27 +1150,91 @@
             </div>
 
         </main>
+    </div>
+    <!-- ==================== -->
+    <!-- 🎯 بخش‌های مشترک همه صفحات -->
+    <!-- ==================== -->
 
-        <!-- 💬 بخش چت هوش مصنوعی (در ابزار) -->
-        <section class="ai-chat-section">
-            <div class="chat-container glass-card">
-                <h3>💬 چت با هوش مصنوعی در مورد ابزارها</h3>
-                <div class="chat-messages" id="toolsChatMessages">
-                    <div class="ai-message">
-                        <p>سلام! در مورد محاسبات طلا، تشخیص الماس یا تبدیل ارز می‌تونم راهنماییتون کنم.</p>
-                    </div>
-                </div>
-                <div class="chat-input-container">
-                    <input type="text" id="toolsChatInput" placeholder="سوال خود را بپرسید...">
-                    <button id="sendToolsMessage">ارسال</button>
-                </div>
-                <div class="usage-counter">
-                    💡 استفاده شده: <span id="toolsChatUsage">0</span> از 4 بار (رایگان)
+    <!-- 💬 بخش چت هوش مصنوعی -->
+    <section class="global-section ai-chat-section">
+        <div class="chat-container glass-card">
+            <h3>💬 چت با هوش مصنوعی</h3>
+            <div class="chat-messages" id="chatMessages">
+                <div class="ai-message">
+                    <p>سلام! من هوش مصنوعی LivePulse هستم. در مورد بازار مالی و قیمت‌ها می‌تونم کمکتون کنم.</p>
                 </div>
             </div>
-        </section>
-    </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="سوال خود را بپرسید...">
+                <button id="sendMessage">ارسال</button>
+            </div>
+            <div class="usage-counter">
+                💡 استفاده شده: <span id="chatUsage">0</span> از 4 بار (رایگان)
+            </div>
+        </div>
+    </section>
 
+    <!-- 📰 بخش تحلیل و اخبار -->
+    <section class="global-section analysis-section">
+        <div class="analysis-container">
+            <div class="ai-analysis glass-card">
+                <h3>🤖 تحلیل هوش مصنوعی بازار</h3>
+                <p id="aiAnalysisText">تحلیل نمونه: بازار امروز با نوسانات ملایم همراه است. پیشنهاد می‌شود در تصمیم‌گیری‌ها احتیاط کنید.</p>
+            </div>
+        
+            <div class="news-section glass-card">
+                <h3>📰 اخبار مهم بازار</h3>
+                <div class="news-list" id="newsList">
+                    <div class="news-item">• افزایش قیمت نفت در بازارهای جهانی</div>
+                    <div class="news-item">• تصمیمات جدید فدرال رزرو آمریکا</div>
+                    <div class="news-item">• رشد شاخص بورس تهران</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🎠 بخش اسلایدر تبلیغات - 2 ردیف روان -->
+    <section class="global-section slider-section">
+        <!-- ردیف بالا - حرکت به چپ -->
+        <div class="slider-container top-slider">
+            <button class="slider-btn prev-btn">‹</button>
+            
+            <div class="slider-track">
+                <div class="slider-item glass-card">📍 تبلیغات بنری ۱</div>
+                <div class="slider-item glass-card">📊 تحلیل بازار طلا</div>
+                <div class="slider-item glass-card">📍 تبلیغات بنری ۲</div>
+                <div class="slider-item glass-card">📈 اخبار ویژه ارز</div>
+                <div class="slider-item glass-card">📍 تبلیغات بنری ۳</div>
+            </div>
+            
+            <button class="slider-btn next-btn">›</button>
+        </div>
+    
+        <!-- ردیف پایین - حرکت به راست -->
+        <div class="slider-container bottom-slider">
+            <button class="slider-btn prev-btn">‹</button>
+            
+            <div class="slider-track">
+                <div class="slider-item glass-card">🤖 مقاله هوش مصنوعی</div>
+                <div class="slider-item glass-card">📍 تبلیغات بنری ۴</div>
+                <div class="slider-item glass-card">📰 تحلیل تکنیکال</div>
+                <div class="slider-item glass-card">📍 تبلیغات بنری ۵</div>
+                <div class="slider-item glass-card">💎 پیشنهاد ویژه</div>
+            </div>
+            
+            <button class="slider-btn next-btn">›</button>
+        </div>
+    </section>
+
+    <!-- 💌 بخش نظرات -->
+    <section class="global-section feedback-section">
+        <div class="feedback-container glass-card">
+            <h3>💌 ارسال نظر به ما</h3>
+            <textarea id="feedbackText" placeholder="نظرات و پیشنهادات خود را بنویسید..."></textarea>
+            <button id="submitFeedback">ارسال نظر</button>
+        </div>
+    </section>
+    
     <!-- 🔻 فوتر (مشترک) -->
     <footer class="main-footer">
         <div class="footer-content">
@@ -348,7 +1277,7 @@
                     <p>دسترسی نامحدود به تمام ابزارها</p>
                     <p>چت نامحدود با هوش مصنوعی</p>
                     <p>تحلیل‌های پیشرفته</p>
-                    <button class="subscribe-btn" data-plan="monthly">خرید - ۲۹,۰۰۰ تومان</button>
+                    <button class="subscribe-btn" data-plan="monthly">خرید - ۵۰,۰۰۰ تومان</button>
                 </div>
             </div>
         </div>
