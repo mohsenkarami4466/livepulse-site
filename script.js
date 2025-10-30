@@ -118,6 +118,9 @@ function initializeApp() {
     
     // تنظیم ایونت‌لیستنرها
     setupEventListeners();
+
+    // 🆕 این خط رو اضافه کن:
+    setTimeout(() => setupSliders(), 1000);
     
     // آپدیت نمایش استفاده
     updateUsageDisplay();
@@ -820,6 +823,69 @@ function setupAllCardListeners() {
     });
     
     console.log(`🎯 ایونت‌لیستنر برای ${allPriceCards.length} کارت تنظیم شد`);
+}
+
+// ==================== //
+// 🎠 کنترل اسلایدرها
+// ==================== //
+
+function setupSliders() {
+    document.querySelectorAll('.slider-container').forEach(container => {
+        const track = container.querySelector('.slider-track');
+        const prevBtn = container.querySelector('.prev-btn');
+        const nextBtn = container.querySelector('.next-btn');
+        const items = track.querySelectorAll('.slider-item');
+        
+        if (items.length === 0) return;
+        
+        const itemWidth = items[0].offsetWidth + 15; // عرض آیتم + gap
+        let isAnimating = false;
+        
+        // دکمه قبلی
+        prevBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            track.style.transition = 'transform 0.5s ease';
+            track.style.transform = `translateX(${itemWidth * 2}px)`;
+            
+            setTimeout(() => {
+                track.style.transition = 'none';
+                const firstItem = track.children[0];
+                track.appendChild(firstItem);
+                track.style.transform = 'translateX(0)';
+                isAnimating = false;
+            }, 500);
+        });
+        
+        // دکمه بعدی
+        nextBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            track.style.transition = 'transform 0.5s ease';
+            track.style.transform = `translateX(-${itemWidth * 2}px)`;
+            
+            setTimeout(() => {
+                track.style.transition = 'none';
+                const lastItem = track.children[track.children.length - 1];
+                track.insertBefore(lastItem, track.children[0]);
+                track.style.transform = 'translateX(0)';
+                isAnimating = false;
+            }, 500);
+        });
+        
+        // توقف انیمیشن خودکار هنگام هاور
+        container.addEventListener('mouseenter', () => {
+            track.style.animationPlayState = 'paused';
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            track.style.animationPlayState = 'running';
+        });
+    });
+    
+    console.log('🎯 اسلایدرها راه‌اندازی شدند');
 }
 
 // ==================== //
