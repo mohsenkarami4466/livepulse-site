@@ -55,6 +55,18 @@
     box-sizing: border-box;
 }
 
+/* 🔄 ریست استایل‌های پیش‌فرض */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 🆕 این دو خط رو اضافه کن */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
 
 /* 🖋️ فونت و تایپوگرافی */
 body {
@@ -63,7 +75,7 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     transition: all 0.3s ease;
-    line-height: 1.6;
+    line-height: 1.6; 
 }
 
 /* ==================== */
@@ -550,17 +562,19 @@ body {
 /* ==================== */
 
 .slider-section {
-    padding: 3rem 2rem;
-    max-width: 1200px;
+    padding: 3rem 1rem;
+    max-width: 100%;
     margin: 0 auto;
+    overflow: hidden;
+    position: relative;
 }
 
 .slider-container {
     display: flex;
     align-items: center;
-    gap: 15px;
     margin-bottom: 25px;
     position: relative;
+    width: 100%;
 }
 
 .top-slider .slider-track {
@@ -573,14 +587,14 @@ body {
 
 .slider-track {
     display: flex;
-    gap: 20px;
-    flex: 1;
+    gap: 15px;
     padding: 10px 0;
+    width: max-content;
 }
 
 .slider-item {
-    flex: 0 0 280px;
-    height: 120px;
+    flex: 0 0 250px;
+    height: 100px;
     background: var(--glass-bg);
     border-radius: 12px;
     display: flex;
@@ -588,39 +602,127 @@ body {
     justify-content: center;
     font-weight: 600;
     border: 1px solid var(--glass-border);
-    padding: 15px;
+    padding: 12px;
     text-align: center;
+    font-size: 0.9rem;
 }
 
+/* 🆕 گرادیان مات از مرکز به کناره‌ها */
+.slider-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(
+        90deg,
+        var(--bg-primary) 0%,
+        transparent 15%,
+        transparent 85%,
+        var(--bg-primary) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* 🆕 دکمه‌های کنترل */
 .slider-btn {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 2;
-    flex-shrink: 0;
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    font-weight: bold;
+    backdrop-filter: blur(10px);
+}
+
+.slider-btn.prev-btn {
+    right: 15px;
+}
+
+.slider-btn.next-btn {
+    left: 15px;
 }
 
 .slider-btn:hover {
     background: var(--accent-blue);
     color: white;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
 /* انیمیشن اسلایدر */
 @keyframes scrollLeft {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    100% { transform: translateX(calc(-250px * 3)); }
 }
 
 @keyframes scrollRight {
-    0% { transform: translateX(-50%); }
+    0% { transform: translateX(calc(-250px * 3)); }
     100% { transform: translateX(0); }
+}
+
+/* 🆕 ریسپانسیو برای موبایل */
+@media (max-width: 768px) {
+    .slider-section {
+        padding: 2rem 0.5rem;
+    }
+    
+    .slider-item {
+        flex: 0 0 200px;
+        height: 80px;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+    
+    .slider-track {
+        gap: 10px;
+    }
+    
+    .slider-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+    }
+    
+    .slider-btn.prev-btn {
+        right: 8px;
+    }
+    
+    .slider-btn.next-btn {
+        left: 8px;
+    }
+    
+    .slider-container::before {
+        background: linear-gradient(
+            90deg,
+            var(--bg-primary) 0%,
+            transparent 10%,
+            transparent 90%,
+            var(--bg-primary) 100%
+        );
+    }
+    
+    @keyframes scrollLeft {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(-200px * 3)); }
+    }
+    
+    @keyframes scrollRight {
+        0% { transform: translateX(calc(-200px * 3)); }
+        100% { transform: translateX(0); }
+    }
 }
 
 /* ==================== */
@@ -884,9 +986,30 @@ body {
     gap: 20px;
   }
   
+  /* 🆕 اصلاحات اسلایدر برای موبایل */
+  .slider-section {
+    padding: 2rem 0.5rem;
+  }
+  
   .slider-item {
-    flex: 0 0 280px;
-    height: 150px;
+    flex: 0 0 200px !important; /* اضافه کردن !important */
+    height: 80px !important;
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+  
+  .slider-track {
+    gap: 10px;
+  }
+  
+  .slider-container::before,
+  .slider-container::after {
+    width: 40px;
+  }
+  
+  .slider-btn {
+    width: 30px;
+    height: 30px;
   }
   
   .main-content,
@@ -896,6 +1019,26 @@ body {
   .slider-section,
   .feedback-section {
     padding: 1.5rem 1rem;
+  }
+  
+  /* 🆕 اصلاحات فوتر برای موبایل */
+  .main-footer {
+    padding: 2rem 1rem;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .contact-info p {
+    font-size: 1rem;
+  }
+  
+  .footer-links {
+    flex-direction: column;
+    gap: 15px;
   }
 }
 
@@ -927,6 +1070,19 @@ body {
   
   .chat-container {
     height: 400px;
+  }
+  
+  /* 🆕 اصلاحات بیشتر برای موبایل کوچک */
+  .slider-item {
+    flex: 0 0 180px !important;
+    height: 70px !important;
+    font-size: 0.75rem;
+  }
+  
+  .slider-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 0.8rem;
   }
 }
 
