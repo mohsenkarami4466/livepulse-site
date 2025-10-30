@@ -340,6 +340,12 @@ function activateTool(toolId) {
         tool.classList.remove('active-tool');
     });
     
+    // 🆕 مطمئن شو محتوای ابزار نمایش داده بشه
+    const toolsContent = document.querySelector('.tools-content');
+    if (toolsContent) {
+        toolsContent.style.display = 'block';
+    }
+    
     // فعال‌سازی ابزار انتخاب شده
     const targetTool = document.getElementById(toolId + 'Section');
     if (targetTool) {
@@ -676,12 +682,13 @@ function setupEventListeners() {
     });
     
     // هایلایت‌های خانه
-    elements.highlightCircles.forEach(circle => {
+    document.querySelectorAll('.highlight-circle[data-category]').forEach(circle => {
+
         circle.addEventListener('click', (e) => {
             const category = e.currentTarget.getAttribute('data-category');
         
         // آپدیت هایلایت فعال
-        elements.highlightCircles.forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.highlight-circle[data-category]').forEach(c => c.classList.remove('active'));
         e.currentTarget.classList.add('active');
         
         // 🆕 انتقال به صفحه مربوطه
