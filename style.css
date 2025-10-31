@@ -570,30 +570,33 @@ body {
 }
 
 .slider-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
+    margin: 20px auto;
+    padding: 20px 0;
+    max-width: 100%;
+    overflow: hidden;
     position: relative;
-    width: 100%;
-}
-
-.top-slider .slider-track {
-    animation: scrollLeft 30s linear infinite;
-}
-
-.bottom-slider .slider-track {
-    animation: scrollRight 25s linear infinite;
-}
-
-.slider-track {
     display: flex;
-    gap: 15px;
-    padding: 10px 0;
-    width: max-content;
+}
+
+.slider-group {
+    display: flex;
+    gap: 20px;
+    will-change: transform;
+    flex-shrink: 0;
+}
+
+/* انیمیشن برای ردیف بالا (چپ به راست) */
+.top-slider .slider-group {
+    animation: scrolling-left 40s linear infinite;
+}
+
+/* انیمیشن برای ردیف پایین (راست به چپ) */
+.bottom-slider .slider-group {
+    animation: scrolling-right 45s linear infinite;
 }
 
 .slider-item {
-    flex: 0 0 250px;
+    flex: 0 0 280px;
     height: 100px;
     background: var(--glass-bg);
     border-radius: 12px;
@@ -602,126 +605,81 @@ body {
     justify-content: center;
     font-weight: 600;
     border: 1px solid var(--glass-border);
-    padding: 12px;
+    padding: 15px;
     text-align: center;
-    font-size: 0.9rem;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
 }
 
-/* 🆕 گرادیان مات از مرکز به کناره‌ها */
+/* گرادینت‌های کناری */
 .slider-container::before {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    left: 0;
-    background: linear-gradient(
-        90deg,
-        var(--bg-primary) 0%,
-        transparent 15%,
-        transparent 85%,
-        var(--bg-primary) 100%
-    );
+    width: 100px;
+    background: linear-gradient(to left, var(--bg-primary) 20%, transparent 100%);
     z-index: 2;
     pointer-events: none;
 }
 
-/* 🆕 دکمه‌های کنترل */
-.slider-btn {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 10;
+.slider-container::after {
+    content: '';
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.4rem;
-    font-weight: bold;
-    backdrop-filter: blur(10px);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100px;
+    background: linear-gradient(to right, var(--bg-primary) 20%, transparent 100%);
+    z-index: 2;
+    pointer-events: none;
 }
 
-.slider-btn.prev-btn {
-    right: 15px;
+/* انیمیشن‌های پیوسته */
+@keyframes scrolling-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
-.slider-btn.next-btn {
-    left: 15px;
+@keyframes scrolling-right {
+    0% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0);
+    }
 }
 
-.slider-btn:hover {
-    background: var(--accent-blue);
-    color: white;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+/* توقف هنگام هاور */
+.slider-container:hover .slider-group {
+    animation-play-state: paused;
 }
 
-/* انیمیشن اسلایدر */
-@keyframes scrollLeft {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-250px * 3)); }
-}
-
-@keyframes scrollRight {
-    0% { transform: translateX(calc(-250px * 3)); }
-    100% { transform: translateX(0); }
-}
-
-/* 🆕 ریسپانسیو برای موبایل */
+/* ریسپانسیو برای موبایل */
 @media (max-width: 768px) {
     .slider-section {
         padding: 2rem 0.5rem;
     }
     
     .slider-item {
-        flex: 0 0 200px;
+        flex: 0 0 220px;
         height: 80px;
-        padding: 8px;
-        font-size: 0.8rem;
+        padding: 10px;
+        font-size: 0.9rem;
     }
     
-    .slider-track {
-        gap: 10px;
+    .slider-group {
+        gap: 15px;
     }
     
-    .slider-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1.2rem;
-    }
-    
-    .slider-btn.prev-btn {
-        right: 8px;
-    }
-    
-    .slider-btn.next-btn {
-        left: 8px;
-    }
-    
-    .slider-container::before {
-        background: linear-gradient(
-            90deg,
-            var(--bg-primary) 0%,
-            transparent 10%,
-            transparent 90%,
-            var(--bg-primary) 100%
-        );
-    }
-    
-    @keyframes scrollLeft {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-200px * 3)); }
-    }
-    
-    @keyframes scrollRight {
-        0% { transform: translateX(calc(-200px * 3)); }
-        100% { transform: translateX(0); }
+    .slider-container::before,
+    .slider-container::after {
+        width: 50px;
     }
 }
 
