@@ -973,6 +973,9 @@
         <!-- 🔘 هایلایت‌های ابزار -->
         <section class="highlights-section tools-highlights">
             <div class="highlights-container">
+                <div class="highlight-circle active" data-tool="personalFund">
+                    <span>صندوق</span>
+                </div>
                 <div class="highlight-circle active" data-tool="goldTool">
                     <span>طلا</span>
                 </div>
@@ -999,9 +1002,53 @@
 
         <!-- 🧮 بخش ابزارهای محاسباتی -->
         <main class="tools-content">
-            
+
+             <!-- 💰 صندوق شخصی (خانه ابزار) -->
+            <div class="tool-section active-tool" id="personalFundSection">
+                <div class="personal-fund-container">
+                    <div class="fund-header">
+                        <h2>💰 صندوق شخصی</h2>
+                        <p>مدیریت دارایی‌های مالی شما</p>
+                    </div>
+                    
+                    <div class="fund-content">
+                        <div class="fund-stats glass-card">
+                            <h3>📊 مجموع دارایی‌ها</h3>
+                            <div class="total-amount" id="totalAssets">۰ ریال</div>
+                            <div class="assets-breakdown">
+                                <div class="asset-item">
+                                    <span>طلای ۱۸ عیار:</span>
+                                    <strong id="goldAmount">۰ گرم</strong>
+                                </div>
+                                <div class="asset-item">
+                                    <span>دلار:</span>
+                                    <strong id="usdAmount">۰ دلار</strong>
+                                </div>
+                                <div class="asset-item">
+                                    <span>بیت‌کوین:</span>
+                                    <strong id="btcAmount">۰ BTC</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="add-asset glass-card">
+                            <h3>➕ افزودن دارایی جدید</h3>
+                            <form class="asset-form" id="assetForm">
+                                <select class="asset-type" id="assetType">
+                                    <option value="gold">طلای ۱۸ عیار</option>
+                                    <option value="usd">دلار آمریکا</option>
+                                    <option value="btc">بیت‌کوین</option>
+                                </select>
+                                <input type="number" class="asset-amount" id="assetAmount" placeholder="مقدار" step="0.001">
+                                <button type="submit">ذخیره دارایی</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 🥇 ابزار محاسبه طلا -->
-            <div class="tool-section active-tool" id="goldToolSection">
+            <div class="tool-section" id="goldToolSection">
                 <div class="tool-card glass-card">
                     <h3>🧮 محاسبه قیمت طلا</h3>
                     <div class="tool-form">
@@ -1083,6 +1130,46 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 🔄 ابزار تشخیص مروارید -->
+             <div class="tool-section" id="pearlToolSection">
+                <div class="tool-card glass-card">
+                    <h3>💎 تشخیص مروارید از روی عکس</h3>
+                    <div class="upload-section">
+                        <div class="upload-area" id="pearlUploadArea">
+                            <span>📸 عکس مروارید را آپلود کنید</span>
+                            <input type="file" id="pearlImage" accept="image/*" hidden>
+                        </div>
+                        <button class="analyze-btn" id="analyzePearl">آنالیز تصویر</button>
+                        <div class="analysis-result" id="pearlResult">
+                            <!-- نتیجه تحلیل اینجا نمایش داده می‌شود -->
+                        </div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ابزار مروارید</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 🔄 ابزار تشخیص سنگ -->
+             <div class="tool-section" id="gemToolSection">
+                <div class="tool-card glass-card">
+                    <h3>💎 تشخیص سنگ از روی عکس</h3>
+                    <div class="upload-section">
+                        <div class="upload-area" id="gemUploadArea">
+                            <span>📸 عکس سنگ را آپلود کنید</span>
+                            <input type="file" id="gemlImage" accept="image/*" hidden>
+                        </div>
+                        <button class="analyze-btn" id="analyzegem">آنالیز تصویر</button>
+                        <div class="analysis-result" id="gemlResult">
+                            <!-- نتیجه تحلیل اینجا نمایش داده می‌شود -->
+                        </div>
+                    </div>
+                    <div class="ad-space">
+                        <div class="ad-banner">📍 محل تبلیغات ابزار سنگ</div>
+                    </div>
+                </div>
+            </div>            
 
             <!-- 🔄 ابزار تبدیل ارز -->
             <div class="tool-section" id="currencyToolSection">
@@ -1291,16 +1378,32 @@
         </div>
     </div>
 
-    <!-- 🔲 مودال پنجره بزرگ قیمت -->
+    <!-- 🔲 مودال پنجره بزرگ قیمت - نسخه حرفه‌ای -->
     <div class="modal-overlay" id="priceModal">
         <div class="price-detail-modal glass-card">
             <button class="close-modal" id="closePriceModal">×</button>
-            <div id="modalContent">
-                <!-- محتوای مودال توسط JavaScript پر می‌شود -->
+            
+            <div class="modal-layout">
+                <!-- بنر تبلیغاتی سمت چپ -->
+                <div class="modal-sidebar">
+                    <div class="ad-banner-sidebar" id="modalAdBanner">
+                        <div class="ad-placeholder">
+                            📢 محل تبلیغات<br>
+                            <small>300×600</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- محتوای اصلی سمت راست -->
+                <div class="modal-main-content">
+                    <div id="modalContent">
+                        <!-- توسط JavaScript پر میشود -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
