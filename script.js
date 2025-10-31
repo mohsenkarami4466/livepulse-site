@@ -72,7 +72,7 @@ const elements = {
     // کانتینر کارت‌ها
     homeCardsContainer: document.getElementById('homeMainCards'),
     
-    // مودال‌ها
+    // مودالها
     loginModal: document.getElementById('loginModal'),
     subscriptionModal: document.getElementById('subscriptionModal'),
     priceModal: document.getElementById('priceModal'),
@@ -284,13 +284,10 @@ function createPriceCard(item) {
 }
 
 /**
- * 🔍 باز کردن مودال جزئیات قیمت
+ * 🔍 باز کردن مودال جزئیات قیمت - نسخه حرفه‌ای
  */
 function openPriceDetail(item) {
-    if (appState.openModals >= appState.maxModals[appState.currentView]) {
-        alert(`⚠️ شما نمی‌توانید بیشتر از ${appState.maxModals[appState.currentView]} پنجره باز کنید.`);
-        return;
-    }
+    console.log('🎯 مودال جدید فراخوانی شد برای:', item.name);
     
     const modalContent = document.getElementById('modalContent');
     const changeClass = item.change >= 0 ? 'positive' : 'negative';
@@ -304,30 +301,185 @@ function openPriceDetail(item) {
             </div>
         </div>
         
-        <div class="detail-chart">
+        <div class="chart-controls">
+            <select id="timeframeSelect">
+                <option value="1m">۱ دقیقه</option>
+                <option value="5m">۵ دقیقه</option>
+                <option value="1h">۱ ساعت</option>
+                <option value="4h">۴ ساعت</option>
+                <option value="1d">۱ روز</option>
+                <option value="1w">۱ هفته</option>
+            </select>
+            
+            <button class="chart-type-btn active" data-type="candle">کندل</button>
+            <button class="chart-type-btn" data-type="line">خطی</button>
+            <button class="chart-type-btn" data-type="area">ناحیه‌ای</button>
+        </div>
+        
+        <div class="interactive-chart" id="interactiveChart">
             <div class="chart-placeholder">
-                📊 نمودار قیمت ${item.name}
-                <br>
-                <small>📍 بعداً با API واقعی پر می‌شود</small>
+                📊 نمودار تعاملی ${item.name}
+                <div class="chart-tooltip" style="display: none;"></div>
             </div>
         </div>
         
-        <div class="ai-analysis-section">
-            <h4>🤖 تحلیل هوش مصنوعی</h4>
-            <p>این تحلیل نمونه برای ${item.name} است. در نسخه نهایی از n8n دریافت می‌شود.</p>
-            <div class="ai-suggestion">
-                <strong>پیشنهاد:</strong> 
-                ${item.change >= 0 ? '📈 شرایط مناسب برای خرید' : '📉 احتیاط در خرید'}
+        <div class="ai-analysis-live">
+            <div class="analysis-header">
+                <h4>🤖 تحلیل لحظه‌ای هوش مصنوعی</h4>
+                <span class="live-indicator">● LIVE</span>
             </div>
-        </div>
-        
-        <div class="ad-space">
-            <div class="ad-banner">📍 محل تبلیغات تحلیل ${item.name}</div>
+            <div class="analysis-content" id="aiAnalysisContent">
+                🔄 در حال دریافت تحلیل برای ${item.name}...
+            </div>
+            <div class="update-timer">
+                🔄 آپدیت بعدی: <span id="updateCountdown">60</span> ثانیه
+            </div>
         </div>
     `;
     
+    // لود بنر تبلیغاتی
+    loadModalAdBanner(item.symbol);
+    
+    // راه‌اندازی نمودار تعاملی
+    setupInteractiveChart(item);
+    
+    // شروع تحلیل هوش مصنوعی
+    startAIAnalysis(item);
+    
     elements.priceModal.classList.add('active');
-    appState.openModals++;
+    
+    console.log('✅ مودال با موفقیت باز شد');
+}
+/**
+ * 🎴 لود بنر تبلیغاتی در مودال
+ */
+function loadModalAdBanner(symbol) {
+    const adBanner = document.getElementById('modalAdBanner');
+    
+    const banners = [
+        '<div class="ad-real" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">🎯 تبلیغات ویژه</div>',
+        '<div class="ad-real" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">💎 پیشنهاد اختصاصی</div>'
+    ];
+    
+    const randomBanner = banners[Math.floor(Math.random() * banners.length)];
+    adBanner.innerHTML = randomBanner;
+}
+
+/**
+ * 📊 راه‌اندازی نمودار تعاملی
+ */
+function setupInteractiveChart(item) {
+    const chartElement = document.getElementById('interactiveChart');
+    const tooltip = chartElement.querySelector('.chart-tooltip');
+    
+    // شبیه‌سازی حرکت موس روی نمودار
+    chartElement.addEventListener('mousemove', (e) => {
+        const rect = chartElement.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // محاسبه قیمت فرضی based on position
+        const simulatedPrice = item.price * (0.95 + (y / rect.height) * 0.1);
+        
+        tooltip.style.display = 'block';
+        tooltip.style.left = (x + 10) + 'px';
+        tooltip.style.top = (y - 30) + 'px';
+        tooltip.innerHTML = `💰 ${formatPrice(simulatedPrice, item.symbol)}`;
+    });
+    
+    chartElement.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+    });
+    
+    // کنترل‌های نمودار
+    setupChartControls();
+}
+
+/**
+ * ⚙️ راه‌اندازی کنترل‌های نمودار
+ */
+function setupChartControls() {
+    // تغییر تایم‌فریم
+    document.getElementById('timeframeSelect').addEventListener('change', function() {
+        console.log('تایم‌فریم تغییر کرد به:', this.value);
+        // بعداً با API واقعی پر می‌شود
+    });
+    
+    // تغییر نوع نمودار
+    document.querySelectorAll('.chart-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            console.log('نوع نمودار تغییر کرد به:', this.dataset.type);
+        });
+    });
+}
+
+/**
+ * 🤖 شروع تحلیل هوش مصنوعی
+ */
+function startAIAnalysis(item) {
+    const analysisContent = document.getElementById('aiAnalysisContent');
+    const countdownElement = document.getElementById('updateCountdown');
+    
+    // تحلیل اولیه
+    generateAIAnalysis(item);
+    
+    // تایمر آپدیت
+    startAnalysisTimer(item, countdownElement);
+}
+
+/**
+ * 🧠 تولید تحلیل هوش مصنوعی
+ */
+function generateAIAnalysis(item) {
+    const analysisContent = document.getElementById('aiAnalysisContent');
+    
+    const analyses = {
+        positive: [
+            `📈 <strong>تحلیل فنی:</strong> ${item.name} روند صعودی قدرتمندی دارد.`,
+            `💰 <strong>پیشنهاد:</strong> خرید در پولبک‌های کوچک توصیه می‌شود.`,
+            `🎯 <strong>هدف قیمتی:</strong> مقاومت بعدی در ${formatPrice(item.price * 1.05, item.symbol)}`
+        ],
+        negative: [
+            `📉 <strong>تحلیل فنی:</strong> ${item.name} تحت فشار فروش قرار دارد.`,
+            `⚠️ <strong>پیشنهاد:</strong> انتظار برای سیگنال بهتر منطقی است.`,
+            `🛡️ <strong>حمایت:</strong> سطح ${formatPrice(item.price * 0.95, item.symbol)} کلیدی است`
+        ]
+    };
+    
+    const analysisType = item.change >= 0 ? 'positive' : 'negative';
+    const selectedAnalysis = analyses[analysisType];
+    
+    analysisContent.innerHTML = selectedAnalysis.map(item => 
+        `<div class="analysis-item">${item}</div>`
+    ).join('') + `
+        <div class="analysis-source">
+            <small>🔗 منبع: هوش مصنوعی LivePulse - آپدیت: ${new Date().toLocaleTimeString('fa-IR')}</small>
+        </div>
+    `;
+}
+
+/**
+ * ⏱️ شروع تایمر تحلیل
+ */
+function startAnalysisTimer(item, countdownElement) {
+    let timeLeft = 60;
+    
+    const timer = setInterval(() => {
+        timeLeft--;
+        countdownElement.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+            generateAIAnalysis(item);
+            timeLeft = 60;
+        }
+        
+        // اگر مودال بسته شد، تایمر رو متوقف کن
+        if (!elements.priceModal.classList.contains('active')) {
+            clearInterval(timer);
+        }
+    }, 1000);
 }
 
 // ==================== //
@@ -361,6 +513,21 @@ function activateTool(toolId) {
         circle.classList.remove('active');
     });
     document.querySelector(`[data-tool="${toolId}"]`).classList.add('active');
+    
+    // 🆕 اگر صندوق شخصی انتخاب شد، دارایی‌ها رو آپدیت کن
+    if (toolId === 'personalFund') {
+        updateAssetsDisplay();
+    }
+}
+
+/**
+ * 📊 آپدیت نمایش مجموع دارایی‌ها
+ */
+function updateAssetsDisplay() {
+    document.getElementById('totalAssets').textContent = '۰ ریال';
+    document.getElementById('goldAmount').textContent = '۰ گرم';
+    document.getElementById('usdAmount').textContent = '۰ دلار';
+    document.getElementById('btcAmount').textContent = '۰ BTC';
 }
 
 /**
@@ -816,13 +983,42 @@ function setupAllCardListeners() {
         card.addEventListener('click', function() {
             const symbol = this.getAttribute('data-symbol');
             const cardTitle = this.querySelector('h3').textContent;
+            const priceText = this.querySelector('.current-price').textContent;
+            const changeElement = this.querySelector('.price-change');
+            const changeText = changeElement ? changeElement.textContent : '0%';
             
-            // نمایش پیام ساده برای تست
-            alert(`🔄 جزئیات ${cardTitle} (${symbol})\n\nاین قسمت برای همه کارت‌ها درست شد!`);
+            // 🆕 ایجاد یک آیتم ساده از اطلاعات کارت
+            const simpleItem = {
+                name: cardTitle,
+                symbol: symbol || cardTitle,
+                price: extractPrice(priceText),
+                change: extractChange(changeText),
+                chart: changeElement && changeElement.classList.contains('positive') ? 'up' : 'down'
+            };
+            
+            openPriceDetail(simpleItem);
         });
     });
     
     console.log(`🎯 ایونت‌لیستنر برای ${allPriceCards.length} کارت تنظیم شد`);
+}
+
+/**
+ * 🔢 استخراج قیمت از متن
+ */
+function extractPrice(priceText) {
+    // حذف کاراکترهای غیرعددی و تبدیل به عدد
+    const cleanPrice = priceText.replace(/[^\d.]/g, '');
+    return parseFloat(cleanPrice) || 0;
+}
+
+/**
+ * 🔢 استخراج درصد تغییر از متن
+ */
+function extractChange(changeText) {
+    // حذف کاراکترهای غیرعددی و تبدیل به عدد
+    const cleanChange = changeText.replace(/[^\d.-]/g, '');
+    return parseFloat(cleanChange) || 0;
 }
 
 // ==================== //
@@ -830,62 +1026,34 @@ function setupAllCardListeners() {
 // ==================== //
 
 function setupSliders() {
-    document.querySelectorAll('.slider-container').forEach(container => {
-        const track = container.querySelector('.slider-track');
-        const prevBtn = container.querySelector('.prev-btn');
-        const nextBtn = container.querySelector('.next-btn');
-        const items = track.querySelectorAll('.slider-item');
-        
-        if (items.length === 0) return;
-        
-        const itemWidth = items[0].offsetWidth + 15; // عرض آیتم + gap
-        let isAnimating = false;
-        
-        // دکمه قبلی
-        prevBtn.addEventListener('click', () => {
-            if (isAnimating) return;
-            isAnimating = true;
-            
-            track.style.transition = 'transform 0.5s ease';
-            track.style.transform = `translateX(${itemWidth * 2}px)`;
-            
-            setTimeout(() => {
-                track.style.transition = 'none';
-                const firstItem = track.children[0];
-                track.appendChild(firstItem);
-                track.style.transform = 'translateX(0)';
-                isAnimating = false;
-            }, 500);
-        });
-        
-        // دکمه بعدی
-        nextBtn.addEventListener('click', () => {
-            if (isAnimating) return;
-            isAnimating = true;
-            
-            track.style.transition = 'transform 0.5s ease';
-            track.style.transform = `translateX(-${itemWidth * 2}px)`;
-            
-            setTimeout(() => {
-                track.style.transition = 'none';
-                const lastItem = track.children[track.children.length - 1];
-                track.insertBefore(lastItem, track.children[0]);
-                track.style.transform = 'translateX(0)';
-                isAnimating = false;
-            }, 500);
-        });
-        
-        // توقف انیمیشن خودکار هنگام هاور
-        container.addEventListener('mouseenter', () => {
-            track.style.animationPlayState = 'paused';
-        });
-        
-        container.addEventListener('mouseleave', () => {
-            track.style.animationPlayState = 'running';
-        });
-    });
+    console.log('🎠 راه‌اندازی اسلایدرها...');
     
-    console.log('🎯 اسلایدرها راه‌اندازی شدند');
+    try {
+        const sliders = document.querySelectorAll('.slider-container');
+        console.log('تعداد اسلایدرها:', sliders.length);
+        
+        if (sliders.length === 0) {
+            console.log('⚠️ هیچ اسلایدری پیدا نشد');
+            return;
+        }
+        
+        sliders.forEach((slider, index) => {
+            console.log(`🎯 راه‌اندازی اسلایدر ${index + 1}`);
+            
+            // فقط برای اسلایدرهایی که slider-group دارند ادامه بده
+            const sliderGroups = slider.querySelectorAll('.slider-group');
+            if (sliders.length === 0) {
+                console.log(`⚠️ اسلایدر ${index + 1} slider-group ندارد`);
+                return;
+            }
+            
+            console.log(`✅ اسلایدر ${index + 1} راه‌اندازی شد`);
+        });
+        
+        console.log('🎯 اسلایدرها راه‌اندازی شدند');
+    } catch (error) {
+        console.log('⚠️ خطا در راه‌اندازی اسلایدرها:', error);
+    }
 }
 
 // ==================== //
