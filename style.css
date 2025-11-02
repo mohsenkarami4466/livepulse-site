@@ -105,7 +105,10 @@ body {
     transition: all 0.3s ease;
 }
 
+/* ==================== */
 /* دکمه‌های ناوبری اصلی */
+/* ==================== */
+
 .nav-btn {
     padding: 10px 15px;
     background: transparent;
@@ -116,6 +119,10 @@ body {
     transition: all 0.3s ease;
     font-family: inherit;
     font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
 }
 
 .nav-btn.active {
@@ -129,48 +136,16 @@ body {
     transform: translateY(-1px);
 }
 
-/* صفحه اخبار */
-.news-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.news-filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.news-filter {
-    padding: 10px 20px;
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    background: var(--glass-bg);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.news-filter.active {
-    background: var(--accent-blue);
+/* دکمه بازگشت به خانه */
+.nav-btn.home-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white;
-    border-color: var(--accent-blue);
+    border: none;
 }
 
-.news-feed {
-    background: var(--glass-bg);
-    border-radius: 15px;
-    padding: 20px;
-    border: 1px solid var(--glass-border);
-}
-
-.news-placeholder {
-    text-align: center;
-    color: var(--text-secondary);
-    padding: 40px 20px;
+.nav-btn.home-btn:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    transform: translateY(-2px);
 }
 
 /* ==================== */
@@ -272,197 +247,453 @@ body {
 }
 
 /* ==================== */
-/* 🌍 نوار وضعیت بازارهای جهانی */
+/* 🕒 استایل ساعت بازار - نسخه تمیز */
 /* ==================== */
 
-/* فاصله برای هدر فیکس */
-body {
-    padding-top: 80px;
+.market-clock-container {
+    position: fixed;
+    top: 90px;
+    left: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
-/* نوار ساعت بازارها */
-.trading-hours-bar {
+.market-clock-container:hover {
+    transform: scale(1.05);
+}
+
+.market-clock-glass {
+    width: 140px;
+    height: 140px;
     background: var(--glass-bg);
-    backdrop-filter: blur(15px);
-    border-radius: 15px;
+    backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    padding: 15px 20px;
-    margin: 20px 20px 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    flex-wrap: wrap;
+    border-radius: 50%;
     position: relative;
-    z-index: 100;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 30px rgba(0, 100, 255, 0.4); /* حاله نور آبی */
 }
 
-.timezone-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    min-width: 100px;
+[data-theme="dark"] .market-clock-glass {
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 40px rgba(0, 150, 255, 0.6); /* حاله نور آبی پررنگ در دارک */
 }
 
-.timezone-display span:first-child {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+.clock-face {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 50%;
 }
 
-#currentTime {
-    font-size: 1.1rem;
+/* اعداد ساعت */
+.hour-markers {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.hour-marker {
+    position: absolute;
+    width: 2px;
+    height: 12px;
+    background: var(--text-primary);
+    left: 50%;
+    top: 8px;
+    transform-origin: bottom center;
+    opacity: 0.7;
+}
+
+.hour-marker span {
+    position: absolute;
+    top: -25px;
+    left: -8px;
+    font-size: 0.7rem;
     font-weight: bold;
+    color: var(--text-primary);
+    opacity: 0.8;
+}
+
+/* نوارهای بازار - نسخه تمیز */
+.market-arcs {
+    position: absolute;
+    width: 92%;
+    height: 92%;
+    top: 4%;
+    left: 4%;
+    border-radius: 50%;
+}
+
+.market-arc {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* فقط نوار سبز برای بازارهای باز */
+.market-arc.open {
+    opacity: 0.8;
+    background: conic-gradient(
+        var(--accent-green) 0%,
+        var(--accent-green) 100%
+    );
+    box-shadow: 0 0 20px var(--accent-green);
+    filter: blur(1px);
+}
+
+/* اطلاعات بازارها روی ساعت - نسخه تمیز */
+.market-info-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.market-label {
+    position: absolute;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    width: 50px;
+    left: 50%;
+    margin-left: -25px;
+    top: -5px;
+    transform-origin: center 72px;
+    opacity: 0.9;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 4px;
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.market-label.open {
+    color: var(--accent-green);
+    background: rgba(0, 255, 127, 0.15);
+    border: 1px solid rgba(0, 255, 127, 0.3);
+}
+
+.market-label.closing {
+    color: var(--accent-red);
+    background: rgba(255, 0, 0, 0.15);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.market-label.opening {
+    color: var(--accent-teal);
+    background: rgba(0, 200, 255, 0.15);
+    border: 1px solid rgba(0, 200, 255, 0.3);
+}
+
+.market-label.closed {
+    opacity: 0.5;
+    background: rgba(128, 128, 128, 0.1);
+}
+
+.market-time-badge {
+    font-size: 0.5rem;
+    display: block;
+    margin-top: 1px;
     font-family: 'Courier New', monospace;
+    font-weight: bold;
+    opacity: 0.9;
 }
 
-.markets-timeline {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    flex: 1;
-    justify-content: space-around;
+/* عقربه‌ها */
+.clock-hands {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
-.market-time {
+.hand {
+    position: absolute;
+    background: var(--text-primary);
+    border-radius: 4px;
+    transform-origin: bottom center;
+    left: 50%;
+    bottom: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.hour-hand {
+    width: 4px;
+    height: 30px;
+    margin-left: -2px;
+}
+
+.minute-hand {
+    width: 3px;
+    height: 40px;
+    margin-left: -1.5px;
+}
+
+.second-hand {
+    width: 2px;
+    height: 45px;
+    margin-left: -1px;
+    background: var(--accent-green);
+    box-shadow: 0 0 8px var(--accent-green);
+}
+
+.hand-center {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--text-primary);
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+
+/* پنل نقشه */
+.market-map-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.market-map-glass {
+    width: 90%;
+    height: 90%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 20px;
+    position: relative;
     display: flex;
     flex-direction: column;
+}
+
+.close-map-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s ease;
+}
+
+.close-map-btn:hover {
+    color: var(--accent-red);
+}
+
+.map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.map-legend {
+    display: flex;
+    gap: 15px;
+}
+
+.legend-item {
+    display: flex;
     align-items: center;
     gap: 5px;
-    min-width: 60px;
+    font-size: 0.9rem;
 }
 
-.market-name {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
 }
 
-.market-status {
-    font-size: 1.2rem;
+.legend-color.open-pulse {
+    background: var(--accent-green);
+    box-shadow: 0 0 10px var(--accent-green);
 }
 
-.time-remaining {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
+.legend-color.closing-pulse {
+    background: var(--accent-red);
+    box-shadow: 0 0 10px var(--accent-red);
 }
 
-/* وضعیت‌های بازار */
-.market-status.open { color: var(--accent-green); }
-.market-status.closed { color: var(--accent-red); }
-.market-status.soon { color: var(--accent-teal); }
+.legend-color.opening-pulse {
+    background: var(--accent-teal);
+    box-shadow: 0 0 10px var(--accent-teal);
+}
 
-/* نوار شاخص‌ها */
-.market-indicators-bar {
-    background: var(--glass-bg);
-    backdrop-filter: blur(15px);
+.world-map-container {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
-    border: 1px solid var(--glass-border);
-    padding: 15px 20px;
-    margin: 0 20px 20px 20px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    margin-bottom: 20px;
     position: relative;
-    z-index: 100;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.indicator-item {
+.world-map {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.clocks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* استایل‌های اضافی برای پنل نقشه */
+.market-mini-clock {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+.market-mini-clock:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.mini-clock-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 8px;
-    text-align: center;
+    justify-content: center;
+    margin-bottom: 8px;
 }
 
-.indicator-item span {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.indicator-item strong {
-    font-size: 1.3rem;
+.mini-clock-time {
+    font-size: 1.2rem;
     font-weight: bold;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 5px;
 }
 
-.indicator-item small {
+.mini-clock-status {
     font-size: 0.8rem;
-    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.mini-clock-status.open {
+    color: var(--accent-green);
+    background: rgba(0, 255, 127, 0.2);
+    box-shadow: 0 0 10px rgba(0, 255, 127, 0.3);
+}
+
+.mini-clock-status.closing {
+    color: var(--accent-red);
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.mini-clock-status.opening {
+    color: var(--accent-teal);
+    background: rgba(0, 200, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
+}
+
+.mini-clock-status.closed {
+    color: var(--text-secondary);
+    background: rgba(128, 128, 128, 0.2);
 }
 
 /* ریسپانسیو */
-@media (max-width: 1024px) {
-    .market-indicators-bar {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 @media (max-width: 768px) {
-    .header-container {
-        padding: 1rem;
+    .market-clock-container {
+        top: 80px;
+        left: 15px;
     }
     
-    .control-menu {
-        gap: 8px;
+    .market-clock-glass {
+        width: 100px;
+        height: 100px;
     }
     
-    .nav-btn {
-        padding: 8px 12px;
-        font-size: 0.8rem;
+    .hour-marker span {
+        font-size: 0.5rem;
+        top: -18px;
     }
     
-    .trading-hours-bar {
+    .market-label {
+        font-size: 0.5rem;
+        width: 45px;
+        margin-left: -22.5px;
+        transform-origin: center 55px;
+    }
+    
+    .market-time-badge {
+        font-size: 0.4rem;
+    }
+    
+    .market-map-glass {
+        width: 95%;
+        height: 95%;
+        padding: 15px;
+    }
+    
+    .map-header {
         flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-        margin: 15px 15px 10px 15px;
+        gap: 10px;
+        align-items: flex-start;
     }
     
-    .markets-timeline {
-        gap: 15px;
-    }
-    
-    .market-time {
-        min-width: 50px;
-    }
-    
-    .market-indicators-bar {
-        grid-template-columns: 1fr;
-        gap: 15px;
-        padding: 15px;
-        margin: 0 15px 15px 15px;
-    }
-    
-    .indicator-item {
-        flex-direction: row;
-        justify-content: space-between;
-        text-align: right;
+    .map-legend {
+        flex-wrap: wrap;
+        gap: 10px;
     }
 }
 
 @media (max-width: 480px) {
-    body {
-        padding-top: 70px;
+    .market-clock-container {
+        top: 70px;
+        left: 10px;
     }
     
-    .trading-hours-bar,
-    .market-indicators-bar {
-        margin: 10px 10px 10px 10px;
+    .market-clock-glass {
+        width: 80px;
+        height: 80px;
     }
     
-    .markets-timeline {
-        gap: 10px;
-    }
-    
-    .market-time {
-        min-width: 45px;
-    }
-    
-    .site-name {
-        font-size: 1.2rem;
-    }
-    
-    .nav-btn {
-        padding: 6px 10px;
-        font-size: 0.75rem;
+    .market-label {
+        display: none; /* در موبایل لیبل‌ها رو مخفی می‌کنیم */
     }
 }
 
