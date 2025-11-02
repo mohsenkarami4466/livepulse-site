@@ -176,7 +176,7 @@ function toggleView() {
 }
 
 /**
- * 📱 نمایش نمای مشخص
+ * 📱 نمایش نمای مشخص + ریست اسکرول
  */
 function showView(view) {
     // مخفی کردن همه نماها
@@ -186,6 +186,7 @@ function showView(view) {
     const viewElements = {
         'home': elements.homeView,
         'tools': elements.toolsView,
+        'news': document.getElementById('newsView'), // 🆕 اضافه شد
         'crypto': elements.cryptoView,
         'currency': elements.currencyView,
         'gold': elements.goldView,
@@ -198,18 +199,22 @@ function showView(view) {
         viewElements[view].classList.add('active-view');
         appState.currentView = view;
         
-        // 🆕 انتقال هایلایت‌های اصلی فقط به صفحات اصلی (نه ابزار)
-        if (view !== 'tools') {
+        // 🆕 ریست اسکرول به بالای صفحه
+        window.scrollTo(0, 0);
+        
+        // 🆕 آپدیت وضعیت دکمه‌های ناوبری
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeBtn = document.querySelector(`[data-page="${view}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+        
+        // 🆕 انتقال هایلایت‌های اصلی فقط به صفحات اصلی
+        if (view !== 'tools' && view !== 'news') {
             const mainHighlights = document.querySelector('.highlights-section:not(.tools-highlights)');
             if (mainHighlights && viewElements[view] && !viewElements[view].contains(mainHighlights)) {
                 viewElements[view].insertBefore(mainHighlights, viewElements[view].firstChild);
             }
-        }
-        
-        // آپدیت متن دکمه viewToggle
-        if (view === 'home' || view === 'tools') {
-            elements.viewToggle.querySelector('.view-text').textContent = 
-                view === 'home' ? 'ابزار' : 'خانه';
         }
         
         // تنظیم ایونت‌لیستنر برای کارت‌های این صفحه
@@ -225,29 +230,120 @@ function showView(view) {
 }
 
 // ==================== //
+// 🌍 مدیریت نوار وضعیت بازار
+// ==================== //
+
+/**
+ * 🕒 آپدیت زمان و وضعیت بازارها
+ */
+function updateMarketStatus() {
+    const now = new Date();
+    const utcHours = now.getUTCHours();
+    
+    // آپدیت زمان جاری
+    document.getElementById('currentTime').textContent = 
+        now.toLocaleTimeString('fa-IR');
+    
+    // آپدیت وضعیت بازارها (محاسبه ساده)
+    updateMarketStatusDisplay(utcHours);
+}
+
+/**
+ * 📊 آپدیت نمایش وضعیت بازارها
+ */
+function updateMarketStatusDisplay(utcHours) {
+    const markets = {
+        'shanghai': { open: 1, close: 9 },   // 01:00 - 09:00 UTC
+        'moscow': { open: 7, close: 16 },    // 07:00 - 16:00 UTC  
+        'tehran': { open: 4, close: 9 },     // 04:30 - 09:00 UTC
+        'sydney': { open: 22, close: 7 },    // 22:00 - 07:00 UTC
+        'tokyo': { open: 0, close: 9 },      // 00:00 - 09:00 UTC
+        'london': { open: 8, close: 17 },    // 08:00 - 17:00 UTC
+        'newyork': { open: 13, close: 22 }   // 13:00 - 22:00 UTC
+    };
+    
+    Object.keys(markets).forEach(market => {
+        const { open, close } = markets[market];
+        const isOpen = utcHours >= open && utcHours < close;
+        const hoursUntilOpen = open > utcHours ? open - utcHours : 24 - utcHours + open;
+        
+        const element = document.querySelector(`[data-market="${market}"]`);
+        if (element) {
+            const statusElement = element.querySelector('.market-status');
+            const timeElement = element.querySelector('.time-remaining');
+            
+            if (isOpen) {
+                statusElement.textContent = '🟢';
+                statusElement.className = 'market-status open';
+                timeElement.textContent = 'باز';
+            } else if (hoursUntilOpen <= 2) {
+                statusElement.textContent = '🟡';
+                statusElement.className = 'market-status soon';
+                timeElement.textContent = `${hoursUntilOpen}h`;
+            } else {
+                statusElement.textContent = '🔴';
+                statusElement.className = 'market-status closed';
+                timeElement.textContent = 'بسته';
+            }
+        }
+    });
+}
+
+// شروع آپدیت زمان
+setInterval(updateMarketStatus, 1000);
+updateMarketStatus();
+
+// ==================== //
 // 🏠 بخش خانه - کارت‌های قیمت
 // ==================== //
 
 /**
- * 🎴 تولید کارت‌های قیمت برای صفحه خانه
+ * 🏠 تولید ۴ کارت اصلی صفحه خانه
  */
 function generateHomeCards() {
-    elements.homeCardsContainer.innerHTML = '';
+    const container = document.getElementById('homeMainCards');
+    if (!container) return;
     
-    // انتخاب ۶ مورد از مهم‌ترین آیتم‌ها
-    const featuredItems = [
-        sampleData.crypto[0],    // بیت‌کوین
-        sampleData.currency[0],  // دلار
-        sampleData.gold[0],      // سکه امامی
-        sampleData.oil[0],       // نفت برنت
-        sampleData.crypto[1],    // اتریوم
-        sampleData.currency[1]   // یورو
+    // ۴ کارت اصلی
+    const mainItems = [
+        {
+            name: 'دلار آمریکا',
+            symbol: 'USD',
+            price: 58000,
+            change: 0.3,
+            chart: 'up'
+        },
+        {
+            name: 'طلای ۱۸ عیار',
+            symbol: 'GOLD',
+            price: 2450000,
+            change: -0.8,
+            chart: 'down'
+        },
+        {
+            name: 'بیت‌کوین',
+            symbol: 'BTC',
+            price: 42000,
+            change: 2.1,
+            chart: 'up'
+        },
+        {
+            name: 'شاخص بورس',
+            symbol: 'TEDPIX',
+            price: 2150000,
+            change: 0.7,
+            chart: 'up'
+        }
     ];
     
-    featuredItems.forEach(item => {
+    container.innerHTML = '';
+    
+    mainItems.forEach(item => {
         const card = createPriceCard(item);
-        elements.homeCardsContainer.appendChild(card);
+        container.appendChild(card);
     });
+    
+    console.log('🎴 ۴ کارت اصلی ایجاد شدند');
 }
 
 /**
@@ -687,6 +783,149 @@ function analyzeCoin() {
 }
 
 // ==================== //
+<!-- 📰 مدیریت سیستم اخبار -->
+// ==================== //
+
+/**
+ * 📡 لود اخبار بر اساس دسته‌بندی
+ */
+function loadNews(category = 'all') {
+    const newsFeed = document.getElementById('newsFeed');
+    
+    // نمایش حالت لودینگ
+    newsFeed.innerHTML = `
+        <div class="news-placeholder">
+            <div class="loading-news">
+                <div class="spinner"></div>
+                <p>📡 در حال دریافت اخبار ${getCategoryName(category)}...</p>
+            </div>
+        </div>
+    `;
+    
+    // شبیه‌سازی دریافت اخبار
+    setTimeout(() => {
+        displayNews(generateSampleNews(category));
+    }, 1500);
+}
+
+/**
+ * 🎴 نمایش اخبار در صفحه
+ */
+function displayNews(news) {
+    const newsFeed = document.getElementById('newsFeed');
+    
+    if (news.length === 0) {
+        newsFeed.innerHTML = `
+            <div class="news-placeholder">
+                <p>📭 خبری در این دسته‌بندی یافت نشد</p>
+            </div>
+        `;
+        return;
+    }
+    
+    newsFeed.innerHTML = news.map(item => `
+        <div class="news-card" data-category="${item.category}">
+            <span class="news-category ${item.category}">${getCategoryName(item.category)}</span>
+            <h3 class="news-title">${item.title}</h3>
+            <p class="news-summary">${item.summary}</p>
+            <div class="news-meta">
+                <span class="news-source">${item.source}</span>
+                <span class="news-time">${item.time}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+/**
+ * 📋 تولید اخبار نمونه
+ */
+function generateSampleNews(category) {
+    const sampleNews = {
+        all: [
+            {
+                category: 'forex',
+                title: 'بانک مرکزی اروپا سیاست پولی خود را تغییر داد',
+                summary: 'نرخ بهره اصلی بدون تغییر باقی ماند اما سیگنال‌هایی از کاهش در آینده نزدیک مشاهده می‌شود.',
+                source: 'ForexLive',
+                time: '۲ ساعت پیش'
+            },
+            {
+                category: 'crypto',
+                title: 'بیت‌کوین به مرز ۴۵,۰۰۰ دلار نزدیک شد',
+                summary: 'رشد ۵ درصدی در ۲۴ ساعت گذشته همراه با افزایش حجم معاملات.',
+                source: 'CoinDesk',
+                time: '۱ ساعت پیش'
+            }
+        ],
+        forex: [
+            {
+                category: 'forex',
+                title: 'دلار آمریکا در برابر یورو تقویت شد',
+                summary: 'شاخص دلار ۰.۳ درصد رشد کرد در حالی که EUR/USD به ۱.۰۸۵۰ رسید.',
+                source: 'Bloomberg',
+                time: '۳۰ دقیقه پیش'
+            }
+        ],
+        crypto: [
+            {
+                category: 'crypto',
+                title: 'اتریوم رشد ۸ درصدی را تجربه کرد',
+                summary: 'ارتقای شبکه و افزایش فعالیت‌های DeFi محرک اصلی رشد قیمت بوده است.',
+                source: 'CryptoSlate',
+                time: '۴۵ دقیقه پیش'
+            }
+        ]
+    };
+    
+    return category === 'all' ? sampleNews.all : (sampleNews[category] || []);
+}
+
+/**
+ * 🏷️ دریافت نام فارسی دسته‌بندی
+ */
+function getCategoryName(category) {
+    const names = {
+        'all': 'همه',
+        'forex': 'فارکس',
+        'crypto': 'رمزارز',
+        'iran-stock': 'بورس ایران',
+        'global-stock': 'بورس جهانی',
+        'commodities': 'کالاها',
+        'macro': 'اقتصاد کلان'
+    };
+    
+    return names[category] || category;
+}
+
+/**
+ * ⚙️ راه‌اندازی سیستم اخبار
+ */
+function setupNewsSystem() {
+    // لود اخبار اولیه
+    loadNews('all');
+    
+    // ایونت‌لیستنر برای فیلترها
+    document.querySelectorAll('.news-filter').forEach(filter => {
+        filter.addEventListener('click', function() {
+            // آپدیت فیلتر فعال
+            document.querySelectorAll('.news-filter').forEach(f => f.classList.remove('active'));
+            this.classList.add('active');
+            
+            // لود اخبار دسته‌بندی انتخاب شده
+            const category = this.getAttribute('data-category');
+            loadNews(category);
+        });
+    });
+}
+
+// راه‌اندازی سیستم اخبار هنگام لود صفحه
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('newsView')) {
+        setupNewsSystem();
+    }
+});
+
+// ==================== //
 // 💬 بخش چت هوش مصنوعی
 // ==================== //
 
@@ -804,15 +1043,20 @@ function setupEventListeners() {
     // دکمه تغییر تم
     elements.themeToggle.addEventListener('click', toggleTheme);
     
-    // دکمه تغییر نمای خانه/ابزار
-    elements.viewToggle.addEventListener('click', toggleView);
-    
+    // 🆕 دکمه‌های ناوبری اصلی
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetPage = this.getAttribute('data-page');
+            showView(targetPage);
+        });
+    });
+
     // دکمه ورود
     elements.loginBtn.addEventListener('click', () => {
         elements.loginModal.classList.add('active');
     });
     
-    // لوگو برای بازگشت به خانه
+    // 🆕 لوگو برای بازگشت به خانه
     elements.homeLogo.addEventListener('click', () => {
         showView('home');
     });
