@@ -20,14 +20,14 @@
 
             <!-- 🎛️ منوی کنترلی سمت چپ -->
             <div class="control-menu">
-                <!-- 🌙 دکمه تغییر تم -->
+                <!-- دکمه‌های ناوبری اصلی -->
+                <button class="nav-btn active" data-page="home">🏠 خانه</button>
+                <button class="nav-btn" data-page="tools">🛠️ ابزار</button>
+                <button class="nav-btn" data-page="news">📰 اخبار</button>
+                
+                <!-- دکمه‌های کنترلی -->
                 <button class="theme-toggle" id="themeToggle">
                     <span class="theme-icon">🌙</span>
-                </button>
-                
-                <!-- 🛠️ دکمه ابزار/خانه -->
-                <button class="view-toggle" id="viewToggle">
-                    <span class="view-text">ابزار</span>
                 </button>
                 
                 <!-- 🔐 دکمه ورود -->
@@ -35,6 +35,79 @@
             </div>
         </div>
     </header>
+
+    <!-- ==================== -->
+    <!-- 🌍 نوار وضعیت بازارهای جهانی -->
+    <!-- ==================== -->
+
+    <!-- نوار ساعت بازارهای استراتژیک -->
+    <div class="trading-hours-bar glass-card">
+        <div class="timezone-display">
+            <span>🌏 UTC+3.5</span>
+            <span id="currentTime">۱۴:۳۰:۴۵</span>
+        </div>
+        <div class="markets-timeline">
+            <div class="market-time" data-market="shanghai">
+                <span class="market-name">پکن</span>
+                <span class="market-status open">🟢</span>
+                <span class="time-remaining">باز</span>
+            </div>
+            <div class="market-time" data-market="moscow">
+                <span class="market-name">مسکو</span>
+                <span class="market-status open">🟢</span>
+                <span class="time-remaining">باز</span>
+            </div>
+            <div class="market-time" data-market="tehran">
+                <span class="market-name">تهران</span>
+                <span class="market-status closed">🔴</span>
+                <span class="time-remaining">بسته</span>
+            </div>
+            <div class="market-time" data-market="sydney">
+                <span class="market-name">سیدنی</span>
+                <span class="market-status closed">🔴</span>
+                <span class="time-remaining">بسته</span>
+            </div>
+            <div class="market-time" data-market="tokyo">
+                <span class="market-name">توکیو</span>
+                <span class="market-status soon">🟡</span>
+                <span class="time-remaining">۲h</span>
+            </div>
+            <div class="market-time" data-market="london">
+                <span class="market-name">لندن</span>
+                <span class="market-status soon">🟡</span>
+                <span class="time-remaining">۵h</span>
+            </div>
+            <div class="market-time" data-market="newyork">
+                <span class="market-name">نیویورک</span>
+                <span class="market-status soon">🟡</span>
+                <span class="time-remaining">۸h</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- نوار شاخص‌های استراتژیک -->
+    <div class="market-indicators-bar glass-card">
+        <div class="indicator-item">
+            <span>🇨🇳 شانگهای</span>
+            <strong>۳,۲۵۰</strong>
+            <small class="positive">+۱.۲٪</small>
+        </div>
+        <div class="indicator-item">
+            <span>🇷🇺 MOEX</span>
+            <strong>۳,۲۰۰</strong>
+            <small class="negative">-۰.۵٪</small>
+        </div>
+        <div class="indicator-item">
+            <span>🇮🇷 TEDPIX</span>
+            <strong>۲.۱M</strong>
+            <small class="positive">+۰.۸٪</small>
+        </div>
+        <div class="indicator-item">
+            <span>🌍 DXY</span>
+            <strong>۱۰۴.۲۵</strong>
+            <small class="positive">+۰.۳٪</small>
+        </div>
+    </div>   
 
     <!-- ==================== -->
     <!-- 🏠 بخش خانه (HOME) -->
@@ -65,9 +138,9 @@
         </section>
 
         <!-- 📊 بخش کارت‌های قیمت در خانه -->
-         <main class="main-content">
-            <div class="cards-container" id="homeMainCards">
-                <!-- ۶ کارت اول توسط JavaScript ساخته میشن -->
+        <main class="main-content">
+            <div class="main-cards-container" id="homeMainCards">
+                <!-- ۴ کارت اصلی توسط JavaScript ساخته میشن -->
             </div>
         </main>
     </div>
@@ -1238,6 +1311,42 @@
 
         </main>
     </div>
+
+    <!-- ==================== -->
+    <!-- 📰 بخش اخبار -->
+    <!-- ==================== -->
+    <div id="newsView" class="view">
+        <div class="news-container">
+            <!-- هدر اخبار -->
+            <div class="news-header">
+                <h2>📰 اخبار لحظه‌ای بازارهای مالی</h2>
+                <p>آخرین تحولات بازارهای فارکس، رمزارز، بورس و کالا</p>
+            </div>
+
+            <!-- فیلترهای دسته‌بندی -->
+            <div class="news-filters">
+                <button class="news-filter active" data-category="all">همه اخبار</button>
+                <button class="news-filter" data-category="forex">فارکس</button>
+                <button class="news-filter" data-category="crypto">رمزارز</button>
+                <button class="news-filter" data-category="iran-stock">بورس ایران</button>
+                <button class="news-filter" data-category="global-stock">بورس جهانی</button>
+                <button class="news-filter" data-category="commodities">کالاها</button>
+                <button class="news-filter" data-category="macro">اقتصاد کلان</button>
+            </div>
+
+            <!-- فید اخبار -->
+            <div class="news-feed" id="newsFeed">
+                <!-- اخبار توسط JavaScript لود میشن -->
+                <div class="news-placeholder">
+                    <div class="loading-news">
+                        <div class="spinner"></div>
+                        <p>📡 در حال دریافت آخرین اخبار...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== -->
     <!-- 🎯 بخش‌های مشترک همه صفحات -->
     <!-- ==================== -->
@@ -1329,6 +1438,66 @@
             <button id="submitFeedback">ارسال نظر</button>
         </div>
     </section>
+
+    <!-- نقشه طلای جهان -->
+    <section class="gold-map-section">
+        <div class="map-container">
+            <div class="map-header">
+                <h2>🗺️ نقشه طلای جهان</h2>
+                <p>تحلیل ذخایر، برداشت و شاخص‌های اقتصادی کشورها</p>
+            </div>
+            
+            <!-- کنترل‌های اصلی -->
+            <div class="map-controls">
+                <div class="control-group">
+                    <button class="control-btn active" data-mode="reserves">💰 ذخایر طلا</button>
+                    <button class="control-btn" data-mode="production">⛏️ برداشت طلا</button>
+                    <button class="control-btn" data-mode="gdp">📈 GDP</button>
+                </div>
+                
+                <div class="year-control">
+                    <span class="year-label">📅 بازه زمانی:</span>
+                    <div class="year-buttons">
+                        <button class="year-btn active" data-year="2024">۲۰۲۴</button>
+                        <button class="year-btn" data-year="2023">۲۰۲۳</button>
+                        <button class="year-btn" data-year="2022">۲۰۲۲</button>
+                        <button class="year-btn" data-year="2020">۲۰۲۰</button>
+                        <button class="year-btn" data-year="2018">۲۰۱۸</button>
+                        <button class="year-btn" data-year="2015">۲۰۱۵</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- نقشه و اطلاعات -->
+            <div class="map-content">
+                <!-- نقشه -->
+                <div class="map-wrapper">
+                    <div id="goldMap"></div>
+                    <div class="map-overlay">
+                        <button class="reset-zoom" id="resetZoom">⟲ بازنشانی زوم</button>
+                        <div class="coordinates" id="coordinates">Lat: 0°, Lng: 0°</div>
+                    </div>
+                </div>
+
+                <!-- پنل اطلاعات -->
+                <div class="info-panel">
+                    <div class="top-countries">
+                        <h4>🏆 رتبه‌بندی جهانی</h4>
+                        <div id="topCountriesList" class="countries-list"></div>
+                    </div>
+                    
+                    <div class="country-comparison">
+                        <h4>📊 مقایسه کشورها</h4>
+                        <div id="countryComparison" class="comparison-container">
+                            <div class="comparison-placeholder">
+                                <p>برای مقایسه، دو کشور مختلف را انتخاب کنید</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     
     <!-- 🔻 فوتر (مشترک) -->
     <footer class="main-footer">
@@ -1403,7 +1572,11 @@
             </div>
         </div>
     </div>
-    
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <script src="gold-map.js"></script>
+      
     <script src="script.js"></script>
 </body>
 </html>
