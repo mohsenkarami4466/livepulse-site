@@ -20,10 +20,9 @@
 
             <!-- 🎛️ منوی کنترلی سمت چپ -->
             <div class="control-menu">
-                <!-- دکمه‌های ناوبری اصلی -->
-                <button class="nav-btn active" data-page="home">🏠 خانه</button>
-                <button class="nav-btn" data-page="tools">🛠️ ابزار</button>
+                <!-- دکمه‌های ناوبری اصلی - همیشه ۲ دکمه -->
                 <button class="nav-btn" data-page="news">📰 اخبار</button>
+                <button class="nav-btn" data-page="tools">🛠️ ابزار</button>
                 
                 <!-- دکمه‌های کنترلی -->
                 <button class="theme-toggle" id="themeToggle">
@@ -37,78 +36,97 @@
     </header>
 
     <!-- ==================== -->
-    <!-- 🌍 نوار وضعیت بازارهای جهانی -->
+    <!-- 🕒 ساعت بازارهای جهانی -->
     <!-- ==================== -->
 
-    <!-- نوار ساعت بازارهای استراتژیک -->
-    <div class="trading-hours-bar glass-card">
-        <div class="timezone-display">
-            <span>🌏 UTC+3.5</span>
-            <span id="currentTime">۱۴:۳۰:۴۵</span>
-        </div>
-        <div class="markets-timeline">
-            <div class="market-time" data-market="shanghai">
-                <span class="market-name">پکن</span>
-                <span class="market-status open">🟢</span>
-                <span class="time-remaining">باز</span>
-            </div>
-            <div class="market-time" data-market="moscow">
-                <span class="market-name">مسکو</span>
-                <span class="market-status open">🟢</span>
-                <span class="time-remaining">باز</span>
-            </div>
-            <div class="market-time" data-market="tehran">
-                <span class="market-name">تهران</span>
-                <span class="market-status closed">🔴</span>
-                <span class="time-remaining">بسته</span>
-            </div>
-            <div class="market-time" data-market="sydney">
-                <span class="market-name">سیدنی</span>
-                <span class="market-status closed">🔴</span>
-                <span class="time-remaining">بسته</span>
-            </div>
-            <div class="market-time" data-market="tokyo">
-                <span class="market-name">توکیو</span>
-                <span class="market-status soon">🟡</span>
-                <span class="time-remaining">۲h</span>
-            </div>
-            <div class="market-time" data-market="london">
-                <span class="market-name">لندن</span>
-                <span class="market-status soon">🟡</span>
-                <span class="time-remaining">۵h</span>
-            </div>
-            <div class="market-time" data-market="newyork">
-                <span class="market-name">نیویورک</span>
-                <span class="market-status soon">🟡</span>
-                <span class="time-remaining">۸h</span>
+    <!-- ساعت ثابت بالا-چپ -->
+    <div class="market-clock-container">
+        <div class="market-clock-glass" id="marketClock">
+            <div class="clock-face">
+                <!-- اعداد 24 ساعته -->
+                <div class="hour-markers">
+                    <div class="hour-marker" style="transform: rotate(0deg)"><span style="transform: rotate(0deg)">1</span></div>
+                    <div class="hour-marker" style="transform: rotate(15deg)"><span style="transform: rotate(-15deg)">2</span></div>
+                    <div class="hour-marker" style="transform: rotate(30deg)"><span style="transform: rotate(-30deg)">3</span></div>
+                    <div class="hour-marker" style="transform: rotate(45deg)"><span style="transform: rotate(-45deg)">4</span></div>
+                    <div class="hour-marker" style="transform: rotate(60deg)"><span style="transform: rotate(-60deg)">5</span></div>
+                    <div class="hour-marker" style="transform: rotate(75deg)"><span style="transform: rotate(-75deg)">6</span></div>
+                    <div class="hour-marker" style="transform: rotate(90deg)"><span style="transform: rotate(-90deg)">7</span></div>
+                    <div class="hour-marker" style="transform: rotate(105deg)"><span style="transform: rotate(-105deg)">8</span></div>
+                    <div class="hour-marker" style="transform: rotate(120deg)"><span style="transform: rotate(-120deg)">9</span></div>
+                    <div class="hour-marker" style="transform: rotate(135deg)"><span style="transform: rotate(-135deg)">10</span></div>
+                    <div class="hour-marker" style="transform: rotate(150deg)"><span style="transform: rotate(-150deg)">11</span></div>
+                    <div class="hour-marker" style="transform: rotate(165deg)"><span style="transform: rotate(-165deg)">12</span></div>
+                    <div class="hour-marker" style="transform: rotate(180deg)"><span style="transform: rotate(-180deg)">13</span></div>
+                    <div class="hour-marker" style="transform: rotate(195deg)"><span style="transform: rotate(-195deg)">14</span></div>
+                    <div class="hour-marker" style="transform: rotate(210deg)"><span style="transform: rotate(-210deg)">15</span></div>
+                    <div class="hour-marker" style="transform: rotate(225deg)"><span style="transform: rotate(-225deg)">16</span></div>
+                    <div class="hour-marker" style="transform: rotate(240deg)"><span style="transform: rotate(-240deg)">17</span></div>
+                    <div class="hour-marker" style="transform: rotate(255deg)"><span style="transform: rotate(-255deg)">18</span></div>
+                    <div class="hour-marker" style="transform: rotate(270deg)"><span style="transform: rotate(-270deg)">19</span></div>
+                    <div class="hour-marker" style="transform: rotate(285deg)"><span style="transform: rotate(-285deg)">20</span></div>
+                    <div class="hour-marker" style="transform: rotate(300deg)"><span style="transform: rotate(-300deg)">21</span></div>
+                    <div class="hour-marker" style="transform: rotate(315deg)"><span style="transform: rotate(-315deg)">22</span></div>
+                    <div class="hour-marker" style="transform: rotate(330deg)"><span style="transform: rotate(-330deg)">23</span></div>
+                    <div class="hour-marker" style="transform: rotate(345deg)"><span style="transform: rotate(-345deg)">24</span></div>
+                </div>
+                
+                <!-- نوارهای رنگی بازارها -->
+                <div class="market-arcs" id="marketArcs">
+                    <!-- با JS پر میشود -->
+                </div>
+                
+                <!-- اطلاعات بازارها روی ساعت -->
+                <div class="market-info-overlay" id="marketInfoOverlay">
+                    <!-- با JS پر میشود -->
+                </div>
+                
+                <!-- عقربه‌ها -->
+                <div class="clock-hands">
+                    <div class="hand hour-hand" id="hourHand"></div>
+                    <div class="hand minute-hand" id="minuteHand"></div>
+                    <div class="hand second-hand" id="secondHand"></div>
+                    <div class="hand-center"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- نوار شاخص‌های استراتژیک -->
-    <div class="market-indicators-bar glass-card">
-        <div class="indicator-item">
-            <span>🇨🇳 شانگهای</span>
-            <strong>۳,۲۵۰</strong>
-            <small class="positive">+۱.۲٪</small>
+    <!-- پنل تعاملی نقشه (مخفی) -->
+    <div class="market-map-overlay" id="marketMapOverlay">
+        <div class="market-map-glass">
+            <button class="close-map-btn" id="closeMapBtn">×</button>
+            
+            <div class="map-header">
+                <h3>🗺️ نقشه بازارهای جهانی</h3>
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <span class="legend-color open-pulse"></span>
+                        <span>باز</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color closing-pulse"></span>
+                        <span>در حال بسته شدن</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color opening-pulse"></span>
+                        <span>به زودی باز</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="world-map-container">
+                <div class="world-map" id="worldMap">
+                    <!-- نقشه با JS رندر میشود -->
+                </div>
+            </div>
+            
+            <div class="clocks-grid" id="clocksGrid">
+                <!-- ساعت‌های بازارها با JS پر میشود -->
+            </div>
         </div>
-        <div class="indicator-item">
-            <span>🇷🇺 MOEX</span>
-            <strong>۳,۲۰۰</strong>
-            <small class="negative">-۰.۵٪</small>
-        </div>
-        <div class="indicator-item">
-            <span>🇮🇷 TEDPIX</span>
-            <strong>۲.۱M</strong>
-            <small class="positive">+۰.۸٪</small>
-        </div>
-        <div class="indicator-item">
-            <span>🌍 DXY</span>
-            <strong>۱۰۴.۲۵</strong>
-            <small class="positive">+۰.۳٪</small>
-        </div>
-    </div>   
-
+    </div>
+    
     <!-- ==================== -->
     <!-- 🏠 بخش خانه (HOME) -->
     <!-- ==================== -->
