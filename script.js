@@ -164,29 +164,21 @@ function setTheme(theme) {
 }
 
 // ==================== //
-// 🔄 مدیریت نمایش (خانه/ابزار)
+// 🔄 مدیریت نمایش صفحات
 // ==================== //
 
 /**
- * 🏠 تغییر بین نمای خانه و ابزار
- */
-function toggleView() {
-    const newView = appState.currentView === 'home' ? 'tools' : 'home';
-    showView(newView);
-}
-
-/**
- * 📱 نمایش نمای مشخص + ریست اسکرول
+ * 📱 نمایش صفحه مشخص + مدیریت منو
  */
 function showView(view) {
-    // مخفی کردن همه نماها
+    // مخفی کردن همه صفحات
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
     
-    // نمایش نمای انتخاب شده
+    // نمایش صفحه انتخاب شده
     const viewElements = {
         'home': elements.homeView,
         'tools': elements.toolsView,
-        'news': document.getElementById('newsView'), // 🆕 اضافه شد
+        'news': document.getElementById('newsView'),
         'crypto': elements.cryptoView,
         'currency': elements.currencyView,
         'gold': elements.goldView,
@@ -199,17 +191,13 @@ function showView(view) {
         viewElements[view].classList.add('active-view');
         appState.currentView = view;
         
-        // 🆕 ریست اسکرول به بالای صفحه
+        // ریست اسکرول به بالای صفحه
         window.scrollTo(0, 0);
         
-        // 🆕 آپدیت وضعیت دکمه‌های ناوبری
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        const activeBtn = document.querySelector(`[data-page="${view}"]`);
-        if (activeBtn) activeBtn.classList.add('active');
+        // 🆕 مدیریت نمایش دکمه‌های منو
+        updateNavigationButtons(view);
         
-        // 🆕 انتقال هایلایت‌های اصلی فقط به صفحات اصلی
+        // انتقال هایلایت‌های اصلی فقط به صفحات اصلی
         if (view !== 'tools' && view !== 'news') {
             const mainHighlights = document.querySelector('.highlights-section:not(.tools-highlights)');
             if (mainHighlights && viewElements[view] && !viewElements[view].contains(mainHighlights)) {
@@ -224,74 +212,422 @@ function showView(view) {
         if (view === 'home') {
             generateHomeCards();
         }
+
+        // 🆕 آپدیت وضعیت دکمه‌های منو
+        updateNavigationButtons(view);
     }
     
-    console.log(`📱 نمایش تغییر کرد به: ${view}`);
-}
-
-// ==================== //
-// 🌍 مدیریت نوار وضعیت بازار
-// ==================== //
-
-/**
- * 🕒 آپدیت زمان و وضعیت بازارها
- */
-function updateMarketStatus() {
-    const now = new Date();
-    const utcHours = now.getUTCHours();
-    
-    // آپدیت زمان جاری
-    document.getElementById('currentTime').textContent = 
-        now.toLocaleTimeString('fa-IR');
-    
-    // آپدیت وضعیت بازارها (محاسبه ساده)
-    updateMarketStatusDisplay(utcHours);
+    console.log(`📱 صفحه تغییر کرد به: ${view}`);
 }
 
 /**
- * 📊 آپدیت نمایش وضعیت بازارها
+ * 🆕 مدیریت نمایش دکمه‌های منو
  */
-function updateMarketStatusDisplay(utcHours) {
-    const markets = {
-        'shanghai': { open: 1, close: 9 },   // 01:00 - 09:00 UTC
-        'moscow': { open: 7, close: 16 },    // 07:00 - 16:00 UTC  
-        'tehran': { open: 4, close: 9 },     // 04:30 - 09:00 UTC
-        'sydney': { open: 22, close: 7 },    // 22:00 - 07:00 UTC
-        'tokyo': { open: 0, close: 9 },      // 00:00 - 09:00 UTC
-        'london': { open: 8, close: 17 },    // 08:00 - 17:00 UTC
-        'newyork': { open: 13, close: 22 }   // 13:00 - 22:00 UTC
-    };
+function updateNavigationButtons(currentView) {
+    const firstBtn = document.querySelector('.nav-btn:first-child');
+    const secondBtn = document.querySelector('.nav-btn:nth-child(2)');
     
-    Object.keys(markets).forEach(market => {
-        const { open, close } = markets[market];
-        const isOpen = utcHours >= open && utcHours < close;
-        const hoursUntilOpen = open > utcHours ? open - utcHours : 24 - utcHours + open;
-        
-        const element = document.querySelector(`[data-market="${market}"]`);
-        if (element) {
-            const statusElement = element.querySelector('.market-status');
-            const timeElement = element.querySelector('.time-remaining');
-            
-            if (isOpen) {
-                statusElement.textContent = '🟢';
-                statusElement.className = 'market-status open';
-                timeElement.textContent = 'باز';
-            } else if (hoursUntilOpen <= 2) {
-                statusElement.textContent = '🟡';
-                statusElement.className = 'market-status soon';
-                timeElement.textContent = `${hoursUntilOpen}h`;
-            } else {
-                statusElement.textContent = '🔴';
-                statusElement.className = 'market-status closed';
-                timeElement.textContent = 'بسته';
-            }
-        }
+    // پاک کردن active از همه دکمه‌ها
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
     });
+    
+    if (currentView === 'home') {
+        // در صفحه خانه: اخبار + ابزار
+        firstBtn.innerHTML = '📰 اخبار';
+        firstBtn.setAttribute('data-page', 'news');
+        
+        secondBtn.innerHTML = '🛠️ ابزار';
+        secondBtn.setAttribute('data-page', 'tools');
+        secondBtn.style.display = 'flex';
+    } 
+    else if (currentView === 'tools') {
+        // در صفحه ابزار: اخبار + خانه
+        firstBtn.innerHTML = '📰 اخبار';
+        firstBtn.setAttribute('data-page', 'news');
+        
+        secondBtn.innerHTML = '🏠 خانه';
+        secondBtn.setAttribute('data-page', 'home');
+        secondBtn.classList.add('active');
+        secondBtn.style.display = 'flex';
+    }
+    else if (currentView === 'news') {
+        // در صفحه اخبار: خانه + ابزار
+        firstBtn.innerHTML = '🏠 خانه';
+        firstBtn.setAttribute('data-page', 'home');
+        
+        secondBtn.innerHTML = '🛠️ ابزار';
+        secondBtn.setAttribute('data-page', 'tools');
+        secondBtn.classList.add('active');
+        secondBtn.style.display = 'flex';
+    }
+    else {
+        // در صفحات دیگر (crypto, gold, etc.): خانه + ابزار
+        firstBtn.innerHTML = '🏠 خانه';
+        firstBtn.setAttribute('data-page', 'home');
+        
+        secondBtn.innerHTML = '🛠️ ابزار';
+        secondBtn.setAttribute('data-page', 'tools');
+        secondBtn.style.display = 'flex';
+    }
 }
 
-// شروع آپدیت زمان
-setInterval(updateMarketStatus, 1000);
-updateMarketStatus();
+
+// ==================== //
+// 🕒 مدیریت ساعت بازارهای جهانی - نسخه تمیز
+// ==================== //
+
+class MarketClock {
+    constructor() {
+        this.markets = {
+            'tehran': { 
+                name: 'تهران', 
+                open: 4.5, 
+                close: 9, 
+                offset: 3.5, 
+                color: '#00ff7f',
+                position: 165
+            },
+            'london': { 
+                name: 'لندن', 
+                open: 8, 
+                close: 16, 
+                offset: 0, 
+                color: '#ff6b6b',
+                position: 240
+            },
+            'newyork': { 
+                name: 'نیویورک', 
+                open: 13, 
+                close: 21, 
+                offset: -5, 
+                color: '#4ecdc4',
+                position: 285
+            },
+            'tokyo': { 
+                name: 'توکیو', 
+                open: 0, 
+                close: 9, 
+                offset: 9, 
+                color: '#ffd93d',
+                position: 45
+            },
+            'shanghai': { 
+                name: 'شانگهای', 
+                open: 1, 
+                close: 9, 
+                offset: 8, 
+                color: '#6c5ce7',
+                position: 75
+            },
+            'moscow': { 
+                name: 'مسکو', 
+                open: 7, 
+                close: 16, 
+                offset: 3, 
+                color: '#fd79a8',
+                position: 195
+            },
+            'dubai': { 
+                name: 'دبی', 
+                open: 5, 
+                close: 13, 
+                offset: 4, 
+                color: '#00cec9',
+                position: 180
+            }
+        };
+        
+        this.activeArc = null;
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.renderMarketLabels();
+        this.renderMarketArcs();
+        this.updateClock();
+        setInterval(() => this.updateClock(), 1000);
+    }
+
+    setupEventListeners() {
+        // کلیک روی ساعت برای باز کردن نقشه
+        document.getElementById('marketClock').addEventListener('click', () => {
+            this.openMarketMap();
+        });
+
+        // بستن نقشه
+        document.getElementById('closeMapBtn').addEventListener('click', () => {
+            this.closeMarketMap();
+        });
+
+        // بستن با کلیک بیرون
+        document.getElementById('marketMapOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'marketMapOverlay') {
+                this.closeMarketMap();
+            }
+        });
+    }
+
+    renderMarketLabels() {
+        const overlay = document.getElementById('marketInfoOverlay');
+        overlay.innerHTML = '';
+        
+        Object.keys(this.markets).forEach(market => {
+            const data = this.markets[market];
+            const label = document.createElement('div');
+            label.className = 'market-label';
+            label.dataset.market = market;
+            label.style.transform = `rotate(${data.position}deg)`;
+            label.innerHTML = `
+                <div>${data.name}</div>
+                <div class="market-time-badge" id="time-${market}">00:00</div>
+            `;
+            overlay.appendChild(label);
+        });
+    }
+
+    renderMarketArcs() {
+        const arcsContainer = document.getElementById('marketArcs');
+        arcsContainer.innerHTML = '';
+        
+        Object.keys(this.markets).forEach(market => {
+            const arc = document.createElement('div');
+            arc.className = 'market-arc';
+            arc.dataset.market = market;
+            arcsContainer.appendChild(arc);
+        });
+    }
+
+    updateClock() {
+        const now = new Date();
+        const utc = now.getUTCHours() + now.getUTCMinutes() / 60;
+        
+        // آپدیت عقربه‌ها
+        this.updateClockHands(now);
+        
+        // آپدیت نوارهای بازار و اطلاعات
+        this.updateMarketDisplays(utc);
+    }
+
+    updateClockHands(now) {
+        const hours = now.getHours() % 12;
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        
+        const hourDeg = (hours * 30) + (minutes * 0.5);
+        const minuteDeg = (minutes * 6) + (seconds * 0.1);
+        const secondDeg = seconds * 6;
+        
+        document.getElementById('hourHand').style.transform = `rotate(${hourDeg}deg)`;
+        document.getElementById('minuteHand').style.transform = `rotate(${minuteDeg}deg)`;
+        document.getElementById('secondHand').style.transform = `rotate(${secondDeg}deg)`;
+    }
+
+    updateMarketDisplays(utc) {
+        let foundOpenMarket = false;
+        
+        Object.keys(this.markets).forEach(market => {
+            const data = this.markets[market];
+            const localTime = (utc + data.offset + 24) % 24;
+            
+            // آپدیت زمان بازار
+            this.updateMarketTime(market, localTime);
+            
+            // آپدیت وضعیت لیبل
+            this.updateMarketLabel(market, localTime);
+            
+            // فقط اولین بازار باز رو نمایش بده
+            const isOpen = localTime >= data.open && localTime < data.close;
+            if (isOpen && !foundOpenMarket) {
+                this.updateMarketArc(market, localTime, data);
+                foundOpenMarket = true;
+            } else {
+                this.hideMarketArc(market);
+            }
+        });
+        
+        // اگر هیچ بازار بازی نیست، نوار رو پنهان کن
+        if (!foundOpenMarket) {
+            this.hideAllArcs();
+        }
+    }
+
+    updateMarketTime(market, localTime) {
+        const hours = Math.floor(localTime);
+        const minutes = Math.floor((localTime - hours) * 60);
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        
+        const timeElement = document.getElementById(`time-${market}`);
+        if (timeElement) {
+            timeElement.textContent = timeString;
+        }
+    }
+
+    updateMarketArc(market, localTime, data) {
+        const arc = document.querySelector(`.market-arc[data-market="${market}"]`);
+        if (!arc) return;
+        
+        // تنظیم موقعیت نوار
+        const startAngle = (data.open / 24) * 360;
+        const endAngle = (data.close / 24) * 360;
+        const arcLength = endAngle - startAngle;
+        
+        arc.style.transform = `rotate(${startAngle}deg)`;
+        arc.style.background = `conic-gradient(
+            var(--accent-green) 0%,
+            var(--accent-green) ${arcLength}deg,
+            transparent ${arcLength}deg
+        )`;
+        
+        arc.classList.add('open');
+        arc.style.opacity = '0.8';
+    }
+
+    hideMarketArc(market) {
+        const arc = document.querySelector(`.market-arc[data-market="${market}"]`);
+        if (arc) {
+            arc.classList.remove('open');
+            arc.style.opacity = '0';
+        }
+    }
+
+    hideAllArcs() {
+        const arcs = document.querySelectorAll('.market-arc');
+        arcs.forEach(arc => {
+            arc.classList.remove('open');
+            arc.style.opacity = '0';
+        });
+    }
+
+    updateMarketLabel(market, localTime) {
+        const data = this.markets[market];
+        const label = document.querySelector(`.market-label[data-market="${market}"]`);
+        if (!label) return;
+        
+        const isOpen = localTime >= data.open && localTime < data.close;
+        const isClosing = localTime >= data.close - 1 && localTime < data.close;
+        const isOpening = localTime >= data.open - 1 && localTime < data.open;
+        
+        label.className = 'market-label';
+        if (isOpen) {
+            label.classList.add('open');
+        } else if (isClosing) {
+            label.classList.add('closing');
+        } else if (isOpening) {
+            label.classList.add('opening');
+        } else {
+            label.classList.add('closed');
+        }
+    }
+
+    openMarketMap() {
+        const overlay = document.getElementById('marketMapOverlay');
+        overlay.style.display = 'flex';
+        this.renderWorldMap();
+        this.renderMarketClocks();
+    }
+
+    closeMarketMap() {
+        document.getElementById('marketMapOverlay').style.display = 'none';
+    }
+
+    renderWorldMap() {
+        const mapContainer = document.getElementById('worldMap');
+        mapContainer.innerHTML = `
+            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-secondary);">
+                <div style="text-align:center;">
+                    <div style="font-size:3rem; margin-bottom:15px;">🗺️</div>
+                    <h3 style="margin-bottom:10px;">نقشه تعاملی بازارهای جهانی</h3>
+                    <p style="opacity:0.8;">(این بخش با داده‌های واقعی تکمیل میشه)</p>
+                    <small style="opacity:0.6;">کلیک کن روی بازارها در پایین برای اطلاعات بیشتر</small>
+                </div>
+            </div>
+        `;
+    }
+
+    renderMarketClocks() {
+        const clocksGrid = document.getElementById('clocksGrid');
+        clocksGrid.innerHTML = '';
+        
+        Object.keys(this.markets).forEach(market => {
+            const data = this.markets[market];
+            const status = this.getMarketStatus(market);
+            const localTime = this.getMarketTime(market);
+            
+            const clockDiv = document.createElement('div');
+            clockDiv.className = 'market-mini-clock';
+            clockDiv.innerHTML = `
+                <div class="mini-clock-header">
+                    <span class="market-flag">${this.getMarketFlag(market)}</span>
+                    <strong>${data.name}</strong>
+                </div>
+                <div class="mini-clock-time">${localTime}</div>
+                <div class="mini-clock-status ${status}">
+                    ${this.getMarketStatusText(market)}
+                </div>
+                <div style="font-size:0.7rem; opacity:0.7; margin-top:5px;">
+                    ${data.open}:00 - ${data.close}:00
+                </div>
+            `;
+            clocksGrid.appendChild(clockDiv);
+        });
+    }
+
+    getMarketFlag(market) {
+        const flags = {
+            'tehran': '🇮🇷',
+            'london': '🇬🇧', 
+            'newyork': '🇺🇸',
+            'tokyo': '🇯🇵',
+            'shanghai': '🇨🇳',
+            'moscow': '🇷🇺',
+            'dubai': '🇦🇪'
+        };
+        return flags[market] || '🌐';
+    }
+
+    getMarketTime(market) {
+        const data = this.markets[market];
+        const now = new Date();
+        const utc = now.getUTCHours() + now.getUTCMinutes() / 60;
+        const localTime = (utc + data.offset + 24) % 24;
+        
+        const hours = Math.floor(localTime);
+        const minutes = Math.floor((localTime - hours) * 60);
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    }
+
+    getMarketStatus(market) {
+        const data = this.markets[market];
+        const now = new Date();
+        const utc = now.getUTCHours() + now.getUTCMinutes() / 60;
+        const localTime = (utc + data.offset + 24) % 24;
+        
+        if (localTime >= data.open && localTime < data.close) return 'open';
+        if (localTime >= data.close - 1 && localTime < data.close) return 'closing';
+        if (localTime >= data.open - 1 && localTime < data.open) return 'opening';
+        return 'closed';
+    }
+
+    getMarketStatusText(market) {
+        const status = this.getMarketStatus(market);
+        const texts = {
+            'open': '🟢 بازار باز',
+            'closing': '🔴 در حال بسته شدن', 
+            'opening': '🟡 به زودی باز',
+            'closed': '⚫ بازار بسته'
+        };
+        return texts[status];
+    }
+}
+
+// راه‌اندازی ساعت وقتی صفحه لود شد
+document.addEventListener('DOMContentLoaded', () => {
+    new MarketClock();
+    console.log('🕒 ساعت بازارهای جهانی (نسخه تمیز) راه‌اندازی شد!');
+});
+
 
 // ==================== //
 // 🏠 بخش خانه - کارت‌های قیمت
@@ -1097,19 +1433,18 @@ function setupEventListeners() {
     
     // هایلایت‌های خانه
     document.querySelectorAll('.highlight-circle[data-category]').forEach(circle => {
-
         circle.addEventListener('click', (e) => {
             const category = e.currentTarget.getAttribute('data-category');
-        
-        // آپدیت هایلایت فعال
-        document.querySelectorAll('.highlight-circle[data-category]').forEach(c => c.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        
-        // 🆕 انتقال به صفحه مربوطه
-        showView(category);
-        
-        appState.currentCategory = category;
-        console.log(`🎯 دسته انتخاب شد: ${category}`);
+            
+            // آپدیت هایلایت فعال
+            document.querySelectorAll('.highlight-circle[data-category]').forEach(c => c.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            
+            // انتقال به صفحه مربوطه
+            showView(category);
+            
+            appState.currentCategory = category;
+            console.log(`🎯 دسته انتخاب شد: ${category}`);
         });
     });
     
