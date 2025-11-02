@@ -1,4 +1,4 @@
-// نقشه طلای جهان - نسخه دیباگ شده
+// نقشه طلای جهان - نسخه کاملاً اصلاح شده
 class GoldMap {
     constructor() {
         this.currentMode = 'reserves';
@@ -14,22 +14,22 @@ class GoldMap {
 
     generateWorldData() {
         const baseData = {
-            'USA': { name: 'ایالات متحده', baseReserves: 8133, baseProduction: 200, baseGDP: 25462 },
-            'CHN': { name: 'چین', baseReserves: 1948, baseProduction: 365, baseGDP: 17963 },
-            'DEU': { name: 'آلمان', baseReserves: 3356, baseProduction: 0, baseGDP: 4082 },
-            'RUS': { name: 'روسیه', baseReserves: 2299, baseProduction: 310, baseGDP: 1830 },
-            'FRA': { name: 'فرانسه', baseReserves: 2436, baseProduction: 0, baseGDP: 2937 },
-            'ITA': { name: 'ایتالیا', baseReserves: 2451, baseProduction: 0, baseGDP: 2090 },
-            'ZAF': { name: 'آفریقای جنوبی', baseReserves: 125, baseProduction: 110, baseGDP: 405 },
-            'AUS': { name: 'استرالیا', baseReserves: 79, baseProduction: 320, baseGDP: 1693 },
-            'CAN': { name: 'کانادا', baseReserves: 0, baseProduction: 180, baseGDP: 2145 },
-            'BRA': { name: 'برزیل', baseReserves: 129, baseProduction: 60, baseGDP: 1920 },
-            'IND': { name: 'هند', baseReserves: 768, baseProduction: 2, baseGDP: 3540 },
-            'TUR': { name: 'ترکیه', baseReserves: 440, baseProduction: 42, baseGDP: 906 },
-            'IRN': { name: 'ایران', baseReserves: 320, baseProduction: 8, baseGDP: 367 },
-            'GBR': { name: 'انگلیس', baseReserves: 310, baseProduction: 0, baseGDP: 3187 },
-            'JPN': { name: 'ژاپن', baseReserves: 846, baseProduction: 0, baseGDP: 4925 },
-            'SAU': { name: 'عربستان', baseReserves: 323, baseProduction: 0, baseGDP: 1107 }
+            'USA': { name: 'ایالات متحده', reserves: 8133, production: 200, gdp: 25462 },
+            'CHN': { name: 'چین', reserves: 1948, production: 365, gdp: 17963 },
+            'DEU': { name: 'آلمان', reserves: 3356, production: 0, gdp: 4082 },
+            'RUS': { name: 'روسیه', reserves: 2299, production: 310, gdp: 1830 },
+            'FRA': { name: 'فرانسه', reserves: 2436, production: 0, gdp: 2937 },
+            'ITA': { name: 'ایتالیا', reserves: 2451, production: 0, gdp: 2090 },
+            'ZAF': { name: 'آفریقای جنوبی', reserves: 125, production: 110, gdp: 405 },
+            'AUS': { name: 'استرالیا', reserves: 79, production: 320, gdp: 1693 },
+            'CAN': { name: 'کانادا', reserves: 0, production: 180, gdp: 2145 },
+            'BRA': { name: 'برزیل', reserves: 129, production: 60, gdp: 1920 },
+            'IND': { name: 'هند', reserves: 768, production: 2, gdp: 3540 },
+            'TUR': { name: 'ترکیه', reserves: 440, production: 42, gdp: 906 },
+            'IRN': { name: 'ایران', reserves: 320, production: 8, gdp: 367 },
+            'GBR': { name: 'انگلیس', reserves: 310, production: 0, gdp: 3187 },
+            'JPN': { name: 'ژاپن', reserves: 846, production: 0, gdp: 4925 },
+            'SAU': { name: 'عربستان', reserves: 323, production: 0, gdp: 1107 }
         };
 
         const years = ['2024'];
@@ -74,8 +74,8 @@ class GoldMap {
 
     async loadWorldAtlas() {
         try {
-            this.worldAtlas = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
-            console.log('✅ داده‌های نقشه لود شد');
+            this.worldAtlas = await d3.json('world-map.json');
+            console.log('✅ فایل نقشه لود شد');
         } catch (error) {
             console.error('❌ خطا در لود نقشه:', error);
             this.showError();
@@ -89,7 +89,6 @@ class GoldMap {
 
         console.log(`📐 ابعاد نقشه: ${width}x${height}`);
 
-        // پاک کردن کامل
         container.html('');
 
         this.svg = container.append('svg')
@@ -98,9 +97,8 @@ class GoldMap {
             .style('background', '#0f172a')
             .style('border-radius', '8px');
 
-        // projection ساده‌تر
         this.projection = d3.geoNaturalEarth1()
-            .scale(width / 5.5) // scale کمتر برای نمایش بهتر
+            .scale(width / 5.5)
             .translate([width / 2, height / 2])
             .center([0, 0]);
 
@@ -112,8 +110,6 @@ class GoldMap {
         this.drawMap();
         this.setupZoom();
         this.setupTooltip();
-        
-        console.log('🗺️ نقشه رسم شد');
     }
 
     drawMap() {
@@ -126,7 +122,6 @@ class GoldMap {
             const countries = topojson.feature(this.worldAtlas, this.worldAtlas.objects.countries);
             console.log(`🇺🇳 تعداد کشورها: ${countries.features.length}`);
 
-            // رسم کشورها
             this.countryPaths = this.mapGroup.selectAll('.country')
                 .data(countries.features)
                 .enter()
@@ -144,13 +139,6 @@ class GoldMap {
 
             console.log('🎨 کشورها رسم شدند');
 
-            // تست: چک کن رنگ‌ها درست اعمال میشن
-            this.countryPaths.each(function(d) {
-                const fillColor = d3.select(this).style('fill');
-                console.log(`رنگ کشور ${d.id}: ${fillColor}`);
-            });
-
-            // اضافه کردن داده‌ها با تاخیر برای اطمینان
             setTimeout(() => {
                 this.addDataLabels(countries.features);
             }, 100);
@@ -163,16 +151,11 @@ class GoldMap {
     addDataLabels(countries) {
         console.log('🏷️ در حال اضافه کردن برچسب داده‌ها...');
         
-        // پاک کردن قبلی
         this.dataGroup.selectAll('.data-label').remove();
 
         const visibleCountries = countries.filter(d => {
-            const data = this.getCountryData(d.id);
-            const hasData = data && data[this.currentMode] > 0;
-            if (hasData) {
-                console.log(`✅ کشور با داده: ${data.name} - ${data[this.currentMode]}`);
-            }
-            return hasData;
+            const data = this.getCountryDataByNumericCode(d.id);
+            return data && data[this.currentMode] > 0;
         });
 
         console.log(`📊 تعداد کشورهای با داده: ${visibleCountries.length}`);
@@ -199,11 +182,10 @@ class GoldMap {
             .style('text-shadow', '1px 1px 3px #000000')
             .style('opacity', 0.9)
             .text(d => {
-                const data = this.getCountryData(d.id);
+                const data = this.getCountryDataByNumericCode(d.id);
                 if (!data) return '';
                 
                 const value = data[this.currentMode];
-                // فرمت‌بزی مختلف برای مقادیر
                 if (value < 10) return value.toString();
                 if (value < 1000) return this.formatNumber(value);
                 return (value / 1000).toFixed(1) + 'K';
@@ -212,26 +194,76 @@ class GoldMap {
         console.log('✅ برچسب داده‌ها اضافه شد');
     }
 
-    getCountryData(countryCode) {
-        const data = this.worldData[this.currentYear]?.[countryCode];
-        return data;
+    // تابع جدید برای تبدیل کد عددی به حرفی
+    getCountryDataByNumericCode(numericCode) {
+        const codeMap = {
+            '004': 'AFG', '008': 'ALB', '012': 'DZA', '016': 'ASM', '020': 'AND',
+            '024': 'AGO', '028': 'ATG', '032': 'ARG', '036': 'AUS', '040': 'AUT',
+            '044': 'BHS', '048': 'BHR', '050': 'BGD', '051': 'ARM', '052': 'BRB',
+            '056': 'BEL', '060': 'BMU', '064': 'BTN', '068': 'BOL', '070': 'BIH',
+            '072': 'BWA', '076': 'BRA', '084': 'BLZ', '086': 'IOT', '090': 'SLB',
+            '092': 'VGB', '096': 'BRN', '100': 'BGR', '104': 'MMR', '108': 'BDI',
+            '112': 'BLR', '116': 'KHM', '120': 'CMR', '124': 'CAN', '132': 'CPV',
+            '136': 'CYM', '140': 'CAF', '144': 'LKA', '148': 'TCD', '152': 'CHL',
+            '156': 'CHN', '158': 'TWN', '162': 'CXR', '166': 'CCK', '170': 'COL',
+            '174': 'COM', '175': 'MYT', '178': 'COG', '180': 'COD', '184': 'COK',
+            '188': 'CRI', '191': 'HRV', '192': 'CUB', '196': 'CYP', '203': 'CZE',
+            '204': 'BEN', '208': 'DNK', '212': 'DMA', '214': 'DOM', '218': 'ECU',
+            '222': 'SLV', '226': 'GNQ', '231': 'ETH', '232': 'ERI', '233': 'EST',
+            '234': 'FRO', '238': 'FLK', '239': 'SGS', '242': 'FJI', '246': 'FIN',
+            '248': 'ALA', '250': 'FRA', '254': 'GUF', '258': 'PYF', '260': 'ATF',
+            '262': 'DJI', '266': 'GAB', '268': 'GEO', '270': 'GMB', '275': 'PSE',
+            '276': 'DEU', '288': 'GHA', '292': 'GIB', '296': 'KIR', '300': 'GRC',
+            '304': 'GRL', '308': 'GRD', '312': 'GLP', '316': 'GUM', '320': 'GTM',
+            '324': 'GIN', '328': 'GUY', '332': 'HTI', '334': 'HMD', '336': 'VAT',
+            '340': 'HND', '344': 'HKG', '348': 'HUN', '352': 'ISL', '356': 'IND',
+            '360': 'IDN', '364': 'IRN', '368': 'IRQ', '372': 'IRL', '376': 'ISR',
+            '380': 'ITA', '384': 'CIV', '388': 'JAM', '392': 'JPN', '398': 'KAZ',
+            '400': 'JOR', '404': 'KEN', '408': 'PRK', '410': 'KOR', '414': 'KWT',
+            '417': 'KGZ', '418': 'LAO', '422': 'LBN', '426': 'LSO', '428': 'LVA',
+            '430': 'LBR', '434': 'LBY', '438': 'LIE', '440': 'LTU', '442': 'LUX',
+            '446': 'MAC', '450': 'MDG', '454': 'MWI', '458': 'MYS', '462': 'MDV',
+            '466': 'MLI', '470': 'MLT', '474': 'MTQ', '478': 'MRT', '480': 'MUS',
+            '484': 'MEX', '492': 'MCO', '496': 'MNG', '498': 'MDA', '499': 'MNE',
+            '500': 'MSR', '504': 'MAR', '508': 'MOZ', '512': 'OMN', '516': 'NAM',
+            '520': 'NRU', '524': 'NPL', '528': 'NLD', '531': 'CUW', '533': 'ABW',
+            '534': 'SXM', '535': 'BES', '540': 'NCL', '548': 'VUT', '554': 'NZL',
+            '558': 'NIC', '562': 'NER', '566': 'NGA', '570': 'NIU', '574': 'NFK',
+            '578': 'NOR', '580': 'MNP', '581': 'UMI', '583': 'FSM', '584': 'MHL',
+            '585': 'PLW', '586': 'PAK', '591': 'PAN', '598': 'PNG', '600': 'PRY',
+            '604': 'PER', '608': 'PHL', '612': 'PCN', '616': 'POL', '620': 'PRT',
+            '624': 'GNB', '626': 'TLS', '630': 'PRI', '634': 'QAT', '638': 'REU',
+            '642': 'ROU', '643': 'RUS', '646': 'RWA', '652': 'BLM', '654': 'SHN',
+            '659': 'KNA', '660': 'AIA', '662': 'LCA', '663': 'MAF', '666': 'SPM',
+            '670': 'VCT', '674': 'SMR', '678': 'STP', '682': 'SAU', '686': 'SEN',
+            '688': 'SRB', '690': 'SYC', '694': 'SLE', '702': 'SGP', '703': 'SVK',
+            '704': 'VNM', '705': 'SVN', '706': 'SOM', '710': 'ZAF', '716': 'ZWE',
+            '724': 'ESP', '728': 'SSD', '729': 'SDN', '732': 'ESH', '740': 'SUR',
+            '744': 'SJM', '748': 'SWZ', '752': 'SWE', '756': 'CHE', '760': 'SYR',
+            '762': 'TJK', '764': 'THA', '768': 'TGO', '772': 'TKL', '776': 'TON',
+            '780': 'TTO', '784': 'ARE', '788': 'TUN', '792': 'TUR', '795': 'TKM',
+            '796': 'TCA', '798': 'TUV', '800': 'UGA', '804': 'UKR', '807': 'MKD',
+            '818': 'EGY', '826': 'GBR', '831': 'GGY', '832': 'JEY', '833': 'IMN',
+            '834': 'TZA', '840': 'USA', '850': 'VIR', '854': 'BFA', '858': 'URY',
+            '860': 'UZB', '862': 'VEN', '876': 'WLF', '882': 'WSM', '887': 'YEM',
+            '894': 'ZMB'
+        };
+        
+        const countryCode = codeMap[numericCode];
+        if (!countryCode) return null;
+        
+        return this.worldData[this.currentYear]?.[countryCode];
     }
 
     getCountryColor(countryData) {
-        const countryCode = countryData.id;
-        const data = this.getCountryData(countryCode);
+        const numericCode = countryData.id;
+        const data = this.getCountryDataByNumericCode(numericCode);
         
-        if (!data) {
-            console.log(`❌ بدون داده: ${countryCode}`);
-            return '#4b5563'; // خاکستری تیره
-        }
+        if (!data) return '#4b5563';
         
         const value = data[this.currentMode];
-        console.log(`🎨 رنگ‌بندی ${data.name}: ${value}`);
-
         if (value === 0 || value === undefined) return '#4b5563';
 
-        // رنگ‌بندی بسیار واضح
         if (this.currentMode === 'reserves') {
             if (value < 100) return '#fef3c7';
             if (value < 500) return '#fde68a';
@@ -254,7 +286,6 @@ class GoldMap {
         }
     }
 
-    // بقیه متدها مانند قبل...
     setupZoom() {
         this.zoom = d3.zoom()
             .scaleExtent([1, 8])
@@ -297,8 +328,8 @@ class GoldMap {
     handleMouseOver(event, countryData) {
         if (this.isDragging) return;
 
-        const countryCode = countryData.id;
-        const data = this.getCountryData(countryCode);
+        const numericCode = countryData.id;
+        const data = this.getCountryDataByNumericCode(numericCode);
         
         if (data) {
             const value = data[this.currentMode];
@@ -315,7 +346,7 @@ class GoldMap {
                     <div style="margin-bottom: 4px;">📈 رشد اقتصادی: <strong>${data.growth}%</strong></div>
                     <div style="margin-bottom: 4px;">👥 جمعیت: <strong>${this.formatNumber(data.population)} میلیون</strong></div>
                     <div style="font-size: 12px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 8px;">
-                        ${this.selectedCountries.some(c => c.code === countryCode) ? '✓ انتخاب شده' : 'برای مقایسه کلیک کنید'}
+                        ${this.selectedCountries.some(c => c.numericCode === numericCode) ? '✓ انتخاب شده' : 'برای مقایسه کلیک کنید'}
                     </div>
                 `)
                 .style('left', (event.pageX + 15) + 'px')
@@ -337,12 +368,12 @@ class GoldMap {
     handleCountryClick(event, countryData) {
         if (this.isDragging) return;
 
-        const countryCode = countryData.id;
-        const data = this.getCountryData(countryCode);
+        const numericCode = countryData.id;
+        const data = this.getCountryDataByNumericCode(numericCode);
         
         if (!data) return;
 
-        const existingIndex = this.selectedCountries.findIndex(c => c.code === countryCode);
+        const existingIndex = this.selectedCountries.findIndex(c => c.numericCode === numericCode);
         
         if (existingIndex > -1) {
             this.selectedCountries.splice(existingIndex, 1);
@@ -350,11 +381,11 @@ class GoldMap {
         } else {
             if (this.selectedCountries.length >= 2) {
                 const removedCountry = this.selectedCountries.shift();
-                this.mapGroup.selectAll(`.country[data-code="${removedCountry.code}"]`).classed('selected', false);
+                this.mapGroup.selectAll(`.country[data-code="${removedCountry.numericCode}"]`).classed('selected', false);
             }
             
             this.selectedCountries.push({ 
-                code: countryCode, 
+                numericCode: numericCode,
                 data: data,
                 year: this.currentYear
             });
@@ -386,7 +417,7 @@ class GoldMap {
                     <div class="country-card-header">
                         <span class="country-card-name">${data.name}</span>
                         <span class="country-card-year">${country.year}</span>
-                        <button class="country-card-remove" onclick="goldMap.removeCountry('${country.code}')">×</button>
+                        <button class="country-card-remove" onclick="goldMap.removeCountry('${country.numericCode}')">×</button>
                     </div>
                     <div class="country-stats">
                         <div class="stat-item">
@@ -471,11 +502,11 @@ class GoldMap {
         `;
     }
 
-    removeCountry(countryCode) {
-        this.selectedCountries = this.selectedCountries.filter(c => c.code !== countryCode);
+    removeCountry(numericCode) {
+        this.selectedCountries = this.selectedCountries.filter(c => c.numericCode !== numericCode);
         this.mapGroup.selectAll('.country').classed('selected', false);
         this.selectedCountries.forEach(country => {
-            this.mapGroup.selectAll(`.country[data-code="${country.code}"]`).classed('selected', true);
+            this.mapGroup.selectAll(`.country[data-code="${country.numericCode}"]`).classed('selected', true);
         });
         this.updateCountryComparison();
     }
@@ -502,7 +533,7 @@ class GoldMap {
                 
                 this.selectedCountries.forEach(country => {
                     country.year = this.currentYear;
-                    country.data = this.getCountryData(country.code);
+                    country.data = this.getCountryDataByNumericCode(country.numericCode);
                 });
                 this.updateCountryComparison();
             });
@@ -517,7 +548,6 @@ class GoldMap {
             );
         });
 
-        // رفع مشکل resize در موبایل
         window.addEventListener('resize', () => {
             setTimeout(() => {
                 this.setupMap();
@@ -528,11 +558,9 @@ class GoldMap {
     updateMap() {
         console.log('🔄 آپدیت نقشه...');
         
-        // آپدیت رنگ کشورها
         this.countryPaths
             .style('fill', d => this.getCountryColor(d));
 
-        // آپدیت داده‌ها
         this.addDataLabels(this.countryPaths.data());
     }
 
@@ -591,7 +619,6 @@ class GoldMap {
     }
 }
 
-// راه‌اندازی نقشه
 let goldMap;
 document.addEventListener('DOMContentLoaded', function() {
     goldMap = new GoldMap();
