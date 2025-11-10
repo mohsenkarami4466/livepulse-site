@@ -246,456 +246,14 @@ body {
     transform: translateY(-1px);
 }
 
+
 /* ==================== */
-/* 🕒 استایل ساعت بازار - نسخه تمیز */
+/* 🕒 استایل‌های ساعت بازار - نسخه حرفه‌ای */
 /* ==================== */
 
-.market-clock-container {
-    position: fixed;
-    top: 90px;
-    left: 20px;
-    z-index: 1000;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.market-clock-container:hover {
-    transform: scale(1.05);
-}
-
-.market-clock-glass {
-    width: 140px;
-    height: 140px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 50%;
-    position: relative;
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        0 0 30px rgba(0, 100, 255, 0.4); /* حاله نور آبی */
-}
-
-[data-theme="dark"] .market-clock-glass {
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 0 40px rgba(0, 150, 255, 0.6); /* حاله نور آبی پررنگ در دارک */
-}
-
-.clock-face {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    border-radius: 50%;
-}
-
-/* اعداد ساعت */
-.hour-markers {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-.hour-marker {
-    position: absolute;
-    width: 2px;
-    height: 12px;
-    background: var(--text-primary);
-    left: 50%;
-    top: 8px;
-    transform-origin: bottom center;
-    opacity: 0.7;
-}
-
-.hour-marker span {
-    position: absolute;
-    top: -25px;
-    left: -8px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: var(--text-primary);
-    opacity: 0.8;
-}
-
-/* نوارهای بازار - نسخه تمیز */
-.market-arcs {
-    position: absolute;
-    width: 92%;
-    height: 92%;
-    top: 4%;
-    left: 4%;
-    border-radius: 50%;
-}
-
-.market-arc {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* فقط نوار سبز برای بازارهای باز */
-.market-arc.open {
-    opacity: 0.8;
-    background: conic-gradient(
-        var(--accent-green) 0%,
-        var(--accent-green) 100%
-    );
-    box-shadow: 0 0 20px var(--accent-green);
-    filter: blur(1px);
-}
-
-/* اطلاعات بازارها روی ساعت - نسخه تمیز */
-.market-info-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.market-label {
-    position: absolute;
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    text-align: center;
-    width: 50px;
-    left: 50%;
-    margin-left: -25px;
-    top: -5px;
-    transform-origin: center 72px;
-    opacity: 0.9;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    background: rgba(0, 0, 0, 0.3);
-    padding: 2px 4px;
-    border-radius: 6px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.market-label.open {
-    color: var(--accent-green);
-    background: rgba(0, 255, 127, 0.15);
-    border: 1px solid rgba(0, 255, 127, 0.3);
-}
-
-.market-label.closing {
-    color: var(--accent-red);
-    background: rgba(255, 0, 0, 0.15);
-    border: 1px solid rgba(255, 0, 0, 0.3);
-}
-
-.market-label.opening {
-    color: var(--accent-teal);
-    background: rgba(0, 200, 255, 0.15);
-    border: 1px solid rgba(0, 200, 255, 0.3);
-}
-
-.market-label.closed {
-    opacity: 0.5;
-    background: rgba(128, 128, 128, 0.1);
-}
-
-.market-time-badge {
-    font-size: 0.5rem;
-    display: block;
-    margin-top: 1px;
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    opacity: 0.9;
-}
-
-/* عقربه‌ها */
-.clock-hands {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-.hand {
-    position: absolute;
-    background: var(--text-primary);
-    border-radius: 4px;
-    transform-origin: bottom center;
-    left: 50%;
-    bottom: 50%;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-}
-
-.hour-hand {
-    width: 4px;
-    height: 30px;
-    margin-left: -2px;
-}
-
-.minute-hand {
-    width: 3px;
-    height: 40px;
-    margin-left: -1.5px;
-}
-
-.second-hand {
-    width: 2px;
-    height: 45px;
-    margin-left: -1px;
-    background: var(--accent-green);
-    box-shadow: 0 0 8px var(--accent-green);
-}
-
-.hand-center {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: var(--text-primary);
-    border-radius: 50%;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-}
 
 
-/* پنل نقشه */
-.market-map-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    z-index: 2000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
 
-.market-map-glass {
-    width: 90%;
-    height: 90%;
-    background: var(--glass-bg);
-    backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 20px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.close-map-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: var(--text-primary);
-    cursor: pointer;
-    z-index: 10;
-    transition: color 0.3s ease;
-}
-
-.close-map-btn:hover {
-    color: var(--accent-red);
-}
-
-.map-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.map-legend {
-    display: flex;
-    gap: 15px;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.9rem;
-}
-
-.legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-
-.legend-color.open-pulse {
-    background: var(--accent-green);
-    box-shadow: 0 0 10px var(--accent-green);
-}
-
-.legend-color.closing-pulse {
-    background: var(--accent-red);
-    box-shadow: 0 0 10px var(--accent-red);
-}
-
-.legend-color.opening-pulse {
-    background: var(--accent-teal);
-    box-shadow: 0 0 10px var(--accent-teal);
-}
-
-.world-map-container {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.world-map {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.clocks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-/* استایل‌های اضافی برای پنل نقشه */
-.market-mini-clock {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-    border: 1px solid var(--glass-border);
-    transition: all 0.3s ease;
-}
-
-.market-mini-clock:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.mini-clock-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-    margin-bottom: 8px;
-}
-
-.mini-clock-time {
-    font-size: 1.2rem;
-    font-weight: bold;
-    font-family: 'Courier New', monospace;
-    margin-bottom: 5px;
-}
-
-.mini-clock-status {
-    font-size: 0.8rem;
-    padding: 4px 8px;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.mini-clock-status.open {
-    color: var(--accent-green);
-    background: rgba(0, 255, 127, 0.2);
-    box-shadow: 0 0 10px rgba(0, 255, 127, 0.3);
-}
-
-.mini-clock-status.closing {
-    color: var(--accent-red);
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-}
-
-.mini-clock-status.opening {
-    color: var(--accent-teal);
-    background: rgba(0, 200, 255, 0.2);
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
-}
-
-.mini-clock-status.closed {
-    color: var(--text-secondary);
-    background: rgba(128, 128, 128, 0.2);
-}
-
-/* ریسپانسیو */
-@media (max-width: 768px) {
-    .market-clock-container {
-        top: 80px;
-        left: 15px;
-    }
-    
-    .market-clock-glass {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .hour-marker span {
-        font-size: 0.5rem;
-        top: -18px;
-    }
-    
-    .market-label {
-        font-size: 0.5rem;
-        width: 45px;
-        margin-left: -22.5px;
-        transform-origin: center 55px;
-    }
-    
-    .market-time-badge {
-        font-size: 0.4rem;
-    }
-    
-    .market-map-glass {
-        width: 95%;
-        height: 95%;
-        padding: 15px;
-    }
-    
-    .map-header {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
-    
-    .map-legend {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .market-clock-container {
-        top: 70px;
-        left: 10px;
-    }
-    
-    .market-clock-glass {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .market-label {
-        display: none; /* در موبایل لیبل‌ها رو مخفی می‌کنیم */
-    }
-}
 
 /* ==================== */
 /* 💎 کارت‌های اصلی صفحه خانه */
@@ -1441,128 +999,253 @@ body {
 }
 
 /* ==================== */
-/* 🎠 بخش اسلایدر تبلیغات - 2 ردیف روان */
+/* 🎠 اسلایدر سه‌بعدی حلقه‌ای - Carousel */
 /* ==================== */
 
-.slider-section {
-    padding: 3rem 1rem;
-    max-width: 100%;
-    margin: 0 auto;
-    overflow: hidden;
+.advanced-3d-slider {
     position: relative;
+    width: 100%;
+    height: 400px;
+    perspective: 1800px;
+    margin: 60px 0;
+    overflow: visible;
 }
 
 .slider-container {
-    margin: 20px auto;
-    padding: 20px 0;
-    max-width: 100%;
-    overflow: hidden;
     position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.slider-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.slider-group {
+.slider-track {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    transform-style: preserve-3d;
     display: flex;
-    gap: 20px;
-    will-change: transform;
-    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
 }
 
-/* انیمیشن برای ردیف بالا (چپ به راست) */
-.top-slider .slider-group {
-    animation: scrolling-left 40s linear infinite;
+.slide-item {
+    position: absolute;
+    width: 240px;
+    height: 300px;
+    transform-style: preserve-3d;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-/* انیمیشن برای ردیف پایین (راست به چپ) */
-.bottom-slider .slider-group {
-    animation: scrolling-right 45s linear infinite;
-}
-
-.slider-item {
-    flex: 0 0 280px;
-    height: 100px;
-    background: var(--glass-bg);
-    border-radius: 12px;
+.slide-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, 
+        rgba(255,255,255,0.15) 0%, 
+        rgba(255,255,255,0.05) 50%,
+        rgba(255,255,255,0.1) 100%) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 25px 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    border: 1px solid var(--glass-border);
-    padding: 15px;
     text-align: center;
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow);
+    box-shadow: 
+        0 25px 50px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        inset 0 -1px 0 rgba(0,0,0,0.1);
+    transform-style: preserve-3d;
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* گرادینت‌های کناری */
-.slider-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100px;
-    background: linear-gradient(to left, var(--bg-primary) 20%, transparent 100%);
-    z-index: 2;
-    pointer-events: none;
-}
-
-.slider-container::after {
+.slide-content::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
     bottom: 0;
-    width: 100px;
-    background: linear-gradient(to right, var(--bg-primary) 20%, transparent 100%);
-    z-index: 2;
+    background: linear-gradient(135deg, 
+        rgba(255,255,255,0.1) 0%,
+        transparent 30%,
+        rgba(0,0,0,0.05) 100%);
+    border-radius: 20px;
     pointer-events: none;
 }
 
-/* انیمیشن‌های پیوسته */
-@keyframes scrolling-left {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
+.slide-icon {
+    font-size: 3em;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+    transform: translateZ(40px);
+    transition: all 0.5s ease;
 }
 
-@keyframes scrolling-right {
-    0% {
-        transform: translateX(-50%);
-    }
-    100% {
-        transform: translateX(0);
-    }
+.slide-item.active .slide-icon {
+    filter: drop-shadow(0 12px 30px rgba(0,0,0,0.4));
+    transform: translateZ(60px) scale(1.15);
 }
 
-/* توقف هنگام هاور */
-.slider-container:hover .slider-group {
-    animation-play-state: paused;
+.slide-content h3 {
+    font-size: 1.25em;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: var(--text-color);
+    transform: translateZ(45px);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* ریسپانسیو برای موبایل */
+.slide-item.active h3 {
+    transform: translateZ(65px);
+}
+
+.slide-content p {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    opacity: 0.9;
+    transform: translateZ(35px);
+}
+
+.slide-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.7em;
+    font-weight: 600;
+    transform: translateZ(50px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* ناوبری */
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 20;
+    padding: 0 25px;
+}
+
+.nav-btn {
+    background: linear-gradient(135deg, var(--card-bg), rgba(255,255,255,0.1));
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.nav-btn:hover {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    transform: scale(1.15);
+    box-shadow: 0 15px 40px rgba(var(--primary-color-rgb), 0.4);
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: var(--primary-color);
+    transform: scale(1.4);
+    box-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.6);
+}
+
+/* ریسپانسیو */
 @media (max-width: 768px) {
-    .slider-section {
-        padding: 2rem 0.5rem;
+    .advanced-3d-slider {
+        height: 350px;
     }
     
-    .slider-item {
-        flex: 0 0 220px;
-        height: 80px;
-        padding: 10px;
-        font-size: 0.9rem;
+    .slide-item {
+        width: 200px;
+        height: 250px;
     }
     
-    .slider-group {
-        gap: 15px;
+    .slide-content {
+        padding: 20px 15px;
     }
     
-    .slider-container::before,
-    .slider-container::after {
-        width: 50px;
+    .slide-icon {
+        font-size: 2.5em;
+    }
+    
+    .nav-btn {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    .advanced-3d-slider {
+        height: 300px;
+    }
+    
+    .slide-item {
+        width: 170px;
+        height: 210px;
+    }
+    
+    .slide-content {
+        padding: 15px 12px;
+    }
+    
+    .slide-icon {
+        font-size: 2.2em;
+    }
+    
+    .nav-btn {
+        width: 40px;
+        height: 40px;
     }
 }
 
