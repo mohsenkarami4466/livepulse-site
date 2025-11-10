@@ -118,9 +118,6 @@ function initializeApp() {
     
     // تنظیم ایونت‌لیستنرها
     setupEventListeners();
-
-    // 🆕 این خط رو اضافه کن:
-    setTimeout(() => setupSliders(), 1000);
     
     // آپدیت نمایش استفاده
     updateUsageDisplay();
@@ -274,359 +271,11 @@ function updateNavigationButtons(currentView) {
 
 
 // ==================== //
-// 🕒 مدیریت ساعت بازارهای جهانی - نسخه تمیز
+// 🕒 سیستم کامل ساعت بازارهای جهانی
 // ==================== //
 
-class MarketClock {
-    constructor() {
-        this.markets = {
-            'tehran': { 
-                name: 'تهران', 
-                open: 4.5, 
-                close: 9, 
-                offset: 3.5, 
-                color: '#00ff7f',
-                position: 165
-            },
-            'london': { 
-                name: 'لندن', 
-                open: 8, 
-                close: 16, 
-                offset: 0, 
-                color: '#ff6b6b',
-                position: 240
-            },
-            'newyork': { 
-                name: 'نیویورک', 
-                open: 13, 
-                close: 21, 
-                offset: -5, 
-                color: '#4ecdc4',
-                position: 285
-            },
-            'tokyo': { 
-                name: 'توکیو', 
-                open: 0, 
-                close: 9, 
-                offset: 9, 
-                color: '#ffd93d',
-                position: 45
-            },
-            'shanghai': { 
-                name: 'شانگهای', 
-                open: 1, 
-                close: 9, 
-                offset: 8, 
-                color: '#6c5ce7',
-                position: 75
-            },
-            'moscow': { 
-                name: 'مسکو', 
-                open: 7, 
-                close: 16, 
-                offset: 3, 
-                color: '#fd79a8',
-                position: 195
-            },
-            'dubai': { 
-                name: 'دبی', 
-                open: 5, 
-                close: 13, 
-                offset: 4, 
-                color: '#00cec9',
-                position: 180
-            }
-        };
-        
-        this.activeArc = null;
-        this.init();
-    }
 
-    init() {
-        this.setupEventListeners();
-        this.renderMarketLabels();
-        this.renderMarketArcs();
-        this.updateClock();
-        setInterval(() => this.updateClock(), 1000);
-    }
 
-    setupEventListeners() {
-        // کلیک روی ساعت برای باز کردن نقشه
-        document.getElementById('marketClock').addEventListener('click', () => {
-            this.openMarketMap();
-        });
-
-        // بستن نقشه
-        document.getElementById('closeMapBtn').addEventListener('click', () => {
-            this.closeMarketMap();
-        });
-
-        // بستن با کلیک بیرون
-        document.getElementById('marketMapOverlay').addEventListener('click', (e) => {
-            if (e.target.id === 'marketMapOverlay') {
-                this.closeMarketMap();
-            }
-        });
-    }
-
-    renderMarketLabels() {
-        const overlay = document.getElementById('marketInfoOverlay');
-        overlay.innerHTML = '';
-        
-        Object.keys(this.markets).forEach(market => {
-            const data = this.markets[market];
-            const label = document.createElement('div');
-            label.className = 'market-label';
-            label.dataset.market = market;
-            label.style.transform = `rotate(${data.position}deg)`;
-            label.innerHTML = `
-                <div>${data.name}</div>
-                <div class="market-time-badge" id="time-${market}">00:00</div>
-            `;
-            overlay.appendChild(label);
-        });
-    }
-
-    renderMarketArcs() {
-        const arcsContainer = document.getElementById('marketArcs');
-        arcsContainer.innerHTML = '';
-        
-        Object.keys(this.markets).forEach(market => {
-            const arc = document.createElement('div');
-            arc.className = 'market-arc';
-            arc.dataset.market = market;
-            arcsContainer.appendChild(arc);
-        });
-    }
-
-    updateClock() {
-        const now = new Date();
-        const utc = now.getUTCHours() + now.getUTCMinutes() / 60;
-        
-        // آپدیت عقربه‌ها
-        this.updateClockHands(now);
-        
-        // آپدیت نوارهای بازار و اطلاعات
-        this.updateMarketDisplays(utc);
-    }
-
-    updateClockHands(now) {
-        const hours = now.getHours() % 12;
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
-        
-        const hourDeg = (hours * 30) + (minutes * 0.5);
-        const minuteDeg = (minutes * 6) + (seconds * 0.1);
-        const secondDeg = seconds * 6;
-        
-        document.getElementById('hourHand').style.transform = `rotate(${hourDeg}deg)`;
-        document.getElementById('minuteHand').style.transform = `rotate(${minuteDeg}deg)`;
-        document.getElementById('secondHand').style.transform = `rotate(${secondDeg}deg)`;
-    }
-
-    updateMarketDisplays(utc) {
-        let foundOpenMarket = false;
-        
-        Object.keys(this.markets).forEach(market => {
-            const data = this.markets[market];
-            const localTime = (utc + data.offset + 24) % 24;
-            
-            // آپدیت زمان بازار
-            this.updateMarketTime(market, localTime);
-            
-            // آپدیت وضعیت لیبل
-            this.updateMarketLabel(market, localTime);
-            
-            // فقط اولین بازار باز رو نمایش بده
-            const isOpen = localTime >= data.open && localTime < data.close;
-            if (isOpen && !foundOpenMarket) {
-                this.updateMarketArc(market, localTime, data);
-                foundOpenMarket = true;
-            } else {
-                this.hideMarketArc(market);
-            }
-        });
-        
-        // اگر هیچ بازار بازی نیست، نوار رو پنهان کن
-        if (!foundOpenMarket) {
-            this.hideAllArcs();
-        }
-    }
-
-    updateMarketTime(market, localTime) {
-        const hours = Math.floor(localTime);
-        const minutes = Math.floor((localTime - hours) * 60);
-        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        
-        const timeElement = document.getElementById(`time-${market}`);
-        if (timeElement) {
-            timeElement.textContent = timeString;
-        }
-    }
-
-    updateMarketArc(market, localTime, data) {
-        const arc = document.querySelector(`.market-arc[data-market="${market}"]`);
-        if (!arc) return;
-        
-        // تنظیم موقعیت نوار
-        const startAngle = (data.open / 24) * 360;
-        const endAngle = (data.close / 24) * 360;
-        const arcLength = endAngle - startAngle;
-        
-        arc.style.transform = `rotate(${startAngle}deg)`;
-        arc.style.background = `conic-gradient(
-            var(--accent-green) 0%,
-            var(--accent-green) ${arcLength}deg,
-            transparent ${arcLength}deg
-        )`;
-        
-        arc.classList.add('open');
-        arc.style.opacity = '0.8';
-    }
-
-    hideMarketArc(market) {
-        const arc = document.querySelector(`.market-arc[data-market="${market}"]`);
-        if (arc) {
-            arc.classList.remove('open');
-            arc.style.opacity = '0';
-        }
-    }
-
-    hideAllArcs() {
-        const arcs = document.querySelectorAll('.market-arc');
-        arcs.forEach(arc => {
-            arc.classList.remove('open');
-            arc.style.opacity = '0';
-        });
-    }
-
-    updateMarketLabel(market, localTime) {
-        const data = this.markets[market];
-        const label = document.querySelector(`.market-label[data-market="${market}"]`);
-        if (!label) return;
-        
-        const isOpen = localTime >= data.open && localTime < data.close;
-        const isClosing = localTime >= data.close - 1 && localTime < data.close;
-        const isOpening = localTime >= data.open - 1 && localTime < data.open;
-        
-        label.className = 'market-label';
-        if (isOpen) {
-            label.classList.add('open');
-        } else if (isClosing) {
-            label.classList.add('closing');
-        } else if (isOpening) {
-            label.classList.add('opening');
-        } else {
-            label.classList.add('closed');
-        }
-    }
-
-    openMarketMap() {
-        const overlay = document.getElementById('marketMapOverlay');
-        overlay.style.display = 'flex';
-        this.renderWorldMap();
-        this.renderMarketClocks();
-    }
-
-    closeMarketMap() {
-        document.getElementById('marketMapOverlay').style.display = 'none';
-    }
-
-    renderWorldMap() {
-        const mapContainer = document.getElementById('worldMap');
-        mapContainer.innerHTML = `
-            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-secondary);">
-                <div style="text-align:center;">
-                    <div style="font-size:3rem; margin-bottom:15px;">🗺️</div>
-                    <h3 style="margin-bottom:10px;">نقشه تعاملی بازارهای جهانی</h3>
-                    <p style="opacity:0.8;">(این بخش با داده‌های واقعی تکمیل میشه)</p>
-                    <small style="opacity:0.6;">کلیک کن روی بازارها در پایین برای اطلاعات بیشتر</small>
-                </div>
-            </div>
-        `;
-    }
-
-    renderMarketClocks() {
-        const clocksGrid = document.getElementById('clocksGrid');
-        clocksGrid.innerHTML = '';
-        
-        Object.keys(this.markets).forEach(market => {
-            const data = this.markets[market];
-            const status = this.getMarketStatus(market);
-            const localTime = this.getMarketTime(market);
-            
-            const clockDiv = document.createElement('div');
-            clockDiv.className = 'market-mini-clock';
-            clockDiv.innerHTML = `
-                <div class="mini-clock-header">
-                    <span class="market-flag">${this.getMarketFlag(market)}</span>
-                    <strong>${data.name}</strong>
-                </div>
-                <div class="mini-clock-time">${localTime}</div>
-                <div class="mini-clock-status ${status}">
-                    ${this.getMarketStatusText(market)}
-                </div>
-                <div style="font-size:0.7rem; opacity:0.7; margin-top:5px;">
-                    ${data.open}:00 - ${data.close}:00
-                </div>
-            `;
-            clocksGrid.appendChild(clockDiv);
-        });
-    }
-
-    getMarketFlag(market) {
-        const flags = {
-            'tehran': '🇮🇷',
-            'london': '🇬🇧', 
-            'newyork': '🇺🇸',
-            'tokyo': '🇯🇵',
-            'shanghai': '🇨🇳',
-            'moscow': '🇷🇺',
-            'dubai': '🇦🇪'
-        };
-        return flags[market] || '🌐';
-    }
-
-    getMarketTime(market) {
-        const data = this.markets[market];
-        const now = new Date();
-        const utc = now.getUTCHours() + now.getUTCMinutes() / 60;
-        const localTime = (utc + data.offset + 24) % 24;
-        
-        const hours = Math.floor(localTime);
-        const minutes = Math.floor((localTime - hours) * 60);
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-    }
-
-    getMarketStatus(market) {
-        const data = this.markets[market];
-        const now = new Date();
-        const utc = now.getUTCHours() + now.getUTCMinutes() / 60;
-        const localTime = (utc + data.offset + 24) % 24;
-        
-        if (localTime >= data.open && localTime < data.close) return 'open';
-        if (localTime >= data.close - 1 && localTime < data.close) return 'closing';
-        if (localTime >= data.open - 1 && localTime < data.open) return 'opening';
-        return 'closed';
-    }
-
-    getMarketStatusText(market) {
-        const status = this.getMarketStatus(market);
-        const texts = {
-            'open': '🟢 بازار باز',
-            'closing': '🔴 در حال بسته شدن', 
-            'opening': '🟡 به زودی باز',
-            'closed': '⚫ بازار بسته'
-        };
-        return texts[status];
-    }
-}
-
-// راه‌اندازی ساعت وقتی صفحه لود شد
-document.addEventListener('DOMContentLoaded', () => {
-    new MarketClock();
-    console.log('🕒 ساعت بازارهای جهانی (نسخه تمیز) راه‌اندازی شد!');
-});
 
 
 // ==================== //
@@ -1600,40 +1249,217 @@ function extractChange(changeText) {
     return parseFloat(cleanChange) || 0;
 }
 
+
 // ==================== //
-// 🎠 کنترل اسلایدرها
+// 🎠 اسلایدر سه‌بعدی حلقه‌ای - Carousel
 // ==================== //
 
-function setupSliders() {
-    console.log('🎠 راه‌اندازی اسلایدرها...');
+class Circular3DSlider {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide-item'));
+        this.dots = Array.from(document.querySelectorAll('.dot'));
+        this.prevBtn = document.querySelector('.prev-btn');
+        this.nextBtn = document.querySelector('.next-btn');
+        
+        this.currentIndex = 0;
+        this.totalSlides = this.slides.length;
+        this.isAnimating = false;
+        this.autoPlayInterval = null;
+        this.radius = 600; // شعاع دایره
+        this.angleStep = 360 / this.totalSlides; // زاویه بین اسلایدها
+        
+        console.log(`🎠 اسلایدر حلقه‌ای با ${this.totalSlides} اسلاید راه‌اندازی شد`);
+        
+        this.init();
+    }
     
-    try {
-        const sliders = document.querySelectorAll('.slider-container');
-        console.log('تعداد اسلایدرها:', sliders.length);
+    init() {
+        this.setupEventListeners();
+        this.updateSlider();
+        this.autoPlay();
+    }
+    
+    setupEventListeners() {
+        this.prevBtn.addEventListener('click', () => this.prevSlide());
+        this.nextBtn.addEventListener('click', () => this.nextSlide());
         
-        if (sliders.length === 0) {
-            console.log('⚠️ هیچ اسلایدری پیدا نشد');
-            return;
-        }
-        
-        sliders.forEach((slider, index) => {
-            console.log(`🎯 راه‌اندازی اسلایدر ${index + 1}`);
-            
-            // فقط برای اسلایدرهایی که slider-group دارند ادامه بده
-            const sliderGroups = slider.querySelectorAll('.slider-group');
-            if (sliders.length === 0) {
-                console.log(`⚠️ اسلایدر ${index + 1} slider-group ندارد`);
-                return;
-            }
-            
-            console.log(`✅ اسلایدر ${index + 1} راه‌اندازی شد`);
+        this.dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                this.goToSlide(index);
+            });
         });
         
-        console.log('🎯 اسلایدرها راه‌اندازی شدند');
-    } catch (error) {
-        console.log('⚠️ خطا در راه‌اندازی اسلایدرها:', error);
+        this.setupTouchEvents();
+    }
+    
+    setupTouchEvents() {
+        let startX = 0;
+        let endX = 0;
+        const track = document.querySelector('.slider-track');
+        
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+        
+        track.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            this.handleSwipe(startX, endX);
+        });
+    }
+    
+    handleSwipe(startX, endX) {
+        const diff = startX - endX;
+        const minSwipe = 50;
+        
+        if (Math.abs(diff) > minSwipe) {
+            if (diff > 0) {
+                this.nextSlide();
+            } else {
+                this.prevSlide();
+            }
+        }
+    }
+    
+    prevSlide() {
+        if (this.isAnimating) return;
+        
+        this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+        this.updateSlider();
+    }
+    
+    nextSlide() {
+        if (this.isAnimating) return;
+        
+        this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+        this.updateSlider();
+    }
+    
+    goToSlide(index) {
+        if (this.isAnimating) return;
+        
+        this.currentIndex = index;
+        this.updateSlider();
+    }
+    
+    updateSlider() {
+        this.isAnimating = true;
+        
+        // حذف کلاس active از همه
+        this.slides.forEach(slide => slide.classList.remove('active'));
+        this.dots.forEach(dot => dot.classList.remove('active'));
+        
+        // اضافه کردن کلاس active به اسلاید جاری
+        this.slides[this.currentIndex].classList.add('active');
+        this.dots[this.currentIndex].classList.add('active');
+        
+        // محاسبه موقعیت‌های حلقه‌ای برای همه اسلایدها
+        this.slides.forEach((slide, index) => {
+            const positions = this.calculateCircularPosition(index, this.currentIndex);
+            
+            gsap.to(slide, {
+                x: positions.x,
+                y: positions.y,
+                z: positions.z,
+                rotationY: positions.rotationY,
+                scale: positions.scale,
+                opacity: positions.opacity,
+                zIndex: positions.zIndex,
+                duration: 1.2,
+                ease: "power2.out",
+                onComplete: () => {
+                    if (index === this.currentIndex) {
+                        this.isAnimating = false;
+                    }
+                }
+            });
+        });
+    }
+    
+    calculateCircularPosition(slideIndex, currentIndex) {
+        // محاسبه موقعیت روی دایره
+        const effectiveIndex = (slideIndex - currentIndex + this.totalSlides) % this.totalSlides;
+        const angle = effectiveIndex * this.angleStep;
+        const radian = (angle * Math.PI) / 180;
+        
+        // موقعیت در فضای سه‌بعدی
+        const x = Math.sin(radian) * this.radius;
+        const z = Math.cos(radian) * this.radius - this.radius; // تنظیم موقعیت Z
+        const y = 0; // موقعیت عمودی
+        
+        // تنظیمات بر اساس موقعیت روی دایره
+        let scale, opacity, rotationY, zIndex;
+        
+        // اسلایدهای نزدیک به مرکز (دید مستقیم)
+        if (effectiveIndex === 0) {
+            // اسلاید فعال - مرکز
+            scale = 1.1;
+            opacity = 1;
+            rotationY = 0;
+            zIndex = 20;
+        } 
+        // اسلایدهای کناری
+        else if (effectiveIndex === 1 || effectiveIndex === this.totalSlides - 1) {
+            scale = 0.9;
+            opacity = 0.8;
+            rotationY = effectiveIndex === 1 ? 15 : -15;
+            zIndex = 15;
+        }
+        // اسلایدهای دورتر
+        else if (effectiveIndex === 2 || effectiveIndex === this.totalSlides - 2) {
+            scale = 0.8;
+            opacity = 0.6;
+            rotationY = effectiveIndex === 2 ? 25 : -25;
+            zIndex = 10;
+        }
+        // اسلایدهای پشت
+        else if (effectiveIndex === 3 || effectiveIndex === this.totalSlides - 3) {
+            scale = 0.7;
+            opacity = 0.4;
+            rotationY = effectiveIndex === 3 ? 35 : -35;
+            zIndex = 5;
+        }
+        // اسلایدهای خیلی دور (پشت سر)
+        else {
+            scale = 0.6;
+            opacity = 0.2;
+            rotationY = effectiveIndex < this.totalSlides / 2 ? 45 : -45;
+            zIndex = 1;
+        }
+        
+        return {
+            x: x,
+            y: y,
+            z: z,
+            rotationY: rotationY,
+            scale: scale,
+            opacity: opacity,
+            zIndex: zIndex
+        };
+    }
+    
+    autoPlay() {
+        this.autoPlayInterval = setInterval(() => {
+            this.nextSlide();
+        }, 3500);
+    }
+    
+    destroy() {
+        if (this.autoPlayInterval) {
+            clearInterval(this.autoPlayInterval);
+        }
     }
 }
+
+// راه‌اندازی
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (document.querySelector('.advanced-3d-slider') && typeof gsap !== 'undefined') {
+            window.advancedSlider = new Circular3DSlider();
+            console.log('✅ اسلایدر حلقه‌ای سه‌بعدی با موفقیت راه‌اندازی شد');
+        }
+    }, 1000);
+});
 
 // ==================== //
 // 🚀 راه‌اندازی برنامه
