@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LivePulse.ir - قیمت لحظه‌ای ارز، طلا و رمزارز</title>
     <link rel="stylesheet" href="style.css">
+    <!-- در <head> فایل index.html این خطوط رو اضافه کن -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 </head>
 <body data-theme="light">
     
@@ -36,96 +39,13 @@
     </header>
 
     <!-- ==================== -->
-    <!-- 🕒 ساعت بازارهای جهانی -->
+    <!-- 🕒 ساعت بازارهای جهانی - نسخه کوچک -->
     <!-- ==================== -->
 
-    <!-- ساعت ثابت بالا-چپ -->
-    <div class="market-clock-container">
-        <div class="market-clock-glass" id="marketClock">
-            <div class="clock-face">
-                <!-- اعداد 24 ساعته -->
-                <div class="hour-markers">
-                    <div class="hour-marker" style="transform: rotate(0deg)"><span style="transform: rotate(0deg)">1</span></div>
-                    <div class="hour-marker" style="transform: rotate(15deg)"><span style="transform: rotate(-15deg)">2</span></div>
-                    <div class="hour-marker" style="transform: rotate(30deg)"><span style="transform: rotate(-30deg)">3</span></div>
-                    <div class="hour-marker" style="transform: rotate(45deg)"><span style="transform: rotate(-45deg)">4</span></div>
-                    <div class="hour-marker" style="transform: rotate(60deg)"><span style="transform: rotate(-60deg)">5</span></div>
-                    <div class="hour-marker" style="transform: rotate(75deg)"><span style="transform: rotate(-75deg)">6</span></div>
-                    <div class="hour-marker" style="transform: rotate(90deg)"><span style="transform: rotate(-90deg)">7</span></div>
-                    <div class="hour-marker" style="transform: rotate(105deg)"><span style="transform: rotate(-105deg)">8</span></div>
-                    <div class="hour-marker" style="transform: rotate(120deg)"><span style="transform: rotate(-120deg)">9</span></div>
-                    <div class="hour-marker" style="transform: rotate(135deg)"><span style="transform: rotate(-135deg)">10</span></div>
-                    <div class="hour-marker" style="transform: rotate(150deg)"><span style="transform: rotate(-150deg)">11</span></div>
-                    <div class="hour-marker" style="transform: rotate(165deg)"><span style="transform: rotate(-165deg)">12</span></div>
-                    <div class="hour-marker" style="transform: rotate(180deg)"><span style="transform: rotate(-180deg)">13</span></div>
-                    <div class="hour-marker" style="transform: rotate(195deg)"><span style="transform: rotate(-195deg)">14</span></div>
-                    <div class="hour-marker" style="transform: rotate(210deg)"><span style="transform: rotate(-210deg)">15</span></div>
-                    <div class="hour-marker" style="transform: rotate(225deg)"><span style="transform: rotate(-225deg)">16</span></div>
-                    <div class="hour-marker" style="transform: rotate(240deg)"><span style="transform: rotate(-240deg)">17</span></div>
-                    <div class="hour-marker" style="transform: rotate(255deg)"><span style="transform: rotate(-255deg)">18</span></div>
-                    <div class="hour-marker" style="transform: rotate(270deg)"><span style="transform: rotate(-270deg)">19</span></div>
-                    <div class="hour-marker" style="transform: rotate(285deg)"><span style="transform: rotate(-285deg)">20</span></div>
-                    <div class="hour-marker" style="transform: rotate(300deg)"><span style="transform: rotate(-300deg)">21</span></div>
-                    <div class="hour-marker" style="transform: rotate(315deg)"><span style="transform: rotate(-315deg)">22</span></div>
-                    <div class="hour-marker" style="transform: rotate(330deg)"><span style="transform: rotate(-330deg)">23</span></div>
-                    <div class="hour-marker" style="transform: rotate(345deg)"><span style="transform: rotate(-345deg)">24</span></div>
-                </div>
-                
-                <!-- نوارهای رنگی بازارها -->
-                <div class="market-arcs" id="marketArcs">
-                    <!-- با JS پر میشود -->
-                </div>
-                
-                <!-- اطلاعات بازارها روی ساعت -->
-                <div class="market-info-overlay" id="marketInfoOverlay">
-                    <!-- با JS پر میشود -->
-                </div>
-                
-                <!-- عقربه‌ها -->
-                <div class="clock-hands">
-                    <div class="hand hour-hand" id="hourHand"></div>
-                    <div class="hand minute-hand" id="minuteHand"></div>
-                    <div class="hand second-hand" id="secondHand"></div>
-                    <div class="hand-center"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- پنل تعاملی نقشه (مخفی) -->
-    <div class="market-map-overlay" id="marketMapOverlay">
-        <div class="market-map-glass">
-            <button class="close-map-btn" id="closeMapBtn">×</button>
-            
-            <div class="map-header">
-                <h3>🗺️ نقشه بازارهای جهانی</h3>
-                <div class="map-legend">
-                    <div class="legend-item">
-                        <span class="legend-color open-pulse"></span>
-                        <span>باز</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color closing-pulse"></span>
-                        <span>در حال بسته شدن</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color opening-pulse"></span>
-                        <span>به زودی باز</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="world-map-container">
-                <div class="world-map" id="worldMap">
-                    <!-- نقشه با JS رندر میشود -->
-                </div>
-            </div>
-            
-            <div class="clocks-grid" id="clocksGrid">
-                <!-- ساعت‌های بازارها با JS پر میشود -->
-            </div>
-        </div>
-    </div>
+ 
+   
+    
     
     <!-- ==================== -->
     <!-- 🏠 بخش خانه (HOME) -->
@@ -1407,43 +1327,122 @@
         </div>
     </section>
 
-    <!-- 🎠 بخش اسلایدر تبلیغات - 2 ردیف روان -->
+    <!-- 🎠 بخش اسلایدر تبلیغات - اسلایدر سه‌بعدی حرفه‌ای -->
     <section class="global-section slider-section">
-        <!-- ردیف بالا - حرکت به چپ -->
-        <div class="slider-container top-slider">
-            <div class="slider-group">
-                <!-- محتوای اصلی (تکرار نشده) -->
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۱</div>
-                <div class="slider-item glass-card">📊 تحلیل بازار طلا</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۲</div>
-                <div class="slider-item glass-card">📈 اخبار ویژه ارز</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۳</div>
-            
-                <!-- کپی دقیق از محتوای بالا برای ایجاد اثر پیوسته -->
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۱</div>
-                <div class="slider-item glass-card">📊 تحلیل بازار طلا</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۲</div>
-                <div class="slider-item glass-card">📈 اخبار ویژه ارز</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۳</div>
-            </div>
-        </div>
-
-        <!-- ردیف پایین - حرکت به راست -->
-        <div class="slider-container bottom-slider">
-            <div class="slider-group">
-                <!-- محتوای اصلی (تکرار نشده) -->
-                <div class="slider-item glass-card">🤖 مقاله هوش مصنوعی</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۴</div>
-                <div class="slider-item glass-card">📰 تحلیل تکنیکال</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۵</div>
-                <div class="slider-item glass-card">💎 پیشنهاد ویژه</div>
-            
-                <!-- کپی دقیق از محتوای بالا برای ایجاد اثر پیوسته -->
-                <div class="slider-item glass-card">🤖 مقاله هوش مصنوعی</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۴</div>
-                <div class="slider-item glass-card">📰 تحلیل تکنیکال</div>
-                <div class="slider-item glass-card">📍 تبلیغات بنری ۵</div>
-                <div class="slider-item glass-card">💎 پیشنهاد ویژه</div>
+        <div class="advanced-3d-slider">
+            <div class="slider-container">
+                <div class="slider-wrapper">
+                    <div class="slider-track" id="sliderTrack">
+                        <!-- اسلاید ۱ -->
+                        <div class="slide-item" data-index="0">
+                            <div class="slide-content">
+                                <div class="slide-icon">📍</div>
+                                <h3>تبلیغات بنری ۱</h3>
+                                <p>توضیحات مختصر تبلیغات</p>
+                                <div class="slide-badge">پیشنهاد ویژه</div>
+                            </div>
+                        </div>
+                        
+                        <!-- اسلاید ۲ -->
+                        <div class="slide-item" data-index="1">
+                            <div class="slide-content">
+                                <div class="slide-icon">📊</div>
+                                <h3>تحلیل بازار طلا</h3>
+                                <p>آخرین تحلیلها و پیشبینی‌ها</p>
+                                <div class="slide-badge">تحلیل تخصصی</div>
+                            </div>
+                        </div>
+                        
+                        <!-- اسلاید ۳ -->
+                        <div class="slide-item" data-index="2">
+                            <div class="slide-content">
+                                <div class="slide-icon">💎</div>
+                                <h3>پیشنهاد ویژه</h3>
+                                <p>فرصت‌های سرمایه‌گذاری</p>
+                                <div class="slide-badge">محدود</div>
+                            </div>
+                        </div>
+                        
+                        <!-- اسلاید ۴ -->
+                        <div class="slide-item" data-index="3">
+                            <div class="slide-content">
+                                <div class="slide-icon">📈</div>
+                                <h3>اخبار ویژه ارز</h3>
+                                <p>به روزرسانی لحظه‌ای</p>
+                                <div class="slide-badge">داغ</div>
+                            </div>
+                        </div>
+                        
+                        <!-- اسلاید ۵ -->
+                        <div class="slide-item" data-index="4">
+                            <div class="slide-content">
+                                <div class="slide-icon">🤖</div>
+                                <h3>مقاله هوش مصنوعی</h3>
+                                <p>مطالعه بیشتر در مورد AI</p>
+                                <div class="slide-badge">جدید</div>
+                            </div>
+                        </div>
+                        
+                        <!-- اسلاید ۶ -->
+                        <div class="slide-item" data-index="5">
+                            <div class="slide-content">
+                                <div class="slide-icon">💰</div>
+                                <h3>سیگنال معاملاتی</h3>
+                                <p>سیگنال‌های طلا و ارز</p>
+                                <div class="slide-badge">VIP</div>
+                            </div>
+                        </div>
+                        
+                        <!-- اسلاید ۷ -->
+                        <div class="slide-item" data-index="6">
+                            <div class="slide-content">
+                                <div class="slide-icon">🏆</div>
+                                <h3>برندگان هفتگی</h3>
+                                <p>معرفی برندگان مسابقات</p>
+                                <div class="slide-badge">برنده</div>
+                            </div>
+                        </div>
+                        
+                        <!-- اسلاید ۸ -->
+                        <div class="slide-item" data-index="7">
+                            <div class="slide-content">
+                                <div class="slide-icon">🎯</div>
+                                <h3>تحلیل تکنیکال</h3>
+                                <p>تحلیل نمودارهای قیمت</p>
+                                <div class="slide-badge">حرفه‌ای</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ناوبری -->
+                <div class="slider-nav">
+                    <!-- در RTL: دکمه سمت راست برای قبلی -->
+                    <button class="nav-btn prev-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- در RTL: دکمه سمت چپ برای بعدی -->
+                    <button class="nav-btn next-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- نشانگر اسلایدها -->
+                <div class="slider-dots">
+                    <div class="dot active" data-index="0"></div>
+                    <div class="dot" data-index="1"></div>
+                    <div class="dot" data-index="2"></div>
+                    <div class="dot" data-index="3"></div>
+                    <div class="dot" data-index="4"></div>
+                    <div class="dot" data-index="5"></div>
+                    <div class="dot" data-index="6"></div>
+                    <div class="dot" data-index="7"></div>
+                </div>
             </div>
         </div>
     </section>
