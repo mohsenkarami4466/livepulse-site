@@ -1258,17 +1258,15 @@ class Circular3DSlider {
     constructor() {
         this.slides = Array.from(document.querySelectorAll('.slide-item'));
         this.dots = Array.from(document.querySelectorAll('.dot'));
-        this.prevBtn = document.querySelector('.prev-btn');
-        this.nextBtn = document.querySelector('.next-btn');
+        this.prevBtn = document.getElementById('sliderPrevBtn');
+        this.nextBtn = document.getElementById('sliderNextBtn');
         
         this.currentIndex = 0;
         this.totalSlides = this.slides.length;
         this.isAnimating = false;
         this.autoPlayInterval = null;
-        this.radius = 600; // شعاع دایره
-        this.angleStep = 360 / this.totalSlides; // زاویه بین اسلایدها
-        
-        console.log(`🎠 اسلایدر حلقه‌ای با ${this.totalSlides} اسلاید راه‌اندازی شد`);
+        this.radius = 600;
+        this.angleStep = 360 / this.totalSlides;
         
         this.init();
     }
@@ -1280,11 +1278,35 @@ class Circular3DSlider {
     }
     
     setupEventListeners() {
-        this.prevBtn.addEventListener('click', () => this.prevSlide());
-        this.nextBtn.addEventListener('click', () => this.nextSlide());
+        // حذف تمام event listenerهای قبلی
+        this.prevBtn.replaceWith(this.prevBtn.cloneNode(true));
+        this.nextBtn.replaceWith(this.nextBtn.cloneNode(true));
+        
+        // تعریف مجدد
+        this.prevBtn = document.getElementById('sliderPrevBtn');
+        this.nextBtn = document.getElementById('sliderNextBtn');
+        
+        // اضافه کردن event listenerهای جدید
+        this.prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('Prev clicked');
+            this.prevSlide();
+        }, true); // useCapture: true
+        
+        this.nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('Next clicked');
+            this.nextSlide();
+        }, true);
         
         this.dots.forEach(dot => {
             dot.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const index = parseInt(e.target.getAttribute('data-index'));
                 this.goToSlide(index);
             });
@@ -1292,6 +1314,7 @@ class Circular3DSlider {
         
         this.setupTouchEvents();
     }
+    
     
     setupTouchEvents() {
         let startX = 0;
