@@ -22,14 +22,13 @@
 
             <!-- 🎛️ منوی کنترلی سمت چپ -->
             <div class="control-menu">
-                <!-- دکمه‌های ناوبری اصلی - همیشه ۲ دکمه -->
-                <button class="nav-btn" data-page="news">📰 اخبار</button>
-                <button class="nav-btn" data-page="tools">🛠️ ابزار</button>
-                
+
                 <!-- دکمه‌های کنترلی -->
-                <button class="theme-toggle" id="themeToggle">
-                    <span class="theme-icon">🌙</span>
-                </button>
+                <div class="theme-toggle-center">
+                    <button class="theme-toggle" id="themeToggle">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
                 
                 <!-- 🔐 دکمه ورود -->
                 <button class="login-btn" id="loginBtn">ورود</button>
@@ -1586,6 +1585,18 @@
             </div>
         </div>
     </div>
+
+    <div class="assistive-touch" id="assistiveTouch">
+        <div class="touch-button">
+            <div class="touch-icon">●</div>
+        </div>
+        <div class="touch-menu">
+            <button class="menu-item" data-page="home">🏠</button>
+            <button class="menu-item" data-page="tools">🛠️</button>
+            <button class="menu-item" data-page="news">📰</button>
+            <button class="menu-item" data-page="tutorial">📚 آموزش</button>
+        </div>
+    </div>   
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
