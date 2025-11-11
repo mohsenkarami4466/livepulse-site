@@ -1409,16 +1409,6 @@ class Circular3DSlider {
     }
 }
 
-// راه‌اندازی
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
-        if (document.querySelector('.advanced-3d-slider') && typeof gsap !== 'undefined') {
-            window.advancedSlider = new Circular3DSlider();
-            console.log('✅ اسلایدر حلقه‌ای سه‌بعدی با موفقیت راه‌اندازی شد');
-        }
-    }, 1000);
-});
-
 // ==================== //
 // 🎮 دکمه شناور AssistiveTouch
 // ==================== //
@@ -1471,7 +1461,7 @@ class AssistiveTouch {
     }
     
     startDrag(e) {
-        e.preventDefault();
+        
         this.isDragging = true;
         
         const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
@@ -1483,18 +1473,24 @@ class AssistiveTouch {
         this.initialX = this.touchElement.offsetLeft;
         this.initialY = this.touchElement.offsetTop;
         
+        // برای touch events از passive: false استفاده کن
         document.addEventListener('mousemove', this.drag.bind(this));
-        document.addEventListener('touchmove', this.drag.bind(this));
+        document.addEventListener('touchmove', this.drag.bind(this), { passive: false });
         document.addEventListener('mouseup', this.stopDrag.bind(this));
-        document.addEventListener('touchend', this.stopDrag.bind(this));
+        document.addEventListener('touchend', this.stopDrag.bind(this), { passive: false });
     }
     
     drag(e) {
         if (!this.isDragging) return;
         
-        e.preventDefault();
+        // فقط برای mouse events جلوگیری کن
+        if (!e.type.includes('touch')) {
+            e.preventDefault();
+        }
+        
         const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
         const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        
         
         const newX = clientX - this.startX;
         const newY = clientY - this.startY;
@@ -1563,7 +1559,7 @@ class AssistiveTouch {
 }
 
 // ==================== //
-// 🚀 راه‌اندازی اصلی
+// 🚀 راه‌اندازی نهایی یکپارچه
 // ==================== //
 
 /**
@@ -1585,11 +1581,13 @@ function initializeAppState() {
     // بارگذاری state از localStorage
     const savedState = localStorage.getItem('livepulseState');
     if (savedState) {
-        const parsed = JSON.parse(savedState);
-        Object.assign(appState, parsed);
+        try {
+            const parsed = JSON.parse(savedState);
+            Object.assign(appState, parsed);
+        } catch (e) {
+            console.warn('⚠️ خطا در بارگذاری state:', e);
+        }
     }
-    
-    console.log('🏗️ State برنامه راه‌اندازی شد:', appState);
 }
 
 /**
@@ -1600,90 +1598,138 @@ function saveUserState() {
         localStorage.setItem('livepulseState', JSON.stringify(appState));
     }
 }
-/**
- * راه‌اندازی کامل برنامه
- */
-function initializeApp() {
-    console.log('🚀 راه‌اندازی LivePulse...');
-    
-    // 1. سیستم state
-    initializeAppState();
-    
-    // 2. سیستم تم
-    if (elements.themeToggle) {
-        elements.themeToggle.addEventListener('click', toggleTheme);
-        
-        // اعمال تم ذخیره شده
-        const savedTheme = localStorage.getItem('livepulseState') 
-            ? JSON.parse(localStorage.getItem('livepulseState')).currentTheme 
-            : 'light';
-        
-        document.body.setAttribute('data-theme', savedTheme);
-        const themeIcon = elements.themeToggle.querySelector('.theme-icon');
-        themeIcon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
-        
-        if (typeof appState !== 'undefined') {
-            appState.currentTheme = savedTheme;
-        }
-    }
-    
-    // 3. نمایش صفحه اصلی
-    if (typeof showView !== 'undefined') {
-        showView('home');
-    }
-    
-    // 4. اسلایدر سه‌بعدی
-    setTimeout(() => {
-        if (document.querySelector('.advanced-3d-slider') && typeof gsap !== 'undefined') {
-            window.advancedSlider = new Circular3DSlider();
-            console.log('✅ اسلایدر سه‌بعدی راه‌اندازی شد');
-        }
-    }, 1000);
-    
-    // 5. دکمه شناور
-    setTimeout(() => {
-        if (document.getElementById('assistiveTouch')) {
-            window.assistiveTouch = new AssistiveTouch();
-            console.log('🎮 دکمه شناور راه‌اندازی شد');
-        }
-    }, 1500);
 
-    // 6. مطمئن شو هایلایت‌ها کار می‌کنن
-    setTimeout(() => {
-        // هایلایت‌های خانه
-        document.querySelectorAll('.highlight-circle[data-category]').forEach(circle => {
-            circle.addEventListener('click', (e) => {
-                const category = e.currentTarget.getAttribute('data-category');
-                
-                // آپدیت هایلایت فعال
-                document.querySelectorAll('.highlight-circle[data-category]').forEach(c => c.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                
-                // انتقال به صفحه مربوطه
-                if (typeof showView !== 'undefined') {
-                    showView(category);
-                }
-                
-                if (typeof appState !== 'undefined') {
-                    appState.currentCategory = category;
-                }
-                console.log(`🎯 دسته انتخاب شد: ${category}`);
-            });
-        });
-    }, 2000);   
+/**
+ * 🎯 راه‌اندازی کامل و یکپارچه برنامه
+ */
+function initializeLivePulse() {
+    console.log('🚀 راه‌اندازی یکپارچه LivePulse...');
     
-    console.log('✅ برنامه با موفقیت راه‌اندازی شد');
+    try {
+        // 1. سیستم state
+        initializeAppState();
+        
+        // 2. سیستم تم
+        if (elements.themeToggle) {
+            // اعمال تم ذخیره شده
+            const savedTheme = appState.currentTheme || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            
+            const themeIcon = elements.themeToggle.querySelector('.theme-icon');
+            if (themeIcon) {
+                themeIcon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+            }
+            
+            elements.themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // 2.5 ایونت‌لیستنرهای اصلی
+        if (typeof setupEventListeners === 'function') {
+            setupEventListeners();
+            console.log('✅ ایونت‌لیستنرهای اصلی راه‌اندازی شدند');
+        }       
+        
+        // 3. نمایش صفحه اصلی
+        if (typeof showView === 'function') {
+            showView('home');
+        }
+        
+        // 4. اسلایدر سه‌بعدی
+        if (document.querySelector('.advanced-3d-slider') && typeof gsap !== 'undefined') {
+            setTimeout(() => {
+                window.advancedSlider = new Circular3DSlider();
+                console.log('✅ اسلایدر سه‌بعدی راه‌اندازی شد');
+            }, 500);
+        }
+        
+        // 5. دکمه شناور
+        if (document.getElementById('assistiveTouch')) {
+            setTimeout(() => {
+                window.assistiveTouch = new AssistiveTouch();
+                console.log('🎮 دکمه شناور راه‌اندازی شد');
+            }, 800);
+        }
+        
+        // 6. هایلایت‌ها و ابزارها
+        setTimeout(() => {
+            // هایلایت‌های خانه
+            document.querySelectorAll('.highlight-circle[data-category]').forEach(circle => {
+                circle.addEventListener('click', (e) => {
+                    const category = e.currentTarget.getAttribute('data-category');
+                    
+                    document.querySelectorAll('.highlight-circle[data-category]').forEach(c => {
+                        c.classList.remove('active');
+                    });
+                    e.currentTarget.classList.add('active');
+                    
+                    if (typeof showView === 'function') {
+                        showView(category);
+                    }
+                    
+                    if (appState) {
+                        appState.currentCategory = category;
+                        saveUserState();
+                    }
+                });
+            });
+            
+            // هایلایت‌های ابزار
+            document.querySelectorAll('[data-tool]').forEach(circle => {
+                circle.addEventListener('click', (e) => {
+                    const toolId = e.currentTarget.getAttribute('data-tool');
+                    if (typeof activateTool === 'function') {
+                        activateTool(toolId);
+                    }
+                });
+            });
+            
+            console.log('✅ هایلایت‌ها راه‌اندازی شدند');
+        }, 1000);
+        
+        console.log('🎉 برنامه با موفقیت راه‌اندازی شد');
+        
+    } catch (error) {
+        console.error('❌ خطا در راه‌اندازی:', error);
+    }
 }
 
-// راه‌اندازی هنگام لود صفحه
+// راه‌اندازی نهایی
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initializeApp, 500);
+    setTimeout(initializeLivePulse, 100);
 });
 
-// 🔧 هندلر خطاهای全局
-window.addEventListener('error', (e) => {
-    console.error('❌ خطا در برنامه:', e.error);
+// سیستم بستن مودال‌ها
+document.addEventListener('click', function(e) {
+    // بستن با کلیک روی overlay
+    if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('active');
+        if (appState) {
+            appState.openModals = Math.max(0, appState.openModals - 1);
+        }
+    }
+    
+    // بستن با کلیک روی دکمه ضربدر
+    if (e.target.classList.contains('close-modal')) {
+        const modal = e.target.closest('.modal-overlay');
+        if (modal) {
+            modal.classList.remove('active');
+            if (appState) {
+                appState.openModals = Math.max(0, appState.openModals - 1);
+            }
+        }
+    }
+});
+
+// بستن با کلید Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+            modal.classList.remove('active');
+        });
+        if (appState) {
+            appState.openModals = 0;
+        }
+    }
 });
 
 console.log('📄 فایل JavaScript لود شد - آماده راه‌اندازی...');
-
