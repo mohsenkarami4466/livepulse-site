@@ -1,7 +1,6 @@
 // ==================== //
 // 🎯 فایل script.js - کامل و تست شده
 // ==================== //
-
 // 📍 داده‌های تستی برای شروع کار
 // 🔗 بعداً با API واقعی جایگزین می‌شوند
 const sampleData = {
@@ -129,8 +128,9 @@ function initializeApp() {
  * 💾 ذخیره وضعیت کاربر در localStorage
  */
 function saveUserState() {
-    localStorage.setItem('livepulse-theme', appState.currentTheme);
-    localStorage.setItem('livepulse-usage', JSON.stringify(appState.userUsage));
+    if (typeof appState !== 'undefined') {
+        localStorage.setItem('livepulseState', JSON.stringify(appState));
+    }
 }
 
 // ==================== //
@@ -191,8 +191,6 @@ function showView(view) {
         // ریست اسکرول به بالای صفحه
         window.scrollTo(0, 0);
         
-        // 🆕 مدیریت نمایش دکمه‌های منو
-        updateNavigationButtons(view);
         
         // انتقال هایلایت‌های اصلی فقط به صفحات اصلی
         if (view !== 'tools' && view !== 'news') {
@@ -210,65 +208,10 @@ function showView(view) {
             generateHomeCards();
         }
 
-        // 🆕 آپدیت وضعیت دکمه‌های منو
-        updateNavigationButtons(view);
     }
     
     console.log(`📱 صفحه تغییر کرد به: ${view}`);
 }
-
-/**
- * 🆕 مدیریت نمایش دکمه‌های منو
- */
-function updateNavigationButtons(currentView) {
-    const firstBtn = document.querySelector('.nav-btn:first-child');
-    const secondBtn = document.querySelector('.nav-btn:nth-child(2)');
-    
-    // پاک کردن active از همه دکمه‌ها
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    if (currentView === 'home') {
-        // در صفحه خانه: اخبار + ابزار
-        firstBtn.innerHTML = '📰 اخبار';
-        firstBtn.setAttribute('data-page', 'news');
-        
-        secondBtn.innerHTML = '🛠️ ابزار';
-        secondBtn.setAttribute('data-page', 'tools');
-        secondBtn.style.display = 'flex';
-    } 
-    else if (currentView === 'tools') {
-        // در صفحه ابزار: اخبار + خانه
-        firstBtn.innerHTML = '📰 اخبار';
-        firstBtn.setAttribute('data-page', 'news');
-        
-        secondBtn.innerHTML = '🏠 خانه';
-        secondBtn.setAttribute('data-page', 'home');
-        secondBtn.classList.add('active');
-        secondBtn.style.display = 'flex';
-    }
-    else if (currentView === 'news') {
-        // در صفحه اخبار: خانه + ابزار
-        firstBtn.innerHTML = '🏠 خانه';
-        firstBtn.setAttribute('data-page', 'home');
-        
-        secondBtn.innerHTML = '🛠️ ابزار';
-        secondBtn.setAttribute('data-page', 'tools');
-        secondBtn.classList.add('active');
-        secondBtn.style.display = 'flex';
-    }
-    else {
-        // در صفحات دیگر (crypto, gold, etc.): خانه + ابزار
-        firstBtn.innerHTML = '🏠 خانه';
-        firstBtn.setAttribute('data-page', 'home');
-        
-        secondBtn.innerHTML = '🛠️ ابزار';
-        secondBtn.setAttribute('data-page', 'tools');
-        secondBtn.style.display = 'flex';
-    }
-}
-
 
 // ==================== //
 // 🕒 سیستم کامل ساعت بازارهای جهانی
@@ -1028,14 +971,6 @@ function setupEventListeners() {
     // دکمه تغییر تم
     elements.themeToggle.addEventListener('click', toggleTheme);
     
-    // 🆕 دکمه‌های ناوبری اصلی
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const targetPage = this.getAttribute('data-page');
-            showView(targetPage);
-        });
-    });
-
     // دکمه ورود
     elements.loginBtn.addEventListener('click', () => {
         elements.loginModal.classList.add('active');
@@ -1062,19 +997,19 @@ function setupEventListeners() {
     
     // بستن مودال با کلیک خارج
     elements.loginModal.addEventListener('click', (e) => {
-        if (e.target === elements.loginModal) {
+        if (e.target === elements.loginModal || e.target.classList.contains('modal-overlay')) {
             elements.loginModal.classList.remove('active');
         }
     });
-    
+
     elements.subscriptionModal.addEventListener('click', (e) => {
-        if (e.target === elements.subscriptionModal) {
+        if (e.target === elements.subscriptionModal || e.target.classList.contains('modal-overlay')) {
             elements.subscriptionModal.classList.remove('active');
         }
     });
-    
+
     elements.priceModal.addEventListener('click', (e) => {
-        if (e.target === elements.priceModal) {
+        if (e.target === elements.priceModal || e.target.classList.contains('modal-overlay')) {
             elements.priceModal.classList.remove('active');
             appState.openModals = Math.max(0, appState.openModals - 1);
         }
@@ -1485,11 +1420,265 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==================== //
-// 🚀 راه‌اندازی برنامه
+// 🎮 دکمه شناور AssistiveTouch
 // ==================== //
 
-// 📖 وقتی DOM کاملاً لود شد
-document.addEventListener('DOMContentLoaded', initializeApp);
+class AssistiveTouch {
+    constructor() {
+        this.touchElement = document.getElementById('assistiveTouch');
+        this.touchButton = this.touchElement.querySelector('.touch-button');
+        this.isDragging = false;
+        this.startX = 0;
+        this.startY = 0;
+        this.initialX = 0;
+        this.initialY = 0;
+        
+        this.init();
+    }
+    
+    init() {
+        this.setupEventListeners();
+        this.loadPosition();
+    }
+    
+    setupEventListeners() {
+        // کلیک برای باز/بستن منو
+        this.touchButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleMenu();
+        });
+        
+        // درگ برای جابجایی
+        this.touchButton.addEventListener('mousedown', this.startDrag.bind(this));
+        this.touchButton.addEventListener('touchstart', this.startDrag.bind(this));
+        
+        // بستن منو با کلیک بیرون
+        document.addEventListener('click', (e) => {
+            if (!this.touchElement.contains(e.target)) {
+                this.closeMenu();
+            }
+        });
+        
+        // کلیک روی آیتم‌های منو
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = e.target.getAttribute('data-page');
+                this.navigateToPage(page);
+                this.closeMenu();
+            });
+        });
+    }
+    
+    startDrag(e) {
+        e.preventDefault();
+        this.isDragging = true;
+        
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        
+        this.startX = clientX - this.touchElement.offsetLeft;
+        this.startY = clientY - this.touchElement.offsetTop;
+        
+        this.initialX = this.touchElement.offsetLeft;
+        this.initialY = this.touchElement.offsetTop;
+        
+        document.addEventListener('mousemove', this.drag.bind(this));
+        document.addEventListener('touchmove', this.drag.bind(this));
+        document.addEventListener('mouseup', this.stopDrag.bind(this));
+        document.addEventListener('touchend', this.stopDrag.bind(this));
+    }
+    
+    drag(e) {
+        if (!this.isDragging) return;
+        
+        e.preventDefault();
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        
+        const newX = clientX - this.startX;
+        const newY = clientY - this.startY;
+        
+        // محدودیت‌های صفحه
+        const maxX = window.innerWidth - this.touchElement.offsetWidth;
+        const maxY = window.innerHeight - this.touchElement.offsetHeight;
+        
+        this.touchElement.style.left = Math.max(10, Math.min(newX, maxX - 10)) + 'px';
+        this.touchElement.style.top = Math.max(10, Math.min(newY, maxY - 10)) + 'px';
+    }
+    
+    stopDrag() {
+        this.isDragging = false;
+        this.savePosition();
+        
+        document.removeEventListener('mousemove', this.drag.bind(this));
+        document.removeEventListener('touchmove', this.drag.bind(this));
+        document.removeEventListener('mouseup', this.stopDrag.bind(this));
+        document.removeEventListener('touchend', this.stopDrag.bind(this));
+    }
+    
+    toggleMenu() {
+        this.touchElement.classList.toggle('menu-open');
+    }
+    
+    openMenu() {
+        this.touchElement.classList.add('menu-open');
+    }
+    
+    closeMenu() {
+        this.touchElement.classList.remove('menu-open');
+    }
+    
+    navigateToPage(page) {
+        console.log(`🎮 رفتن به صفحه: ${page}`);
+        
+        // اگر تابع showView وجود داره، ازش استفاده کن
+        if (typeof showView !== 'undefined') {
+            showView(page);
+        } else {
+            // در غیر این صورت پیام بده
+            alert(`🎯 به زودی به صفحه "${page}" منتقل می‌شوید!`);
+        }
+        
+        // لاگ کن
+        console.log(`📍 درخواست انتقال به: ${page}`);
+    }
+    
+    savePosition() {
+        const position = {
+            left: this.touchElement.style.left,
+            top: this.touchElement.style.top
+        };
+        localStorage.setItem('assistiveTouchPos', JSON.stringify(position));
+    }
+    
+    loadPosition() {
+        const saved = localStorage.getItem('assistiveTouchPos');
+        if (saved) {
+            const position = JSON.parse(saved);
+            this.touchElement.style.left = position.left;
+            this.touchElement.style.top = position.top;
+        }
+    }
+}
+
+// ==================== //
+// 🚀 راه‌اندازی اصلی
+// ==================== //
+
+/**
+ * 🏗️ راه‌اندازی state برنامه
+ */
+function initializeAppState() {
+    // مطمئن شو appState وجود داره
+    if (typeof appState === 'undefined') {
+        window.appState = {
+            currentTheme: 'light',
+            currentView: 'home',
+            currentCategory: 'crypto',
+            currentTool: 'goldCalc',
+            userUsage: { chat: 0, tools: 0 },
+            openModals: 0
+        };
+    }
+    
+    // بارگذاری state از localStorage
+    const savedState = localStorage.getItem('livepulseState');
+    if (savedState) {
+        const parsed = JSON.parse(savedState);
+        Object.assign(appState, parsed);
+    }
+    
+    console.log('🏗️ State برنامه راه‌اندازی شد:', appState);
+}
+
+/**
+ * 💾 ذخیره state کاربر
+ */
+function saveUserState() {
+    if (typeof appState !== 'undefined') {
+        localStorage.setItem('livepulseState', JSON.stringify(appState));
+    }
+}
+/**
+ * راه‌اندازی کامل برنامه
+ */
+function initializeApp() {
+    console.log('🚀 راه‌اندازی LivePulse...');
+    
+    // 1. سیستم state
+    initializeAppState();
+    
+    // 2. سیستم تم
+    if (elements.themeToggle) {
+        elements.themeToggle.addEventListener('click', toggleTheme);
+        
+        // اعمال تم ذخیره شده
+        const savedTheme = localStorage.getItem('livepulseState') 
+            ? JSON.parse(localStorage.getItem('livepulseState')).currentTheme 
+            : 'light';
+        
+        document.body.setAttribute('data-theme', savedTheme);
+        const themeIcon = elements.themeToggle.querySelector('.theme-icon');
+        themeIcon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        
+        if (typeof appState !== 'undefined') {
+            appState.currentTheme = savedTheme;
+        }
+    }
+    
+    // 3. نمایش صفحه اصلی
+    if (typeof showView !== 'undefined') {
+        showView('home');
+    }
+    
+    // 4. اسلایدر سه‌بعدی
+    setTimeout(() => {
+        if (document.querySelector('.advanced-3d-slider') && typeof gsap !== 'undefined') {
+            window.advancedSlider = new Circular3DSlider();
+            console.log('✅ اسلایدر سه‌بعدی راه‌اندازی شد');
+        }
+    }, 1000);
+    
+    // 5. دکمه شناور
+    setTimeout(() => {
+        if (document.getElementById('assistiveTouch')) {
+            window.assistiveTouch = new AssistiveTouch();
+            console.log('🎮 دکمه شناور راه‌اندازی شد');
+        }
+    }, 1500);
+
+    // 6. مطمئن شو هایلایت‌ها کار می‌کنن
+    setTimeout(() => {
+        // هایلایت‌های خانه
+        document.querySelectorAll('.highlight-circle[data-category]').forEach(circle => {
+            circle.addEventListener('click', (e) => {
+                const category = e.currentTarget.getAttribute('data-category');
+                
+                // آپدیت هایلایت فعال
+                document.querySelectorAll('.highlight-circle[data-category]').forEach(c => c.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                
+                // انتقال به صفحه مربوطه
+                if (typeof showView !== 'undefined') {
+                    showView(category);
+                }
+                
+                if (typeof appState !== 'undefined') {
+                    appState.currentCategory = category;
+                }
+                console.log(`🎯 دسته انتخاب شد: ${category}`);
+            });
+        });
+    }, 2000);   
+    
+    console.log('✅ برنامه با موفقیت راه‌اندازی شد');
+}
+
+// راه‌اندازی هنگام لود صفحه
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(initializeApp, 500);
+});
 
 // 🔧 هندلر خطاهای全局
 window.addEventListener('error', (e) => {
@@ -1497,3 +1686,4 @@ window.addEventListener('error', (e) => {
 });
 
 console.log('📄 فایل JavaScript لود شد - آماده راه‌اندازی...');
+
