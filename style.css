@@ -2918,7 +2918,6 @@ body, .glass-card, .glass-header {
     left: 30px;
     z-index: 10000;
     cursor: pointer;
-    /* نمایش در همه دستگاه‌ها */
     display: block !important;
 }
 
@@ -2940,7 +2939,6 @@ body, .glass-card, .glass-header {
     align-items: center;
     justify-content: center;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* جلوگیری از انتخاب */
     user-select: none;
     -webkit-user-select: none;
     touch-action: none;
@@ -2948,10 +2946,6 @@ body, .glass-card, .glass-header {
 
 .touch-button:active {
     transform: scale(0.92);
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.25) 0%, 
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0.2) 100%);
 }
 
 .touch-icon {
@@ -2971,7 +2965,35 @@ body, .glass-card, .glass-header {
 }
 
 /* ==================== */
-/* 🪟 منوی شیشه‌ای - بخش اضافه شده */
+/* 🎯 استایل برای تم روشن */
+/* ==================== */
+
+[data-theme="light"] .touch-button {
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.1) 0%, 
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.08) 100%);
+    border: 1.5px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .touch-icon {
+    color: #333;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme="light"] .assistive-touch.dragging .touch-button {
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.2),
+        0 0 0 2px rgba(0, 0, 0, 0.15),
+        inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ==================== */
+/* 🪟 منوی شیشه‌ای */
 /* ==================== */
 
 .glass-menu-overlay {
@@ -3073,12 +3095,44 @@ body, .glass-card, .glass-header {
     font-size: 0.95em;
 }
 
-/* ریسپانسیو */
+/* ==================== */
+/* 🎯 منوی شیشه‌ای برای تم روشن */
+/* ==================== */
+
+[data-theme="light"] .glass-menu-overlay {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .glass-menu {
+    background: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(25px);
+}
+
+[data-theme="light"] .glass-close-btn {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #333;
+}
+
+[data-theme="light"] .glass-menu-item {
+    background: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #333;
+}
+
+[data-theme="light"] .glass-menu-item:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+/* ==================== */
+/* 📱 ریسپانسیو */
+/* ==================== */
+
 @media (max-width: 768px) {
     .assistive-touch {
         bottom: 80px;
         left: 20px;
-        /* اطمینان از نمایش در موبایل */
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
