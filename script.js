@@ -1410,134 +1410,263 @@ class Circular3DSlider {
 }
 
 // ==================== //
-// 🎮 دکمه شناور AssistiveTouch
+// 🎮 دکمه شناور حرفه‌ای - نسخه نهایی
 // ==================== //
 
 class AssistiveTouch {
     constructor() {
         this.touchElement = document.getElementById('assistiveTouch');
         this.touchButton = this.touchElement.querySelector('.touch-button');
+        this.glassMenu = document.getElementById('glassMenu');
+        
         this.isDragging = false;
         this.startX = 0;
         this.startY = 0;
         this.initialX = 0;
         this.initialY = 0;
+        this.dragThreshold = 5; // حداقل حرکت برای تشخیص درگ
+        this.hasMoved = false;
+        
+        // Bind methods
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.handleMouseUp = this.handleMouseUp.bind(this);
+        this.handleTouchMove = this.handleTouchMove.bind(this);
+        this.handleTouchEnd = this.handleTouchEnd.bind(this);
         
         this.init();
     }
     
     init() {
         this.setupEventListeners();
+        this.setupGlassMenu();
         this.loadPosition();
+        this.ensureVisibility(); // اطمینان از نمایش
+    }
+    
+    ensureVisibility() {
+        // مطمئن شو که دکمه نمایش داده می‌شه
+        this.touchElement.style.display = 'block';
+        this.touchElement.style.visibility = 'visible';
+        this.touchElement.style.opacity = '1';
     }
     
     setupEventListeners() {
-        // کلیک برای باز/بستن منو
-        this.touchButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.toggleMenu();
-        });
+        // رویدادهای موس
+        this.touchButton.addEventListener('mousedown', this.handleMouseDown.bind(this));
         
-        // درگ برای جابجایی
-        this.touchButton.addEventListener('mousedown', this.startDrag.bind(this));
-        this.touchButton.addEventListener('touchstart', this.startDrag.bind(this));
+        // رویدادهای تاچ
+        this.touchButton.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
         
-        // بستن منو با کلیک بیرون
-        document.addEventListener('click', (e) => {
-            if (!this.touchElement.contains(e.target)) {
-                this.closeMenu();
-            }
-        });
-        
-        // کلیک روی آیتم‌های منو
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = e.target.getAttribute('data-page');
-                this.navigateToPage(page);
-                this.closeMenu();
-            });
-        });
+        // جلوگیری از رفتارهای پیش‌فرض
+        this.touchButton.addEventListener('dragstart', (e) => e.preventDefault());
+        this.touchButton.addEventListener('contextmenu', (e) => e.preventDefault());
     }
     
-    startDrag(e) {
+    handleMouseDown(e) {
+        e.preventDefault();
+        e.stopPropagation();
         
+        this.startDrag(e.clientX, e.clientY);
+        document.addEventListener('mousemove', this.handleMouseMove);
+        document.addEventListener('mouseup', this.handleMouseUp);
+    }
+    
+    handleTouchStart(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const touch = e.touches[0];
+        this.startDrag(touch.clientX, touch.clientY);
+        document.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+        document.addEventListener('touchend', this.handleTouchEnd);
+    }
+    
+    startDrag(clientX, clientY) {
         this.isDragging = true;
+        this.hasMoved = false;
+        this.startX = clientX;
+        this.startY = clientY;
         
-        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        const rect = this.touchElement.getBoundingClientRect();
+        this.initialX = rect.left;
+        this.initialY = rect.top;
         
-        this.startX = clientX - this.touchElement.offsetLeft;
-        this.startY = clientY - this.touchElement.offsetTop;
-        
-        this.initialX = this.touchElement.offsetLeft;
-        this.initialY = this.touchElement.offsetTop;
-        
-        // برای touch events از passive: false استفاده کن
-        document.addEventListener('mousemove', this.drag.bind(this));
-        document.addEventListener('touchmove', this.drag.bind(this), { passive: false });
-        document.addEventListener('mouseup', this.stopDrag.bind(this));
-        document.addEventListener('touchend', this.stopDrag.bind(this), { passive: false });
+        // غیرفعال کردن transition و اضافه کردن حالت درگ
+        this.touchElement.style.transition = 'none';
+        this.touchElement.classList.add('dragging');
     }
     
-    drag(e) {
+    handleMouseMove(e) {
         if (!this.isDragging) return;
         
-        // فقط برای mouse events جلوگیری کن
-        if (!e.type.includes('touch')) {
-            e.preventDefault();
+        const deltaX = Math.abs(e.clientX - this.startX);
+        const deltaY = Math.abs(e.clientY - this.startY);
+        
+        // اگر حرکت بیشتر از threshold بود، درگ محسوب می‌شه
+        if (deltaX > this.dragThreshold || deltaY > this.dragThreshold) {
+            this.hasMoved = true;
+            this.updatePosition(e.clientX, e.clientY);
         }
+    }
+    
+    handleTouchMove(e) {
+        if (!this.isDragging) return;
+        e.preventDefault();
         
-        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        const touch = e.touches[0];
+        const deltaX = Math.abs(touch.clientX - this.startX);
+        const deltaY = Math.abs(touch.clientY - this.startY);
         
+        if (deltaX > this.dragThreshold || deltaY > this.dragThreshold) {
+            this.hasMoved = true;
+            this.updatePosition(touch.clientX, touch.clientY);
+        }
+    }
+    
+    updatePosition(clientX, clientY) {
+        const deltaX = clientX - this.startX;
+        const deltaY = clientY - this.startY;
         
-        const newX = clientX - this.startX;
-        const newY = clientY - this.startY;
+        let newX = this.initialX + deltaX;
+        let newY = this.initialY + deltaY;
         
         // محدودیت‌های صفحه
         const maxX = window.innerWidth - this.touchElement.offsetWidth;
         const maxY = window.innerHeight - this.touchElement.offsetHeight;
         
-        this.touchElement.style.left = Math.max(10, Math.min(newX, maxX - 10)) + 'px';
-        this.touchElement.style.top = Math.max(10, Math.min(newY, maxY - 10)) + 'px';
-    }
-    
-    stopDrag() {
-        this.isDragging = false;
-        this.savePosition();
+        newX = Math.max(0, Math.min(newX, maxX));
+        newY = Math.max(0, Math.min(newY, maxY));
         
-        document.removeEventListener('mousemove', this.drag.bind(this));
-        document.removeEventListener('touchmove', this.drag.bind(this));
-        document.removeEventListener('mouseup', this.stopDrag.bind(this));
-        document.removeEventListener('touchend', this.stopDrag.bind(this));
+        this.touchElement.style.left = newX + 'px';
+        this.touchElement.style.top = newY + 'px';
     }
     
-    toggleMenu() {
-        this.touchElement.classList.toggle('menu-open');
+    handleMouseUp(e) {
+        this.endDragging();
+        document.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mouseup', this.handleMouseUp);
+        
+        // اگر درگ نبوده، کلیک محسوب می‌شه
+        if (!this.hasMoved) {
+            this.handleTap(e);
+        }
     }
     
-    openMenu() {
-        this.touchElement.classList.add('menu-open');
+    handleTouchEnd(e) {
+        this.endDragging();
+        document.removeEventListener('touchmove', this.handleTouchMove);
+        document.removeEventListener('touchend', this.handleTouchEnd);
+        
+        if (!this.hasMoved) {
+            this.handleTap(e);
+        }
     }
     
-    closeMenu() {
-        this.touchElement.classList.remove('menu-open');
+    handleTap(e) {
+        e.stopPropagation();
+        this.openGlassMenu();
+    }
+    
+    endDragging() {
+        if (this.isDragging) {
+            this.isDragging = false;
+            this.touchElement.classList.remove('dragging');
+            
+            if (this.hasMoved) {
+                this.snapToEdge();
+                this.savePosition();
+            }
+        }
+    }
+    
+    snapToEdge() {
+        const rect = this.touchElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        // فاصله تا لبه‌ها
+        const toLeft = centerX;
+        const toRight = windowWidth - centerX;
+        const toTop = centerY;
+        const toBottom = windowHeight - centerY;
+        
+        // پیدا کردن نزدیک‌ترین لبه (هم افقی و هم عمودی)
+        let newX = rect.left;
+        let newY = rect.top;
+        
+        // Snap افقی
+        if (toLeft < toRight) {
+            newX = 15;
+        } else {
+            newX = windowWidth - rect.width - 15;
+        }
+        
+        // Snap عمودی - بر اساس موقعیت فعلی
+        if (centerY < windowHeight / 3) {
+            // اگر در سوم بالایی صفحه هست، به بالا بچسبد
+            newY = 15;
+        } else if (centerY > (windowHeight * 2) / 3) {
+            // اگر در سوم پایینی صفحه هست، به پایین بچسبد
+            newY = windowHeight - rect.height - 15;
+        } else {
+            // اگر در وسط هست، ارتفاع فعلی حفظ شود
+            newY = Math.max(15, Math.min(newY, windowHeight - rect.height - 15));
+        }
+        
+        // انیمیشن Snap
+        this.touchElement.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        this.touchElement.style.left = newX + 'px';
+        this.touchElement.style.top = newY + 'px';
+        
+        setTimeout(() => {
+            this.touchElement.style.transition = '';
+        }, 300);
+    }
+    
+    setupGlassMenu() {
+        document.getElementById('closeGlassMenu').addEventListener('click', () => {
+            this.closeGlassMenu();
+        });
+        
+        this.glassMenu.addEventListener('click', (e) => {
+            if (e.target === this.glassMenu) {
+                this.closeGlassMenu();
+            }
+        });
+        
+        document.querySelectorAll('.glass-menu-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const page = e.currentTarget.getAttribute('data-page');
+                this.navigateToPage(page);
+                this.closeGlassMenu();
+            });
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.glassMenu.classList.contains('active')) {
+                this.closeGlassMenu();
+            }
+        });
+    }
+    
+    openGlassMenu() {
+        this.glassMenu.classList.add('active');
+        document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول پس‌زمینه
+    }
+    
+    closeGlassMenu() {
+        this.glassMenu.classList.remove('active');
+        document.body.style.overflow = ''; // بازگشت اسکرول
     }
     
     navigateToPage(page) {
         console.log(`🎮 رفتن به صفحه: ${page}`);
-        
-        // اگر تابع showView وجود داره، ازش استفاده کن
         if (typeof showView !== 'undefined') {
             showView(page);
-        } else {
-            // در غیر این صورت پیام بده
-            alert(`🎯 به زودی به صفحه "${page}" منتقل می‌شوید!`);
         }
-        
-        // لاگ کن
-        console.log(`📍 درخواست انتقال به: ${page}`);
     }
     
     savePosition() {
@@ -1551,12 +1680,31 @@ class AssistiveTouch {
     loadPosition() {
         const saved = localStorage.getItem('assistiveTouchPos');
         if (saved) {
-            const position = JSON.parse(saved);
-            this.touchElement.style.left = position.left;
-            this.touchElement.style.top = position.top;
+            try {
+                const position = JSON.parse(saved);
+                if (position.left && position.top) {
+                    this.touchElement.style.left = position.left;
+                    this.touchElement.style.top = position.top;
+                }
+            } catch (e) {
+                console.warn('خطا در بارگذاری موقعیت دکمه');
+            }
         }
     }
 }
+
+// مقداردهی وقتی DOM لود شد
+document.addEventListener('DOMContentLoaded', () => {
+    window.assistiveTouch = new AssistiveTouch();
+});
+
+// همچنین برای اطمینان از کارکرد در موبایل
+window.addEventListener('load', () => {
+    if (window.assistiveTouch) {
+        window.assistiveTouch.ensureVisibility();
+    }
+});
+
 
 // ==================== //
 // 🚀 راه‌اندازی نهایی یکپارچه
