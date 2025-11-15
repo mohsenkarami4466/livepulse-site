@@ -185,41 +185,53 @@ body {
 /* 🕒 استایل‌های ساعت بازار - نسخه حرفه‌ای */
 /* ==================== */
 
-/* ==================== استایل‌های ساعت بازار ==================== */
 
-/* استایل‌های ساعت بازار */
-.hour-text {
-    font-family: "Vazirmatn", system-ui;
-    font-size: 9px;
-    fill: #00f7ff;
-    font-weight: 700;
+/* ========== Globe Clock - در انتهای style.css ========== */
+#globeContainer{
+  position:fixed;
+  top:4px;
+  left:4px;
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+  cursor:pointer;
+  z-index:999;
+}
+@media (max-width:480px){
+  #globeContainer{width:90px;height:90px;top:2px;left:2px;}
+}
+@media (min-width:481px) and (max-width:768px){
+  #globeContainer{width:120px;height:120px;top:3px;left:3px;}
+}
+@media (min-width:769px){
+  #globeContainer{width:160px;height:160px;top:4px;left:4px;}
 }
 
-.market-label {
-    font-family: "Vazirmatn", system-ui;
-    font-size: 7px;
-    fill: #e2e8f0;
-    font-weight: 500;
+#gcModal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  place-items:center;
+  z-index:1000;
+}
+.gc-modal-content{
+  background:var(--light);
+  border-radius:16px;
+  width:90%;
+  max-width:420px;
+  padding:24px;
+  text-align:center;
+  color:var(--dark);
+}
+.gc-close{
+  float:left;
+  font-size:24px;
+  cursor:pointer;
+  padding:4px;
 }
 
-/* ریسپانسیو */
-@media (max-width: 768px) {
-    .market-clock-widget {
-        width: 120px !important;
-        height: 120px !important;
-        top: 60px !important;
-        left: 10px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .market-clock-widget {
-        width: 100px !important;
-        height: 100px !important;
-        top: 50px !important;
-        left: 5px !important;
-    }
-}
 
 /* ==================== */
 /* 💎 کارت‌های اصلی صفحه خانه */
