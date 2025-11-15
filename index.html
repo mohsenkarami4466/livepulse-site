@@ -7,8 +7,24 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+
+    <!-- Globe Clock -->
+    <link rel="stylesheet" href="globe-clock.css">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="globe-clock.js" defer></script>    
 </head>
+
 <body data-theme="light">
+
+    <!-- Globe Clock -->
+    <div id="globeContainer" title="ساعت بازارهای جهانی"></div>
+    <div id="gcModal">
+        <div class="gc-modal-content">
+            <span class="gc-close">&times;</span>
+            <h3>ساعت بازارها</h3>
+            <div id="gcClockSimple"></div>
+        </div>
+    </div>    
     
     <!-- 🔝 هدر شیشه‌ای مات -->
     <header class="glass-header">
@@ -1628,7 +1644,7 @@
 
  
     <!-- اضافه کردن اسکریپت کامپوننت -->
-    <script src="market-clock.js"></script>
+    <script src="components/market-clock.js"></script>  
         
     <script src="script.js"></script>
 </body>
