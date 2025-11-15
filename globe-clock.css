@@ -1,7 +1,7 @@
 /* ========== Globe Clock - Fixed Top-Left ========== */
 #globeContainer{
   position:fixed;
-  top:64px;          /* فاصله از هدر، می‌توانی تغییر دهی */
+  top:64px;                 /* فاصله از هدر */
   left:16px;
   width:160px;
   height:160px;
@@ -10,6 +10,11 @@
   cursor:pointer;
   z-index:999;
 }
+/* موبایل کوچیک‌تر */
+@media (max-width:480px){
+  #globeContainer{width:90px;height:90px;top:56px;left:8px;}
+}
+
 #gcModal{
   position:fixed;
   inset:0;
@@ -27,12 +32,11 @@
   text-align:center;
   color:var(--dark);
 }
-/* دکمه بستن */
 .gc-close{
   float:left;
-  font-size:22px;
+  font-size:24px;
   cursor:pointer;
-  color:var(--dark);
+  padding:4px;
 }
 /* نوار زیرنویس */
 .gc-ticker{
