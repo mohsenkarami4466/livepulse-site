@@ -185,51 +185,17 @@ body {
 /* 🕒 استایل‌های ساعت بازار - نسخه حرفه‌ای */
 /* ==================== */
 
-
-/* ========== Globe Clock - در انتهای style.css ========== */
+/* ========== Globe Clock - ثابت و دقیق ========== */
 #globeContainer{
   position:fixed;
-  top:4px;
-  left:4px;
-  width:160px;
-  height:160px;
+  top:68px;               /* ← فاصاده ثابت از بالای viewport (۶۸px) */
+  left:8px;               /* ← فاصله ثابت از چپ */
+  width:clamp(70px, 12vw, 160px);   /* ← ۱۲vw برای موبایل بزرگ‌تر */
+  height:clamp(70px, 12vw, 160px); /* ← مربع می‌ماند */
   border-radius:50%;
   box-shadow:0 8px 24px rgba(0,0,0,.25);
   cursor:pointer;
   z-index:999;
-}
-@media (max-width:480px){
-  #globeContainer{width:90px;height:90px;top:2px;left:2px;}
-}
-@media (min-width:481px) and (max-width:768px){
-  #globeContainer{width:120px;height:120px;top:3px;left:3px;}
-}
-@media (min-width:769px){
-  #globeContainer{width:160px;height:160px;top:4px;left:4px;}
-}
-
-#gcModal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:none;
-  place-items:center;
-  z-index:1000;
-}
-.gc-modal-content{
-  background:var(--light);
-  border-radius:16px;
-  width:90%;
-  max-width:420px;
-  padding:24px;
-  text-align:center;
-  color:var(--dark);
-}
-.gc-close{
-  float:left;
-  font-size:24px;
-  cursor:pointer;
-  padding:4px;
 }
 
 
