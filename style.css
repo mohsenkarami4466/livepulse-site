@@ -190,8 +190,8 @@ body {
   position:fixed;
   top:68px;               /* ← فاصاده ثابت از بالای viewport (۶۸px) */
   left:8px;               /* ← فاصله ثابت از چپ */
-  width:clamp(70px, 12vw, 160px);   /* ← ۱۲vw برای موبایل بزرگ‌تر */
-  height:clamp(70px, 12vw, 160px); /* ← مربع می‌ماند */
+  width:clamp(90px, 12vw, 180px);
+  height:clamp(90px, 12vw, 180px);
   border-radius:50%;
   box-shadow:0 8px 24px rgba(0,0,0,.25);
   cursor:pointer;
