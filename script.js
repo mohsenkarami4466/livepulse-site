@@ -302,15 +302,17 @@ function latLngToVector3(lat, lng) {
   const y = Math.cos(phi);
   return new THREE.Vector3(x, y, z);
 }
+/* ========== خط واقعی شب/روز - آرام‌آرام طبق UTC ========== */
 function updateSunAndMarkets() {
   const now = new Date();
-  const utcHour = now.getUTCHours() + now.getUTCMinutes() / 60;
-  sunAngle = (utcHour / 24) * 2 * Math.PI;
+  const utcHour = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+  sunAngle = (utcHour / 24) * 2 * Math.PI; // موقعیت خورشید بر اساب UTC
   const sunX = Math.cos(sunAngle) * 6;
   const sunZ = Math.sin(sunAngle) * 6;
   sun.position.set(sunX, 2, sunZ);
+  /* interpolate متریال بر اساب زاویه نور - آرام‌آرام */
   const dayWeight = Math.max(0, Math.cos(sunAngle));
-  globe.material = dayWeight > 0.1 ? dayMat : nightMat;
+  globe.material = dayWeight > 0.1 ? dayMat : nightMat; // نرم‌تر
 }
 function animate() {
   requestAnimationFrame(animate);
