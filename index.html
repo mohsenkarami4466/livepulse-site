@@ -9,8 +9,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 
     <!-- Globe Clock -->
-    <link rel="stylesheet" href="globe-clock.css">
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script> 
+    <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+    window.THREE = THREE;
+    </script>    
+    
 </head>
 
 <body data-theme="light">
@@ -1641,10 +1644,7 @@
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <script src="gold-map.js"></script>
 
- 
-    <!-- اضافه کردن اسکریپت کامپوننت -->
-    <script src="components/market-clock.js"></script>  
-        
+         
     <script src="script.js"></script>
 </body>
 </html>
