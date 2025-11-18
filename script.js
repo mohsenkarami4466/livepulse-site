@@ -170,7 +170,7 @@ function setTheme(theme) {
 function showView(view) {
     // مخفی کردن همه صفحات
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
-    
+
     // نمایش صفحه انتخاب شده
     const viewElements = {
         'home': elements.homeView,
@@ -181,57 +181,125 @@ function showView(view) {
         'gold': elements.goldView,
         'forex': elements.forexView,
         'stock': elements.stockView,
-        'oil': elements.oilView
+        'oil': elements.oilView,
+        'tutorial': document.getElementById('tutorialView'), // 📚 آموزش
+        'relax': document.getElementById('relaxView')        // 🧘‍♂️ آرامش
     };
-    
+
     if (viewElements[view]) {
         viewElements[view].classList.add('active-view');
         appState.currentView = view;
-        
+
         // ریست اسکرول به بالای صفحه
         window.scrollTo(0, 0);
-        
-        
+
         // انتقال هایلایت‌های اصلی فقط به صفحات اصلی
-        if (view !== 'tools' && view !== 'news') {
+        if (!['tools', 'news', 'tutorial', 'relax'].includes(view)) {
             const mainHighlights = document.querySelector('.highlights-section:not(.tools-highlights)');
             if (mainHighlights && viewElements[view] && !viewElements[view].contains(mainHighlights)) {
                 viewElements[view].insertBefore(mainHighlights, viewElements[view].firstChild);
             }
         }
-        
+
         // تنظیم ایونت‌لیستنر برای کارت‌های این صفحه
         setTimeout(() => setupAllCardListeners(), 100);
-        
+
         // اگر home بود کارت‌ها رو آپدیت کن
         if (view === 'home') {
             generateHomeCards();
         }
-
     }
-    
+
     console.log(`📱 صفحه تغییر کرد به: ${view}`);
 }
+
 
 // ==================== //
 // 🕒 سیستم کامل ساعت بازارهای جهانی
 // ==================== //
 
-/* ========== Globe Clock - JS کامل و تمیز ========== */
-let marketData = [];
+/* ========== Globe Clock - JS کامل و نهایی ========== */
+let marketData = [
+  // ایران
+  { name: "بورس تهران", open: "08:30", close: "12:30", utcOffset: "+03:30", coords: [35.6892, 51.3890] },
+  { name: "طلا و سکه تهران", open: "10:00", close: "17:00", utcOffset: "+03:30", coords: [35.6892, 51.3890] },
+
+  // اروپا
+  { name: "Forex - لندن", open: "08:00", close: "16:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
+  { name: "بورس فرانکفورت", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [50.1109, 8.6821] },
+  { name: "بورس پاریس", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [48.8566, 2.3522] },
+  { name: "بورس مادرید", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [40.4168, -3.7038] },
+  { name: "بورس میلان", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [45.4642, 9.1900] },
+  { name: "بورس زوریخ", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [47.3769, 8.5417] },
+  { name: "بورس استکهلم", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [59.3293, 18.0686] },
+
+  // آمریکا
+  { name: "Forex - نیویورک", open: "13:00", close: "21:00", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
+  { name: "بورس نیویورک", open: "09:30", close: "16:00", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
+  { name: "بورس نزدک", open: "09:30", close: "16:00", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
+  { name: "بورس شیکاگو", open: "09:30", close: "16:00", utcOffset: "-05:00", coords: [41.8781, -87.6298] },
+  { name: "بورس تورنتو", open: "09:30", close: "16:00", utcOffset: "-04:00", coords: [43.6532, -79.3832] },
+
+  // آسیا
+  { name: "Forex - توکیو", open: "00:00", close: "08:00", utcOffset: "+09:00", coords: [35.6762, 139.6503] },
+  { name: "بورس توکیو", open: "09:00", close: "15:30", utcOffset: "+09:00", coords: [35.6762, 139.6503] },
+  { name: "بورس هنگ‌کنگ", open: "09:00", close: "16:00", utcOffset: "+08:00", coords: [22.3193, 114.1694] },
+  { name: "بورس شانگهای", open: "09:00", close: "15:00", utcOffset: "+08:00", coords: [31.2304, 121.4737] },
+  { name: "بورس سئول", open: "09:00", close: "15:30", utcOffset: "+09:00", coords: [37.5665, 126.9780] },
+  { name: "بورس سیدنی", open: "09:00", close: "16:00", utcOffset: "+10:00", coords: [-33.8688, 151.2093] },
+
+  // خاورمیانه
+  { name: "بورس دبی", open: "09:00", close: "14:00", utcOffset: "+04:00", coords: [25.2048, 55.2708] },
+  { name: "بورس ریاض", open: "09:00", close: "14:00", utcOffset: "+03:00", coords: [24.7136, 46.6753] },
+  { name: "بورس قطر", open: "09:00", close: "14:00", utcOffset: "+03:00", coords: [25.2854, 51.5310] },
+
+  // طلا و نفت
+  { name: "طلا - لندن (LBMA)", open: "10:30", close: "15:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
+  { name: "نفت - نیویورک (NYMEX)", open: "09:00", close: "14:30", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
+  { name: "نفت - لندن (ICE)", open: "08:00", close: "16:30", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
+  { name: "نقره - لندن (LBMA)", open: "10:30", close: "15:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
+  { name: "مس - لندن (LME)", open: "08:00", close: "16:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
+
+  // آفریقا
+  { name: "بورس Johannesburg", open: "08:00", close: "16:00", utcOffset: "+02:00", coords: [-26.2041, 28.0473] },
+
+  // آمریکای جنوبی
+  { name: "بورس سائوپائولو", open: "09:00", close: "17:00", utcOffset: "-03:00", coords: [-23.5505, -46.6333] },
+  { name: "بورس مکزیکو", open: "08:00", close: "15:00", utcOffset: "-05:00", coords: [19.4326, -99.1332] },
+
+  // ترکیه
+  { name: "بورس استانبول", open: "09:00", close: "17:30", utcOffset: "+03:00", coords: [41.0082, 28.9784] },
+
+  // هند
+  { name: "بورس بمبئی", open: "09:15", close: "15:30", utcOffset: "+05:30", coords: [19.0760, 72.8777] },
+  { name: "بورس دهلی", open: "09:15", close: "15:30", utcOffset: "+05:30", coords: [28.7041, 77.1025] },
+
+  // سنگاپور
+  { name: "بورس سنگاپور", open: "09:00", close: "17:00", utcOffset: "+08:00", coords: [1.3521, 103.8198] },
+
+  // نیوزیلند
+  { name: "بورس ولینگتون", open: "09:00", close: "16:45", utcOffset: "+12:00", coords: [-41.2865, 174.7762] },
+
+  // روسیه
+  { name: "بورس مسکو", open: "09:30", close: "18:45", utcOffset: "+03:00", coords: [55.7558, 37.6173] },
+
+  // رمزارز ۲۴h
+  { name: "رمزارز - ۲۴h", open: "00:00", close: "23:59", utcOffset: "+00:00", coords: [0, 0] }
+];
+
+/* ساعت ۲۴ تایی UTC - فقط اعداد */
+const utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+
+/* ========== سه‌بعدی سازی ========== */
 let scene, camera, renderer, globe, dayMat, nightMat, sun;
 let sunAngle = 0;
 const UPDATE_MS = 30_000; // ۳۰ ثانیه
 
-/* fetch داده‌ها */
-fetch('./market-data.json')
-  .then(res => res.json())
-  .then(data => {
-    marketData = data;
-    initGlobe();
-    setInterval(updateSunAndMarkets, UPDATE_MS);
-  })
-  .catch(err => console.error('JSON load failed:', err));
+/* fetch داده‌ها (در این نسخه داده‌ها داخلی هستند) */
+document.addEventListener('DOMContentLoaded', () => {
+  initGlobe();
+  setInterval(updateSunAndMarkets, UPDATE_MS);
+});
 
 /* ساخت صحنه */
 function initGlobe() {
@@ -302,23 +370,25 @@ function latLngToVector3(lat, lng) {
   const y = Math.cos(phi);
   return new THREE.Vector3(x, y, z);
 }
-/* ========== خط واقعی شب/روز - آرام‌آرام طبق UTC ========== */
+
+/* خط واقعی شب/روز - آرام‌آرام طبق UTC */
 function updateSunAndMarkets() {
   const now = new Date();
   const utcHour = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
-  sunAngle = (utcHour / 24) * 2 * Math.PI; // موقعیت خورشید بر اساب UTC
+  sunAngle = (utcHour / 24) * 2 * Math.PI;
   const sunX = Math.cos(sunAngle) * 6;
   const sunZ = Math.sin(sunAngle) * 6;
   sun.position.set(sunX, 2, sunZ);
-  /* interpolate متریال بر اساب زاویه نور - آرام‌آرام */
   const dayWeight = Math.max(0, Math.cos(sunAngle));
-  globe.material = dayWeight > 0.1 ? dayMat : nightMat; // نرم‌تر
+  globe.material = dayWeight > 0.1 ? dayMat : nightMat;
 }
+
 function animate() {
   requestAnimationFrame(animate);
   globe.rotation.y += 0.0008;
   renderer.render(scene, camera);
 }
+
 /* باز/بسته مودال */
 document.getElementById('globeContainer').addEventListener('click', () => {
   const modal = document.getElementById('gcModal');
@@ -331,7 +401,6 @@ document.getElementById('globeContainer').addEventListener('click', () => {
   `;
 });
 document.querySelector('.gc-close').onclick = () => document.getElementById('gcModal').style.display='none';
-
 
 // ==================== //
 // 🏠 بخش خانه - کارت‌های قیمت
@@ -1520,6 +1589,171 @@ class Circular3DSlider {
         }
     }
 }
+
+// ====================
+// 📚 بخش آموزش (AI)
+// ====================
+
+// چت‌بات آموزشی
+const eduChatForm = document.getElementById("eduChatForm");
+const eduChatWindow = document.getElementById("eduChatWindow");
+
+if (eduChatForm) {
+    eduChatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const input = document.getElementById("eduChatInput");
+        const message = input.value.trim();
+        if (!message) return;
+
+        // نمایش پیام کاربر
+        const userMsg = document.createElement("div");
+        userMsg.className = "chat-msg user";
+        userMsg.textContent = message;
+        eduChatWindow.appendChild(userMsg);
+
+        // پاک کردن ورودی
+        input.value = "";
+
+        // پاسخ هوش مصنوعی (فعلاً Mock)
+        const aiMsg = document.createElement("div");
+        aiMsg.className = "chat-msg ai";
+        aiMsg.textContent = "🔎 در حال پردازش سؤال... (اینجا بعداً به n8n وصل میشه)";
+        eduChatWindow.appendChild(aiMsg);
+
+        eduChatWindow.scrollTop = eduChatWindow.scrollHeight;
+    });
+}
+
+// کوئیز هوشمند
+const quizStart = document.getElementById("quizStart");
+const quizNext = document.getElementById("quizNext");
+const quizBody = document.getElementById("quizBody");
+const quizFeedback = document.getElementById("quizFeedback");
+
+let quizIndex = 0;
+const quizQuestions = [
+    {
+        q: "مدیریت سرمایه در ترید یعنی چه؟",
+        options: ["کنترل احساسات", "مدیریت حجم معاملات", "پیش‌بینی بازار", "یادگیری تحلیل تکنیکال"],
+        answer: 1
+    },
+    {
+        q: "کندل سبز در نمودار چه چیزی نشان می‌دهد؟",
+        options: ["افزایش قیمت", "کاهش قیمت", "ثبات بازار", "هیچ‌کدام"],
+        answer: 0
+    }
+];
+
+if (quizStart) {
+    quizStart.addEventListener("click", () => {
+        quizIndex = 0;
+        showQuizQuestion();
+        quizNext.disabled = false;
+    });
+}
+
+if (quizNext) {
+    quizNext.addEventListener("click", () => {
+        quizIndex++;
+        if (quizIndex < quizQuestions.length) {
+            showQuizQuestion();
+        } else {
+            quizBody.innerHTML = "<p>🎉 آزمون تمام شد!</p>";
+            quizNext.disabled = true;
+        }
+    });
+}
+
+function showQuizQuestion() {
+    const q = quizQuestions[quizIndex];
+    quizBody.innerHTML = `<p>${q.q}</p>`;
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.addEventListener("click", () => {
+            if (i === q.answer) {
+                quizFeedback.textContent = "✅ درست!";
+            } else {
+                quizFeedback.textContent = "❌ اشتباه!";
+            }
+        });
+        quizBody.appendChild(btn);
+    });
+}
+
+// تحلیل زنده (Mock)
+const refreshLiveData = document.getElementById("refreshLiveData");
+const aiExplainText = document.getElementById("aiExplainText");
+
+if (refreshLiveData) {
+    refreshLiveData.addEventListener("click", () => {
+        aiExplainText.textContent = "📊 داده‌ها به‌روزرسانی شدند. (اینجا بعداً تحلیل AI اضافه میشه)";
+    });
+}
+
+
+// ====================
+// 🧘‍♂️ بخش آرامش (AI)
+// ====================
+
+// انتخاب حالت و پیشنهاد هوشمند
+const moodForm = document.getElementById("moodForm");
+const moodSuggestion = document.getElementById("moodSuggestion");
+
+if (moodForm) {
+    moodForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const mood = document.querySelector("input[name='mood']:checked").value;
+        let suggestion = "";
+        if (mood === "calm") suggestion = "🎶 موزیک آرامش‌بخش + بازی ساده حافظه";
+        if (mood === "focus") suggestion = "🎧 موزیک تمرکز + بازی سرعت واکنش";
+        if (mood === "energy") suggestion = "🔥 موزیک انرژی‌زا + بازی کلیک سریع";
+        moodSuggestion.textContent = suggestion + " (بعداً AI پیشنهاد شخصی‌سازی میده)";
+    });
+}
+
+// پلیر موزیک (لیست ساده)
+const playlist = document.getElementById("playlist");
+const audioPlayer = document.getElementById("audioPlayer");
+
+if (playlist) {
+    const tracks = [
+        { title: "Calm Track 1", src: "assets/music/calm-01.mp3" },
+        { title: "Focus Track 1", src: "assets/music/focus-01.mp3" },
+        { title: "Energy Track 1", src: "assets/music/energy-01.mp3" }
+    ];
+
+    tracks.forEach(track => {
+        const li = document.createElement("li");
+        li.textContent = track.title;
+        li.addEventListener("click", () => {
+            audioPlayer.src = track.src;
+            audioPlayer.play();
+        });
+        playlist.appendChild(li);
+    });
+}
+
+// بازی حافظه ساده
+const gameGrid = document.getElementById("gameGrid");
+const gameStart = document.getElementById("gameStart");
+const gameStatus = document.getElementById("gameStatus");
+
+if (gameStart) {
+    gameStart.addEventListener("click", () => {
+        gameGrid.innerHTML = "";
+        gameStatus.textContent = "بازی شروع شد!";
+        for (let i = 0; i < 8; i++) {
+            const card = document.createElement("div");
+            card.textContent = "?";
+            card.addEventListener("click", () => {
+                card.textContent = "✔";
+            });
+            gameGrid.appendChild(card);
+        }
+    });
+}
+
 
 // ==================== //
 // 🎮 دکمه شناور حرفه‌ای - نسخه نهایی
