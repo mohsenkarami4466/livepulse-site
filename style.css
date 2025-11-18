@@ -192,7 +192,6 @@ body {
   left:8px;               /* ← فاصله ثابت از چپ */
   width:clamp(90px, 12vw, 180px);
   height:clamp(90px, 12vw, 180px);
-  border-radius:50%;
   box-shadow:0 8px 24px rgba(0,0,0,.25);
   cursor:pointer;
   z-index:999;
@@ -259,13 +258,16 @@ body {
     font-weight: 600;
 }
 
+
 #homeMainCards .current-price {
     font-size: 2rem;
     font-weight: bold;
     margin: 10px 0;
     background: linear-gradient(135deg, var(--text-primary), var(--accent-blue));
     -webkit-background-clip: text;
+    background-clip: text; /* این خط رو اضافه کن */
     -webkit-text-fill-color: transparent;
+    color: transparent; /* برای مرورگرهای غیر webkit */
 }
 
 #homeMainCards .mini-chart {
@@ -740,7 +742,9 @@ body {
     margin-bottom: 15px;
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
     -webkit-background-clip: text;
+    background-clip: text; /* این رو اضافه کن */
     -webkit-text-fill-color: transparent;
+    color: transparent; /* این رو هم اضافه کن */
 }
 
 .news-header p {
@@ -3161,4 +3165,206 @@ body, .glass-card, .glass-header {
     .glass-menu-item {
         padding: 12px 18px;
     }
+}
+
+/* ==================== */
+/* 📚 بخش آموزش (AI) */
+/* ==================== */
+
+#tutorialView {
+    display: none; /* مثل بقیه viewها، پیش‌فرض مخفی */
+    padding: 2rem;
+}
+
+#tutorialView.active-view {
+    display: block; /* وقتی فعال شد نمایش داده شود */
+}
+
+#tutorialView .panel-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#tutorialView .panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+#tutorialView .card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+#tutorialView .card:hover {
+    transform: translateY(-4px);
+}
+
+#edu-chatbot .chat-window {
+    background: var(--bg-primary);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    height: 200px;
+    overflow-y: auto;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+#edu-chatbot .chat-input {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#edu-chatbot .chat-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+}
+
+#edu-chatbot .chat-input button {
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#edu-quiz .quiz-body {
+    min-height: 120px;
+    margin-bottom: 1rem;
+}
+
+#edu-quiz .quiz-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+#edu-quiz button {
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#edu-live .live-data {
+    margin-bottom: 1rem;
+}
+
+#edu-live .ai-explain {
+    background: var(--bg-primary);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* ==================== */
+/* 🧘‍♂️ بخش آرامش (AI) */
+/* ==================== */
+
+#relaxView {
+    display: none;
+    padding: 2rem;
+}
+
+#relaxView.active-view {
+    display: block;
+}
+
+#relaxView .panel-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#relaxView .panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+#relaxView .card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+#relaxView .card:hover {
+    transform: translateY(-4px);
+}
+
+#moodSelect .mood-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#moodSelect button {
+    background: var(--accent-teal);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#relaxMusic audio {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#relaxMusic .playlist {
+    list-style: none;
+    padding: 0;
+}
+
+#relaxMusic .playlist li {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    cursor: pointer;
+}
+
+#relaxMusic .playlist li:hover {
+    background: var(--bg-primary);
+}
+
+#relaxGame .game-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#relaxGame .game-grid div {
+    background: var(--accent-blue);
+    color: #fff;
+    border-radius: 6px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#relaxGame .game-ui {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#relaxGame #gameStart {
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
 }
