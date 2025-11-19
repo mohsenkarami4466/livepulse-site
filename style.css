@@ -2249,334 +2249,1177 @@ body, .glass-card, .glass-header {
     }
 }
 
-/* استایل‌های اصلی نقشه طلای جهان */
+/* ==================== */
+/* نقشه طلای جهان - استایل‌های کامل و ریسپانسیو */
+/* ==================== */
+
 .gold-map-section {
     padding: 40px 20px;
     background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
     min-height: 100vh;
+    position: relative;
 }
 
 .map-container {
     max-width: 1600px;
     margin: 0 auto;
+    position: relative;
 }
 
 .map-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
 }
 
 .map-header h2 {
-    font-size: 2.8rem;
-    background: linear-gradient(135deg, #f59e0b, #3b82f6);
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-teal));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 15px;
+    font-weight: 800;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .map-header p {
     color: var(--text-secondary);
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 500;
 }
 
-/* کنترل‌های اصلی */
+/* کنترل‌های اصلی - طراحی مدرن */
 .map-controls {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 30px;
+    backdrop-filter: blur(30px) saturate(180%);
+    border-radius: 24px;
+    padding: 30px;
+    margin-bottom: 40px;
     border: 1px solid var(--glass-border);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 30px;
+    gap: 40px;
     align-items: start;
 }
 
 .filters-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 30px;
+    gap: 40px;
+    align-items: start;
 }
 
 .filter-group h4, .year-group h4 {
     color: var(--text-primary);
-    margin-bottom: 15px;
-    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-group h4::before, .year-group h4::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+    border-radius: 2px;
 }
 
 .filter-buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 12px;
 }
 
 .filter-btn {
-    padding: 12px 15px;
-    background: var(--bg-secondary);
+    padding: 14px 18px;
+    background: linear-gradient(135deg, var(--glass-bg), transparent);
+    backdrop-filter: blur(15px);
     border: 2px solid var(--glass-border);
-    border-radius: 12px;
+    border-radius: 14px;
     color: var(--text-primary);
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    font-size: 0.95rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     justify-content: center;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.filter-btn:hover::before {
+    left: 100%;
 }
 
 .filter-btn:hover {
     border-color: var(--accent-blue);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
 }
 
 .filter-btn.active {
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
     color: white;
     border-color: transparent;
-    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 
+        0 15px 35px rgba(59, 130, 246, 0.3),
+        0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .filter-icon {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* کنترل سال */
+.year-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .year-buttons {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 10px;
 }
 
 .year-btn {
-    padding: 10px 15px;
-    background: var(--bg-secondary);
+    padding: 12px 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
     border: 2px solid var(--glass-border);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
 }
 
 .year-btn:hover {
     border-color: var(--accent-green);
+    transform: translateY(-2px);
 }
 
 .year-btn.active {
     background: linear-gradient(135deg, var(--accent-green), var(--accent-teal));
     color: white;
     border-color: transparent;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
 }
 
+/* دکمه‌های کناری */
 .action-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
+    min-width: 160px;
 }
 
 .globe-3d-btn {
-    padding: 15px 20px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
     border: none;
-    border-radius: 15px;
+    border-radius: 18px;
     color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 15px 35px rgba(102, 126, 234, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.globe-3d-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.globe-3d-btn:hover::before {
+    left: 100%;
+}
+
+.globe-3d-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 
+        0 25px 50px rgba(102, 126, 234, 0.6),
+        0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.globe-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.reset-view-btn {
+    padding: 15px 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 2px solid var(--glass-border);
+    border-radius: 14px;
+    color: var(--text-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 600;
     transition: all 0.3s ease;
-    min-width: 140px;
-}
-
-.globe-3d-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-}
-
-.globe-icon {
-    font-size: 1.5rem;
-}
-
-.reset-view-btn {
-    padding: 12px 20px;
-    background: var(--bg-secondary);
-    border: 2px solid var(--glass-border);
-    border-radius: 12px;
-    color: var(--text-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
 }
 
 .reset-view-btn:hover {
     border-color: var(--accent-red);
     color: var(--accent-red);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* محتوای نقشه */
 .map-content {
     display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 25px;
+    grid-template-columns: 1fr 450px;
+    gap: 35px;
+    align-items: start;
 }
 
 .map-wrapper {
     position: relative;
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 20px;
+    backdrop-filter: blur(40px);
+    border-radius: 24px;
+    padding: 25px;
     border: 1px solid var(--glass-border);
-    min-height: 600px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+    min-height: 700px;
+    overflow: hidden;
 }
 
 #goldMap {
     width: 100%;
-    height: 600px;
+    height: 650px;
     background: var(--bg-secondary);
-    border-radius: 15px;
+    border-radius: 16px;
     overflow: hidden;
+    box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .map-controls-overlay {
     position: absolute;
-    top: 30px;
-    right: 30px;
+    top: 40px;
+    right: 40px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     z-index: 100;
 }
 
 .zoom-control, .reset-zoom {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     background: var(--glass-bg);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--text-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .zoom-control:hover, .reset-zoom:hover {
     background: var(--accent-blue);
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
 
 .coordinates {
-    padding: 8px 12px;
+    padding: 10px 15px;
     background: var(--glass-bg);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--text-secondary);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
 }
 
 /* پنل اطلاعات */
 .info-panel {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 30px;
+    height: 100%;
 }
 
 .top-countries, .country-comparison {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 25px;
+    backdrop-filter: blur(40px);
+    border-radius: 24px;
+    padding: 30px;
     border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
     flex: 1;
 }
 
+.top-countries h4, .country-comparison h4 {
+    color: var(--accent-orange);
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+}
+
 .countries-list {
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: auto;
+    padding-right: 10px;
 }
 
 .country-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
+    padding: 14px 18px;
     border-bottom: 1px solid var(--glass-border);
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 12px;
+    margin: 6px 0;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .country-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(8px);
+    border-color: var(--accent-blue);
+}
+
+.country-item:last-child {
+    border-bottom: none;
 }
 
 .country-rank {
-    background: var(--accent-orange);
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-teal));
     color: white;
-    border-radius: 6px;
-    padding: 4px 8px;
+    border-radius: 8px;
+    padding: 6px 10px;
     font-size: 0.8rem;
     font-weight: bold;
+    min-width: 28px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
 .country-name {
     flex: 1;
     margin: 0 15px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
 }
 
 .country-value {
     color: var(--accent-orange);
+    font-weight: 800;
+    min-width: 80px;
+    text-align: left;
+    font-size: 0.9rem;
+    font-feature-settings: "tnum";
+}
+
+/* بخش مقایسه کشورها */
+.comparison-container {
+    min-height: 300px;
+}
+
+.comparison-placeholder {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 60px 30px;
+    font-size: 1.1rem;
+}
+
+.comparison-placeholder p {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.comparison-placeholder small {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.country-card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.4s ease;
+}
+
+.country-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--accent-blue);
+}
+
+.country-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.country-card-name {
+    color: var(--accent-orange);
+    font-weight: 800;
+    font-size: 1.2rem;
+    flex: 1;
+}
+
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.country-card-year {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: var(--glass-bg);
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
+    font-weight: 600;
+}
+
+.country-card-remove {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.country-card-remove:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--accent-red);
+    transform: scale(1.1);
+}
+
+.country-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.stat-value {
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 0.85rem;
+    font-feature-settings: "tnum";
+}
+
+.comparison-chart {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* نمودار مقایسه */
+.chart-bars {
+    margin-top: 20px;
+}
+
+.chart-bar {
+    margin: 18px 0;
+}
+
+.bar-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.bar-container {
+    display: flex;
+    gap: 12px;
+    height: 40px;
+    align-items: center;
+}
+
+.bar {
+    height: 28px;
+    border-radius: 14px;
+    position: relative;
+    transition: all 0.6s ease;
+    min-width: 60px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.bar-1 {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal));
+}
+
+.bar-2 {
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-teal));
+}
+
+.bar-value {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 0.8rem;
     font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* کشور انتخاب شده */
+.chart-title {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* استایل‌های D3.js برای نقشه */
+.country {
+    stroke: var(--glass-border);
+    stroke-width: 0.8;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.country:hover {
+    stroke: var(--accent-blue);
+    stroke-width: 3;
+    filter: brightness(1.2);
+}
+
 .country.selected {
-    stroke: var(--accent-blue) !important;
-    stroke-width: 3px !important;
-    stroke-dasharray: 5, 3 !important;
+    stroke: var(--accent-blue);
+    stroke-width: 4;
+    filter: brightness(1.3);
+    stroke-dasharray: 8, 4;
+    animation: pulse-border 2s infinite;
 }
 
-/* رسپانسیو */
-@media (max-width: 1200px) {
-    .map-content {
-        grid-template-columns: 1fr;
+@keyframes pulse-border {
+    0%, 100% { 
+        stroke-width: 4;
+        stroke-dasharray: 8, 4;
     }
-    
+    50% { 
+        stroke-width: 5;
+        stroke-dasharray: 12, 6;
+    }
+}
+
+/* Tooltip */
+.gold-map-tooltip {
+    position: absolute;
+    background: var(--glass-bg);
+    backdrop-filter: blur(30px);
+    color: var(--text-primary);
+    padding: 20px;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    pointer-events: none;
+    z-index: 1000;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    max-width: 320px;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tooltip-header {
+    border-bottom: 2px solid var(--accent-blue);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.tooltip-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tooltip-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.tooltip-value {
+    color: var(--accent-blue);
+    font-weight: 800;
+    font-feature-settings: "tnum";
+}
+
+/* مودال پریمیوم */
+.premium-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(15px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: modal-fade-in 0.4s ease;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(50px);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+    animation: modal-slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 30px 30px 20px;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(20, 184, 166, 0.1));
+}
+
+.modal-header h3 {
+    color: var(--text-primary);
+    font-size: 1.6rem;
+    margin: 0;
+    font-weight: 800;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: var(--accent-red);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 30px;
+    text-align: center;
+}
+
+.premium-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.modal-body p {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    line-height: 1.7;
+    font-size: 1.1rem;
+}
+
+.premium-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.feature {
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+    text-align: right;
+    border-right: 4px solid var(--accent-teal);
+}
+
+.modal-footer {
+    padding: 25px 30px 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    min-width: 140px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+    color: white;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    border: 2px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-blue);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* انیمیشن‌ها */
+@keyframes modal-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modal-slide-up {
+    from { 
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* اسکرول بار سفارشی */
+.countries-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.countries-list::-webkit-scrollbar-track {
+    background: var(--glass-bg);
+    border-radius: 4px;
+}
+
+.countries-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+    border-radius: 4px;
+}
+
+.countries-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+}
+
+/* ==================== */
+/* ریسپانسیو برای تبلت */
+/* ==================== */
+@media (max-width: 1200px) {
     .map-controls {
         grid-template-columns: 1fr;
+        gap: 30px;
     }
     
     .filters-container {
         grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .map-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .info-panel {
+        grid-template-columns: 1fr 1fr;
+        display: grid;
+        gap: 30px;
+    }
+    
+    .map-header h2 {
+        font-size: 2.5rem;
+    }
+    
+    #goldMap {
+        height: 550px;
+    }
+    
+    .filter-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ==================== */
+/* ریسپانسیو برای موبایل */
+/* ==================== */
+@media (max-width: 768px) {
+    .gold-map-section {
+        padding: 30px 15px;
+    }
+    
+    .map-header {
+        margin-bottom: 40px;
+    }
+    
+    .map-header h2 {
+        font-size: 2rem;
+    }
+    
+    .map-header p {
+        font-size: 1.1rem;
+    }
+    
+    .map-controls {
+        padding: 25px 20px;
+        gap: 25px;
+    }
+    
+    .filters-container {
+        gap: 25px;
     }
     
     .filter-buttons {
         grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
-}
-
-@media (max-width: 768px) {
-    .filter-buttons {
-        grid-template-columns: 1fr;
+    
+    .filter-btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+        gap: 8px;
     }
     
     .year-buttons {
         grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .year-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
     }
     
     .action-buttons {
         flex-direction: row;
+        min-width: auto;
+    }
+    
+    .globe-3d-btn, .reset-view-btn {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .globe-3d-btn {
+        padding: 14px 18px;
+    }
+    
+    .map-content {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .map-wrapper {
+        padding: 20px;
+        order: 1;
+        min-height: 500px;
+    }
+    
+    #goldMap {
+        height: 450px;
+    }
+    
+    .info-panel {
+        flex-direction: column;
+        gap: 25px;
+        order: 2;
+    }
+    
+    .top-countries, .country-comparison {
+        padding: 25px;
+    }
+    
+    .country-comparison {
+        order: -1;
+    }
+    
+    .country-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .map-controls-overlay {
+        position: relative;
+        top: auto;
+        right: auto;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 20px;
+        gap: 10px;
+    }
+    
+    .zoom-control, .reset-zoom {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .coordinates {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+    
+    .country-item {
+        font-size: 0.9rem;
+        padding: 12px 15px;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
     }
 }
+
+/* ==================== */
+/* موبایل‌های کوچک */
+/* ==================== */
+@media (max-width: 480px) {
+    .gold-map-section {
+        padding: 20px 10px;
+    }
+    
+    .map-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .map-header p {
+        font-size: 1rem;
+    }
+    
+    .map-controls {
+        padding: 20px 15px;
+        gap: 20px;
+    }
+    
+    .filter-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-btn {
+        padding: 14px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .year-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .year-btn {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    #goldMap {
+        height: 400px;
+    }
+    
+    .top-countries, .country-comparison {
+        padding: 20px;
+    }
+    
+    .country-card {
+        padding: 20px;
+    }
+    
+    .gold-map-tooltip {
+        max-width: 280px;
+        font-size: 0.9rem;
+        padding: 15px;
+    }
+    
+    .country-name {
+        font-size: 0.8rem;
+    }
+    
+    .country-value {
+        font-size: 0.8rem;
+        min-width: 60px;
+    }
+}
+
+/* استایل‌های عمومی برای المان‌های نقشه */
+.country.selected {
+    stroke: var(--accent-blue) !important;
+    stroke-width: 3px !important;
+    stroke-dasharray: 5, 3 !important;
+    animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        stroke-width: 3px;
+        opacity: 1;
+    }
+    50% { 
+        stroke-width: 4px;
+        opacity: 0.8;
+    }
+}
+
+/* بهبود نمایش در حالت‌های مختلف تم */
+[data-theme="light"] .gold-map-section {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+}
+
+[data-theme="dark"] .gold-map-section {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+/* هایلایت برای تعاملات لمسی */
+@media (hover: none) {
+    .country:hover {
+        stroke-width: 2px;
+    }
+    
+    .filter-btn:hover, .year-btn:hover {
+        transform: none;
+    }
+    
+    .filter-btn:active, .year-btn:active {
+        transform: scale(0.95);
+    }
+}
+
 
 /* ==================== */
 /* 🎮 دکمه شناور حرفه‌ای */
