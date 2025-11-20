@@ -1,112 +1,101 @@
-// ==================== //
-// نقشه طلای جهان - کامل و حرفه‌ای
-// ==================== //
-
-class WorldGoldMap {
+// gold-map-glass.js - نسخه کامل با 60 کشور
+class WorldGoldMapGlass {
     constructor() {
         this.currentYear = '2024';
         this.currentFilter = 'reserves';
         this.selectedCountries = [];
         this.worldData = null;
-        this.svg = null;
-        this.projection = null;
-        this.path = null;
-        this.zoom = null;
-        this.g = null;
+        this.isMobile = window.innerWidth <= 768;
+        this.isDarkMode = document.documentElement.classList.contains('dark-theme');
 
         this.init();
     }
 
     async init() {
         try {
-            console.log('🚀 راه‌اندازی نقشه طلای جهان...');
             await this.loadWorldData();
             this.createMap();
-            this.setupInteractions();
+            this.bindEvents();
             this.updateAll();
-            console.log('✅ نقشه با موفقیت راه‌اندازی شد');
+            this.setupMobileOptimizations();
+            
+            // تشخیص تغییر تم
+            this.setupThemeObserver();
         } catch (error) {
-            console.error('❌ خطا در راه‌اندازی نقشه:', error);
+            console.error('خطا در بارگذاری نقشه:', error);
             this.showError('خطا در بارگذاری نقشه. لطفاً صفحه را رفرش کنید.');
         }
     }
 
-    async loadWorldData() {
-        const urls = [
-            'https://unpkg.com/world-atlas@2/countries-110m.json',
-            'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
-        ];
-        
-        for (let url of urls) {
-            try {
-                this.worldData = await d3.json(url);
-                console.log('✅ نقشه از این آدرس لود شد:', url);
-                return;
-            } catch (error) {
-                console.warn('⚠️ خطا در لود از:', url);
-            }
+    setupThemeObserver() {
+        // مشاهده تغییرات در تم
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    this.isDarkMode = document.documentElement.classList.contains('dark-theme');
+                    this.updateWaterColor();
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
+
+    setupMobileOptimizations() {
+        if (this.isMobile) {
+            document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
         }
-        throw new Error('نقشه جهان بارگذاری نشد');
+    }
+
+    handleTouchStart(e) {
+        if (e.target.closest('#goldMapGlass') && e.touches.length > 1) {
+            e.preventDefault();
+        }
+    }
+
+    async loadWorldData() {
+        try {
+            const response = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+            this.worldData = await response.json();
+        } catch (error) {
+            console.error('خطا در بارگذاری داده‌های نقشه:', error);
+            throw error;
+        }
     }
 
     createMap() {
-        const container = document.getElementById('goldMap');
+        const container = document.getElementById('goldMapGlass');
         if (!container) {
-            throw new Error('المان #goldMap یافت نشد');
+            console.error('Container #goldMapGlass not found');
+            return;
         }
 
         const width = container.clientWidth;
-        const height = Math.max(600, window.innerHeight * 0.7);
+        const height = this.isMobile ? 300 : 500;
 
-        // پاکسازی کامل
-        d3.select('#goldMap').selectAll('*').remove();
+        // پاکسازی قبلی
+        container.innerHTML = '';
 
-        // ایجاد SVG
-        this.svg = d3.select('#goldMap')
+        this.svg = d3.select('#goldMapGlass')
             .append('svg')
-            .attr('width', width)
-            .attr('height', height)
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('viewBox', `0 0 ${width} ${height}`)
             .style('background', 'var(--bg-secondary)')
             .style('border-radius', '12px')
             .style('cursor', 'grab');
 
-        this.g = this.svg.append('g');
-
-        // projection
         this.projection = d3.geoNaturalEarth1()
-            .scale(width / 6.5)
+            .scale(width / 6.8)
             .translate([width / 2, height / 2]);
 
         this.path = d3.geoPath().projection(this.projection);
 
-        // رسم کشورها
-        this.drawCountries();
-        this.createTooltip();
-    }
-
-    drawCountries() {
-        const countries = topojson.feature(this.worldData, this.worldData.objects.countries).features;
-
-        this.g.selectAll('.country')
-            .data(countries)
-            .enter()
-            .append('path')
-            .attr('class', 'country')
-            .attr('d', this.path)
-            .attr('fill', d => this.getCountryColor(d))
-            .attr('stroke', 'var(--glass-border)')
-            .attr('stroke-width', 0.7)
-            .style('cursor', 'pointer')
-            .style('transition', 'all 0.3s ease')
-            .on('click', (event, d) => this.handleCountryClick(event, d))
-            .on('mouseover', (event, d) => this.handleCountryHover(event, d))
-            .on('mouseout', (event, d) => this.handleCountryMouseOut(event, d));
-    }
-
-    setupInteractions() {
-        // زوم و پان
         this.zoom = d3.zoom()
-            .scaleExtent([1, 12])
+            .scaleExtent([1, 8])
             .on('zoom', (event) => {
                 this.g.attr('transform', event.transform);
                 this.updateCoordinates(event.transform);
@@ -114,13 +103,115 @@ class WorldGoldMap {
 
         this.svg.call(this.zoom);
 
-        // رویدادهای کلیک
-        this.setupEventListeners();
+        this.g = this.svg.append('g');
+        this.drawCountries();
+        this.createTooltip();
+        this.updateWaterColor();
     }
 
-    setupEventListeners() {
+    updateWaterColor() {
+        // آپدیت رنگ آب‌ها بر اساس تم
+        const waterColor = this.isDarkMode 
+            ? 'url(#waterGradientDark)'
+            : 'url(#waterGradientLight)';
+        
+        this.svg.selectAll('.ocean').remove();
+        
+        // اضافه کردن گرادیانت برای آب‌ها
+        const defs = this.svg.append('defs');
+        
+        // گرادیانت برای حالت روشن
+        const gradientLight = defs.append('linearGradient')
+            .attr('id', 'waterGradientLight')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '100%');
+            
+        gradientLight.append('stop')
+            .attr('offset', '0%')
+            .attr('stop-color', '#4fd1c7')
+            .attr('stop-opacity', 1);
+            
+        gradientLight.append('stop')
+            .attr('offset', '100%')
+            .attr('stop-color', '#319795')
+            .attr('stop-opacity', 1);
+
+        // گرادیانت برای حالت تاریک با اثر نیونی
+        const gradientDark = defs.append('linearGradient')
+            .attr('id', 'waterGradientDark')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '100%');
+            
+        gradientDark.append('stop')
+            .attr('offset', '0%')
+            .attr('stop-color', '#00f5ff')
+            .attr('stop-opacity', 0.8);
+            
+        gradientDark.append('stop')
+            .attr('offset', '50%')
+            .attr('stop-color', '#4fd1c7')
+            .attr('stop-opacity', 0.6);
+            
+        gradientDark.append('stop')
+            .attr('offset', '100%')
+            .attr('stop-color', '#00b5b8')
+            .attr('stop-opacity', 0.8);
+
+        // پس‌زمینه اقیانوس
+        this.svg.append('rect')
+            .attr('class', 'ocean')
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('fill', waterColor);
+    }
+
+    createTooltip() {
+        d3.select('.gold-map-tooltip').remove();
+        
+        this.tooltip = d3.select('body')
+            .append('div')
+            .attr('class', 'gold-map-tooltip')
+            .style('position', 'absolute')
+            .style('background', 'var(--glass-bg)')
+            .style('backdrop-filter', 'blur(10px)')
+            .style('border', '1px solid var(--glass-border)')
+            .style('border-radius', '8px')
+            .style('padding', '8px 12px')
+            .style('font-size', '0.8rem')
+            .style('pointer-events', 'none')
+            .style('opacity', 0)
+            .style('z-index', 1000)
+            .style('color', 'var(--text-primary)');
+    }
+
+    drawCountries() {
+        if (!this.worldData) return;
+
+        const countries = topojson.feature(this.worldData, this.worldData.objects.countries).features;
+
+        this.g.selectAll('path.country')
+            .data(countries)
+            .enter()
+            .append('path')
+            .attr('class', 'country')
+            .attr('d', this.path)
+            .attr('fill', d => this.getCountryColor(d))
+            .attr('stroke', 'var(--glass-border)')
+            .attr('stroke-width', 0.5)
+            .style('cursor', 'pointer')
+            .style('transition', 'fill 0.3s ease')
+            .on('click', (event, d) => this.handleCountryClick(event, d))
+            .on('mouseover', (event, d) => this.handleCountryHover(event, d))
+            .on('mouseout', (event, d) => this.handleCountryMouseOut(event, d));
+    }
+
+    bindEvents() {
         // فیلترها
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        document.querySelectorAll('.glass-filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.setActiveFilter(btn);
@@ -128,7 +219,7 @@ class WorldGoldMap {
         });
 
         // سال‌ها
-        document.querySelectorAll('.year-btn').forEach(btn => {
+        document.querySelectorAll('.glass-year-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.setActiveYear(btn);
@@ -136,60 +227,176 @@ class WorldGoldMap {
         });
 
         // کنترل‌های نقشه
-        document.getElementById('resetZoom')?.addEventListener('click', () => this.resetZoom());
-        document.getElementById('zoomIn')?.addEventListener('click', () => this.zoomIn());
-        document.getElementById('zoomOut')?.addEventListener('click', () => this.zoomOut());
-        document.getElementById('globe3dBtn')?.addEventListener('click', () => this.showGlobeModal());
+        const resetZoomBtn = document.getElementById('resetZoom');
+        const zoomInBtn = document.getElementById('zoomIn');
+        const zoomOutBtn = document.getElementById('zoomOut');
+        const globe3dBtn = document.getElementById('globe3dBtn');
 
-        // رسپانسیو
-        window.addEventListener('resize', () => this.handleResize());
+        if (resetZoomBtn) resetZoomBtn.addEventListener('click', () => this.resetZoom());
+        if (zoomInBtn) zoomInBtn.addEventListener('click', () => this.zoomIn());
+        if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => this.zoomOut());
+        if (globe3dBtn) globe3dBtn.addEventListener('click', () => this.showGlobeModal());
+
+        // ریسایز
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                this.isMobile = window.innerWidth <= 768;
+                this.createMap();
+                this.updateAll();
+            }, 250);
+        });
     }
 
     setActiveFilter(btn) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.glass-filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.currentFilter = btn.dataset.filter;
+        
+        const badge = document.getElementById('currentFilterBadge');
+        if (badge) {
+            badge.textContent = this.getFilterLabel(this.currentFilter);
+        }
+        
         this.updateAll();
     }
 
     setActiveYear(btn) {
-        document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.glass-year-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.currentYear = btn.dataset.year;
         this.updateAll();
     }
 
-    getCountryColor(country) {
-        const data = this.getCountryData(country);
-        if (!data || !data[this.currentFilter]) {
-            return 'var(--bg-secondary)';
-        }
-
-        const value = data[this.currentFilter];
-        return this.getColorForValue(value, this.currentFilter);
+    updateAll() {
+        this.updateMapColors();
+        this.updateTopCountries();
+        this.updateCountryComparison();
+        this.updateSelectionCount();
     }
 
-    getColorForValue(value, filter) {
-        const colorScales = {
+    updateMapColors() {
+        this.g.selectAll('path.country')
+            .attr('fill', d => this.getCountryColor(d));
+    }
+
+    updateTopCountries() {
+        const currentData = this.getCompleteData()[this.currentYear];
+        if (!currentData) return;
+
+        const sorted = Object.values(currentData)
+            .sort((a, b) => {
+                const valA = a[this.currentFilter];
+                const valB = b[this.currentFilter];
+                
+                if (this.currentFilter.includes('Rank')) {
+                    return valA - valB;
+                }
+                return valB - valA;
+            })
+            .slice(0, 20); // نمایش 20 کشور برتر
+
+        const html = sorted.map((country, index) => {
+            const value = this.formatValue(country[this.currentFilter], this.currentFilter);
+            let medalClass = 'other';
+            let medalText = (index + 1).toString();
+            
+            if (index === 0) { medalClass = 'gold'; medalText = '🥇'; }
+            else if (index === 1) { medalClass = 'silver'; medalText = '🥈'; }
+            else if (index === 2) { medalClass = 'bronze'; medalText = '🥉'; }
+
+            return `
+                <div class="country-rank-item" onclick="worldGoldMapGlass.selectCountryFromList('${country.code}')">
+                    <div class="rank-medal ${medalClass}">${medalText}</div>
+                    <div class="country-info">
+                        <div class="country-name">${country.name}</div>
+                    </div>
+                    <div class="country-value">${value}</div>
+                </div>
+            `;
+        }).join('');
+
+        const list = document.getElementById('topCountriesList');
+        if (list) list.innerHTML = html;
+    }
+
+    updateCountryComparison() {
+        const container = document.getElementById('countryComparison');
+        if (!container) return;
+
+        if (this.selectedCountries.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🌍</div>
+                    <p>برای مقایسه، روی کشورها در نقشه کلیک کنید</p>
+                    <small>می‌توانید حداکثر ۲ کشور را انتخاب کنید</small>
+                </div>
+            `;
+            return;
+        }
+
+        const cardsHtml = this.selectedCountries.map(country => `
+            <div class="country-comparison-card">
+                <div class="comparison-card-header">
+                    <h4>${country.name}</h4>
+                    <button class="remove-btn" onclick="worldGoldMapGlass.removeCountry('${country.code}')">
+                        ✕
+                    </button>
+                </div>
+                <div class="comparison-stats">
+                    <div class="stat-row">
+                        <span>💰 ذخایر طلا:</span>
+                        <strong>${country.data.reserves} تن</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>⛏️ برداشت طلا:</span>
+                        <strong>${country.data.production} تن</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>📈 تولید ناخالص:</span>
+                        <strong>${this.formatValue(country.data.gdp, 'gdp')}</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>🏆 رتبه اقتصادی:</span>
+                        <strong>${country.data.economicRank}</strong>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = cardsHtml;
+        this.updateSelectionCount();
+    }
+
+    updateSelectionCount() {
+        const countElement = document.getElementById('selectedCount');
+        if (countElement) {
+            countElement.textContent = this.selectedCountries.length;
+        }
+    }
+
+    getCountryColor(country) {
+        const data = this.getCountryData(country);
+        if (!data || !data[this.currentFilter]) return 'var(--bg-tertiary)';
+
+        const value = data[this.currentFilter];
+        const scales = {
             reserves: d3.scaleSequential(d3.interpolateYlOrBr).domain([0, 10000]),
             production: d3.scaleSequential(d3.interpolateGreens).domain([0, 400]),
             gdp: d3.scaleSequential(d3.interpolateBlues).domain([0, 30000000]),
-            economicRank: d3.scaleSequential(d3.interpolateReds).domain([1, 50]),
+            economicRank: d3.scaleSequential(d3.interpolateReds).domain([1, 60]),
             oil: d3.scaleSequential(d3.interpolateOranges).domain([0, 15000]),
-            gas: d3.scaleSequential(d3.interpolatePurples).domain([0, 1000000]),
-            bankRank: d3.scaleSequential(d3.interpolateViridis).domain([1, 50])
+            gas: d3.scaleSequential(d3.interpolatePurples).domain([0, 1000000])
         };
 
-        return colorScales[filter] ? colorScales[filter](value) : 'var(--bg-secondary)';
+        return scales[this.currentFilter] ? scales[this.currentFilter](value) : 'var(--bg-tertiary)';
     }
 
     getCountryData(country) {
         const countryMap = {
-            // آمریکا
             'United States of America': 'USA',
             'United States': 'USA',
-            
-            // آسیا
             'China': 'CHN',
             'Russian Federation': 'RUS',
             'Iran (Islamic Republic of)': 'IRN',
@@ -199,90 +406,73 @@ class WorldGoldMap {
             'Japan': 'JPN',
             'South Korea': 'KOR',
             'Turkey': 'TUR',
-            'Indonesia': 'IDN',
-            'Pakistan': 'PAK',
-            'Bangladesh': 'BGD',
-            'Vietnam': 'VNM',
-            'Philippines': 'PHL',
-            'Thailand': 'THA',
-            'Malaysia': 'MYS',
-            'Uzbekistan': 'UZB',
-            'Iraq': 'IRQ',
-            'Afghanistan': 'AFG',
-            'Yemen': 'YEM',
-            'Syria': 'SYR',
-            'Kazakhstan': 'KAZ',
-            'United Arab Emirates': 'ARE',
-            'Israel': 'ISR',
-            'Qatar': 'QAT',
-            'Kuwait': 'KWT',
-            'Oman': 'OMN',
-            'Jordan': 'JOR',
-            'Azerbaijan': 'AZE',
-            'Tajikistan': 'TJK',
-            'Kyrgyzstan': 'KGZ',
-            'Turkmenistan': 'TKM',
-            'Lebanon': 'LBN',
-            
-            // اروپا
-            'Germany': 'DEU',
+            'Brazil': 'BRA',
             'United Kingdom': 'GBR',
+            'Germany': 'DEU',
             'France': 'FRA',
             'Italy': 'ITA',
+            'Mexico': 'MEX',
+            'Canada': 'CAN',
+            'Australia': 'AUS',
             'Spain': 'ESP',
-            'Ukraine': 'UKR',
-            'Poland': 'POL',
+            'Indonesia': 'IDN',
             'Netherlands': 'NLD',
-            'Belgium': 'BEL',
-            'Sweden': 'SWE',
-            'Czechia': 'CZE',
-            'Greece': 'GRC',
-            'Portugal': 'PRT',
-            'Hungary': 'HUN',
-            'Austria': 'AUT',
-            'Switzerland': 'CHE',
-            'Denmark': 'DNK',
-            'Finland': 'FIN',
-            'Norway': 'NOR',
-            'Ireland': 'IRL',
-            'Romania': 'ROU',
-            'Belarus': 'BLR',
-            
-            // آفریقا
-            'Nigeria': 'NGA',
-            'Ethiopia': 'ETH',
-            'Egypt': 'EGY',
-            'Democratic Republic of the Congo': 'COD',
             'South Africa': 'ZAF',
-            'Tanzania': 'TZA',
-            'Kenya': 'KEN',
-            'Uganda': 'UGA',
+            'Switzerland': 'CHE',
+            'Taiwan': 'TWN',
+            'Poland': 'POL',
+            'Sweden': 'SWE',
+            'Belgium': 'BEL',
+            'Thailand': 'THA',
+            'Nigeria': 'NGA',
+            'Argentina': 'ARG',
+            'Norway': 'NOR',
+            'Israel': 'ISR',
+            'Hong Kong': 'HKG',
+            'Singapore': 'SGP',
+            'Malaysia': 'MYS',
+            'Philippines': 'PHL',
+            'Colombia': 'COL',
+            'Pakistan': 'PAK',
+            'Chile': 'CHL',
+            'Bangladesh': 'BGD',
+            'Egypt': 'EGY',
+            'Finland': 'FIN',
+            'Vietnam': 'VNM',
+            'Czech Republic': 'CZE',
+            'Romania': 'ROU',
+            'Portugal': 'PRT',
+            'Peru': 'PER',
+            'New Zealand': 'NZL',
+            'Greece': 'GRC',
+            'Iraq': 'IRQ',
             'Algeria': 'DZA',
-            'Sudan': 'SDN',
+            'Qatar': 'QAT',
+            'Kazakhstan': 'KAZ',
+            'Hungary': 'HUN',
+            'Ukraine': 'UKR',
+            'Kuwait': 'KWT',
             'Morocco': 'MAR',
             'Angola': 'AGO',
-            'Ghana': 'GHA',
-            'Mozambique': 'MOZ',
-            'Madagascar': 'MDG',
-            
-            // آمریکای لاتین
-            'Brazil': 'BRA',
-            'Mexico': 'MEX',
-            'Colombia': 'COL',
-            'Argentina': 'ARG',
-            'Peru': 'PER',
-            'Venezuela': 'VEN',
-            'Chile': 'CHL',
             'Ecuador': 'ECU',
-            'Guatemala': 'GTM',
+            'Slovakia': 'SVK',
+            'Oman': 'OMN',
             'Cuba': 'CUB',
-            'Bolivia': 'BOL',
-            
-            // اقیانوسیه
-            'Australia': 'AUS',
-            'Papua New Guinea': 'PNG',
-            'New Zealand': 'NZL',
-            'Fiji': 'FJI'
+            'Azerbaijan': 'AZE',
+            'Belarus': 'BLR',
+            'Sri Lanka': 'LKA',
+            'Myanmar': 'MMR',
+            'Luxembourg': 'LUX',
+            'Dominican Republic': 'DOM',
+            'Uzbekistan': 'UZB',
+            'Kenya': 'KEN',
+            'Guatemala': 'GTM',
+            'Uruguay': 'URY',
+            'Croatia': 'HRV',
+            'Bulgaria': 'BGR',
+            'Macao': 'MAC',
+            'Ethiopia': 'ETH',
+            'Lebanon': 'LBN'
         };
 
         const code = countryMap[country.properties.name];
@@ -292,12 +482,12 @@ class WorldGoldMap {
     handleCountryClick(event, d) {
         const data = this.getCountryData(d);
         if (!data) {
-            this.showTooltip(event, '⚠️ داده‌ای برای این کشور موجود نیست');
+            this.showTooltip(event, 'داده‌ای برای این کشور موجود نیست');
             return;
         }
 
-        const countryCode = this.getCountryCode(d.properties.name);
-        const existingIndex = this.selectedCountries.findIndex(c => c.code === countryCode);
+        const code = this.getCountryCode(d.properties.name);
+        const existingIndex = this.selectedCountries.findIndex(c => c.code === code);
 
         if (existingIndex > -1) {
             this.selectedCountries.splice(existingIndex, 1);
@@ -305,15 +495,13 @@ class WorldGoldMap {
         } else {
             if (this.selectedCountries.length >= 2) {
                 const removed = this.selectedCountries.shift();
-                this.g.selectAll('.country').classed('selected', false);
+                this.g.selectAll('path.country').classed('selected', false);
             }
-            
             this.selectedCountries.push({
-                code: countryCode,
+                code: code,
                 name: data.name,
                 data: data
             });
-            
             d3.select(event.target).classed('selected', true);
         }
 
@@ -322,12 +510,9 @@ class WorldGoldMap {
 
     handleCountryHover(event, d) {
         const data = this.getCountryData(d);
-        
         d3.select(event.target)
-            .transition()
-            .duration(200)
             .attr('stroke', 'var(--accent-blue)')
-            .attr('stroke-width', 2);
+            .attr('stroke-width', 1.5);
 
         if (data) {
             this.showTooltip(event, this.createTooltipContent(data));
@@ -336,328 +521,231 @@ class WorldGoldMap {
 
     handleCountryMouseOut(event, d) {
         d3.select(event.target)
-            .transition()
-            .duration(200)
             .attr('stroke', 'var(--glass-border)')
-            .attr('stroke-width', 0.7);
-
+            .attr('stroke-width', 0.5);
         this.hideTooltip();
-    }
-
-    createTooltip() {
-        d3.select('.gold-map-tooltip')?.remove();
-        
-        d3.select('body').append('div')
-            .attr('class', 'gold-map-tooltip')
-            .style('opacity', 0);
     }
 
     createTooltipContent(data) {
         const value = data[this.currentFilter];
-        const formattedValue = this.formatValue(value, this.currentFilter);
-        const filterLabel = this.getFilterLabel(this.currentFilter);
+        const formatted = this.formatValue(value, this.currentFilter);
+        const label = this.getFilterLabel(this.currentFilter);
         
         return `
-            <div class="tooltip-header">
-                <strong>${data.name}</strong>
-            </div>
-            <div class="tooltip-content">
-                <div class="tooltip-row">
-                    <span class="tooltip-label">${filterLabel}:</span>
-                    <span class="tooltip-value">${formattedValue}</span>
-                </div>
-                <div class="tooltip-row">
-                    <span class="tooltip-label">📅 سال:</span>
-                    <span class="tooltip-value">${this.currentYear}</span>
-                </div>
-            </div>
+            <strong>${data.name}</strong><br/>
+            ${label}: ${formatted}<br/>
+            سال: ${this.currentYear}
         `;
     }
 
     showTooltip(event, content) {
-        d3.select('.gold-map-tooltip')
+        this.tooltip
             .html(content)
             .style('opacity', 1)
-            .style('left', (event.pageX + 15) + 'px')
-            .style('top', (event.pageY - 15) + 'px');
+            .style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 10) + 'px');
     }
 
     hideTooltip() {
-        d3.select('.gold-map-tooltip').style('opacity', 0);
+        this.tooltip.style('opacity', 0);
     }
 
-    updateAll() {
-        this.updateMapColors();
-        this.updateTopCountries();
+    selectCountryFromList(code) {
+        const current = this.getCompleteData()[this.currentYear];
+        const country = current[code];
+        if (!country) return;
+        
+        this.selectedCountries = [{ code, name: country.name, data: country }];
         this.updateCountryComparison();
     }
 
-    updateMapColors() {
-        this.g.selectAll('.country')
-            .transition()
-            .duration(600)
-            .attr('fill', d => this.getCountryColor(d));
+    removeCountry(code) {
+        this.selectedCountries = this.selectedCountries.filter(c => c.code !== code);
+        this.g.selectAll('path.country').classed('selected', false);
+        this.updateCountryComparison();
     }
 
-    updateTopCountries() {
-        const currentData = this.getCompleteData()[this.currentYear];
-        if (!currentData) return;
-
-        const sortedCountries = Object.values(currentData)
-            .sort((a, b) => {
-                if (this.currentFilter.includes('Rank')) {
-                    return a[this.currentFilter] - b[this.currentFilter];
-                }
-                return b[this.currentFilter] - a[this.currentFilter];
-            })
-            .slice(0, 10);
-
-        const html = sortedCountries.map((country, index) => {
-            const value = this.formatValue(country[this.currentFilter], this.currentFilter);
-            const medal = index < 3 ? ['🥇', '🥈', '🥉'][index] : `${index + 1}`;
-            
-            return `
-                <div class="country-item" onclick="worldGoldMap.selectCountryFromList('${country.code}')">
-                    <span class="country-rank">${medal}</span>
-                    <span class="country-name">${country.name}</span>
-                    <span class="country-value">${value}</span>
-                </div>
-            `;
-        }).join('');
-
-        const listElement = document.getElementById('topCountriesList');
-        if (listElement) {
-            listElement.innerHTML = html;
-        }
-    }
-
-    updateCountryComparison() {
-        const container = document.getElementById('countryComparison');
-        if (!container) return;
-
-        if (this.selectedCountries.length === 0) {
-            container.innerHTML = `
-                <div class="comparison-placeholder">
-                    <p>🌍 برای مقایسه، روی کشورها در نقشه کلیک کنید</p>
-                    <small>می‌توانید حداکثر ۲ کشور را انتخاب کنید</small>
-                </div>
-            `;
-            return;
-        }
-
-        const html = this.selectedCountries.map(country => `
-            <div class="country-card">
-                <div class="country-card-header">
-                    <span class="country-card-name">${country.name}</span>
-                    <div class="card-actions">
-                        <span class="country-card-year">${this.currentYear}</span>
-                        <button class="country-card-remove" onclick="worldGoldMap.removeCountry('${country.code}')">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                                <path d="M1 1L11 11M11 1L1 11"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="country-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">💰 ذخایر طلا</span>
-                        <span class="stat-value">${country.data.reserves} تن</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">⛏️ برداشت طلا</span>
-                        <span class="stat-value">${country.data.production} تن</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">📈 تولید ناخالص</span>
-                        <span class="stat-value">${this.formatValue(country.data.gdp, 'gdp')}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">🏆 رتبه اقتصادی</span>
-                        <span class="stat-value">${country.data.economicRank}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">🛢️ تولید نفت</span>
-                        <span class="stat-value">${this.formatValue(country.data.oil, 'oil')}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">🔥 تولید گاز</span>
-                        <span class="stat-value">${this.formatValue(country.data.gas, 'gas')}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">🏦 رتبه بانک مرکزی</span>
-                        <span class="stat-value">${country.data.bankRank}</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-
-        // اضافه کردن نمودار مقایسه
-        if (this.selectedCountries.length === 2) {
-            const chartHTML = this.createComparisonChart();
-            container.innerHTML = html + chartHTML;
-        } else {
-            container.innerHTML = html;
-        }
-    }
-
-    createComparisonChart() {
-        const [country1, country2] = this.selectedCountries;
-        
-        const maxValues = {
-            reserves: Math.max(country1.data.reserves, country2.data.reserves, 1),
-            production: Math.max(country1.data.production, country2.data.production, 1),
-            gdp: Math.max(country1.data.gdp, country2.data.gdp, 1),
-            oil: Math.max(country1.data.oil, country2.data.oil, 1)
+    getFilterLabel(filter) {
+        const labels = {
+            reserves: 'ذخایر طلا',
+            production: 'برداشت طلا',
+            gdp: 'تولید ناخالص',
+            economicRank: 'رتبه اقتصادی',
+            oil: 'تولید نفت',
+            gas: 'تولید گاز'
         };
-
-        return `
-            <div class="comparison-chart">
-                <div class="chart-title">📊 مقایسه نموداری</div>
-                <div class="chart-bars">
-                    <div class="chart-bar">
-                        <div class="bar-label">ذخایر طلا (تن)</div>
-                        <div class="bar-container">
-                            <div class="bar bar-1" style="width: ${(country1.data.reserves / maxValues.reserves) * 100}%">
-                                <span class="bar-value">${country1.data.reserves}</span>
-                            </div>
-                            <div class="bar bar-2" style="width: ${(country2.data.reserves / maxValues.reserves) * 100}%">
-                                <span class="bar-value">${country2.data.reserves}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="bar-label">برداشت طلا (تن)</div>
-                        <div class="bar-container">
-                            <div class="bar bar-1" style="width: ${(country1.data.production / maxValues.production) * 100}%">
-                                <span class="bar-value">${country1.data.production}</span>
-                            </div>
-                            <div class="bar bar-2" style="width: ${(country2.data.production / maxValues.production) * 100}%">
-                                <span class="bar-value">${country2.data.production}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chart-bar">
-                        <div class="bar-label">تولید نفت (هزار بشکه)</div>
-                        <div class="bar-container">
-                            <div class="bar bar-1" style="width: ${(country1.data.oil / maxValues.oil) * 100}%">
-                                <span class="bar-value">${this.formatValue(country1.data.oil, 'oil')}</span>
-                            </div>
-                            <div class="bar bar-2" style="width: ${(country2.data.oil / maxValues.oil) * 100}%">
-                                <span class="bar-value">${this.formatValue(country2.data.oil, 'oil')}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+        return labels[filter] || filter;
     }
 
-    selectCountryFromList(countryCode) {
-        const currentData = this.getCompleteData()[this.currentYear];
-        const country = currentData[countryCode];
-        
-        if (country) {
-            this.selectedCountries = [{
-                code: countryCode,
-                name: country.name,
-                data: country
-            }];
-            
-            this.g.selectAll('.country').classed('selected', false);
-            this.updateCountryComparison();
-        }
+    formatValue(value, filter) {
+        if (filter === 'gdp') return (value / 1000000).toFixed(1) + 'T';
+        if (filter === 'oil') return (value / 1000).toFixed(1) + 'K';
+        if (filter === 'gas') return (value / 1000000).toFixed(1) + 'B';
+        return Number(value).toLocaleString('en-US');
     }
 
-    removeCountry(countryCode) {
-        this.selectedCountries = this.selectedCountries.filter(c => c.code !== countryCode);
-        this.g.selectAll('.country').classed('selected', false);
-        this.updateCountryComparison();
+    getCountryCode(name) {
+        const map = {
+            'United States of America': 'USA',
+            'China': 'CHN',
+            'Russian Federation': 'RUS',
+            'Iran (Islamic Republic of)': 'IRN',
+            'Saudi Arabia': 'SAU',
+            'India': 'IND',
+            'Japan': 'JPN',
+            'South Korea': 'KOR',
+            'Turkey': 'TUR',
+            'Brazil': 'BRA',
+            'United Kingdom': 'GBR',
+            'Germany': 'DEU',
+            'France': 'FRA',
+            'Italy': 'ITA',
+            'Mexico': 'MEX',
+            'Canada': 'CAN',
+            'Australia': 'AUS',
+            'Spain': 'ESP',
+            'Indonesia': 'IDN',
+            'Netherlands': 'NLD',
+            'South Africa': 'ZAF',
+            'Switzerland': 'CHE',
+            'Taiwan': 'TWN',
+            'Poland': 'POL',
+            'Sweden': 'SWE',
+            'Belgium': 'BEL',
+            'Thailand': 'THA',
+            'Nigeria': 'NGA',
+            'Argentina': 'ARG',
+            'Norway': 'NOR',
+            'Israel': 'ISR',
+            'Hong Kong': 'HKG',
+            'Singapore': 'SGP',
+            'Malaysia': 'MYS',
+            'Philippines': 'PHL',
+            'Colombia': 'COL',
+            'Pakistan': 'PAK',
+            'Chile': 'CHL',
+            'Bangladesh': 'BGD',
+            'Egypt': 'EGY',
+            'Finland': 'FIN',
+            'Vietnam': 'VNM',
+            'Czech Republic': 'CZE',
+            'Romania': 'ROU',
+            'Portugal': 'PRT',
+            'Peru': 'PER',
+            'New Zealand': 'NZL',
+            'Greece': 'GRC',
+            'Iraq': 'IRQ',
+            'Algeria': 'DZA',
+            'Qatar': 'QAT',
+            'Kazakhstan': 'KAZ',
+            'Hungary': 'HUN',
+            'Ukraine': 'UKR',
+            'Kuwait': 'KWT',
+            'Morocco': 'MAR',
+            'Angola': 'AGO',
+            'Ecuador': 'ECU',
+            'Slovakia': 'SVK',
+            'Oman': 'OMN',
+            'Cuba': 'CUB',
+            'Azerbaijan': 'AZE',
+            'Belarus': 'BLR',
+            'Sri Lanka': 'LKA',
+            'Myanmar': 'MMR',
+            'Luxembourg': 'LUX',
+            'Dominican Republic': 'DOM',
+            'Uzbekistan': 'UZB',
+            'Kenya': 'KEN',
+            'Guatemala': 'GTM',
+            'Uruguay': 'URY',
+            'Croatia': 'HRV',
+            'Bulgaria': 'BGR',
+            'Macao': 'MAC',
+            'Ethiopia': 'ETH',
+            'Lebanon': 'LBN'
+        };
+        return map[name] || name;
     }
 
-    // کنترل‌های زوم
     resetZoom() {
-        this.svg.transition()
-            .duration(750)
-            .call(this.zoom.transform, d3.zoomIdentity);
+        this.svg.transition().duration(500).call(this.zoom.transform, d3.zoomIdentity);
     }
 
     zoomIn() {
-        this.svg.transition()
-            .duration(300)
-            .call(this.zoom.scaleBy, 1.5);
+        this.svg.transition().duration(250).call(this.zoom.scaleBy, 1.5);
     }
 
     zoomOut() {
-        this.svg.transition()
-            .duration(300)
-            .call(this.zoom.scaleBy, 0.75);
+        this.svg.transition().duration(250).call(this.zoom.scaleBy, 0.75);
     }
 
     updateCoordinates(transform) {
-        const coordsElement = document.getElementById('coordinates');
-        if (coordsElement) {
-            coordsElement.textContent = `مقیاس: ${transform.k.toFixed(1)}x`;
+        const element = document.getElementById('coordinates');
+        if (element) {
+            element.textContent = `مقیاس: ${transform.k.toFixed(1)}x`;
         }
     }
 
-    handleResize() {
-        setTimeout(() => {
-            if (this.worldData) {
-                this.createMap();
-                this.setupInteractions();
-                this.updateAll();
-            }
-        }, 250);
-    }
-
     showGlobeModal() {
-        const modal = document.createElement('div');
-        modal.className = 'premium-modal';
-        modal.innerHTML = `
-            <div class="modal-content">
+        // ============================================
+        // این بخش برای نمای سه بعدی آماده شده است
+        // می‌توانید از کتابخانه‌های زیر استفاده کنید:
+        // 1. Three.js + D3 برای نقشه سه بعدی
+        // 2. Globe.gl برای گلوب تعاملی
+        // 3. Cesium برای زمین سه بعدی حرفه‌ای
+        // ============================================
+        
+        // نمونه کد برای شروع:
+        /*
+        const globeContainer = document.createElement('div');
+        globeContainer.className = 'globe-3d-container';
+        globeContainer.innerHTML = `
+            <div class="globe-modal">
                 <div class="modal-header">
-                    <h3>🌍 نمای سه بعدی پیشرفته</h3>
-                    <button class="modal-close">&times;</button>
+                    <h3>🌍 نمای سه بعدی زمین</h3>
+                    <button class="close-btn">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <div class="premium-icon">🚀</div>
-                    <p>برای دسترسی به نمای سه بعدی تعاملی کره زمین، اشتراک ویژه تهیه کنید.</p>
-                    <div class="premium-features">
-                        <div class="feature">✨ نمای 3D واقعی کره زمین</div>
-                        <div class="feature">🎯 چرخش و زوم پیشرفته</div>
-                        <div class="feature">📊 تحلیل‌های سه بعدی</div>
-                        <div class="feature">💎 داده‌های تاریخی کامل</div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="this.closest('.premium-modal').remove()">متوجه شدم</button>
-                    <button class="btn btn-secondary" onclick="worldGoldMap.redirectToSubscription()">خرید اشتراک</button>
+                <div class="globe-content">
+                    <div id="globe3d"></div>
                 </div>
             </div>
         `;
-
-        document.body.appendChild(modal);
+        document.body.appendChild(globeContainer);
         
-        modal.querySelector('.modal-close').addEventListener('click', () => {
-            modal.remove();
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.remove();
-            }
-        });
-
-        setTimeout(() => {
-            if (document.body.contains(modal)) {
-                modal.remove();
-            }
-        }, 8000);
+        // اینجا کدهای three.js یا globe.gl را اضافه کنید
+        */
+        
+        // فعلاً پیام ساده نمایش داده می‌شود
+        this.showMessage(
+            '🌍 نمای سه بعدی', 
+            'این قابلیت در نسخه بعدی اضافه خواهد شد. می‌توانید از کتابخانه Three.js یا Globe.gl استفاده کنید.'
+        );
     }
 
-    redirectToSubscription() {
-        console.log('هدایت به صفحه اشتراک...');
-        // window.location.href = '/subscription';
+    showMessage(title, message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'premium-feature-message';
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <div class="message-icon">🚀</div>
+                <h3>${title}</h3>
+                <p>${message}</p>
+                <button class="message-close-btn">متوجه شدم</button>
+            </div>
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        const closeBtn = messageDiv.querySelector('.message-close-btn');
+        closeBtn.addEventListener('click', () => {
+            document.body.removeChild(messageDiv);
+        });
+        
+        // بستن خودکار بعد از 5 ثانیه
+        setTimeout(() => {
+            if (document.body.contains(messageDiv)) {
+                document.body.removeChild(messageDiv);
+            }
+        }, 5000);
     }
 
     showError(message) {
@@ -668,8 +756,8 @@ class WorldGoldMap {
             right: 20px;
             background: var(--accent-red);
             color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
             z-index: 10000;
             max-width: 300px;
             backdrop-filter: blur(10px);
@@ -678,359 +766,87 @@ class WorldGoldMap {
         errorDiv.textContent = message;
         document.body.appendChild(errorDiv);
         
-        setTimeout(() => errorDiv.remove(), 5000);
-    }
-
-    getFilterLabel(filter) {
-        const labels = {
-            reserves: 'ذخایر طلا',
-            production: 'برداشت طلا',
-            gdp: 'تولید ناخالص',
-            economicRank: 'رتبه اقتصادی',
-            oil: 'تولید نفت',
-            gas: 'تولید گاز',
-            bankRank: 'رتبه بانک مرکزی'
-        };
-        return labels[filter] || filter;
-    }
-
-    formatValue(value, filter) {
-        if (filter === 'gdp') {
-            return (value / 1000000).toFixed(1) + 'T';
-        }
-        if (filter === 'oil') {
-            return (value / 1000).toFixed(1) + 'K';
-        }
-        if (filter === 'gas') {
-            return (value / 1000000).toFixed(1) + 'B';
-        }
-        return value.toLocaleString('en-US');
-    }
-
-    getCountryCode(name) {
-        const countryMap = {
-            'United States of America': 'USA',
-            'China': 'CHN',
-            'Russian Federation': 'RUS',
-            'Iran (Islamic Republic of)': 'IRN',
-            'Saudi Arabia': 'SAU',
-            // ... بقیه کشورها
-        };
-        return countryMap[name] || name;
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
+        }, 4000);
     }
 
     getCompleteData() {
         return {
             "2024": {
-                "USA": { 
-                    name: "ایالات متحده آمریکا", 
-                    code: "USA",
-                    reserves: 8133, 
-                    production: 200, 
-                    gdp: 25400000, 
-                    economicRank: 1,
-                    oil: 12800,
-                    gas: 934000,
-                    bankRank: 1
-                },
-                "CHN": { 
-                    name: "چین", 
-                    code: "CHN",
-                    reserves: 1948, 
-                    production: 350, 
-                    gdp: 17900000, 
-                    economicRank: 2,
-                    oil: 4800,
-                    gas: 207000,
-                    bankRank: 3
-                },
-                "IRN": { 
-                    name: "ایران", 
-                    code: "IRN",
-                    reserves: 425, 
-                    production: 85, 
-                    gdp: 1620000, 
-                    economicRank: 25,
-                    oil: 3100,
-                    gas: 258000,
-                    bankRank: 28
-                },
-                "RUS": { 
-                    name: "روسیه", 
-                    code: "RUS",
-                    reserves: 2299, 
-                    production: 300, 
-                    gdp: 1860000, 
-                    economicRank: 11,
-                    oil: 10700,
-                    gas: 701000,
-                    bankRank: 15
-                },
-                "SAU": { 
-                    name: "عربستان سعودی", 
-                    code: "SAU",
-                    reserves: 323, 
-                    production: 250, 
-                    gdp: 1100000, 
-                    economicRank: 18,
-                    oil: 11500,
-                    gas: 112000,
-                    bankRank: 22
-                },
-                "IND": { 
-                    name: "هند", 
-                    code: "IND",
-                    reserves: 754, 
-                    production: 90, 
-                    gdp: 3740000, 
-                    economicRank: 5,
-                    oil: 800,
-                    gas: 32000,
-                    bankRank: 8
-                },
-                "DEU": { 
-                    name: "آلمان", 
-                    code: "DEU",
-                    reserves: 3366, 
-                    production: 5, 
-                    gdp: 4080000, 
-                    economicRank: 4,
-                    oil: 220,
-                    gas: 68000,
-                    bankRank: 6
-                },
-                "JPN": { 
-                    name: "ژاپن", 
-                    code: "JPN",
-                    reserves: 846, 
-                    production: 8, 
-                    gdp: 4910000, 
-                    economicRank: 3,
-                    oil: 120,
-                    gas: 3200,
-                    bankRank: 4
-                },
-                "GBR": { 
-                    name: "انگلستان", 
-                    code: "GBR",
-                    reserves: 310, 
-                    production: 1, 
-                    gdp: 3130000, 
-                    economicRank: 6,
-                    oil: 950,
-                    gas: 42000,
-                    bankRank: 7
-                },
-                "FRA": { 
-                    name: "فرانسه", 
-                    code: "FRA",
-                    reserves: 2436, 
-                    production: 2, 
-                    gdp: 2930000, 
-                    economicRank: 7,
-                    oil: 160,
-                    gas: 1800,
-                    bankRank: 9
-                },
-                "CAN": { 
-                    name: "کانادا", 
-                    code: "CAN",
-                    reserves: 180, 
-                    production: 180, 
-                    gdp: 2140000, 
-                    economicRank: 9,
-                    oil: 5200,
-                    gas: 178000,
-                    bankRank: 12
-                },
-                "AUS": { 
-                    name: "استرالیا", 
-                    code: "AUS",
-                    reserves: 79, 
-                    production: 320, 
-                    gdp: 1540000, 
-                    economicRank: 13,
-                    oil: 280,
-                    gas: 142000,
-                    bankRank: 18
-                },
-                "TUR": { 
-                    name: "ترکیه", 
-                    code: "TUR",
-                    reserves: 478, 
-                    production: 120, 
-                    gdp: 906000, 
-                    economicRank: 19,
-                    oil: 65,
-                    gas: 450,
-                    bankRank: 25
-                },
-                "BRA": { 
-                    name: "برزیل", 
-                    code: "BRA",
-                    reserves: 129, 
-                    production: 60, 
-                    gdp: 1920000, 
-                    economicRank: 12,
-                    oil: 2700,
-                    gas: 24300,
-                    bankRank: 20
-                },
-                "ZAF": { 
-                    name: "آفریقای جنوبی", 
-                    code: "ZAF",
-                    reserves: 125, 
-                    production: 110, 
-                    gdp: 406000, 
-                    economicRank: 35,
-                    oil: 0,
-                    gas: 0,
-                    bankRank: 40
-                },
-                "ARE": { 
-                    name: "امارات متحده عربی", 
-                    code: "ARE",
-                    reserves: 215, 
-                    production: 45, 
-                    gdp: 501000, 
-                    economicRank: 32,
-                    oil: 3800,
-                    gas: 62000,
-                    bankRank: 30
-                },
-                "NGA": { 
-                    name: "نیجریه", 
-                    code: "NGA",
-                    reserves: 21, 
-                    production: 85, 
-                    gdp: 395000, 
-                    economicRank: 38,
-                    oil: 1700,
-                    gas: 49000,
-                    bankRank: 45
-                },
-                "EGY": { 
-                    name: "مصر", 
-                    code: "EGY",
-                    reserves: 88, 
-                    production: 35, 
-                    gdp: 477000, 
-                    economicRank: 33,
-                    oil: 650,
-                    gas: 67000,
-                    bankRank: 35
-                },
-                "PAK": { 
-                    name: "پاکستان", 
-                    code: "PAK",
-                    reserves: 64, 
-                    production: 2, 
-                    gdp: 376000, 
-                    economicRank: 44,
-                    oil: 85,
-                    gas: 39000,
-                    bankRank: 50
-                },
-                "IDN": { 
-                    name: "اندونزی", 
-                    code: "IDN",
-                    reserves: 78, 
-                    production: 130, 
-                    gdp: 1280000, 
-                    economicRank: 27,
-                    oil: 740,
-                    gas: 89000,
-                    bankRank: 32
-                },
-                "MEX": { 
-                    name: "مکزیک", 
-                    code: "MEX",
-                    reserves: 120, 
-                    production: 110, 
-                    gdp: 1290000, 
-                    economicRank: 26,
-                    oil: 1900,
-                    gas: 37000,
-                    bankRank: 29
-                },
-                "KOR": { 
-                    name: "کره جنوبی", 
-                    code: "KOR",
-                    reserves: 104, 
-                    production: 0, 
-                    gdp: 1730000, 
-                    economicRank: 14,
-                    oil: 0,
-                    gas: 0,
-                    bankRank: 11
-                },
-                "ITA": { 
-                    name: "ایتالیا", 
-                    code: "ITA",
-                    reserves: 2451, 
-                    production: 0, 
-                    gdp: 2010000, 
-                    economicRank: 8,
-                    oil: 90,
-                    gas: 3200,
-                    bankRank: 10
-                },
-                "ESP": { 
-                    name: "اسپانیا", 
-                    code: "ESP",
-                    reserves: 281, 
-                    production: 0, 
-                    gdp: 1420000, 
-                    economicRank: 15,
-                    oil: 20,
-                    gas: 50,
-                    bankRank: 16
-                },
-                "NLD": { 
-                    name: "هلند", 
-                    code: "NLD",
-                    reserves: 612, 
-                    production: 0, 
-                    gdp: 1010000, 
-                    economicRank: 17,
-                    oil: 180,
-                    gas: 45000,
-                    bankRank: 13
-                },
-                "CHE": { 
-                    name: "سوئیس", 
-                    code: "CHE",
-                    reserves: 1040, 
-                    production: 0, 
-                    gdp: 840000, 
-                    economicRank: 20,
-                    oil: 0,
-                    gas: 0,
-                    bankRank: 5
-                }
-            },
-            "2023": {
-                "USA": { reserves: 8000, production: 190, gdp: 25000000, economicRank: 1, oil: 12500, gas: 920000, bankRank: 1 },
-                "CHN": { reserves: 1900, production: 340, gdp: 17500000, economicRank: 2, oil: 4700, gas: 205000, bankRank: 3 },
-                "IRN": { reserves: 420, production: 80, gdp: 1580000, economicRank: 26, oil: 3050, gas: 255000, bankRank: 28 }
-            },
-            "2022": {
-                "USA": { reserves: 7900, production: 185, gdp: 24500000, economicRank: 1, oil: 12300, gas: 910000, bankRank: 1 },
-                "CHN": { reserves: 1850, production: 330, gdp: 17000000, economicRank: 2, oil: 4600, gas: 200000, bankRank: 3 }
+                "USA": { name: "ایالات متحده آمریکا", code: "USA", reserves: 8133, production: 200, gdp: 25400000, economicRank: 1, oil: 12800, gas: 934000 },
+                "CHN": { name: "چین", code: "CHN", reserves: 1948, production: 350, gdp: 17900000, economicRank: 2, oil: 4800, gas: 207000 },
+                "IRN": { name: "ایران", code: "IRN", reserves: 425, production: 85, gdp: 1620000, economicRank: 25, oil: 3100, gas: 258000 },
+                "RUS": { name: "روسیه", code: "RUS", reserves: 2299, production: 300, gdp: 1860000, economicRank: 11, oil: 10700, gas: 701000 },
+                "SAU": { name: "عربستان سعودی", code: "SAU", reserves: 323, production: 250, gdp: 1100000, economicRank: 18, oil: 11500, gas: 112000 },
+                "IND": { name: "هند", code: "IND", reserves: 754, production: 90, gdp: 3740000, economicRank: 5, oil: 800, gas: 32000 },
+                "DEU": { name: "آلمان", code: "DEU", reserves: 3366, production: 5, gdp: 4080000, economicRank: 4, oil: 220, gas: 68000 },
+                "JPN": { name: "ژاپن", code: "JPN", reserves: 846, production: 8, gdp: 4910000, economicRank: 3, oil: 120, gas: 3200 },
+                "GBR": { name: "انگلستان", code: "GBR", reserves: 310, production: 1, gdp: 3130000, economicRank: 6, oil: 950, gas: 42000 },
+                "FRA": { name: "فرانسه", code: "FRA", reserves: 2436, production: 2, gdp: 2930000, economicRank: 7, oil: 160, gas: 1800 },
+                "CAN": { name: "کانادا", code: "CAN", reserves: 180, production: 180, gdp: 2140000, economicRank: 9, oil: 5200, gas: 178000 },
+                "AUS": { name: "استرالیا", code: "AUS", reserves: 79, production: 320, gdp: 1540000, economicRank: 13, oil: 280, gas: 142000 },
+                "ITA": { name: "ایتالیا", code: "ITA", reserves: 2451, production: 0, gdp: 2010000, economicRank: 8, oil: 90, gas: 3200 },
+                "BRA": { name: "برزیل", code: "BRA", reserves: 129, production: 60, gdp: 1920000, economicRank: 12, oil: 2700, gas: 24300 },
+                "KOR": { name: "کره جنوبی", code: "KOR", reserves: 104, production: 0, gdp: 1730000, economicRank: 14, oil: 0, gas: 0 },
+                "ESP": { name: "اسپانیا", code: "ESP", reserves: 281, production: 0, gdp: 1420000, economicRank: 15, oil: 20, gas: 50 },
+                "MEX": { name: "مکزیک", code: "MEX", reserves: 120, production: 110, gdp: 1290000, economicRank: 16, oil: 1900, gas: 37000 },
+                "IDN": { name: "اندونزی", code: "IDN", reserves: 78, production: 130, gdp: 1280000, economicRank: 17, oil: 740, gas: 89000 },
+                "NLD": { name: "هلند", code: "NLD", reserves: 612, production: 0, gdp: 1010000, economicRank: 19, oil: 180, gas: 45000 },
+                "TUR": { name: "ترکیه", code: "TUR", reserves: 478, production: 120, gdp: 906000, economicRank: 20, oil: 65, gas: 450 },
+                "CHE": { name: "سوئیس", code: "CHE", reserves: 1040, production: 0, gdp: 840000, economicRank: 21, oil: 0, gas: 0 },
+                "POL": { name: "لهستان", code: "POL", reserves: 228, production: 0, gdp: 679000, economicRank: 22, oil: 20, gas: 4000 },
+                "SWE": { name: "سوئد", code: "SWE", reserves: 126, production: 0, gdp: 591000, economicRank: 23, oil: 0, gas: 0 },
+                "BEL": { name: "بلژیک", code: "BEL", reserves: 227, production: 0, gdp: 578000, economicRank: 24, oil: 0, gas: 0 },
+                "THA": { name: "تایلند", code: "THA", reserves: 154, production: 0, gdp: 546000, economicRank: 26, oil: 220, gas: 38000 },
+                "NGA": { name: "نیجریه", code: "NGA", reserves: 21, production: 85, gdp: 514000, economicRank: 27, oil: 1680, gas: 49000 },
+                "ARG": { name: "آرژانتین", code: "ARG", reserves: 61, production: 60, gdp: 487000, economicRank: 28, oil: 510, gas: 40000 },
+                "NOR": { name: "نروژ", code: "NOR", reserves: 37, production: 0, gdp: 482000, economicRank: 29, oil: 1750, gas: 112000 },
+                "ISR": { name: "اسرائیل", code: "ISR", reserves: 0, production: 0, gdp: 522000, economicRank: 30, oil: 0, gas: 0 },
+                "ARE": { name: "امارات متحده عربی", code: "ARE", reserves: 215, production: 45, gdp: 501000, economicRank: 31, oil: 3800, gas: 62000 },
+                "ZAF": { name: "آفریقای جنوبی", code: "ZAF", reserves: 125, production: 110, gdp: 406000, economicRank: 32, oil: 0, gas: 0 },
+                "HKG": { name: "هنگ کنگ", code: "HKG", reserves: 2, production: 0, gdp: 383000, economicRank: 33, oil: 0, gas: 0 },
+                "SGP": { name: "سنگاپور", code: "SGP", reserves: 0, production: 0, gdp: 424000, economicRank: 34, oil: 0, gas: 0 },
+                "MYS": { name: "مالزی", code: "MYS", reserves: 38, production: 25, gdp: 407000, economicRank: 35, oil: 560, gas: 74000 },
+                "PHL": { name: "فیلیپین", code: "PHL", reserves: 197, production: 40, gdp: 435000, economicRank: 36, oil: 20, gas: 3200 },
+                "COL": { name: "کلمبیا", code: "COL", reserves: 25, production: 45, gdp: 363000, economicRank: 37, oil: 780, gas: 11000 },
+                "PAK": { name: "پاکستان", code: "PAK", reserves: 64, production: 2, gdp: 376000, economicRank: 38, oil: 85, gas: 38000 },
+                "CHL": { name: "شیلی", code: "CHL", reserves: 0, production: 40, gdp: 317000, economicRank: 39, oil: 10, gas: 1000 },
+                "BGD": { name: "بنگلادش", code: "BGD", reserves: 14, production: 0, gdp: 460000, economicRank: 40, oil: 4, gas: 28000 },
+                "EGY": { name: "مصر", code: "EGY", reserves: 80, production: 15, gdp: 477000, economicRank: 41, oil: 560, gas: 65000 },
+                "FIN": { name: "فنلاند", code: "FIN", reserves: 49, production: 0, gdp: 297000, economicRank: 42, oil: 0, gas: 0 },
+                "VNM": { name: "ویتنام", code: "VNM", reserves: 10, production: 5, gdp: 408000, economicRank: 43, oil: 260, gas: 9800 },
+                "CZE": { name: "جمهوری چک", code: "CZE", reserves: 0, production: 0, gdp: 330000, economicRank: 44, oil: 0, gas: 0 },
+                "ROU": { name: "رومانی", code: "ROU", reserves: 103, production: 0, gdp: 304000, economicRank: 45, oil: 70, gas: 10000 },
+                "PRT": { name: "پرتغال", code: "PRT", reserves: 382, production: 0, gdp: 251000, economicRank: 46, oil: 0, gas: 0 },
+                "PER": { name: "پرو", code: "PER", reserves: 34, production: 130, gdp: 264000, economicRank: 47, oil: 40, gas: 12000 },
+                "NZL": { name: "نیوزیلند", code: "NZL", reserves: 0, production: 0, gdp: 247000, economicRank: 48, oil: 20, gas: 4200 },
+                "GRC": { name: "یونان", code: "GRC", reserves: 3, production: 0, gdp: 239000, economicRank: 49, oil: 0, gas: 0 },
+                "IRQ": { name: "عراق", code: "IRQ", reserves: 96, production: 12, gdp: 267000, economicRank: 50, oil: 4500, gas: 9000 },
+                "DZA": { name: "الجزایر", code: "DZA", reserves: 173, production: 1, gdp: 224000, economicRank: 51, oil: 1350, gas: 93000 },
+                "QAT": { name: "قطر", code: "QAT", reserves: 45, production: 0, gdp: 235000, economicRank: 52, oil: 1850, gas: 177000 },
+                "KAZ": { name: "قزاقستان", code: "KAZ", reserves: 335, production: 110, gdp: 246000, economicRank: 53, oil: 1800, gas: 28000 },
+                "HUN": { name: "مجارستان", code: "HUN", reserves: 0, production: 0, gdp: 203000, economicRank: 54, oil: 0, gas: 2000 },
+                "UKR": { name: "اوکراین", code: "UKR", reserves: 26, production: 3, gdp: 160000, economicRank: 55, oil: 30, gas: 19000 },
+                "KWT": { name: "کویت", code: "KWT", reserves: 79, production: 0, gdp: 184000, economicRank: 56, oil: 2650, gas: 18000 },
+                "MAR": { name: "مراکش", code: "MAR", reserves: 22, production: 0, gdp: 147000, economicRank: 57, oil: 0, gas: 0 },
+                "AGO": { name: "آنگولا", code: "AGO", reserves: 30, production: 40, gdp: 124000, economicRank: 58, oil: 1200, gas: 11000 },
+                "ECU": { name: "اکوادور", code: "ECU", reserves: 11, production: 25, gdp: 121000, economicRank: 59, oil: 480, gas: 500 },
+                "SVK": { name: "اسلواکی", code: "SVK", reserves: 0, production: 0, gdp: 127000, economicRank: 60, oil: 0, gas: 0 }
             }
         };
     }
 }
 
-// راه‌اندازی نقشه
-let worldGoldMap;
+// مقداردهی اولیه
+let worldGoldMapGlass;
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (typeof d3 !== 'undefined' && typeof topojson !== 'undefined') {
-        setTimeout(() => {
-            worldGoldMap = new WorldGoldMap();
-        }, 100);
+    if (typeof d3 !== 'undefined') {
+        worldGoldMapGlass = new WorldGoldMapGlass();
     } else {
-        console.error('کتابخانه‌های D3.js و TopoJSON باید بارگذاری شوند');
+        console.error('D3.js بارگذاری نشده است');
     }
 });
