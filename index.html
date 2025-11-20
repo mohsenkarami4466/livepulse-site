@@ -1585,98 +1585,110 @@
         </div>
     </section>
 
-
-    <!-- نقشه طلای جهان -->
-    <section class="gold-map-section" id="goldMapSection">
-        <div class="map-container">
-            <div class="map-header">
-                <h2>🗺️ نقشه طلای جهان</h2>
-                <p>تحلیل جامع ذخایر طلا، شاخص‌های اقتصادی و منابع انرژی کشورها</p>
-            </div>
-            
+    <!-- نقشه طلای جهان - نسخه شیشه‌ای -->
+    <section class="gold-map-glass" id="goldMapSection">
+        <div class="glass-container">
             <!-- کنترل‌های اصلی -->
-            <div class="map-controls">
-                <div class="filters-container">
-                    <div class="filter-group">
-                        <h4>📊 فیلترهای داده</h4>
-                        <div class="filter-buttons">
-                            <button class="filter-btn active" data-filter="reserves">
-                                <span class="filter-icon">💰</span>
-                                ذخایر طلا
-                            </button>
-                            <button class="filter-btn" data-filter="production">
-                                <span class="filter-icon">⛏️</span>
-                                برداشت طلا
-                            </button>
-                            <button class="filter-btn" data-filter="gdp">
-                                <span class="filter-icon">📈</span>
-                                تولید ناخالص
-                            </button>
-                            <button class="filter-btn" data-filter="economicRank">
-                                <span class="filter-icon">🏆</span>
-                                رتبه اقتصادی
-                            </button>
-                            <button class="filter-btn" data-filter="oil">
-                                <span class="filter-icon">🛢️</span>
-                                تولید نفت
-                            </button>
-                            <button class="filter-btn" data-filter="gas">
-                                <span class="filter-icon">🔥</span>
-                                تولید گاز
-                            </button>
-                            <button class="filter-btn" data-filter="bankRank">
-                                <span class="filter-icon">🏦</span>
-                                رتبه بانک مرکزی
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="year-group">
-                        <h4>📅 بازه زمانی</h4>
-                        <div class="year-buttons">
-                            <button class="year-btn active" data-year="2024">۲۰۲۴</button>
-                            <button class="year-btn" data-year="2023">۲۰۲۳</button>
-                            <button class="year-btn" data-year="2022">۲۰۲۲</button>
-                            <button class="year-btn" data-year="2021">۲۰۲۱</button>
-                            <button class="year-btn" data-year="2020">۲۰۲۰</button>
-                        </div>
+            <div class="controls-glass-panel">
+                <!-- فیلترهای داده -->
+                <div class="filter-glass-card">
+                    <h3 class="glass-card-title">📊 فیلتر داده‌ها</h3>
+                    <div class="filter-buttons-grid">
+                        <button class="glass-filter-btn active" data-filter="reserves">
+                            <span class="btn-icon">💰</span>
+                            <span class="btn-text">ذخایر طلا</span>
+                        </button>
+                        <button class="glass-filter-btn" data-filter="production">
+                            <span class="btn-icon">⛏️</span>
+                            <span class="btn-text">برداشت طلا</span>
+                        </button>
+                        <button class="glass-filter-btn" data-filter="gdp">
+                            <span class="btn-icon">📈</span>
+                            <span class="btn-text">تولید ناخالص</span>
+                        </button>
+                        <button class="glass-filter-btn" data-filter="economicRank">
+                            <span class="btn-icon">🏆</span>
+                            <span class="btn-text">رتبه اقتصادی</span>
+                        </button>
+                        <button class="glass-filter-btn" data-filter="oil">
+                            <span class="btn-icon">🛢️</span>
+                            <span class="btn-text">تولید نفت</span>
+                        </button>
+                        <button class="glass-filter-btn" data-filter="gas">
+                            <span class="btn-icon">🔥</span>
+                            <span class="btn-text">تولید گاز</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="action-buttons">
-                    <button class="globe-3d-btn" id="globe3dBtn" title="نمای سه بعدی پیشرفته">
-                        <div class="globe-icon">🌍</div>
+                <!-- بازه زمانی -->
+                <div class="time-glass-card">
+                    <h3 class="glass-card-title">📅 بازه زمانی</h3>
+                    <div class="year-scroll-container">
+                        <button class="glass-year-btn active" data-year="2024">۲۰۲۴</button>
+                        <button class="glass-year-btn" data-year="2023">۲۰۲۳</button>
+                        <button class="glass-year-btn" data-year="2022">۲۰۲۲</button>
+                        <button class="glass-year-btn" data-year="2021">۲۰۲۱</button>
+                        <button class="glass-year-btn" data-year="2020">۲۰۲۰</button>
+                    </div>
+                </div>
+
+                <!-- دکمه‌های اکشن -->
+                <div class="action-buttons-glass">
+                    <button class="glass-action-btn primary" id="globe3dBtn">
+                        <span class="action-icon">🌐</span>
                         <span>نمای 3D</span>
                     </button>
-                    <button class="reset-view-btn" id="resetView">
-                        <span>🔄</span>
-                        بازنشانی
-                    </button>
                 </div>
             </div>
 
-            <!-- نقشه و اطلاعات -->
-            <div class="map-content">
-                <div class="map-wrapper">
-                    <div id="goldMap"></div>
-                    <div class="map-controls-overlay">
-                        <button class="zoom-control" id="zoomIn">+</button>
-                        <button class="zoom-control" id="zoomOut">-</button>
-                        <button class="reset-zoom" id="resetZoom">⟲</button>
-                        <div class="coordinates" id="coordinates">مقیاس: 1.0x</div>
+            <!-- محتوای اصلی -->
+            <div class="main-content-grid">
+                <!-- نقشه -->
+                <div class="map-glass-container">
+                    <div class="map-wrapper-glass">
+                        <div id="goldMapGlass" class="gold-map-visual"></div>
+                        <div class="map-controls-glass">
+                            <button class="glass-control-btn" id="zoomIn">
+                                <span>+</span>
+                            </button>
+                            <button class="glass-control-btn" id="zoomOut">
+                                <span>-</span>
+                            </button>
+                            <button class="glass-control-btn" id="resetZoom">
+                                <span>⟲</span>
+                            </button>
+                            <div class="scale-indicator">
+                                <span id="coordinates">مقیاس: 1.0x</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="info-panel">
-                    <div class="top-countries">
-                        <h4>🏆 رتبه‌بندی جهانی</h4>
-                        <div id="topCountriesList" class="countries-list"></div>
+                <!-- پنل اطلاعات -->
+                <div class="info-glass-panel">
+                    <!-- رتبه‌بندی -->
+                    <div class="ranking-glass-card">
+                        <div class="card-header-glass">
+                            <h3>🏆 رتبه‌بندی جهانی</h3>
+                            <div class="filter-badge" id="currentFilterBadge">ذخایر طلا</div>
+                        </div>
+                        <div class="countries-ranking-list" id="topCountriesList">
+                            <!-- لیست کشورها اینجا لود می‌شود -->
+                        </div>
                     </div>
-                    
-                    <div class="country-comparison">
-                        <h4>📊 مقایسه کشورها</h4>
-                        <div id="countryComparison" class="comparison-container">
-                            <div class="comparison-placeholder">
+
+                    <!-- مقایسه -->
+                    <div class="comparison-glass-card">
+                        <div class="card-header-glass">
+                            <h3>📊 مقایسه کشورها</h3>
+                            <div class="selection-count">
+                                <span id="selectedCount">0</span>/2
+                            </div>
+                        </div>
+                        <div class="comparison-content" id="countryComparison">
+                            <div class="empty-state">
+                                <div class="empty-icon">🌍</div>
                                 <p>برای مقایسه، روی کشورها در نقشه کلیک کنید</p>
                                 <small>می‌توانید حداکثر ۲ کشور را انتخاب کنید</small>
                             </div>
@@ -1686,7 +1698,7 @@
             </div>
         </div>
     </section>
-
+    
     
     <!-- 🔻 فوتر (مشترک) -->
     <footer class="main-footer">
