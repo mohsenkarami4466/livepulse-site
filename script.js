@@ -391,16 +391,245 @@ function animate() {
 
 /* باز/بسته مودال */
 document.getElementById('globeContainer').addEventListener('click', () => {
-  const modal = document.getElementById('gcModal');
-  const simpleClock = document.getElementById('gcClockSimple');
-  modal.style.display = 'grid';
-  const active = marketData.filter(m => statusColor(m) === 0x00ff00).length;
-  simpleClock.innerHTML = `
-    <p>ساعت UTC هم‌اکنون: <strong>${String(new Date().getUTCHours()).padStart(2,'0')}:${String(new Date().getUTCMinutes()).padStart(2,'0')}</strong></p>
-    <p>بازارهای فعال: ${active}</p>
-  `;
+  openFinancialGlobe(); // این تابع رو خودمون قبلاً ساختیم
 });
+
+document.getElementById('globeContainer').addEventListener('click', () => {
+  if (!isUserLoggedIn()) {
+    showLoginPrompt();
+    return;
+  }
+  openFinancialGlobe();
+});
+
+// تابع بررسی لاگین
+function isUserLoggedIn() {
+  return true; // ✅ برای تست
+}
+
+// تابع نمایش پیام لاگین
+function showLoginPrompt() {
+  alert('🔐 برای دسترسی به این قابلیت، لطفاً وارد حساب کاربری خود شوید.\n\nاین قسمت فقط برای کاربران دارای اشتراک فعال می‌باشد.');
+  // بعداً می‌تونی یه modal زیبا بسازی
+}
+
+
 document.querySelector('.gc-close').onclick = () => document.getElementById('gcModal').style.display='none';
+
+
+
+// ==================== //
+//     سیستم کره‌های سه بعدی پایدار
+// ==================== //
+
+// آدرس تصاویر NASA با کیفیت بالا
+const EARTH_DAY_TEXTURE = 'https://eoimages.gsfc.nasa.gov/images/imagerecords/144000/144898/land_shallow_topo_2048.jpg';
+
+// مدیریت صحنه‌های فعال
+let activeScenes = {
+    financial: null,
+    resources: null
+};
+
+// تابع اصلی برای ساخت کره
+function createAdvancedGlobe(containerId, type) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error('المان پیدا نشد:', containerId);
+        return null;
+    }
+
+    // پاک کردن محتوای قبلی
+    container.innerHTML = '';
+
+    try {
+        // ۱. ایجاد صحنه
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        
+        // ۲. ایجاد رندرر
+        const renderer = new THREE.WebGLRenderer({ 
+            antialias: true, 
+            alpha: true 
+        });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // ۳. نورپردازی
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 3, 5);
+        scene.add(directionalLight);
+
+        // ۴. ساخت کره زمین
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const textureLoader = new THREE.TextureLoader();
+        
+        textureLoader.load(EARTH_DAY_TEXTURE, (texture) => {
+            const material = new THREE.MeshPhongMaterial({ 
+                map: texture,
+                specular: new THREE.Color(0x333333),
+                shininess: 5
+            });
+            const globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+
+            // ۵. اضافه کردن کنترل‌ها
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 2.5;
+            controls.maxDistance = 15;
+            controls.rotateSpeed = 0.5;
+
+            camera.position.z = 5;
+
+            // ۶. اضافه کردن markers بر اساس نوع
+            addMarkersToScene(scene, type);
+
+            // ۷. انیمیشن
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // چرخش آرام کره
+                globe.rotation.y += 0.001;
+                
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // ۸. مدیریت ریزپانسیو
+            function handleResize() {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+
+            window.addEventListener('resize', handleResize);
+
+            // ۹. ذخیره صحنه
+            activeScenes[type] = { 
+                scene, camera, renderer, controls, animate, handleResize,
+                reset: function() {
+                    controls.reset();
+                    camera.position.z = 5;
+                }
+            };
+
+            console.log('✅ کره با موفقیت ساخته شد:', type);
+        });
+
+        return activeScenes[type];
+
+    } catch (error) {
+        console.error('خطا در ساخت کره:', error);
+        container.innerHTML = `
+            <div style="color: white; text-align: center; padding: 50px; font-family: system-ui;">
+                <div style="font-size: 48px; margin-bottom: 20px;">🌍</div>
+                <h3>کره زمین سه بعدی</h3>
+                <p>این قابلیت به زودی فعال خواهد شد</p>
+                <small>${error.message}</small>
+            </div>
+        `;
+        return null;
+    }
+}
+
+// تابع برای اضافه کردن markers به صحنه
+function addMarkersToScene(scene, type) {
+    const markers = type === 'financial' ? getFinancialMarkers() : getResourceMarkers();
+    
+    markers.forEach(marker => {
+        const phi = (90 - marker.lat) * (Math.PI / 180);
+        const theta = (marker.lng + 180) * (Math.PI / 180);
+        
+        const x = -(2.2 * Math.sin(phi) * Math.cos(theta));
+        const y = (2.2 * Math.cos(phi));
+        const z = (2.2 * Math.sin(phi) * Math.sin(theta));
+        
+        const markerGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+        const markerMaterial = new THREE.MeshBasicMaterial({ color: marker.color });
+        const markerMesh = new THREE.Mesh(markerGeometry, markerMaterial);
+        markerMesh.position.set(x, y, z);
+        scene.add(markerMesh);
+        
+        // اضافه کردن نور به marker (اختیاری)
+        const pointLight = new THREE.PointLight(marker.color, 1, 0.5);
+        pointLight.position.set(x, y, z);
+        scene.add(pointLight);
+    });
+}
+
+// داده‌های markers مالی
+function getFinancialMarkers() {
+    return [
+        { lat: 40.7128, lng: -74.0060, color: 0x00ff00, name: "NYSE" }, // نیویورک - سبز
+        { lat: 51.5074, lng: -0.1278, color: 0x00ff00, name: "LSE" },   // لندن - سبز
+        { lat: 35.6895, lng: 139.6917, color: 0xff0000, name: "TSE" },  // توکیو - قرمز
+        { lat: 22.3193, lng: 114.1694, color: 0xffff00, name: "HKEX" }  // هنگ‌کنگ - زرد
+    ];
+}
+
+// داده‌های markers منابع
+function getResourceMarkers() {
+    return [
+        { lat: -26.2041, lng: 28.0473, color: 0xffd700, name: "طلای آفریقای جنوبی" }, // طلا
+        { lat: 24.7136, lng: 46.6753, color: 0x000000, name: "نفت عربستان" },         // نفت
+        { lat: 65.0000, lng: 153.0000, color: 0x0000ff, name: "گاز روسیه" },         // گاز
+        { lat: 35.6892, lng: 51.3890, color: 0xffa500, name: "معادن ایران" }         // سایر معادن
+    ];
+}
+
+// توابع باز کردن کره‌ها
+function openFinancialGlobe() {
+    console.log('📈 باز کردن کره مالی...');
+    const modal = document.getElementById('financialGlobeModal');
+    modal.style.display = 'block';
+    
+    setTimeout(() => {
+        if (!activeScenes.financial) {
+            createAdvancedGlobe('financialGlobeContainer', 'financial');
+        }
+    }, 100);
+}
+
+function openResourcesGlobe() {
+    console.log('🌍 باز کردن کره منابع...');
+    const modal = document.getElementById('resourcesGlobeModal');
+    modal.style.display = 'block';
+    
+    setTimeout(() => {
+        if (!activeScenes.resources) {
+            createAdvancedGlobe('resourcesGlobeContainer', 'resources');
+        }
+    }, 100);
+}
+
+// توابع مدیریت
+function closeGlobeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.style.display = 'none';
+}
+
+function resetGlobeView(type) {
+    if (activeScenes[type]) {
+        activeScenes[type].reset();
+    }
+}
+
+// تابع بررسی لاگین
+function isUserLoggedIn() {
+    return true; // ✅ برای تست
+}
+
+function showLoginPrompt() {
+    alert('🔐 برای دسترسی به این قابلیت، لطفاً وارد حساب کاربری خود شوید.');
+}
+
+
 
 // ==================== //
 // 🏠 بخش خانه - کارت‌های قیمت
