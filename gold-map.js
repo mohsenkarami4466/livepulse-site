@@ -235,8 +235,14 @@ class WorldGoldMapGlass {
         if (resetZoomBtn) resetZoomBtn.addEventListener('click', () => this.resetZoom());
         if (zoomInBtn) zoomInBtn.addEventListener('click', () => this.zoomIn());
         if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => this.zoomOut());
-        if (globe3dBtn) globe3dBtn.addEventListener('click', () => this.showGlobeModal());
-
+        if (globe3dBtn) globe3dBtn.addEventListener('click', () => {
+          if (!isUserLoggedIn()) {
+            showLoginPrompt();
+            return;
+          }
+          openResourcesGlobe();
+        });
+        
         // ریسایز
         let resizeTimer;
         window.addEventListener('resize', () => {
