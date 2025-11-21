@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LivePulse.ir - قیمت لحظه‌ای ارز، طلا و رمزارز</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- کتابخانه‌های اصلی -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
-
+    
     <!-- Globe Clock -->
-    <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-    window.THREE = THREE;
-    </script>    
+    <!-- ✅ راه حل: از CDN معمولی استفاده کن -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
+    <!-- کتابخانه‌های کره‌های سه بعدی -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/globe.gl@2.32.0/dist/globe.gl.min.js"></script>
+
+    
 </head>
 
 <body data-theme="light">
@@ -27,6 +33,28 @@
             <div id="gcClockSimple"></div>
         </div>
     </div>    
+
+ 
+    <!--   کره های بزرگ -->
+    <div id="financialGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <span class="close-globe">&times; بستن</span>
+            <div id="financialGlobeContainer" class="globe-container"></div>
+            <div class="globe-controls">
+                <button id="resetFinancialView" class="control-btn">🔄 بازیابی دید</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resourcesGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <span class="close-globe">&times; بستن</span>
+            <div id="resourcesGlobeContainer" class="globe-container"></div>
+            <div class="globe-controls">
+                <button id="resetResourcesView" class="control-btn">🔄 بازیابی دید</button>
+            </div>
+        </div>
+    </div>   
     
     <!-- 🔝 هدر شیشه‌ای مات -->
     <header class="glass-header">
@@ -1812,6 +1840,13 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <script src="gold-map.js"></script>
+
+    <!-- در <head> یا قبل از </body> اینا رو اضافه کن -->
+    <script src="globe/globe-base.js"></script>
+    <script src="globe/financial-globe.js"></script>
+    <script src="globe/resources-globe.js"></script>
+    <script src="data/mock-financial-data.js"></script>
+    <script src="data/mock-resources-data.js"></script>   
 
          
     <script src="script.js"></script>
