@@ -390,9 +390,9 @@ function animate() {
 }
 
 /* باز/بسته مودال */
-document.getElementById('globeContainer').addEventListener('click', () => {
-  openFinancialGlobe(); // این تابع رو خودمون قبلاً ساختیم
-});
+//document.getElementById('globeContainer').addEventListener('click', () => {
+  //openFinancialGlobe(); // این تابع رو خودمون قبلاً ساختیم
+//});
 
 document.getElementById('globeContainer').addEventListener('click', () => {
   if (!isUserLoggedIn()) {
