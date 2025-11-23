@@ -236,12 +236,14 @@ class WorldGoldMapGlass {
         if (zoomInBtn) zoomInBtn.addEventListener('click', () => this.zoomIn());
         if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => this.zoomOut());
         if (globe3dBtn) globe3dBtn.addEventListener('click', () => {
-          if (!isUserLoggedIn()) {
-            showLoginPrompt();
-            return;
-          }
-          openResourcesGlobe();
+            if (typeof openResourcesGlobe !== 'undefined') {
+                openResourcesGlobe();
+            } else {
+                console.error('تابع openResourcesGlobe پیدا نشد');
+                alert('سیستم کره‌ها در حال بارگذاری است...');
+            }
         });
+        
         
         // ریسایز
         let resizeTimer;
