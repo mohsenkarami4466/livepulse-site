@@ -394,13 +394,67 @@ function animate() {
   //openFinancialGlobe(); // این تابع رو خودمون قبلاً ساختیم
 //});
 
-document.getElementById('globeContainer').addEventListener('click', () => {
-  if (!isUserLoggedIn()) {
-    showLoginPrompt();
-    return;
-  }
-  openFinancialGlobe();
-});
+// Event listener برای کره کوچک - بهبود یافته
+let globeClickHandler = null;
+function setupGlobeContainerClick() {
+    const globeContainer = document.getElementById('globeContainer');
+    if (!globeContainer) {
+        console.warn('⚠️ globeContainer پیدا نشد، دوباره تلاش می‌کنم...');
+        setTimeout(setupGlobeContainerClick, 500);
+        return;
+    }
+    
+    // حذف event listener قبلی اگر وجود دارد
+    if (globeClickHandler) {
+        globeContainer.removeEventListener('click', globeClickHandler);
+    }
+    
+    // ساخت handler جدید
+    globeClickHandler = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        console.log('🖱️ کلیک روی کره کوچک - باز کردن کره مالی...');
+        
+        // جلوگیری از کلیک‌های مکرر
+        if (globeContainer.dataset.opening === 'true') {
+            console.log('⏳ کره در حال باز شدن است، صبر کنید...');
+            return false;
+        }
+        
+        globeContainer.dataset.opening = 'true';
+        
+        // باز کردن کره
+        try {
+            openFinancialGlobe();
+        } catch (error) {
+            console.error('❌ خطا در باز کردن کره:', error);
+            globeContainer.dataset.opening = 'false';
+        }
+        
+        // بعد از 2 ثانیه دوباره فعال کن
+        setTimeout(() => {
+            globeContainer.dataset.opening = 'false';
+        }, 2000);
+        
+        return false;
+    };
+    
+    // اضافه کردن event listener
+    globeContainer.addEventListener('click', globeClickHandler, { passive: false });
+    globeContainer.style.cursor = 'pointer';
+    globeContainer.style.userSelect = 'none';
+    
+    console.log('✅ Event listener برای کره کوچک تنظیم شد');
+}
+
+// راه‌اندازی هنگام لود صفحه
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupGlobeContainerClick);
+} else {
+    setupGlobeContainerClick();
+}
 
 // تابع بررسی لاگین
 function isUserLoggedIn() {
@@ -419,17 +473,170 @@ document.querySelector('.gc-close').onclick = () => document.getElementById('gcM
 
 
 // ==================== //
-//     سیستم کره‌های سه بعدی پایدار
+// سیستم کامل کره‌های سه بعدی
 // ==================== //
 
-// آدرس تصاویر NASA با کیفیت بالا
-const EARTH_DAY_TEXTURE = 'https://eoimages.gsfc.nasa.gov/images/imagerecords/144000/144898/land_shallow_topo_2048.jpg';
-
-// مدیریت صحنه‌های فعال
+const EARTH_DAY_TEXTURE = 'earth-day.jpg';
 let activeScenes = {
     financial: null,
     resources: null
 };
+
+// تابع برای اضافه کردن markers به صحنه
+function addMarkersToScene(scene, type, globe) {
+    let markers = [];
+    
+    if (type === 'financial') {
+        // استفاده از داده‌های mockFinancialData اگر موجود باشد
+        if (typeof mockFinancialData !== 'undefined') {
+            markers = mockFinancialData.map(point => ({
+                lat: point.lat,
+                lng: point.lng,
+                color: point.status === 'open' ? 0x00ff00 : 0xff0000,
+                name: point.name,
+                country: point.country,
+                hours: point.hours,
+                status: point.status,
+                indicators: point.indicators
+            }));
+        } else {
+            // داده‌های پیش‌فرض
+            markers = [
+                { lat: 40.7128, lng: -74.0060, color: 0x00ff00, name: "NYSE", country: "آمریکا" },
+                { lat: 51.5074, lng: -0.1278, color: 0xff0000, name: "LSE", country: "انگلیس" },
+                { lat: 35.6895, lng: 139.6917, color: 0xff0000, name: "TSE", country: "ژاپن" },
+                { lat: 22.3193, lng: 114.1694, color: 0xffff00, name: "HKEX", country: "هنگ‌کنگ" }
+            ];
+        }
+    } else if (type === 'resources') {
+        // استفاده از داده‌های mockResourcesData اگر موجود باشد
+        if (typeof mockResourcesData !== 'undefined') {
+            markers = mockResourcesData.map(point => {
+                // تبدیل رنگ hex به عدد
+                let colorNum = 0xffa500; // پیش‌فرض
+                if (point.color) {
+                    if (point.color.startsWith('#')) {
+                        colorNum = parseInt(point.color.replace('#', ''), 16);
+                    } else if (typeof point.color === 'string') {
+                        // تبدیل نام رنگ به عدد
+                        const colorMap = {
+                            '#f59e0b': 0xf59e0b,
+                            '#000000': 0x000000,
+                            '#3b82f6': 0x3b82f6
+                        };
+                        colorNum = colorMap[point.color] || 0xffa500;
+                    }
+                }
+                
+                return {
+                    lat: point.lat,
+                    lng: point.lng,
+                    color: colorNum,
+                    name: point.name,
+                    country: point.country,
+                    resource: point.resource,
+                    reserves: point.reserves,
+                    production: point.production
+                };
+            });
+        } else {
+            // داده‌های پیش‌فرض
+            markers = [
+                { lat: -26.2041, lng: 28.0473, color: 0xffd700, name: "طلای آفریقای جنوبی", country: "آفریقای جنوبی" },
+                { lat: 24.7136, lng: 46.6753, color: 0x000000, name: "نفت عربستان", country: "عربستان" },
+                { lat: 65.0000, lng: 153.0000, color: 0x0000ff, name: "گاز روسیه", country: "روسیه" },
+                { lat: 35.6892, lng: 51.3890, color: 0xffa500, name: "معادن ایران", country: "ایران" }
+            ];
+        }
+    }
+    
+    markers.forEach(marker => {
+        const phi = (90 - marker.lat) * (Math.PI / 180);
+        const theta = (marker.lng + 180) * (Math.PI / 180);
+        
+        const x = -(2.2 * Math.sin(phi) * Math.cos(theta));
+        const y = (2.2 * Math.cos(phi));
+        const z = (2.2 * Math.sin(phi) * Math.sin(theta));
+        
+        // ساخت marker حرفه‌ای - هرم (pyramid) برای نمایش دقیق‌تر
+        const markerGroup = new THREE.Group();
+        
+        // بدنه اصلی - هرم کوچک
+        const pyramidGeometry = new THREE.ConeGeometry(0.06, 0.12, 4);
+        const markerMaterial = new THREE.MeshPhongMaterial({ 
+            color: marker.color,
+            emissive: marker.color,
+            emissiveIntensity: 0.3,
+            transparent: true,
+            opacity: 0.95,
+            shininess: 100
+        });
+        const pyramid = new THREE.Mesh(pyramidGeometry, markerMaterial);
+        pyramid.rotation.z = Math.PI / 4; // چرخش 45 درجه
+        markerGroup.add(pyramid);
+        
+        // حلقه در پایه هرم برای تأکید بیشتر
+        const ringGeometry = new THREE.TorusGeometry(0.08, 0.01, 8, 16);
+        const ringMaterial = new THREE.MeshBasicMaterial({ 
+            color: marker.color,
+            transparent: true,
+            opacity: 0.8
+        });
+        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = -0.06;
+        markerGroup.add(ring);
+        
+        // نقطه درخشان در بالای marker
+        const glowGeometry = new THREE.SphereGeometry(0.03, 8, 8);
+        const glowMaterial = new THREE.MeshBasicMaterial({ 
+            color: marker.color,
+            transparent: true,
+            opacity: 1
+        });
+        const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+        glow.position.y = 0.08;
+        markerGroup.add(glow);
+        
+        // تنظیم موقعیت
+        markerGroup.position.set(x, y, z);
+        
+        // چرخش marker به سمت مرکز کره (normal vector)
+        const normal = new THREE.Vector3(x, y, z).normalize();
+        markerGroup.lookAt(normal.multiplyScalar(10));
+        markerGroup.rotateX(Math.PI / 2); // چرخش 90 درجه
+        
+        // ذخیره اطلاعات marker
+        markerGroup.userData = marker;
+        markerGroup.userData.markerInfo = {
+            name: marker.name,
+            country: marker.country || '',
+            type: type,
+            lat: marker.lat,
+            lng: marker.lng
+        };
+        
+        // اضافه کردن خط نازک به سطح کره (نه به مرکز)
+        const lineLength = 0.3;
+        const lineEnd = new THREE.Vector3(x, y, z).normalize().multiplyScalar(2.2 - lineLength);
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(x, y, z),
+            lineEnd
+        ]);
+        const lineMaterial = new THREE.LineBasicMaterial({ 
+            color: marker.color,
+            transparent: true,
+            opacity: 0.2,
+            linewidth: 1
+        });
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        
+        scene.add(markerGroup);
+        scene.add(line);
+    });
+    
+    console.log(`✅ ${markers.length} marker اضافه شد برای نوع: ${type}`);
+}
 
 // تابع اصلی برای ساخت کره
 function createAdvancedGlobe(containerId, type) {
@@ -441,194 +648,588 @@ function createAdvancedGlobe(containerId, type) {
 
     // پاک کردن محتوای قبلی
     container.innerHTML = '';
-
-    try {
-        // ۱. ایجاد صحنه
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    
+    // اطمینان از اینکه container اندازه دارد
+    let retryCount = 0;
+    const maxRetries = 20; // حداکثر 20 بار تلاش (2 ثانیه)
+    
+    const ensureSize = () => {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
         
-        // ۲. ایجاد رندرر
-        const renderer = new THREE.WebGLRenderer({ 
-            antialias: true, 
-            alpha: true 
+        console.log(`🔍 بررسی اندازه container (تلاش ${retryCount + 1}/${maxRetries}):`, {
+            width,
+            height,
+            display: window.getComputedStyle(container).display,
+            visibility: window.getComputedStyle(container).visibility
         });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
-
-        // ۳. نورپردازی
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
         
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 3, 5);
-        scene.add(directionalLight);
-
-        // ۴. ساخت کره زمین
-        const geometry = new THREE.SphereGeometry(2, 64, 64);
-        const textureLoader = new THREE.TextureLoader();
+        if (width === 0 || height === 0) {
+            retryCount++;
+            if (retryCount >= maxRetries) {
+                console.error('❌ Container بعد از 20 تلاش هنوز اندازه ندارد!');
+                container.innerHTML = `
+                    <div style="color: white; text-align: center; padding: 50px; font-family: Arial; background: rgba(255,0,0,0.2); border-radius: 10px;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">⚠️</div>
+                        <h3 style="color: #ff6b6b;">خطا در نمایش کره</h3>
+                        <p style="color: #94a3b8; margin-top: 10px;">
+                            Container اندازه ندارد. لطفاً صفحه را رفرش کنید.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            // اگر اندازه ندارد، منتظر بمان
+            setTimeout(ensureSize, 100);
+            return;
+        }
         
-        textureLoader.load(EARTH_DAY_TEXTURE, (texture) => {
-            const material = new THREE.MeshPhongMaterial({ 
-                map: texture,
-                specular: new THREE.Color(0x333333),
-                shininess: 5
+        console.log('✅ Container اندازه دارد، شروع ساخت کره...');
+        createGlobe();
+    };
+    
+    const createGlobe = () => {
+        try {
+            const width = container.clientWidth || window.innerWidth;
+            const height = container.clientHeight || window.innerHeight;
+            
+            if (width === 0 || height === 0) {
+                console.warn('Container هنوز اندازه ندارد، دوباره تلاش می‌کنم...');
+                setTimeout(ensureSize, 100);
+                return;
+            }
+            
+            console.log(`🌍 ساخت کره ${type} با اندازه: ${width}x${height}`);
+            
+            // بررسی وجود Three.js
+            if (typeof THREE === 'undefined') {
+                throw new Error('Three.js لود نشده است!');
+            }
+            
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+            
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.set(0, 0, 5);
+            camera.lookAt(0, 0, 0);
+            
+            const renderer = new THREE.WebGLRenderer({ 
+                antialias: true, 
+                alpha: false,
+                powerPreference: "high-performance"
             });
+            renderer.setSize(width, height);
+            // افزایش pixel ratio برای کیفیت Google Earth-like
+            const maxPixelRatio = Math.min(window.devicePixelRatio, 4);
+            renderer.setPixelRatio(maxPixelRatio);
+            renderer.shadowMap.enabled = false;
+            renderer.antialias = true;
+            // فعال کردن tone mapping برای ظاهر طبیعی‌تر
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.0;
+            // بهبود کیفیت رندر
+            renderer.powerPreference = "high-performance";
+            renderer.preserveDrawingBuffer = false;
+            
+            // پاک کردن container و اضافه کردن renderer
+            container.innerHTML = '';
+            container.appendChild(renderer.domElement);
+            
+            console.log('✅ Renderer ساخته شد و به DOM اضافه شد');
+
+            // نورپردازی طبیعی و یکنواخت برای کیفیت بالا
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+            scene.add(ambientLight);
+            
+            // نور اصلی - تنظیم برای ظاهر طبیعی
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+            directionalLight.position.set(5, 3, 5);
+            directionalLight.castShadow = false;
+            scene.add(directionalLight);
+            
+            // نور اضافی برای روشنایی یکنواخت
+            const pointLight = new THREE.PointLight(0xffffff, 0.3);
+            pointLight.position.set(-5, -3, -5);
+            scene.add(pointLight);
+            
+            // نور از بالا
+            const pointLight2 = new THREE.PointLight(0xffffff, 0.2);
+            pointLight2.position.set(0, 5, 0);
+            scene.add(pointLight2);
+            
+            // نور از پایین برای روشنایی کامل
+            const pointLight3 = new THREE.PointLight(0xffffff, 0.15);
+            pointLight3.position.set(0, -5, 0);
+            scene.add(pointLight3);
+
+            // کره زمین - با کیفیت بسیار بالا برای زوم تا 500 متر
+            // افزایش segments به 512 برای کیفیت Google Earth-like (خیلی بالا)
+            // استفاده از geometry با کیفیت بالا
+            const geometry = new THREE.SphereGeometry(2, 512, 512);
+            
+            // ساخت material با کیفیت بالا و طبیعی
+            const material = new THREE.MeshStandardMaterial({ 
+                color: type === 'financial' ? 0x1e3a8a : 0x0f766e,
+                emissive: type === 'financial' ? 0x0a1a3a : 0x042f2e,
+                emissiveIntensity: 0.1,
+                roughness: 0.9, // سطح مات برای بازتابش کمتر
+                metalness: 0.1, // کمی metalness برای ظاهر طبیعی
+                flatShading: false,
+                transparent: false
+            });
+            
             const globe = new THREE.Mesh(geometry, material);
+            globe.castShadow = false; // غیرفعال برای performance
+            globe.receiveShadow = false;
+            globe.rotation.x = 0; // تنظیم rotation اولیه
+            globe.rotation.y = 0;
+            globe.rotation.z = 0;
             scene.add(globe);
-
-            // ۵. اضافه کردن کنترل‌ها
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.minDistance = 2.5;
-            controls.maxDistance = 15;
-            controls.rotateSpeed = 0.5;
-
-            camera.position.z = 5;
-
-            // ۶. اضافه کردن markers بر اساس نوع
-            addMarkersToScene(scene, type);
-
-            // ۷. انیمیشن
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                // چرخش آرام کره
-                globe.rotation.y += 0.001;
-                
-                controls.update();
-                renderer.render(scene, camera);
-            }
-            animate();
-
-            // ۸. مدیریت ریزپانسیو
-            function handleResize() {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            }
-
-            window.addEventListener('resize', handleResize);
-
-            // ۹. ذخیره صحنه
-            activeScenes[type] = { 
-                scene, camera, renderer, controls, animate, handleResize,
-                reset: function() {
-                    controls.reset();
-                    camera.position.z = 5;
+            
+            // اضافه کردن atmosphere effect (اختیاری - برای ظاهر طبیعی‌تر)
+            const atmosphereGeometry = new THREE.SphereGeometry(2.05, 64, 64);
+            const atmosphereMaterial = new THREE.MeshBasicMaterial({
+                color: type === 'financial' ? 0x1e3a8a : 0x0f766e,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.BackSide
+            });
+            const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+            scene.add(atmosphere);
+            
+            console.log('✅ کره با رنگ ساده ساخته شد');
+            
+            // تلاش برای لود texture با کیفیت بسیار بالا
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(
+                EARTH_DAY_TEXTURE, 
+                (texture) => {
+                    console.log('✅ Texture لود شد، آپدیت material با کیفیت بالا...');
+                    // تنظیمات texture برای کیفیت Google Earth-like
+                    texture.wrapS = THREE.ClampToEdgeWrapping;
+                    texture.wrapT = THREE.ClampToEdgeWrapping;
+                    // استفاده از بهترین فیلترها برای کیفیت بالا
+                    texture.minFilter = THREE.LinearMipmapLinearFilter;
+                    texture.magFilter = THREE.LinearFilter; // برای زوم بالا
+                    // استفاده از حداکثر anisotropy برای کیفیت بالا
+                    const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+                    texture.anisotropy = Math.min(maxAnisotropy, 16);
+                    texture.generateMipmaps = true;
+                    // بهبود کیفیت texture
+                    texture.flipY = false;
+                    texture.format = THREE.RGBAFormat;
+                    texture.type = THREE.UnsignedByteType;
+                    
+                    // آپدیت material با texture
+                    material.map = texture;
+                    material.needsUpdate = true;
+                    
+                    console.log('✅ Texture با کیفیت بالا اعمال شد');
+                },
+                undefined,
+                (error) => {
+                    console.log('⚠️ Texture لود نشد، استفاده از رنگ ساده');
+                    // ساخت gradient manual برای ظاهر طبیعی‌تر
+                    material.color.setHex(type === 'financial' ? 0x1e3a8a : 0x0f766e);
+                    material.emissive.setHex(type === 'financial' ? 0x0a1a3a : 0x042f2e);
                 }
-            };
+            );
+            
+            // راه‌اندازی صحنه
+            setupScene(scene, camera, renderer, globe, type, container);
 
-            console.log('✅ کره با موفقیت ساخته شد:', type);
-        });
-
-        return activeScenes[type];
-
-    } catch (error) {
-        console.error('خطا در ساخت کره:', error);
+        } catch (error) {
+            console.error('❌ خطا در ساخت کره:', error);
+            container.innerHTML = `
+                <div style="color: white; text-align: center; padding: 50px; font-family: Arial; background: rgba(0,0,0,0.8); border-radius: 10px;">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🌍</div>
+                    <h3 style="margin-bottom: 10px;">کره زمین سه بعدی</h3>
+                    <p style="color: #ff6b6b; margin-bottom: 20px;">خطا: ${error.message}</p>
+                    <p style="font-size: 14px; color: #94a3b8; margin-bottom: 20px;">
+                        لطفاً Console مرورگر را بررسی کنید (F12)
+                    </p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
+                        🔄 رفرش صفحه
+                    </button>
+                </div>
+            `;
+            return null;
+        }
+    };
+    
+    // تست Three.js قبل از شروع
+    if (typeof THREE === 'undefined') {
         container.innerHTML = `
-            <div style="color: white; text-align: center; padding: 50px; font-family: system-ui;">
-                <div style="font-size: 48px; margin-bottom: 20px;">🌍</div>
-                <h3>کره زمین سه بعدی</h3>
-                <p>این قابلیت به زودی فعال خواهد شد</p>
-                <small>${error.message}</small>
+            <div style="color: white; text-align: center; padding: 50px; font-family: Arial; background: rgba(255,0,0,0.2); border-radius: 10px;">
+                <div style="font-size: 64px; margin-bottom: 20px;">⚠️</div>
+                <h3 style="color: #ff6b6b;">Three.js لود نشده است!</h3>
+                <p style="color: #94a3b8; margin-top: 10px;">
+                    لطفاً صفحه را رفرش کنید یا بررسی کنید که Three.js درست لود شده باشد.
+                </p>
             </div>
         `;
+        console.error('❌ Three.js لود نشده است!');
         return null;
     }
-}
-
-// تابع برای اضافه کردن markers به صحنه
-function addMarkersToScene(scene, type) {
-    const markers = type === 'financial' ? getFinancialMarkers() : getResourceMarkers();
     
-    markers.forEach(marker => {
-        const phi = (90 - marker.lat) * (Math.PI / 180);
-        const theta = (marker.lng + 180) * (Math.PI / 180);
-        
-        const x = -(2.2 * Math.sin(phi) * Math.cos(theta));
-        const y = (2.2 * Math.cos(phi));
-        const z = (2.2 * Math.sin(phi) * Math.sin(theta));
-        
-        const markerGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-        const markerMaterial = new THREE.MeshBasicMaterial({ color: marker.color });
-        const markerMesh = new THREE.Mesh(markerGeometry, markerMaterial);
-        markerMesh.position.set(x, y, z);
-        scene.add(markerMesh);
-        
-        // اضافه کردن نور به marker (اختیاری)
-        const pointLight = new THREE.PointLight(marker.color, 1, 0.5);
-        pointLight.position.set(x, y, z);
-        scene.add(pointLight);
+    console.log('✅ Three.js موجود است:', {
+        version: THREE.REVISION,
+        WebGLRenderer: typeof THREE.WebGLRenderer !== 'undefined',
+        Scene: typeof THREE.Scene !== 'undefined',
+        PerspectiveCamera: typeof THREE.PerspectiveCamera !== 'undefined'
     });
+    
+    // شروع ساخت
+    ensureSize();
+    
+    return activeScenes[type];
 }
 
-// داده‌های markers مالی
-function getFinancialMarkers() {
-    return [
-        { lat: 40.7128, lng: -74.0060, color: 0x00ff00, name: "NYSE" }, // نیویورک - سبز
-        { lat: 51.5074, lng: -0.1278, color: 0x00ff00, name: "LSE" },   // لندن - سبز
-        { lat: 35.6895, lng: 139.6917, color: 0xff0000, name: "TSE" },  // توکیو - قرمز
-        { lat: 22.3193, lng: 114.1694, color: 0xffff00, name: "HKEX" }  // هنگ‌کنگ - زرد
-    ];
+// تابع کمکی برای setup
+function setupScene(scene, camera, renderer, globe, type, container) {
+    console.log('🔧 راه‌اندازی صحنه...');
+    
+    // کنترل‌ها
+    let controls = null;
+    try {
+        if (typeof THREE !== 'undefined' && typeof THREE.OrbitControls !== 'undefined') {
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            // تنظیم minDistance برای جلوگیری از رد شدن دوربین از کره
+            // شعاع کره 2 است، پس minDistance باید بیشتر از 2 باشد
+            controls.minDistance = 2.1; // نزدیک‌ترین فاصله (حدود 500 متر در مقیاس واقعی)
+            controls.maxDistance = 200; // زوم خیلی دور
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.02;
+            controls.enablePan = true;
+            controls.panSpeed = 0.8;
+            controls.zoomSpeed = 1.2;
+            controls.enablePan = true;
+            controls.enableZoom = true;
+            controls.autoRotate = false;
+            console.log('✅ OrbitControls ساخته شد');
+        } else {
+            console.warn('⚠️ OrbitControls لود نشده است. کنترل‌ها غیرفعال هستند.');
+        }
+    } catch (error) {
+        console.error('❌ خطا در ساخت OrbitControls:', error);
+    }
+
+    // تنظیم موقعیت camera
+    camera.position.set(0, 0, 5);
+    camera.lookAt(0, 0, 0);
+
+    // اضافه کردن markers
+    console.log('📍 اضافه کردن markers...');
+    addMarkersToScene(scene, type, globe);
+
+    // انیمیشن - ذخیره در متغیر برای توقف بعدی
+    let animationId = null;
+    let isAnimating = false;
+    
+    function animate() {
+        if (!isAnimating) return;
+        
+        animationId = requestAnimationFrame(animate);
+        
+        // چرخش کره - سرعت آرام
+        if (globe && globe.rotation) {
+            globe.rotation.y += 0.0005; // کاهش سرعت برای ظاهر طبیعی‌تر
+        }
+        
+        // آپدیت کنترل‌ها
+        if (controls && controls.update) {
+            controls.update();
+        }
+        
+        // رندر صحنه
+        try {
+            renderer.render(scene, camera);
+        } catch (error) {
+            console.error('خطا در رندر:', error);
+            isAnimating = false;
+        }
+    }
+    
+    // شروع انیمیشن
+    isAnimating = true;
+    animate();
+    console.log('✅ انیمیشن شروع شد');
+
+    // مدیریت ریزپانسیو
+    function handleResize() {
+        const width = container.clientWidth || window.innerWidth;
+        const height = container.clientHeight || window.innerHeight;
+        
+        if (width > 0 && height > 0) {
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+            console.log(`📐 ریزایز: ${width}x${height}`);
+        }
+    }
+
+    const resizeHandler = handleResize;
+    window.addEventListener('resize', resizeHandler);
+
+    // ذخیره صحنه
+    activeScenes[type] = { 
+        scene, 
+        camera, 
+        renderer, 
+        controls, 
+        globe,
+        animate: () => {
+            if (!isAnimating) {
+                isAnimating = true;
+                animate();
+            }
+        },
+        stop: () => {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        },
+        handleResize: resizeHandler,
+        reset: function() {
+            if (controls && controls.reset) {
+                controls.reset();
+            }
+            camera.position.set(0, 0, 5);
+            camera.lookAt(0, 0, 0);
+            if (globe) {
+                globe.rotation.set(0, 0, 0);
+            }
+        }
+    };
+
+    console.log(`✅ کره ${type} کاملاً راه‌اندازی شد و آماده نمایش است!`);
+    
+    // تست رندر اولیه
+    setTimeout(() => {
+        try {
+            renderer.render(scene, camera);
+            console.log('✅ تست رندر اولیه موفق بود');
+        } catch (error) {
+            console.error('❌ خطا در تست رندر:', error);
+        }
+    }, 100);
 }
 
-// داده‌های markers منابع
-function getResourceMarkers() {
-    return [
-        { lat: -26.2041, lng: 28.0473, color: 0xffd700, name: "طلای آفریقای جنوبی" }, // طلا
-        { lat: 24.7136, lng: 46.6753, color: 0x000000, name: "نفت عربستان" },         // نفت
-        { lat: 65.0000, lng: 153.0000, color: 0x0000ff, name: "گاز روسیه" },         // گاز
-        { lat: 35.6892, lng: 51.3890, color: 0xffa500, name: "معادن ایران" }         // سایر معادن
-    ];
+// تابع مشترک برای راه‌اندازی کره
+function initializeGlobe(containerId, type) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error(`❌ Container پیدا نشد: ${containerId}`);
+        return;
+    }
+    
+    // اطمینان از نمایش container
+    container.style.display = 'block';
+    container.style.visibility = 'visible';
+    container.style.opacity = '1';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    
+    // بررسی اندازه container
+    let retryCount = 0;
+    const maxRetries = 30;
+    
+    const checkSize = () => {
+        const width = container.clientWidth || window.innerWidth;
+        const height = container.clientHeight || window.innerHeight;
+        
+        console.log(`📦 بررسی Container (${retryCount + 1}/${maxRetries}):`, {
+            width,
+            height,
+            display: window.getComputedStyle(container).display,
+            visibility: window.getComputedStyle(container).visibility,
+            parentDisplay: container.parentElement ? window.getComputedStyle(container.parentElement).display : 'N/A'
+        });
+        
+        if (width === 0 || height === 0) {
+            retryCount++;
+            if (retryCount >= maxRetries) {
+                console.error('❌ Container بعد از 30 تلاش هنوز اندازه ندارد!');
+                container.innerHTML = `
+                    <div style="color: white; text-align: center; padding: 50px;">
+                        <h3>⚠️ خطا در نمایش کره</h3>
+                        <p>لطفاً صفحه را رفرش کنید</p>
+                    </div>
+                `;
+                return;
+            }
+            setTimeout(checkSize, 100);
+            return;
+        }
+        
+        // پاک کردن کره قبلی
+        if (activeScenes[type]) {
+            console.log('🗑️ پاک کردن کره قبلی...');
+            if (activeScenes[type].stop) {
+                activeScenes[type].stop();
+            }
+            if (activeScenes[type].renderer && activeScenes[type].renderer.domElement) {
+                activeScenes[type].renderer.domElement.remove();
+            }
+            activeScenes[type] = null;
+        }
+        
+        console.log(`🆕 ساخت کره ${type} با اندازه: ${width}x${height}`);
+        createAdvancedGlobe(containerId, type);
+    };
+    
+    checkSize();
 }
 
-// توابع باز کردن کره‌ها
+// توابع مدیریت modal با افکت حرفه‌ای
 function openFinancialGlobe() {
     console.log('📈 باز کردن کره مالی...');
     const modal = document.getElementById('financialGlobeModal');
-    modal.style.display = 'block';
+    if (!modal) {
+        console.error('Modal کره مالی پیدا نشد!');
+        return;
+    }
     
-    setTimeout(() => {
-        if (!activeScenes.financial) {
-            createAdvancedGlobe('financialGlobeContainer', 'financial');
+    // پنهان کردن همه چیز و اضافه کردن کلاس
+    document.body.classList.add('globe-modal-open');
+    modal.classList.add('active');
+    
+    // افکت انیمیشن با GSAP
+    if (typeof gsap !== 'undefined') {
+        gsap.fromTo(modal, 
+            { opacity: 0 },
+            { opacity: 1, duration: 0.5, ease: "power2.out" }
+        );
+        
+        const content = modal.querySelector('.globe-modal-content');
+        if (content) {
+            gsap.fromTo(content,
+                { scale: 0.5, opacity: 0, rotationY: 90 },
+                { scale: 1, opacity: 1, rotationY: 0, duration: 0.8, ease: "back.out(1.7)" }
+            );
         }
-    }, 100);
+    }
+    
+    // ساخت کره - با تاخیر بیشتر برای اطمینان از نمایش modal
+    setTimeout(() => {
+        const container = document.getElementById('financialGlobeContainer');
+        if (!container) {
+            console.error('❌ Container پیدا نشد: financialGlobeContainer');
+            // تلاش مجدد
+            setTimeout(() => {
+                const retryContainer = document.getElementById('financialGlobeContainer');
+                if (retryContainer) {
+                    console.log('✅ Container در تلاش دوم پیدا شد');
+                    initializeGlobe('financialGlobeContainer', 'financial');
+                }
+            }, 500);
+            return;
+        }
+        
+        initializeGlobe('financialGlobeContainer', 'financial');
+    }, 800); // افزایش تاخیر برای اطمینان از نمایش کامل modal
 }
 
 function openResourcesGlobe() {
     console.log('🌍 باز کردن کره منابع...');
     const modal = document.getElementById('resourcesGlobeModal');
-    modal.style.display = 'block';
+    if (!modal) {
+        console.error('Modal کره منابع پیدا نشد!');
+        return;
+    }
     
-    setTimeout(() => {
-        if (!activeScenes.resources) {
-            createAdvancedGlobe('resourcesGlobeContainer', 'resources');
+    // پنهان کردن همه چیز و اضافه کردن کلاس
+    document.body.classList.add('globe-modal-open');
+    modal.classList.add('active');
+    
+    // افکت انیمیشن با GSAP
+    if (typeof gsap !== 'undefined') {
+        gsap.fromTo(modal, 
+            { opacity: 0 },
+            { opacity: 1, duration: 0.5, ease: "power2.out" }
+        );
+        
+        const content = modal.querySelector('.globe-modal-content');
+        if (content) {
+            gsap.fromTo(content,
+                { scale: 0.5, opacity: 0, rotationY: 90 },
+                { scale: 1, opacity: 1, rotationY: 0, duration: 0.8, ease: "back.out(1.7)" }
+            );
         }
-    }, 100);
+    }
+    
+    // ساخت کره - با تاخیر بیشتر برای اطمینان از نمایش modal
+    setTimeout(() => {
+        const container = document.getElementById('resourcesGlobeContainer');
+        if (!container) {
+            console.error('❌ Container پیدا نشد: resourcesGlobeContainer');
+            // تلاش مجدد
+            setTimeout(() => {
+                const retryContainer = document.getElementById('resourcesGlobeContainer');
+                if (retryContainer) {
+                    console.log('✅ Container در تلاش دوم پیدا شد');
+                    initializeGlobe('resourcesGlobeContainer', 'resources');
+                }
+            }, 500);
+            return;
+        }
+        
+        initializeGlobe('resourcesGlobeContainer', 'resources');
+    }, 800);
 }
 
-// توابع مدیریت
 function closeGlobeModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal.style.display = 'none';
+    if (!modal) return;
+    
+    // افکت بستن با GSAP
+    if (typeof gsap !== 'undefined') {
+        const content = modal.querySelector('.globe-modal-content');
+        if (content) {
+            gsap.to(content, {
+                scale: 0.5,
+                opacity: 0,
+                rotationY: -90,
+                duration: 0.5,
+                ease: "power2.in",
+                onComplete: () => {
+                    modal.classList.remove('active');
+                    document.body.classList.remove('globe-modal-open');
+                }
+            });
+        } else {
+            modal.classList.remove('active');
+            document.body.classList.remove('globe-modal-open');
+        }
+    } else {
+        modal.classList.remove('active');
+        document.body.classList.remove('globe-modal-open');
+    }
 }
 
+// در دسترس قرار دادن توابع در scope global
+window.openFinancialGlobe = openFinancialGlobe;
+window.openResourcesGlobe = openResourcesGlobe;
+window.closeGlobeModal = closeGlobeModal;
+window.resetGlobeView = resetGlobeView;
+
 function resetGlobeView(type) {
-    if (activeScenes[type]) {
+    if (activeScenes[type] && activeScenes[type].reset) {
         activeScenes[type].reset();
     }
 }
 
-// تابع بررسی لاگین
 function isUserLoggedIn() {
-    return true; // ✅ برای تست
+    return true;
 }
 
 function showLoginPrompt() {
     alert('🔐 برای دسترسی به این قابلیت، لطفاً وارد حساب کاربری خود شوید.');
 }
-
 
 
 // ==================== //
@@ -1509,6 +2110,42 @@ function setupEventListeners() {
     elements.analyzeDiamond.addEventListener('click', analyzeDiamond);
     elements.convertCurrency.addEventListener('click', convertCurrency);
     elements.analyzeCoin.addEventListener('click', analyzeCoin);
+    
+    // دکمه‌های بستن کره‌ها
+    const closeFinancialGlobe = document.querySelector('#financialGlobeModal .close-globe');
+    const closeResourcesGlobe = document.querySelector('#resourcesGlobeModal .close-globe');
+    
+    if (closeFinancialGlobe) {
+        closeFinancialGlobe.addEventListener('click', () => {
+            closeGlobeModal('financialGlobeModal');
+        });
+    }
+    
+    if (closeResourcesGlobe) {
+        closeResourcesGlobe.addEventListener('click', () => {
+            closeGlobeModal('resourcesGlobeModal');
+        });
+    }
+    
+    // بستن modal با کلیک روی overlay
+    const financialModal = document.getElementById('financialGlobeModal');
+    const resourcesModal = document.getElementById('resourcesGlobeModal');
+    
+    if (financialModal) {
+        financialModal.addEventListener('click', (e) => {
+            if (e.target === financialModal) {
+                closeGlobeModal('financialGlobeModal');
+            }
+        });
+    }
+    
+    if (resourcesModal) {
+        resourcesModal.addEventListener('click', (e) => {
+            if (e.target === resourcesModal) {
+                closeGlobeModal('resourcesGlobeModal');
+            }
+        });
+    }
     
     // آپلود عکس
     document.getElementById('diamondUploadArea').addEventListener('click', () => {
