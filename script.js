@@ -394,66 +394,43 @@ function animate() {
   //openFinancialGlobe(); // این تابع رو خودمون قبلاً ساختیم
 //});
 
-// Event listener برای کره کوچک - بهبود یافته
-let globeClickHandler = null;
-function setupGlobeContainerClick() {
-    const globeContainer = document.getElementById('globeContainer');
-    if (!globeContainer) {
-        console.warn('⚠️ globeContainer پیدا نشد، دوباره تلاش می‌کنم...');
-        setTimeout(setupGlobeContainerClick, 500);
-        return;
+// Event listener برای کره کوچک - فقط یک بار و با stopPropagation
+const globeContainer = document.getElementById('globeContainer');
+if (globeContainer) {
+  // حذف event listenerهای قبلی
+  const newGlobeContainer = globeContainer.cloneNode(true);
+  globeContainer.parentNode.replaceChild(newGlobeContainer, globeContainer);
+  
+  // اضافه کردن event listener جدید
+  newGlobeContainer.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    
+    console.log('🖱️ کلیک روی کره کوچک');
+    
+    if (!isUserLoggedIn()) {
+      showLoginPrompt();
+      return;
     }
     
-    // حذف event listener قبلی اگر وجود دارد
-    if (globeClickHandler) {
-        globeContainer.removeEventListener('click', globeClickHandler);
+    // جلوگیری از کلیک‌های مکرر
+    if (newGlobeContainer.dataset.opening === 'true') {
+      console.log('⏳ کره در حال باز شدن است...');
+      return;
     }
     
-    // ساخت handler جدید
-    globeClickHandler = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        console.log('🖱️ کلیک روی کره کوچک - باز کردن کره مالی...');
-        
-        // جلوگیری از کلیک‌های مکرر
-        if (globeContainer.dataset.opening === 'true') {
-            console.log('⏳ کره در حال باز شدن است، صبر کنید...');
-            return false;
-        }
-        
-        globeContainer.dataset.opening = 'true';
-        
-        // باز کردن کره
-        try {
-            openFinancialGlobe();
-        } catch (error) {
-            console.error('❌ خطا در باز کردن کره:', error);
-            globeContainer.dataset.opening = 'false';
-        }
-        
-        // بعد از 2 ثانیه دوباره فعال کن
-        setTimeout(() => {
-            globeContainer.dataset.opening = 'false';
-        }, 2000);
-        
-        return false;
-    };
+    newGlobeContainer.dataset.opening = 'true';
+    openFinancialGlobe();
     
-    // اضافه کردن event listener
-    globeContainer.addEventListener('click', globeClickHandler, { passive: false });
-    globeContainer.style.cursor = 'pointer';
-    globeContainer.style.userSelect = 'none';
-    
-    console.log('✅ Event listener برای کره کوچک تنظیم شد');
-}
-
-// راه‌اندازی هنگام لود صفحه
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupGlobeContainerClick);
-} else {
-    setupGlobeContainerClick();
+    // بعد از 1 ثانیه دوباره فعال کن
+    setTimeout(() => {
+      newGlobeContainer.dataset.opening = 'false';
+    }, 1000);
+  }, { once: false, passive: false });
+  
+  // اضافه کردن cursor pointer
+  newGlobeContainer.style.cursor = 'pointer';
 }
 
 // تابع بررسی لاگین
@@ -719,17 +696,9 @@ function createAdvancedGlobe(containerId, type) {
                 powerPreference: "high-performance"
             });
             renderer.setSize(width, height);
-            // افزایش pixel ratio برای کیفیت Google Earth-like
-            const maxPixelRatio = Math.min(window.devicePixelRatio, 4);
-            renderer.setPixelRatio(maxPixelRatio);
-            renderer.shadowMap.enabled = false;
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 3)); // افزایش pixel ratio برای کیفیت بالاتر
+            renderer.shadowMap.enabled = false; // غیرفعال برای performance بهتر
             renderer.antialias = true;
-            // فعال کردن tone mapping برای ظاهر طبیعی‌تر
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.0;
-            // بهبود کیفیت رندر
-            renderer.powerPreference = "high-performance";
-            renderer.preserveDrawingBuffer = false;
             
             // پاک کردن container و اضافه کردن renderer
             container.innerHTML = '';
@@ -737,44 +706,36 @@ function createAdvancedGlobe(containerId, type) {
             
             console.log('✅ Renderer ساخته شد و به DOM اضافه شد');
 
-            // نورپردازی طبیعی و یکنواخت برای کیفیت بالا
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+            // نورپردازی طبیعی‌تر - کاهش شدت برای جلوگیری از بازتابش زیاد
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9); // افزایش ambient برای روشنایی یکنواخت
             scene.add(ambientLight);
             
-            // نور اصلی - تنظیم برای ظاهر طبیعی
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+            // نور اصلی - کاهش شدت
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
             directionalLight.position.set(5, 3, 5);
-            directionalLight.castShadow = false;
+            directionalLight.castShadow = false; // غیرفعال کردن shadow برای performance بهتر
             scene.add(directionalLight);
             
-            // نور اضافی برای روشنایی یکنواخت
-            const pointLight = new THREE.PointLight(0xffffff, 0.3);
+            // نور اضافی برای روشنایی یکنواخت (کاهش شدت)
+            const pointLight = new THREE.PointLight(0xffffff, 0.4);
             pointLight.position.set(-5, -3, -5);
             scene.add(pointLight);
             
-            // نور از بالا
-            const pointLight2 = new THREE.PointLight(0xffffff, 0.2);
+            // نور از طرف دیگر برای روشنایی بهتر
+            const pointLight2 = new THREE.PointLight(0xffffff, 0.3);
             pointLight2.position.set(0, 5, 0);
             scene.add(pointLight2);
-            
-            // نور از پایین برای روشنایی کامل
-            const pointLight3 = new THREE.PointLight(0xffffff, 0.15);
-            pointLight3.position.set(0, -5, 0);
-            scene.add(pointLight3);
 
-            // کره زمین - با کیفیت بسیار بالا برای زوم تا 500 متر
-            // افزایش segments به 512 برای کیفیت Google Earth-like (خیلی بالا)
-            // استفاده از geometry با کیفیت بالا
-            const geometry = new THREE.SphereGeometry(2, 512, 512);
+            // کره زمین - با کیفیت بالا (128 segments برای smoothness بیشتر)
+            const geometry = new THREE.SphereGeometry(2, 128, 128);
             
-            // ساخت material با کیفیت بالا و طبیعی
-            const material = new THREE.MeshStandardMaterial({ 
+            // ساخت material طبیعی‌تر با بازتابش کمتر
+            const material = new THREE.MeshPhongMaterial({ 
                 color: type === 'financial' ? 0x1e3a8a : 0x0f766e,
                 emissive: type === 'financial' ? 0x0a1a3a : 0x042f2e,
-                emissiveIntensity: 0.1,
-                roughness: 0.9, // سطح مات برای بازتابش کمتر
-                metalness: 0.1, // کمی metalness برای ظاهر طبیعی
-                flatShading: false,
+                shininess: 10, // کاهش shininess برای بازتابش کمتر
+                specular: new THREE.Color(0x111111), // کاهش specular
+                flatShading: false, // smooth shading
                 transparent: false
             });
             
@@ -799,36 +760,30 @@ function createAdvancedGlobe(containerId, type) {
             
             console.log('✅ کره با رنگ ساده ساخته شد');
             
-            // تلاش برای لود texture با کیفیت بسیار بالا
+            // تلاش برای لود texture با کیفیت بالا
             const textureLoader = new THREE.TextureLoader();
             textureLoader.load(
                 EARTH_DAY_TEXTURE, 
                 (texture) => {
-                    console.log('✅ Texture لود شد، آپدیت material با کیفیت بالا...');
-                    // تنظیمات texture برای کیفیت Google Earth-like
-                    texture.wrapS = THREE.ClampToEdgeWrapping;
-                    texture.wrapT = THREE.ClampToEdgeWrapping;
-                    // استفاده از بهترین فیلترها برای کیفیت بالا
+                    console.log('✅ Texture لود شد، آپدیت material...');
+                    // تنظیمات texture برای کیفیت بالا
+                    texture.wrapS = THREE.RepeatWrapping;
+                    texture.wrapT = THREE.RepeatWrapping;
                     texture.minFilter = THREE.LinearMipmapLinearFilter;
-                    texture.magFilter = THREE.LinearFilter; // برای زوم بالا
-                    // استفاده از حداکثر anisotropy برای کیفیت بالا
-                    const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
-                    texture.anisotropy = Math.min(maxAnisotropy, 16);
-                    texture.generateMipmaps = true;
-                    // بهبود کیفیت texture
-                    texture.flipY = false;
-                    texture.format = THREE.RGBAFormat;
-                    texture.type = THREE.UnsignedByteType;
+                    texture.magFilter = THREE.LinearFilter;
+                    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
                     
                     // آپدیت material با texture
                     material.map = texture;
                     material.needsUpdate = true;
                     
-                    console.log('✅ Texture با کیفیت بالا اعمال شد');
+                    // اضافه کردن bump map برای عمق بیشتر (اگر موجود باشد)
+                    // material.bumpMap = texture; // می‌توانید bump map جداگانه اضافه کنید
+                    // material.bumpScale = 0.1;
                 },
                 undefined,
                 (error) => {
-                    console.log('⚠️ Texture لود نشد، استفاده از رنگ ساده');
+                    console.log('⚠️ Texture لود نشد، استفاده از رنگ ساده با gradient');
                     // ساخت gradient manual برای ظاهر طبیعی‌تر
                     material.color.setHex(type === 'financial' ? 0x1e3a8a : 0x0f766e);
                     material.emissive.setHex(type === 'financial' ? 0x0a1a3a : 0x042f2e);
@@ -896,15 +851,8 @@ function setupScene(scene, camera, renderer, globe, type, container) {
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            // تنظیم minDistance برای جلوگیری از رد شدن دوربین از کره
-            // شعاع کره 2 است، پس minDistance باید بیشتر از 2 باشد
-            controls.minDistance = 2.1; // نزدیک‌ترین فاصله (حدود 500 متر در مقیاس واقعی)
-            controls.maxDistance = 200; // زوم خیلی دور
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.02;
-            controls.enablePan = true;
-            controls.panSpeed = 0.8;
-            controls.zoomSpeed = 1.2;
+            controls.minDistance = 2.5;
+            controls.maxDistance = 50; // افزایش maxDistance برای زوم بیشتر
             controls.enablePan = true;
             controls.enableZoom = true;
             controls.autoRotate = false;
@@ -1019,72 +967,6 @@ function setupScene(scene, camera, renderer, globe, type, container) {
     }, 100);
 }
 
-// تابع مشترک برای راه‌اندازی کره
-function initializeGlobe(containerId, type) {
-    const container = document.getElementById(containerId);
-    if (!container) {
-        console.error(`❌ Container پیدا نشد: ${containerId}`);
-        return;
-    }
-    
-    // اطمینان از نمایش container
-    container.style.display = 'block';
-    container.style.visibility = 'visible';
-    container.style.opacity = '1';
-    container.style.width = '100%';
-    container.style.height = '100%';
-    
-    // بررسی اندازه container
-    let retryCount = 0;
-    const maxRetries = 30;
-    
-    const checkSize = () => {
-        const width = container.clientWidth || window.innerWidth;
-        const height = container.clientHeight || window.innerHeight;
-        
-        console.log(`📦 بررسی Container (${retryCount + 1}/${maxRetries}):`, {
-            width,
-            height,
-            display: window.getComputedStyle(container).display,
-            visibility: window.getComputedStyle(container).visibility,
-            parentDisplay: container.parentElement ? window.getComputedStyle(container.parentElement).display : 'N/A'
-        });
-        
-        if (width === 0 || height === 0) {
-            retryCount++;
-            if (retryCount >= maxRetries) {
-                console.error('❌ Container بعد از 30 تلاش هنوز اندازه ندارد!');
-                container.innerHTML = `
-                    <div style="color: white; text-align: center; padding: 50px;">
-                        <h3>⚠️ خطا در نمایش کره</h3>
-                        <p>لطفاً صفحه را رفرش کنید</p>
-                    </div>
-                `;
-                return;
-            }
-            setTimeout(checkSize, 100);
-            return;
-        }
-        
-        // پاک کردن کره قبلی
-        if (activeScenes[type]) {
-            console.log('🗑️ پاک کردن کره قبلی...');
-            if (activeScenes[type].stop) {
-                activeScenes[type].stop();
-            }
-            if (activeScenes[type].renderer && activeScenes[type].renderer.domElement) {
-                activeScenes[type].renderer.domElement.remove();
-            }
-            activeScenes[type] = null;
-        }
-        
-        console.log(`🆕 ساخت کره ${type} با اندازه: ${width}x${height}`);
-        createAdvancedGlobe(containerId, type);
-    };
-    
-    checkSize();
-}
-
 // توابع مدیریت modal با افکت حرفه‌ای
 function openFinancialGlobe() {
     console.log('📈 باز کردن کره مالی...');
@@ -1114,24 +996,35 @@ function openFinancialGlobe() {
         }
     }
     
-    // ساخت کره - با تاخیر بیشتر برای اطمینان از نمایش modal
+    // ساخت کره بعد از کمی تاخیر برای انیمیشن
     setTimeout(() => {
         const container = document.getElementById('financialGlobeContainer');
         if (!container) {
             console.error('❌ Container پیدا نشد: financialGlobeContainer');
-            // تلاش مجدد
-            setTimeout(() => {
-                const retryContainer = document.getElementById('financialGlobeContainer');
-                if (retryContainer) {
-                    console.log('✅ Container در تلاش دوم پیدا شد');
-                    initializeGlobe('financialGlobeContainer', 'financial');
-                }
-            }, 500);
             return;
         }
         
-        initializeGlobe('financialGlobeContainer', 'financial');
-    }, 800); // افزایش تاخیر برای اطمینان از نمایش کامل modal
+        console.log('📦 Container پیدا شد:', {
+            width: container.clientWidth,
+            height: container.clientHeight,
+            display: window.getComputedStyle(container).display
+        });
+        
+        if (!activeScenes.financial) {
+            console.log('🆕 ساخت کره جدید...');
+            createAdvancedGlobe('financialGlobeContainer', 'financial');
+        } else {
+            console.log('♻️ استفاده از کره موجود');
+            // اگر کره قبلاً ساخته شده، فقط نمایش بده
+            if (container && activeScenes.financial) {
+                container.style.display = 'block';
+                // راه‌اندازی مجدد انیمیشن
+                if (activeScenes.financial.animate) {
+                    activeScenes.financial.animate();
+                }
+            }
+        }
+    }, 300);
 }
 
 function openResourcesGlobe() {
@@ -1162,24 +1055,35 @@ function openResourcesGlobe() {
         }
     }
     
-    // ساخت کره - با تاخیر بیشتر برای اطمینان از نمایش modal
+    // ساخت کره بعد از کمی تاخیر برای انیمیشن
     setTimeout(() => {
         const container = document.getElementById('resourcesGlobeContainer');
         if (!container) {
             console.error('❌ Container پیدا نشد: resourcesGlobeContainer');
-            // تلاش مجدد
-            setTimeout(() => {
-                const retryContainer = document.getElementById('resourcesGlobeContainer');
-                if (retryContainer) {
-                    console.log('✅ Container در تلاش دوم پیدا شد');
-                    initializeGlobe('resourcesGlobeContainer', 'resources');
-                }
-            }, 500);
             return;
         }
         
-        initializeGlobe('resourcesGlobeContainer', 'resources');
-    }, 800);
+        console.log('📦 Container پیدا شد:', {
+            width: container.clientWidth,
+            height: container.clientHeight,
+            display: window.getComputedStyle(container).display
+        });
+        
+        if (!activeScenes.resources) {
+            console.log('🆕 ساخت کره جدید...');
+            createAdvancedGlobe('resourcesGlobeContainer', 'resources');
+        } else {
+            console.log('♻️ استفاده از کره موجود');
+            // اگر کره قبلاً ساخته شده، فقط نمایش بده
+            if (container && activeScenes.resources) {
+                container.style.display = 'block';
+                // راه‌اندازی مجدد انیمیشن
+                if (activeScenes.resources.animate) {
+                    activeScenes.resources.animate();
+                }
+            }
+        }
+    }, 300);
 }
 
 function closeGlobeModal(modalId) {
@@ -2111,9 +2015,11 @@ function setupEventListeners() {
     elements.convertCurrency.addEventListener('click', convertCurrency);
     elements.analyzeCoin.addEventListener('click', analyzeCoin);
     
-    // دکمه‌های بستن کره‌ها
+    // دکمه‌های بستن و reset کره‌ها
     const closeFinancialGlobe = document.querySelector('#financialGlobeModal .close-globe');
     const closeResourcesGlobe = document.querySelector('#resourcesGlobeModal .close-globe');
+    const resetFinancialView = document.getElementById('resetFinancialView');
+    const resetResourcesView = document.getElementById('resetResourcesView');
     
     if (closeFinancialGlobe) {
         closeFinancialGlobe.addEventListener('click', () => {
@@ -2124,6 +2030,18 @@ function setupEventListeners() {
     if (closeResourcesGlobe) {
         closeResourcesGlobe.addEventListener('click', () => {
             closeGlobeModal('resourcesGlobeModal');
+        });
+    }
+    
+    if (resetFinancialView) {
+        resetFinancialView.addEventListener('click', () => {
+            resetGlobeView('financial');
+        });
+    }
+    
+    if (resetResourcesView) {
+        resetResourcesView.addEventListener('click', () => {
+            resetGlobeView('resources');
         });
     }
     
