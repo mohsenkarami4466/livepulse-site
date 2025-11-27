@@ -299,17 +299,201 @@ const UPDATE_MS = 30_000; // ۳۰ ثانیه
 document.addEventListener('DOMContentLoaded', () => {
   initGlobe();
   setInterval(updateSunAndMarkets, UPDATE_MS);
+  
+  // تنظیم کلیک روی کره کوچک بعد از ساخته شدن
+  setupSmallGlobeClick();
+  
+  // ساخت ساعت UTC دور کره
+  createUTCClockRing();
+  setInterval(updateUTCClock, 1000);
+  
+  // راه‌اندازی اسلایدر تبلیغات GSAP
+  setupAdsSlider();
 });
+
+/* راه‌اندازی اسلایدر GSAP تبلیغات */
+function setupAdsSlider() {
+  const track = document.getElementById('adsSliderTrack');
+  const prevBtn = document.getElementById('adsPrevBtn');
+  const nextBtn = document.getElementById('adsNextBtn');
+  const dotsContainer = document.getElementById('adsDots');
+  
+  if (!track) {
+    console.log('⚠️ اسلایدر تبلیغات پیدا نشد');
+    return;
+  }
+  
+  const slides = track.querySelectorAll('.ad-slide');
+  const slideCount = slides.length;
+  let currentIndex = 0;
+  let slideWidth = slides[0].offsetWidth + 16; // width + gap
+  let visibleSlides = Math.floor(track.parentElement.offsetWidth / slideWidth);
+  let maxIndex = Math.max(0, slideCount - visibleSlides);
+  let autoPlayInterval = null;
+  
+  // ساخت نقاط نشانگر
+  if (dotsContainer) {
+    dotsContainer.innerHTML = '';
+    const dotsCount = Math.ceil(slideCount / Math.max(1, visibleSlides));
+    for (let i = 0; i < dotsCount; i++) {
+      const dot = document.createElement('div');
+      dot.className = `ads-dot ${i === 0 ? 'active' : ''}`;
+      dot.dataset.index = i;
+      dot.addEventListener('click', () => goToSlide(i * visibleSlides));
+      dotsContainer.appendChild(dot);
+    }
+  }
+  
+  // تابع رفتن به اسلاید
+  function goToSlide(index) {
+    currentIndex = Math.max(0, Math.min(index, maxIndex));
+    
+    if (typeof gsap !== 'undefined') {
+      gsap.to(track, {
+        x: -currentIndex * slideWidth,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+    } else {
+      track.style.transform = `translateX(${-currentIndex * slideWidth}px)`;
+    }
+    
+    updateDots();
+  }
+  
+  // بروزرسانی نقاط
+  function updateDots() {
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll('.ads-dot');
+    const activeDotIndex = Math.floor(currentIndex / Math.max(1, visibleSlides));
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === activeDotIndex);
+    });
+  }
+  
+  // رفتن به بعدی
+  function nextSlide() {
+    if (currentIndex >= maxIndex) {
+      goToSlide(0);
+    } else {
+      goToSlide(currentIndex + 1);
+    }
+  }
+  
+  // رفتن به قبلی
+  function prevSlide() {
+    if (currentIndex <= 0) {
+      goToSlide(maxIndex);
+    } else {
+      goToSlide(currentIndex - 1);
+    }
+  }
+  
+  // دکمه‌ها
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+  
+  // اتوپلی
+  function startAutoPlay() {
+    stopAutoPlay();
+    autoPlayInterval = setInterval(nextSlide, 4000);
+  }
+  
+  function stopAutoPlay() {
+    if (autoPlayInterval) {
+      clearInterval(autoPlayInterval);
+    }
+  }
+  
+  // توقف اتوپلی هنگام hover
+  track.addEventListener('mouseenter', stopAutoPlay);
+  track.addEventListener('mouseleave', startAutoPlay);
+  
+  // ریسایز
+  window.addEventListener('resize', () => {
+    slideWidth = slides[0].offsetWidth + 16;
+    visibleSlides = Math.floor(track.parentElement.offsetWidth / slideWidth);
+    maxIndex = Math.max(0, slideCount - visibleSlides);
+    goToSlide(Math.min(currentIndex, maxIndex));
+  });
+  
+  // شروع اتوپلی
+  startAutoPlay();
+  
+  console.log('✅ اسلایدر GSAP راه‌اندازی شد');
+}
+
+/* ساخت ساعت UTC دور کره کوچک */
+function createUTCClockRing() {
+  const ring = document.getElementById('utcClockRing');
+  if (!ring) return;
+  
+  ring.innerHTML = '';
+  
+  // فقط ساعت‌های اصلی (هر 2 ساعت) برای خوانایی بهتر
+  const hours = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22];
+  
+  hours.forEach((i) => {
+    const hour = document.createElement('span');
+    hour.className = 'utc-hour';
+    hour.dataset.hour = i;
+    hour.textContent = i.toString().padStart(2, '0');
+    
+    // محاسبه موقعیت روی دایره - دقیقا روی لبه کره
+    const angle = (i * 15) - 90; // هر ساعت 15 درجه (360/24=15)
+    const radian = angle * (Math.PI / 180);
+    // کره 70% wrapper و clock-ring 80% wrapper هست
+    // پس ساعت‌ها باید در 44% clock-ring باشن (70/80 * 50 ≈ 44)
+    const radius = 44;
+    
+    const x = 50 + radius * Math.cos(radian);
+    const y = 50 + radius * Math.sin(radian);
+    
+    hour.style.left = `${x}%`;
+    hour.style.top = `${y}%`;
+    hour.style.transform = 'translate(-50%, -50%)';
+    
+    ring.appendChild(hour);
+  });
+  
+  updateUTCClock();
+}
+
+/* آپدیت ساعت UTC */
+function updateUTCClock() {
+  const now = new Date();
+  const currentHour = now.getUTCHours();
+  
+  document.querySelectorAll('.utc-hour').forEach(el => {
+    const hour = parseInt(el.dataset.hour);
+    if (hour === currentHour) {
+      el.classList.add('active');
+    } else {
+      el.classList.remove('active');
+    }
+  });
+}
 
 /* ساخت صحنه */
 function initGlobe() {
   const container = document.getElementById('globeContainer');
+  if (!container) {
+    console.error('❌ globeContainer پیدا نشد!');
+    return;
+  }
+  
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.set(0, 0, 3.2);
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  container.appendChild(renderer.domElement);
+  
+  // اضافه کردن canvas به container
+  const canvas = renderer.domElement;
+  canvas.style.pointerEvents = 'none'; // کلیک‌ها از canvas رد بشن به container
+  container.appendChild(canvas);
+  
+  console.log('✅ کره کوچک ساخته شد');
 
   const ambient = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambient);
@@ -394,43 +578,81 @@ function animate() {
   //openFinancialGlobe(); // این تابع رو خودمون قبلاً ساختیم
 //});
 
-// Event listener برای کره کوچک - فقط یک بار و با stopPropagation
-const globeContainer = document.getElementById('globeContainer');
-if (globeContainer) {
-  // حذف event listenerهای قبلی
-  const newGlobeContainer = globeContainer.cloneNode(true);
-  globeContainer.parentNode.replaceChild(newGlobeContainer, globeContainer);
-  
-  // اضافه کردن event listener جدید
-  newGlobeContainer.addEventListener('click', (e) => {
+// متغیر برای جلوگیری از کلیک‌های مکرر
+let globeOpening = false;
+
+// تابع handler کلیک روی کره کوچک
+function handleSmallGlobeClick(e) {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();
     
-    console.log('🖱️ کلیک روی کره کوچک');
+    console.log('🖱️ کلیک روی کره کوچک:', e.type);
     
-    if (!isUserLoggedIn()) {
-      showLoginPrompt();
-      return;
+    // جلوگیری از double trigger در touch devices
+    if (e.type === 'touchend') {
+        e.currentTarget.classList.add('touched');
+        setTimeout(() => e.currentTarget.classList.remove('touched'), 300);
+    }
+    if (e.type === 'click' && e.currentTarget.classList.contains('touched')) {
+        return;
+    }
+    
+    // چک لاگین
+    if (typeof isUserLoggedIn === 'function' && !isUserLoggedIn()) {
+        if (typeof showLoginPrompt === 'function') {
+            showLoginPrompt();
+        }
+        return;
     }
     
     // جلوگیری از کلیک‌های مکرر
-    if (newGlobeContainer.dataset.opening === 'true') {
-      console.log('⏳ کره در حال باز شدن است...');
-      return;
+    if (globeOpening) {
+        console.log('⏳ کره در حال باز شدن است...');
+        return;
     }
     
-    newGlobeContainer.dataset.opening = 'true';
-    openFinancialGlobe();
+    globeOpening = true;
+    console.log('🚀 در حال باز کردن کره بزرگ...');
+    
+    // باز کردن کره مالی
+    if (typeof openFinancialGlobe === 'function') {
+        openFinancialGlobe();
+    } else {
+        console.error('❌ تابع openFinancialGlobe یافت نشد!');
+    }
     
     // بعد از 1 ثانیه دوباره فعال کن
     setTimeout(() => {
-      newGlobeContainer.dataset.opening = 'false';
+        globeOpening = false;
     }, 1000);
-  }, { once: false, passive: false });
-  
-  // اضافه کردن cursor pointer
-  newGlobeContainer.style.cursor = 'pointer';
+}
+
+// Event listener برای کره کوچک
+function setupSmallGlobeClick() {
+    // امتحان با wrapper یا container
+    const wrapper = document.getElementById('globeClockWrapper');
+    const container = document.getElementById('globeContainer');
+    const target = wrapper || container;
+    
+    if (!target) {
+        console.warn('⚠️ کره کوچک پیدا نشد، تلاش مجدد...');
+        setTimeout(setupSmallGlobeClick, 500);
+        return;
+    }
+    
+    // حذف event listener قبلی
+    target.removeEventListener('click', handleSmallGlobeClick);
+    target.removeEventListener('touchend', handleSmallGlobeClick);
+    
+    // اضافه کردن event listener
+    target.addEventListener('click', handleSmallGlobeClick, { passive: false });
+    target.addEventListener('touchend', handleSmallGlobeClick, { passive: false });
+    
+    // استایل
+    target.style.cursor = 'pointer';
+    target.style.webkitTapHighlightColor = 'transparent';
+    
+    console.log('✅ Event listener کره کوچک فعال شد روی:', target.id);
 }
 
 // تابع بررسی لاگین
@@ -441,11 +663,18 @@ function isUserLoggedIn() {
 // تابع نمایش پیام لاگین
 function showLoginPrompt() {
   alert('🔐 برای دسترسی به این قابلیت، لطفاً وارد حساب کاربری خود شوید.\n\nاین قسمت فقط برای کاربران دارای اشتراک فعال می‌باشد.');
-  // بعداً می‌تونی یه modal زیبا بسازی
 }
 
+// تنظیم کلیک روی کره کوچک در DOMContentLoaded انجام میشه
 
-document.querySelector('.gc-close').onclick = () => document.getElementById('gcModal').style.display='none';
+// تنظیم gc-close با بررسی وجود المان
+const gcCloseBtn = document.querySelector('.gc-close');
+if (gcCloseBtn) {
+    gcCloseBtn.onclick = () => {
+        const gcModal = document.getElementById('gcModal');
+        if (gcModal) gcModal.style.display = 'none';
+    };
+}
 
 
 
@@ -760,35 +989,48 @@ function createAdvancedGlobe(containerId, type) {
             
             console.log('✅ کره با رنگ ساده ساخته شد');
             
-            // تلاش برای لود texture با کیفیت بالا
+            // تلاش برای لود texture - با مدیریت خطا بهتر
             const textureLoader = new THREE.TextureLoader();
-            textureLoader.load(
-                EARTH_DAY_TEXTURE, 
-                (texture) => {
-                    console.log('✅ Texture لود شد، آپدیت material...');
-                    // تنظیمات texture برای کیفیت بالا
-                    texture.wrapS = THREE.RepeatWrapping;
-                    texture.wrapT = THREE.RepeatWrapping;
-                    texture.minFilter = THREE.LinearMipmapLinearFilter;
-                    texture.magFilter = THREE.LinearFilter;
-                    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-                    
-                    // آپدیت material با texture
-                    material.map = texture;
-                    material.needsUpdate = true;
-                    
-                    // اضافه کردن bump map برای عمق بیشتر (اگر موجود باشد)
-                    // material.bumpMap = texture; // می‌توانید bump map جداگانه اضافه کنید
-                    // material.bumpScale = 0.1;
-                },
-                undefined,
-                (error) => {
-                    console.log('⚠️ Texture لود نشد، استفاده از رنگ ساده با gradient');
-                    // ساخت gradient manual برای ظاهر طبیعی‌تر
-                    material.color.setHex(type === 'financial' ? 0x1e3a8a : 0x0f766e);
-                    material.emissive.setHex(type === 'financial' ? 0x0a1a3a : 0x042f2e);
-                }
-            );
+            
+            // ابتدا صحنه را راه‌اندازی کن
+            setupScene(scene, camera, renderer, globe, type, container);
+            
+            // سپس texture را لود کن (اختیاری)
+            try {
+                textureLoader.load(
+                    EARTH_DAY_TEXTURE, 
+                    (texture) => {
+                        console.log('✅ Texture لود شد');
+                        try {
+                            // تنظیمات texture
+                            texture.wrapS = THREE.ClampToEdgeWrapping;
+                            texture.wrapT = THREE.ClampToEdgeWrapping;
+                            texture.minFilter = THREE.LinearFilter;
+                            texture.magFilter = THREE.LinearFilter;
+                            
+                            // آپدیت material با texture
+                            material.map = texture;
+                            material.color.setHex(0xffffff); // رنگ سفید تا texture دیده شود
+                            material.needsUpdate = true;
+                            
+                            console.log('✅ Texture به کره اعمال شد');
+                        } catch (texError) {
+                            console.warn('⚠️ خطا در اعمال texture:', texError);
+                        }
+                    },
+                    (progress) => {
+                        console.log('📥 لود texture:', Math.round((progress.loaded / progress.total) * 100) + '%');
+                    },
+                    (error) => {
+                        console.warn('⚠️ Texture لود نشد:', error);
+                    }
+                );
+            } catch (loadError) {
+                console.warn('⚠️ خطا در شروع لود texture:', loadError);
+            }
+            
+            // ادامه بدون انتظار برای texture
+            return;
             
             // راه‌اندازی صحنه
             setupScene(scene, camera, renderer, globe, type, container);
@@ -967,152 +1209,338 @@ function setupScene(scene, camera, renderer, globe, type, container) {
     }, 100);
 }
 
-// توابع مدیریت modal با افکت حرفه‌ای
-function openFinancialGlobe() {
-    console.log('📈 باز کردن کره مالی...');
-    const modal = document.getElementById('financialGlobeModal');
-    if (!modal) {
-        console.error('Modal کره مالی پیدا نشد!');
+// ==================== //
+// 🌍 ساخت ساده کره - بدون کلاس
+// ==================== //
+
+let simpleGlobeScenes = {
+    financial: null,
+    resources: null
+};
+
+function buildSimpleGlobe(containerId, type) {
+    console.log(`🌍 buildSimpleGlobe شروع: ${type}`);
+    console.log(`🔍 جستجوی container: ${containerId}`);
+    
+    const container = document.getElementById(containerId);
+    
+    console.log(`📦 container پیدا شد:`, container);
+    console.log(`📦 container.parentElement:`, container ? container.parentElement : 'N/A');
+    
+    if (!container) {
+        console.error('❌ Container پیدا نشد:', containerId);
+        alert('خطا: Container پیدا نشد!');
         return;
     }
     
-    // پنهان کردن همه چیز و اضافه کردن کلاس
-    document.body.classList.add('globe-modal-open');
-    modal.classList.add('active');
+    // چک وضعیت container
+    const containerStyle = window.getComputedStyle(container);
+    console.log(`📦 container display: ${containerStyle.display}`);
+    console.log(`📦 container visibility: ${containerStyle.visibility}`);
+    console.log(`📦 container opacity: ${containerStyle.opacity}`);
+    console.log(`📦 container size: ${container.offsetWidth}x${container.offsetHeight}`);
     
-    // افکت انیمیشن با GSAP
-    if (typeof gsap !== 'undefined') {
-        gsap.fromTo(modal, 
-            { opacity: 0 },
-            { opacity: 1, duration: 0.5, ease: "power2.out" }
-        );
-        
-        const content = modal.querySelector('.globe-modal-content');
-        if (content) {
-            gsap.fromTo(content,
-                { scale: 0.5, opacity: 0, rotationY: 90 },
-                { scale: 1, opacity: 1, rotationY: 0, duration: 0.8, ease: "back.out(1.7)" }
-            );
-        }
+    // پاک کردن قبلی
+    container.innerHTML = '';
+    
+    // چک THREE.js
+    if (typeof THREE === 'undefined') {
+        console.error('❌ THREE.js لود نشده!');
+        alert('خطا: THREE.js لود نشده!');
+        return;
     }
     
-    // ساخت کره بعد از کمی تاخیر برای انیمیشن
-    setTimeout(() => {
-        const container = document.getElementById('financialGlobeContainer');
-        if (!container) {
-            console.error('❌ Container پیدا نشد: financialGlobeContainer');
-            return;
+    console.log('✅ THREE.js موجود است');
+    console.log('✅ THREE.OrbitControls:', typeof THREE.OrbitControls !== 'undefined' ? 'موجود' : 'ندارد');
+    
+    // استفاده مستقیم از اندازه پنجره
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    console.log(`📐 اندازه پنجره: ${width}x${height}`);
+    
+    try {
+        // Scene
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000510);
+        
+        // Camera
+        const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+        camera.position.set(0, 0, 2.5);
+        
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ 
+            antialias: true,
+            alpha: false
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+        
+        console.log('✅ Renderer ساخته و اضافه شد');
+        console.log('📺 Canvas size:', renderer.domElement.width, 'x', renderer.domElement.height);
+        
+        // Controls
+        let controls = null;
+        if (typeof THREE.OrbitControls !== 'undefined') {
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 1.5;
+            controls.maxDistance = 6;
+            controls.enablePan = false;
         }
         
-        console.log('📦 Container پیدا شد:', {
-            width: container.clientWidth,
-            height: container.clientHeight,
-            display: window.getComputedStyle(container).display
+        // Lights
+        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+        sun.position.set(5, 3, 5);
+        scene.add(sun);
+        
+        // کره زمین
+        const earthGeo = new THREE.SphereGeometry(1, 64, 64);
+        const earthMat = new THREE.MeshPhongMaterial({
+            color: 0x2563eb,
+            shininess: 25
+        });
+        const earth = new THREE.Mesh(earthGeo, earthMat);
+        scene.add(earth);
+        
+        console.log('✅ کره زمین ساخته شد');
+        
+        // یک render اولیه
+        renderer.render(scene, camera);
+        console.log('✅ اولین render انجام شد');
+        
+        // بارگذاری تکسچر
+        const loader = new THREE.TextureLoader();
+        loader.crossOrigin = 'anonymous';
+        loader.load(
+            'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+            (texture) => {
+                earth.material.map = texture;
+                earth.material.needsUpdate = true;
+                console.log('✅ تکسچر زمین بارگذاری شد');
+            },
+            (progress) => {
+                console.log('📥 تکسچر در حال بارگذاری...');
+            },
+            (error) => {
+                console.warn('⚠️ تکسچر بارگذاری نشد، ادامه با رنگ پیش‌فرض');
+            }
+        );
+        
+        // هاله
+        const atmosGeo = new THREE.SphereGeometry(1.03, 64, 64);
+        const atmosMat = new THREE.MeshBasicMaterial({
+            color: type === 'financial' ? 0x3b82f6 : 0xfbbf24,
+            transparent: true,
+            opacity: 0.12,
+            side: THREE.BackSide
+        });
+        scene.add(new THREE.Mesh(atmosGeo, atmosMat));
+        
+        // مارکرها
+        const data = type === 'financial' ? 
+            (window.mockFinancialData || []) :
+            (window.mockResourcesData || []);
+        
+        console.log(`📍 تعداد داده‌ها: ${data.length}`);
+        
+        data.forEach(item => {
+            const phi = (90 - item.lat) * (Math.PI / 180);
+            const theta = (item.lng + 180) * (Math.PI / 180);
+            
+            const x = -1.03 * Math.sin(phi) * Math.cos(theta);
+            const y = 1.03 * Math.cos(phi);
+            const z = 1.03 * Math.sin(phi) * Math.sin(theta);
+            
+            let color;
+            if (type === 'financial') {
+                color = item.status === 'open' ? 0x22c55e : 0xef4444;
+            } else {
+                color = item.resource === 'gold' ? 0xfbbf24 : 
+                        item.resource === 'oil' ? 0x374151 : 0xa855f7;
+            }
+            
+            const dot = new THREE.Mesh(
+                new THREE.SphereGeometry(0.025, 12, 12),
+                new THREE.MeshBasicMaterial({ color })
+            );
+            dot.position.set(x, y, z);
+            scene.add(dot);
         });
         
-        if (!activeScenes.financial) {
-            console.log('🆕 ساخت کره جدید...');
-            createAdvancedGlobe('financialGlobeContainer', 'financial');
-        } else {
-            console.log('♻️ استفاده از کره موجود');
-            // اگر کره قبلاً ساخته شده، فقط نمایش بده
-            if (container && activeScenes.financial) {
-                container.style.display = 'block';
-                // راه‌اندازی مجدد انیمیشن
-                if (activeScenes.financial.animate) {
-                    activeScenes.financial.animate();
-                }
+        // انیمیشن
+        let frameId;
+        const animate = () => {
+            frameId = requestAnimationFrame(animate);
+            earth.rotation.y += 0.002;
+            if (controls) controls.update();
+            renderer.render(scene, camera);
+        };
+        animate();
+        
+        // ریسایز
+        const onResize = () => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        };
+        window.addEventListener('resize', onResize);
+        
+        // ذخیره
+        simpleGlobeScenes[type] = {
+            destroy: () => {
+                cancelAnimationFrame(frameId);
+                window.removeEventListener('resize', onResize);
+                renderer.dispose();
+                container.innerHTML = '';
             }
-        }
-    }, 300);
+        };
+        
+        console.log(`✅ کره ${type} کاملاً آماده!`);
+        
+    } catch (error) {
+        console.error('❌ خطا:', error);
+        alert('خطا در ساخت کره: ' + error.message);
+    }
+}
+
+// توابع مدیریت modal با افکت حرفه‌ای
+function openFinancialGlobe() {
+    console.log('📈 ========== باز کردن کره مالی ==========');
+    
+    const modal = document.getElementById('financialGlobeModal');
+    console.log('🔍 Modal element:', modal);
+    
+    if (!modal) {
+        console.error('❌ Modal کره مالی پیدا نشد!');
+        alert('Modal پیدا نشد!');
+        return;
+    }
+    
+    // چک وضعیت قبل از تغییر
+    console.log('📊 Modal classes قبل:', modal.className);
+    console.log('📊 Modal style قبل:', window.getComputedStyle(modal).display, window.getComputedStyle(modal).visibility);
+    
+    // جلوگیری از اسکرول body
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    
+    // پنهان کردن همه چیز و اضافه کردن کلاس
+    document.body.classList.add('globe-modal-open');
+    
+    // نمایش modal
+    modal.classList.add('active');
+    modal.style.display = 'block';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    
+    // چک وضعیت بعد از تغییر
+    console.log('📊 Modal classes بعد:', modal.className);
+    console.log('📊 Modal visible:', modal.offsetWidth > 0 && modal.offsetHeight > 0);
+    
+    console.log('✅ Modal مالی فعال شد');
+    
+    // ساخت کره بلافاصله
+    console.log('🔄 شروع ساخت کره مالی...');
+    
+    // یک تاخیر کوتاه برای اطمینان از نمایش modal
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            buildSimpleGlobe('financialGlobeContainer', 'financial');
+            
+            // راه‌اندازی پنل‌ها
+            if (typeof populateMarketList === 'function') {
+                populateMarketList();
+            }
+        });
+    });
 }
 
 function openResourcesGlobe() {
-    console.log('🌍 باز کردن کره منابع...');
+    console.log('🌍 ========== باز کردن کره منابع ==========');
+    
     const modal = document.getElementById('resourcesGlobeModal');
+    console.log('🔍 Modal element:', modal);
+    
     if (!modal) {
-        console.error('Modal کره منابع پیدا نشد!');
+        console.error('❌ Modal کره منابع پیدا نشد!');
+        alert('Modal پیدا نشد!');
         return;
     }
     
+    // جلوگیری از اسکرول body
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    
     // پنهان کردن همه چیز و اضافه کردن کلاس
     document.body.classList.add('globe-modal-open');
+    
+    // نمایش modal
     modal.classList.add('active');
+    modal.style.display = 'block';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
     
-    // افکت انیمیشن با GSAP
-    if (typeof gsap !== 'undefined') {
-        gsap.fromTo(modal, 
-            { opacity: 0 },
-            { opacity: 1, duration: 0.5, ease: "power2.out" }
-        );
-        
-        const content = modal.querySelector('.globe-modal-content');
-        if (content) {
-            gsap.fromTo(content,
-                { scale: 0.5, opacity: 0, rotationY: 90 },
-                { scale: 1, opacity: 1, rotationY: 0, duration: 0.8, ease: "back.out(1.7)" }
-            );
-        }
-    }
+    console.log('✅ Modal منابع فعال شد');
     
-    // ساخت کره بعد از کمی تاخیر برای انیمیشن
-    setTimeout(() => {
-        const container = document.getElementById('resourcesGlobeContainer');
-        if (!container) {
-            console.error('❌ Container پیدا نشد: resourcesGlobeContainer');
-            return;
-        }
-        
-        console.log('📦 Container پیدا شد:', {
-            width: container.clientWidth,
-            height: container.clientHeight,
-            display: window.getComputedStyle(container).display
-        });
-        
-        if (!activeScenes.resources) {
-            console.log('🆕 ساخت کره جدید...');
-            createAdvancedGlobe('resourcesGlobeContainer', 'resources');
-        } else {
-            console.log('♻️ استفاده از کره موجود');
-            // اگر کره قبلاً ساخته شده، فقط نمایش بده
-            if (container && activeScenes.resources) {
-                container.style.display = 'block';
-                // راه‌اندازی مجدد انیمیشن
-                if (activeScenes.resources.animate) {
-                    activeScenes.resources.animate();
-                }
+    // ساخت کره بلافاصله
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            buildSimpleGlobe('resourcesGlobeContainer', 'resources');
+            
+            // راه‌اندازی لجند
+            if (typeof populateResourcesLegend === 'function') {
+                populateResourcesLegend();
             }
-        }
-    }, 300);
+        });
+    });
 }
 
 function closeGlobeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
     
-    // افکت بستن با GSAP
-    if (typeof gsap !== 'undefined') {
-        const content = modal.querySelector('.globe-modal-content');
-        if (content) {
-            gsap.to(content, {
-                scale: 0.5,
-                opacity: 0,
-                rotationY: -90,
-                duration: 0.5,
-                ease: "power2.in",
-                onComplete: () => {
-                    modal.classList.remove('active');
-                    document.body.classList.remove('globe-modal-open');
-                }
-            });
-        } else {
-            modal.classList.remove('active');
-            document.body.classList.remove('globe-modal-open');
-        }
-    } else {
-        modal.classList.remove('active');
-        document.body.classList.remove('globe-modal-open');
+    console.log('🔒 بستن modal:', modalId);
+    
+    // ریست کردن flag باز شدن کره
+    globeOpening = false;
+    
+    // تعیین نوع کره
+    const type = modalId.includes('financial') ? 'financial' : 'resources';
+    
+    // پاک کردن کره ساده
+    if (simpleGlobeScenes[type] && simpleGlobeScenes[type].destroy) {
+        simpleGlobeScenes[type].destroy();
+        simpleGlobeScenes[type] = null;
     }
+    
+    // پاک کردن کلاس‌ها
+    modal.classList.remove('active');
+    document.body.classList.remove('globe-modal-open');
+    
+    // بازگرداندن استایل‌های body
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    
+    // پاک کردن محتوای container
+    const containerId = type === 'financial' ? 'financialGlobeContainer' : 'resourcesGlobeContainer';
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = '';
+    }
+    
+    console.log('✅ Modal بسته شد');
 }
 
 // در دسترس قرار دادن توابع در scope global
@@ -1121,19 +1549,145 @@ window.openResourcesGlobe = openResourcesGlobe;
 window.closeGlobeModal = closeGlobeModal;
 window.resetGlobeView = resetGlobeView;
 
+// تابع برای زوم روی یک نقطه روی کره
+window.zoomToLocation = function(lat, lng) {
+    console.log(`🎯 زوم به: ${lat}, ${lng}`);
+    // این تابع بعداً برای زوم به نقطه خاص پیاده‌سازی می‌شود
+};
+
+// راه‌اندازی پنل‌های کره بزرگ
+function setupGlobePanels() {
+    // پر کردن لیست بازارها
+    if (typeof populateMarketList === 'function') {
+        populateMarketList();
+    }
+    
+    // پر کردن لجند منابع
+    if (typeof populateResourcesLegend === 'function') {
+        populateResourcesLegend();
+    }
+    
+    // تشخیص منطقه زمانی
+    if (typeof detectUserTimezone === 'function') {
+        detectUserTimezone();
+    }
+    
+    // دکمه‌های fab تنظیمات
+    setupGlobeFabMenus();
+}
+
+// راه‌اندازی منوهای fab کره‌ها
+function setupGlobeFabMenus() {
+    // منوی کره مالی
+    const financialFab = document.getElementById('financialGlobeFab');
+    if (financialFab) {
+        const fabBtn = financialFab.querySelector('.globe-fab-btn');
+        if (fabBtn) {
+            fabBtn.addEventListener('click', () => {
+                financialFab.classList.toggle('active');
+            });
+        }
+        
+        financialFab.querySelectorAll('.fab-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const action = btn.dataset.action;
+                handleFinancialFabAction(action);
+            });
+        });
+    }
+    
+    // منوی کره منابع
+    const resourcesFab = document.getElementById('resourcesGlobeFab');
+    if (resourcesFab) {
+        const fabBtn = resourcesFab.querySelector('.globe-fab-btn');
+        if (fabBtn) {
+            fabBtn.addEventListener('click', () => {
+                resourcesFab.classList.toggle('active');
+            });
+        }
+        
+        resourcesFab.querySelectorAll('.fab-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                const action = btn.dataset.action;
+                
+                if (filter) {
+                    handleResourcesFilter(filter, btn);
+                } else if (action) {
+                    handleResourcesFabAction(action);
+                }
+            });
+        });
+    }
+}
+
+// پردازش عملیات fab کره مالی
+function handleFinancialFabAction(action) {
+    switch(action) {
+        case 'timezone':
+            showTimezoneSettings();
+            break;
+        case 'filter':
+            showMarketFilter();
+            break;
+        case 'notify':
+            showNotificationSettings();
+            break;
+        case 'reset':
+            resetGlobeView('financial');
+            break;
+    }
+}
+
+// پردازش فیلتر منابع
+function handleResourcesFilter(filter, btn) {
+    // حذف کلاس active از همه
+    btn.closest('.globe-fab-options').querySelectorAll('.fab-option').forEach(b => {
+        b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    
+    console.log(`🔍 فیلتر منابع: ${filter}`);
+    // اینجا می‌توان مارکرهای روی کره را فیلتر کرد
+}
+
+// پردازش عملیات fab کره منابع
+function handleResourcesFabAction(action) {
+    if (action === 'reset') {
+        resetGlobeView('resources');
+    }
+}
+
+// نمایش تنظیمات منطقه زمانی
+function showTimezoneSettings() {
+    alert('تنظیمات منطقه زمانی - در نسخه‌های بعدی');
+}
+
+// نمایش فیلتر بازارها
+function showMarketFilter() {
+    alert('فیلتر بازارها - در نسخه‌های بعدی');
+}
+
+// نمایش تنظیمات اعلان
+function showNotificationSettings() {
+    alert('تنظیمات اعلان‌ها - در نسخه‌های بعدی');
+}
+
 function resetGlobeView(type) {
+    // سیستم جدید
+    if (type === 'financial' && typeof resetFinancialGlobeView === 'function') {
+        resetFinancialGlobeView();
+    } else if (type === 'resources' && typeof resetResourcesGlobeView === 'function') {
+        resetResourcesGlobeView();
+    }
+    
+    // سیستم قدیمی
     if (activeScenes[type] && activeScenes[type].reset) {
         activeScenes[type].reset();
     }
 }
 
-function isUserLoggedIn() {
-    return true;
-}
-
-function showLoginPrompt() {
-    alert('🔐 برای دسترسی به این قابلیت، لطفاً وارد حساب کاربری خود شوید.');
-}
+// توابع isUserLoggedIn و showLoginPrompt قبلاً در بالا تعریف شدند
 
 
 // ==================== //
@@ -3004,10 +3558,181 @@ document.addEventListener('keydown', function(e) {
         document.querySelectorAll('.modal-overlay.active').forEach(modal => {
             modal.classList.remove('active');
         });
+        // بستن چت AI
+        const aiChatModal = document.getElementById('aiChatModal');
+        if (aiChatModal) aiChatModal.classList.remove('active');
+        
         if (appState) {
             appState.openModals = 0;
         }
     }
+});
+
+// ==================== //
+// 🤖 سیستم چت AI شناور
+// ==================== //
+
+function setupAiChat() {
+    const aiChatFab = document.getElementById('aiChatFab');
+    const aiChatModal = document.getElementById('aiChatModal');
+    const closeAiChat = document.getElementById('closeAiChat');
+    const chatInput = document.getElementById('chatInput');
+    const sendMessage = document.getElementById('sendMessage');
+    const chatMessages = document.getElementById('chatMessages');
+    
+    console.log('🤖 راه‌اندازی چت AI...', { 
+        fab: !!aiChatFab, 
+        modal: !!aiChatModal 
+    });
+    
+    if (aiChatFab && aiChatModal) {
+        // رویداد کلیک روی دکمه
+        aiChatFab.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🤖 کلیک روی دکمه چت');
+            aiChatModal.classList.toggle('active');
+            
+            // تشخیص صفحه فعلی برای پیام مناسب
+            const currentPage = document.body.getAttribute('data-page') || 'home';
+            updateChatContext(currentPage);
+        };
+        
+        // بستن با دکمه ضربدر
+        if (closeAiChat) {
+            closeAiChat.onclick = function(e) {
+                e.preventDefault();
+                aiChatModal.classList.remove('active');
+            };
+        }
+        
+        // ارسال پیام
+        if (sendMessage && chatInput && chatMessages) {
+            sendMessage.onclick = function() {
+                const msg = chatInput.value.trim();
+                if (msg) {
+                    // نمایش پیام کاربر
+                    const userMsgEl = document.createElement('div');
+                    userMsgEl.className = 'user-message';
+                    userMsgEl.innerHTML = `<p>${msg}</p>`;
+                    chatMessages.appendChild(userMsgEl);
+                    
+                    // پاک کردن input
+                    chatInput.value = '';
+                    
+                    // اسکرول به پایین
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // پاسخ هوش مصنوعی (فعلا ساختگی)
+                    setTimeout(() => {
+                        const aiMsgEl = document.createElement('div');
+                        aiMsgEl.className = 'ai-message';
+                        aiMsgEl.innerHTML = `<p>ممنون از پیامت! این یک پاسخ نمونه است. سیستم هوش مصنوعی بعداً متصل می‌شود.</p>`;
+                        chatMessages.appendChild(aiMsgEl);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 500);
+                }
+            };
+            
+            // ارسال با Enter
+            chatInput.onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage.click();
+                }
+            };
+        }
+        
+        console.log('✅ چت AI راه‌اندازی شد');
+    } else {
+        console.warn('⚠️ المان‌های چت AI پیدا نشدند');
+    }
+}
+
+// آپدیت context چت بر اساس صفحه
+function updateChatContext(pageName) {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const contexts = {
+        'home': 'سلام! من دستیار هوشمند LivePulse هستم. چطور می‌تونم کمکتون کنم؟',
+        'tools': 'در صفحه ابزار هستید. درباره تبدیل ارز، محاسبه وام یا هر ابزاری سوال دارید؟',
+        'news': 'در صفحه اخبار هستید. می‌تونم اخبار رو برای شما خلاصه کنم یا تحلیل کنم.',
+        'tutorial': 'در صفحه آموزش هستید. چه موضوعی رو می‌خواید یاد بگیرید؟'
+    };
+    
+    const firstMsg = chatMessages.querySelector('.ai-message p');
+    if (firstMsg && contexts[pageName]) {
+        firstMsg.textContent = contexts[pageName];
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // راه‌اندازی چت AI با تاخیر کوتاه
+    setTimeout(setupAiChat, 300);
+    
+    // مودال نظرات
+    const footerFeedback = document.getElementById('footerFeedback');
+    const feedbackModal = document.getElementById('feedbackModal');
+    const closeFeedbackModal = document.getElementById('closeFeedbackModal');
+    
+    if (footerFeedback && feedbackModal) {
+        footerFeedback.addEventListener('click', (e) => {
+            e.preventDefault();
+            feedbackModal.classList.add('active');
+        });
+        
+        if (closeFeedbackModal) {
+            closeFeedbackModal.addEventListener('click', () => {
+                feedbackModal.classList.remove('active');
+            });
+        }
+    }
+    
+    // پنل مقایسه نقشه
+    const compareToggle = document.getElementById('compareToggle');
+    const comparePanel = document.getElementById('comparePanel');
+    const closeCompare = document.getElementById('closeCompare');
+    
+    if (compareToggle && comparePanel) {
+        compareToggle.addEventListener('click', () => {
+            comparePanel.classList.toggle('hidden');
+        });
+        
+        if (closeCompare) {
+            closeCompare.addEventListener('click', () => {
+                comparePanel.classList.add('hidden');
+            });
+        }
+    }
+    
+    // فیلتر نقشه
+    const mapFilter = document.getElementById('mapFilter');
+    const currentFilterBadge = document.getElementById('currentFilterBadge');
+    
+    if (mapFilter && currentFilterBadge) {
+        mapFilter.addEventListener('change', () => {
+            currentFilterBadge.textContent = mapFilter.options[mapFilter.selectedIndex].text;
+        });
+    }
+    
+    // جلوگیری از اسکرول body وقتی مودال باز است
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.target.classList.contains('active')) {
+                document.body.classList.add('modal-open');
+            } else {
+                // بررسی که آیا مودال دیگری باز نیست
+                const activeModals = document.querySelectorAll('.modal-overlay.active');
+                if (activeModals.length === 0) {
+                    document.body.classList.remove('modal-open');
+                }
+            }
+        });
+    });
+    
+    document.querySelectorAll('.modal-overlay').forEach((modal) => {
+        observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+    });
 });
 
 console.log('📄 فایل JavaScript لود شد - آماده راه‌اندازی...');
