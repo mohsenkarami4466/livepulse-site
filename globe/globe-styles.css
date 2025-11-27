@@ -1,95 +1,50 @@
 /* استایل‌های مخصوص کره‌های 3D - Fullscreen */
 .globe-modal {
-  display: none;
   position: fixed;
-  z-index: 99999;
+  z-index: 100000;
   left: 0;
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: #000000;
+  background: #000510;
   overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.5s ease;
+  display: none;
 }
 
 .globe-modal.active {
-  display: block;
-  opacity: 1;
+  display: block !important;
 }
 
 /* پنهان کردن همه چیز وقتی modal باز است */
 body.globe-modal-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
-
-body.globe-modal-open header,
-body.globe-modal-open .view,
-body.globe-modal-open footer,
-body.globe-modal-open .global-section,
-body.globe-modal-open .assistive-touch,
-body.globe-modal-open #globeContainer,
-body.globe-modal-open #marketClockWidget {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-
-body.globe-modal-open .globe-modal {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  overflow: hidden !important;
 }
 
 .globe-modal-content {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
   height: 100%;
-  background: #000000;
-  padding: 0;
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  overflow: hidden;
-  transform: scale(0.8);
-  opacity: 0;
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              opacity 0.6s ease;
-}
-
-.globe-modal.active .globe-modal-content {
-  transform: scale(1);
-  opacity: 1;
+  background: #000510;
 }
 
 .globe-container {
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  background: #000000;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  background: #000510;
 }
 
 .globe-container canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
+  display: block;
 }
 
 .globe-controls {
   position: absolute;
   bottom: 15px;
   right: 15px;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .control-btn {
@@ -114,16 +69,283 @@ body.globe-modal-open .globe-modal {
   top: 15px;
   left: 15px;
   color: #fff;
-  font-size: 28px;
+  font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 1000;
-  background: rgba(239, 68, 68, 0.8);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  z-index: 99999;
+  background: rgba(239, 68, 68, 0.95);
+  padding: 12px 24px;
+  border-radius: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.close-globe:hover,
+.close-globe:active {
+  background: rgba(239, 68, 68, 1);
+  transform: scale(1.05);
+}
+
+/* ==================== */
+/* پنل اطلاعات بازار */
+/* ==================== */
+
+.market-info-panel,
+.resources-info-panel {
+  position: absolute;
+  top: 60px;
+  right: 15px;
+  width: 280px;
+  max-height: 400px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  z-index: 9998;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.market-info-header,
+.resources-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.market-info-header h4,
+.resources-info-header h4 {
+  margin: 0;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.user-timezone {
+  font-size: 0.75rem;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.market-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.market-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.market-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.market-item.open {
+  border-left: 3px solid #10b981;
+}
+
+.market-item.closed {
+  border-left: 3px solid #ef4444;
+  opacity: 0.6;
+}
+
+.market-name {
+  font-size: 0.85rem;
+  color: white;
+  font-weight: 500;
+}
+
+.market-time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.market-status {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.market-status.open {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.market-status.closed {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* لجند منابع */
+.resources-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-color.gold {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+}
+
+.legend-color.oil {
+  background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+}
+
+.legend-color.gas {
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+}
+
+/* ==================== */
+/* دکمه شناور تنظیمات */
+/* ==================== */
+
+.globe-fab-menu {
+  position: absolute;
+  bottom: 80px;
+  left: 15px;
+  z-index: 9997;
+}
+
+.globe-fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+  transition: all 0.3s ease;
+}
+
+.globe-fab-btn:hover {
+  transform: scale(1.1) rotate(90deg);
+}
+
+.globe-fab-options {
+  position: absolute;
+  bottom: 70px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.globe-fab-menu:hover .globe-fab-options,
+.globe-fab-menu.active .globe-fab-options {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.fab-option {
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.fab-option:hover {
+  background: rgba(59, 130, 246, 0.8);
+}
+
+.fab-option.active {
+  background: rgba(16, 185, 129, 0.8);
+}
+
+/* استایل موبایل برای کره */
+@media (max-width: 768px) {
+  .close-globe {
+    top: 10px;
+    left: 10px;
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+  
+  .globe-controls {
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .control-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .market-info-panel,
+  .resources-info-panel {
+    top: auto;
+    bottom: 70px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: 200px;
+  }
+  
+  .globe-fab-menu {
+    bottom: 15px;
+    left: auto;
+    right: 80px;
+  }
+  
+  .globe-fab-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+  
+  .globe-fab-options {
+    bottom: auto;
+    top: -200px;
+    right: 0;
+    left: auto;
+  }
 }
