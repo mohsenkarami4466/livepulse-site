@@ -60,6 +60,46 @@
             <span class="indicator-value" id="oilIndicator">$۸۲.۵</span>
             <span class="indicator-change">-۱.۲%</span>
         </div>
+        <div class="indicator-item up">
+            <span class="indicator-icon">📈</span>
+            <span class="indicator-name">نزدک</span>
+            <span class="indicator-value" id="nasdaqIndicator">۱۵,۲۸۵</span>
+            <span class="indicator-change">+۰.۹٪</span>
+        </div>
+    </div>
+    
+    <!-- 💱 شاخص‌های برابری ارز - ردیف دوم -->
+    <div class="currency-pairs-bar">
+        <div class="pair-item up">
+            <span class="pair-name">EUR/USD</span>
+            <span class="pair-value">1.0856</span>
+            <span class="pair-change">+0.12%</span>
+        </div>
+        <div class="pair-item down">
+            <span class="pair-name">USD/JPY</span>
+            <span class="pair-value">149.82</span>
+            <span class="pair-change">-0.08%</span>
+        </div>
+        <div class="pair-item up">
+            <span class="pair-name">GBP/USD</span>
+            <span class="pair-value">1.2715</span>
+            <span class="pair-change">+0.15%</span>
+        </div>
+        <div class="pair-item down">
+            <span class="pair-name">USD/CHF</span>
+            <span class="pair-value">0.8842</span>
+            <span class="pair-change">-0.05%</span>
+        </div>
+        <div class="pair-item up">
+            <span class="pair-name">AUD/USD</span>
+            <span class="pair-value">0.6548</span>
+            <span class="pair-change">+0.22%</span>
+        </div>
+        <div class="pair-item down">
+            <span class="pair-name">USD/CAD</span>
+            <span class="pair-value">1.3625</span>
+            <span class="pair-change">-0.10%</span>
+        </div>
     </div>
 
     <div id="gcModal">
@@ -75,28 +115,22 @@
     <!-- کره بزرگ مالی - ساعت بازارها -->
     <div id="financialGlobeModal" class="globe-modal">
         <div class="globe-modal-content">
-            <span class="close-globe">&times; بستن</span>
+            <span class="close-globe" id="closeFinancialGlobe">&times;</span>
             <div id="financialGlobeContainer" class="globe-container"></div>
             
-            <!-- پنل اطلاعات بازار -->
-            <div class="market-info-panel" id="marketInfoPanel">
-                <div class="market-info-header">
-                    <h4>🕐 ساعت بازارها</h4>
-                    <span class="user-timezone" id="userTimezone">UTC+3:30</span>
-                </div>
-                <div class="market-list" id="marketList">
-                    <!-- لیست بازارها با JS پر می‌شود -->
-                </div>
-            </div>
+            <!-- دکمه انتخاب بازار -->
+            <button class="market-selector-btn" id="marketSelectorBtn">
+                📍 انتخاب بازار
+            </button>
             
-            <!-- دکمه تنظیمات شناور -->
-            <div class="globe-fab-menu" id="financialGlobeFab">
-                <button class="globe-fab-btn">⚙️</button>
-                <div class="globe-fab-options">
-                    <button class="fab-option" data-action="timezone">🌍 منطقه زمانی</button>
-                    <button class="fab-option" data-action="filter">🔍 فیلتر بازارها</button>
-                    <button class="fab-option" data-action="notify">🔔 اعلان‌ها</button>
-                    <button class="fab-option" data-action="reset">🔄 بازیابی</button>
+            <!-- پنل انتخاب بازار -->
+            <div class="market-select-panel" id="marketSelectPanel">
+                <div class="market-select-header">
+                    <h4>🌍 بازارهای جهانی</h4>
+                    <input type="text" class="market-select-search" placeholder="🔍 جستجوی بازار..." id="marketSearchInput">
+                </div>
+                <div class="market-select-list" id="marketSelectList">
+                    <!-- لیست بازارها با JS پر می‌شود -->
                 </div>
             </div>
             
@@ -106,38 +140,117 @@
         </div>
     </div>
 
-    <!-- کره بزرگ منابع - طلا و معادن -->
+    <!-- کره بزرگ منابع - اطلاعات کشورها -->
     <div id="resourcesGlobeModal" class="globe-modal">
         <div class="globe-modal-content">
-            <span class="close-globe">&times; بستن</span>
+            <span class="close-globe" id="closeResourcesGlobe">&times;</span>
             <div id="resourcesGlobeContainer" class="globe-container"></div>
             
-            <!-- پنل اطلاعات منابع -->
-            <div class="resources-info-panel" id="resourcesInfoPanel">
-                <div class="resources-info-header">
-                    <h4>💎 منابع جهان</h4>
+            <!-- پنل انتخاب کشور -->
+            <div class="country-select-panel" id="countrySelectPanel">
+                <div class="panel-header">
+                    <h4>🌍 انتخاب کشور</h4>
+                    <input type="text" id="countrySearchInput" placeholder="جستجوی کشور..." />
                 </div>
-                <div class="resources-legend" id="resourcesLegend">
-                    <div class="legend-item"><span class="legend-color gold"></span> طلا</div>
-                    <div class="legend-item"><span class="legend-color oil"></span> نفت</div>
-                    <div class="legend-item"><span class="legend-color gas"></span> گاز</div>
+                <div class="country-list" id="countryList"></div>
+            </div>
+            
+            <!-- پنل اطلاعات کشور -->
+            <div class="country-info-panel" id="countryInfoPanel">
+                <div class="country-info-header">
+                    <h3 id="selectedCountryName">کشوری انتخاب نشده</h3>
+                    <span class="close-panel" onclick="closeCountryInfo()">×</span>
+                </div>
+                <div class="country-info-content" id="countryInfoContent">
+                    <p class="hint-text">روی یک کشور کلیک کنید یا از لیست انتخاب کنید</p>
                 </div>
             </div>
             
-            <!-- دکمه تنظیمات شناور منابع -->
-            <div class="globe-fab-menu" id="resourcesGlobeFab">
-                <button class="globe-fab-btn">⚙️</button>
-                <div class="globe-fab-options">
-                    <button class="fab-option active" data-filter="all">🌍 همه منابع</button>
-                    <button class="fab-option" data-filter="gold">🥇 طلا</button>
-                    <button class="fab-option" data-filter="oil">🛢️ نفت</button>
-                    <button class="fab-option" data-filter="gas">💨 گاز</button>
-                    <button class="fab-option" data-action="reset">🔄 بازیابی</button>
+            <!-- پنل فیلترها -->
+            <div class="resources-filter-panel" id="resourcesFilterPanel">
+                <div class="filter-section">
+                    <h5>🏭 منابع طبیعی</h5>
+                    <div class="filter-buttons" id="resourceFilters">
+                        <button class="filter-btn active" data-filter="all">همه</button>
+                        <button class="filter-btn" data-filter="oil">🛢️ نفت</button>
+                        <button class="filter-btn" data-filter="gas">💨 گاز</button>
+                        <button class="filter-btn" data-filter="gold">🥇 طلا</button>
+                        <button class="filter-btn" data-filter="iron">⚫ آهن</button>
+                        <button class="filter-btn" data-filter="copper">🟤 مس</button>
+                        <button class="filter-btn" data-filter="coal">⬛ زغال</button>
+                        <button class="filter-btn" data-filter="diamond">💎 الماس</button>
+                        <button class="filter-btn" data-filter="uranium">☢️ اورانیوم</button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h5>🏗️ تاسیسات</h5>
+                    <div class="filter-buttons" id="facilityFilters">
+                        <button class="filter-btn" data-filter="refinery">🏭 پالایشگاه</button>
+                        <button class="filter-btn" data-filter="factory">🏭 کارخانه</button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h5>📊 نمایش</h5>
+                    <div class="filter-buttons" id="viewFilters">
+                        <button class="filter-btn active" data-view="borders">🗺️ مرزها</button>
+                        <button class="filter-btn active" data-view="labels">🏷️ اسامی</button>
+                        <button class="filter-btn" data-view="exports">📤 صادرات</button>
+                        <button class="filter-btn" data-view="imports">📥 واردات</button>
+                        <button class="filter-btn active" data-view="conflicts">⚔️ درگیری‌ها</button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h5>🌐 قاره</h5>
+                    <div class="filter-buttons" id="continentFilters">
+                        <button class="filter-btn active" data-continent="all">همه</button>
+                        <button class="filter-btn" data-continent="asia">آسیا</button>
+                        <button class="filter-btn" data-continent="europe">اروپا</button>
+                        <button class="filter-btn" data-continent="africa">آفریقا</button>
+                        <button class="filter-btn" data-continent="north_america">آمریکای شمالی</button>
+                        <button class="filter-btn" data-continent="south_america">آمریکای جنوبی</button>
+                        <button class="filter-btn" data-continent="oceania">اقیانوسیه</button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h5>📅 سال</h5>
+                    <div class="year-filter-wrapper">
+                        <select id="yearFilter" class="year-select">
+                            <option value="2024" selected>2024 (جاری)</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                        </select>
+                        <span class="year-note">* اطلاعات سال‌های قبل از طریق API بارگذاری می‌شود</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- راهنمای رنگ روابط -->
+            <div class="relations-legend" id="relationsLegend">
+                <h5>🤝 رنگ مرزها (رابطه با کشور انتخابی)</h5>
+                <div class="legend-items">
+                    <span class="legend-color" style="background:#00ff00"></span> روابط عالی
+                    <span class="legend-color" style="background:#ffffff"></span> عادی
+                    <span class="legend-color" style="background:#888888"></span> بدون رابطه
+                    <span class="legend-color" style="background:#ff8800"></span> تنش
+                    <span class="legend-color" style="background:#ff0000"></span> دشمنی/جنگ
                 </div>
             </div>
             
             <div class="globe-controls">
                 <button id="resetResourcesView" class="control-btn">🔄 بازیابی دید</button>
+                <button id="toggleFiltersBtn" class="control-btn">⚙️ فیلترها</button>
+                <button id="toggleCountriesBtn" class="control-btn">🏳️ کشورها</button>
             </div>
         </div>
     </div>   
@@ -1118,7 +1231,7 @@
                 <div class="highlight-circle active" data-tool="personalFund">
                     <span>صندوق</span>
                 </div>
-                <div class="highlight-circle active" data-tool="goldTool">
+                <div class="highlight-circle" data-tool="goldTool">
                     <span>طلا</span>
                 </div>
                 <div class="highlight-circle" data-tool="silverTool">
@@ -1145,45 +1258,134 @@
         <!-- 🧮 بخش ابزارهای محاسباتی -->
         <main class="tools-content">
 
-             <!-- 💰 صندوق شخصی (خانه ابزار) -->
+             <!-- 💰 صندوق شخصی (خانه ابزار) - نسخه کامل -->
             <div class="tool-section active-tool" id="personalFundSection">
                 <div class="personal-fund-container">
                     <div class="fund-header">
-                        <h2>💰 صندوق شخصی</h2>
-                        <p>مدیریت دارایی‌های مالی شما</p>
+                        <h2>💰 صندوق سرمایه شخصی</h2>
+                        <p>مدیریت و نظارت بر تمام دارایی‌های مالی شما در یک نگاه</p>
                     </div>
                     
                     <div class="fund-content">
-                        <div class="fund-stats glass-card">
-                            <h3>📊 مجموع دارایی‌ها</h3>
-                            <div class="total-amount" id="totalAssets">۰ ریال</div>
-                            <div class="assets-breakdown">
-                                <div class="asset-item">
-                                    <span>طلای ۱۸ عیار:</span>
-                                    <strong id="goldAmount">۰ گرم</strong>
-                                </div>
-                                <div class="asset-item">
-                                    <span>دلار:</span>
-                                    <strong id="usdAmount">۰ دلار</strong>
-                                </div>
-                                <div class="asset-item">
-                                    <span>بیت‌کوین:</span>
-                                    <strong id="btcAmount">۰ BTC</strong>
+                        <!-- کارت ارزش کل -->
+                        <div class="fund-total-card glass-card">
+                            <div class="total-header">
+                                <span class="total-label">💎 ارزش کل سرمایه</span>
+                                <span class="live-badge">🔴 لحظه‌ای</span>
+                            </div>
+                            <div class="total-value" id="totalPortfolioValue">۰</div>
+                            <div class="total-currency">تومان</div>
+                            <div class="total-change positive" id="portfolioChange">
+                                <span>+۰٪</span>
+                                <small>نسبت به دیروز</small>
+                            </div>
+                        </div>
+
+                        <!-- لیست دارایی‌ها -->
+                        <div class="assets-list glass-card">
+                            <h3>📋 دارایی‌های من</h3>
+                            <div class="assets-grid" id="assetsGrid">
+                                <!-- دارایی‌ها توسط JS اضافه میشن -->
+                                <div class="empty-assets">
+                                    <span>📦</span>
+                                    <p>هنوز دارایی ثبت نکردی</p>
+                                    <small>از فرم پایین دارایی اضافه کن</small>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="add-asset glass-card">
-                            <h3>➕ افزودن دارایی جدید</h3>
-                            <form class="asset-form" id="assetForm">
-                                <select class="asset-type" id="assetType">
-                                    <option value="gold">طلای ۱۸ عیار</option>
-                                    <option value="usd">دلار آمریکا</option>
-                                    <option value="btc">بیت‌کوین</option>
-                                </select>
-                                <input type="number" class="asset-amount" id="assetAmount" placeholder="مقدار" step="0.001">
-                                <button type="submit">ذخیره دارایی</button>
+                        <!-- فرم افزودن دارایی -->
+                        <div class="add-asset-form glass-card">
+                            <h3>➕ افزودن دارایی</h3>
+                            <form class="asset-form" id="portfolioAssetForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>نوع بازار</label>
+                                        <select id="marketType" class="form-select">
+                                            <option value="">انتخاب کنید...</option>
+                                            <optgroup label="ارزهای دیجیتال">
+                                                <option value="BTC">بیت‌کوین (BTC)</option>
+                                                <option value="ETH">اتریوم (ETH)</option>
+                                                <option value="USDT">تتر (USDT)</option>
+                                                <option value="BNB">بایننس کوین</option>
+                                                <option value="SOL">سولانا</option>
+                                                <option value="XRP">ریپل</option>
+                                                <option value="ADA">کاردانو</option>
+                                                <option value="DOGE">دوج‌کوین</option>
+                                            </optgroup>
+                                            <optgroup label="طلا و فلزات">
+                                                <option value="GOLD18">طلای ۱۸ عیار</option>
+                                                <option value="GOLD24">طلای ۲۴ عیار</option>
+                                                <option value="COIN">سکه امامی</option>
+                                                <option value="HALFCOIN">نیم سکه</option>
+                                                <option value="QUARTCOIN">ربع سکه</option>
+                                                <option value="SILVER">نقره</option>
+                                            </optgroup>
+                                            <optgroup label="ارز">
+                                                <option value="USD">دلار آمریکا</option>
+                                                <option value="EUR">یورو</option>
+                                                <option value="GBP">پوند انگلیس</option>
+                                                <option value="AED">درهم امارات</option>
+                                                <option value="TRY">لیر ترکیه</option>
+                                            </optgroup>
+                                            <optgroup label="بورس ایران">
+                                                <option value="STOCK">سهام (ریال)</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>مقدار / تعداد</label>
+                                        <input type="number" id="assetQuantity" placeholder="مثلاً ۰.۵" step="0.0001">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>قیمت خرید (اختیاری)</label>
+                                        <input type="number" id="buyPrice" placeholder="قیمت واحد هنگام خرید">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>تاریخ خرید</label>
+                                        <input type="date" id="buyDate">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-add-asset">
+                                    <span>➕</span> افزودن به صندوق
+                                </button>
                             </form>
+                        </div>
+
+                        <!-- دکمه‌های اکشن -->
+                        <div class="fund-actions">
+                            <button class="btn-action glass-card" id="exportImage">
+                                <span>📸</span>
+                                <small>خروجی اینستاگرام</small>
+                            </button>
+                            <button class="btn-action glass-card" id="sharePortfolio">
+                                <span>📤</span>
+                                <small>اشتراک‌گذاری</small>
+                            </button>
+                            <button class="btn-action glass-card" id="clearPortfolio">
+                                <span>🗑️</span>
+                                <small>پاک کردن</small>
+                            </button>
+                        </div>
+
+                        <!-- مشاور هوش مصنوعی -->
+                        <div class="ai-advisor glass-card">
+                            <div class="advisor-header">
+                                <span>🤖</span>
+                                <h3>مشاور هوشمند</h3>
+                                <span class="ai-badge">AI</span>
+                            </div>
+                            <div class="advisor-content" id="aiAdvisorContent">
+                                <p class="advisor-intro">با توجه به پورتفوی شما و شرایط فعلی بازار، پیشنهادات زیر ارائه میشه:</p>
+                                <div class="advisor-tips">
+                                    <div class="tip-item">
+                                        <span class="tip-icon">💡</span>
+                                        <p>ابتدا دارایی‌هاتو ثبت کن تا پیشنهادات شخصی‌سازی شده دریافت کنی</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1385,32 +1587,63 @@
     <!-- 📰 بخش اخبار -->
     <!-- ==================== -->
     <div id="newsView" class="view">
+        <!-- 🔘 هایلایت‌های اخبار -->
+        <section class="highlights-section news-highlights">
+            <div class="highlights-container">
+                <div class="highlight-circle active" data-news="all">
+                    <span>همه</span>
+                </div>
+                <div class="highlight-circle" data-news="forex">
+                    <span>فارکس</span>
+                </div>
+                <div class="highlight-circle" data-news="crypto">
+                    <span>رمزارز</span>
+                </div>
+                <div class="highlight-circle" data-news="iran-stock">
+                    <span>بورس ایران</span>
+                </div>
+                <div class="highlight-circle" data-news="global-stock">
+                    <span>جهانی</span>
+                </div>
+                <div class="highlight-circle" data-news="commodities">
+                    <span>کالاها</span>
+                </div>
+                <div class="highlight-circle" data-news="macro">
+                    <span>اقتصاد</span>
+                </div>
+            </div>
+        </section>
+
         <div class="news-container">
-            <!-- هدر اخبار -->
-            <div class="news-header">
-                <h2>📰 اخبار لحظه‌ای بازارهای مالی</h2>
-                <p>آخرین تحولات بازارهای فارکس، رمزارز، بورس و کالا</p>
-            </div>
-
-            <!-- فیلترهای دسته‌بندی -->
-            <div class="news-filters">
-                <button class="news-filter active" data-category="all">همه اخبار</button>
-                <button class="news-filter" data-category="forex">فارکس</button>
-                <button class="news-filter" data-category="crypto">رمزارز</button>
-                <button class="news-filter" data-category="iran-stock">بورس ایران</button>
-                <button class="news-filter" data-category="global-stock">بورس جهانی</button>
-                <button class="news-filter" data-category="commodities">کالاها</button>
-                <button class="news-filter" data-category="macro">اقتصاد کلان</button>
-            </div>
-
-            <!-- فید اخبار -->
-            <div class="news-feed" id="newsFeed">
-                <!-- اخبار توسط JavaScript لود میشن -->
-                <div class="news-placeholder">
-                    <div class="loading-news">
-                        <div class="spinner"></div>
-                        <p>📡 در حال دریافت آخرین اخبار...</p>
-                    </div>
+            <!-- پنل‌های هایلایت خبر -->
+            <div class="news-highlight-panels">
+                <div class="news-panel active" data-news-panel="all">
+                    <h4>📰 همه اخبار</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </div>
+                <div class="news-panel" data-news-panel="forex">
+                    <h4>💱 اخبار فارکس</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </div>
+                <div class="news-panel" data-news-panel="crypto">
+                    <h4>₿ اخبار رمزارز</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </div>
+                <div class="news-panel" data-news-panel="iran-stock">
+                    <h4>🇮🇷 اخبار بورس ایران</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </div>
+                <div class="news-panel" data-news-panel="global-stock">
+                    <h4>🌍 بازارهای جهانی</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </div>
+                <div class="news-panel" data-news-panel="commodities">
+                    <h4>🛢️ اخبار کالاها</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </div>
+                <div class="news-panel" data-news-panel="macro">
+                    <h4>📊 اقتصاد کلان</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
                 </div>
             </div>
         </div>
@@ -1421,55 +1654,70 @@
     <!-- 📚 بخش آموزش (AI) -->
     <!-- ==================== -->
     <div id="tutorialView" class="view">
-        <div class="tutorial-container">
-            <!-- هدر آموزش -->
-            <div class="tutorial-header">
-                <h2>📚 آموزش هوشمند</h2>
-                <p>چت‌بات، کوئیز، و تحلیل زنده بازار—همه با هوش مصنوعی</p>
+        <!-- 🔘 هایلایت‌های آموزش -->
+        <section class="highlights-section education-highlights">
+            <div class="highlights-container">
+                <div class="highlight-circle active" data-edu="basics">
+                    <span>مبانی</span>
+                </div>
+                <div class="highlight-circle" data-edu="technical">
+                    <span>تکنیکال</span>
+                </div>
+                <div class="highlight-circle" data-edu="fundamental">
+                    <span>فاندامنتال</span>
+                </div>
+                <div class="highlight-circle" data-edu="crypto">
+                    <span>کریپتو</span>
+                </div>
+                <div class="highlight-circle" data-edu="forex">
+                    <span>فارکس</span>
+                </div>
+                <div class="highlight-circle" data-edu="psychology">
+                    <span>روانشناسی</span>
+                </div>
+                <div class="highlight-circle" data-edu="risk">
+                    <span>ریسک</span>
+                </div>
+                <div class="highlight-circle" data-edu="strategy">
+                    <span>استراتژی</span>
+                </div>
             </div>
+        </section>
 
-            <div class="panel-grid">
-                <!-- چت‌بات آموزشی -->
-                <article class="card" id="edu-chatbot">
-                    <h3>مربی مجازی</h3>
-                    <p class="card-desc">هر سؤال مالی/ترید داری بپرس؛ پاسخ تحلیلی و نکته‌های کاربردی دریافت کن.</p>
-                    <div class="chat-window" id="eduChatWindow" aria-live="polite" role="log">
-                        <!-- پیام‌ها اینجا تزریق می‌شوند -->
-                    </div>
-                    <form class="chat-input" id="eduChatForm" autocomplete="off">
-                        <input type="text" id="eduChatInput" name="message" placeholder="سؤال مالی یا تریدت را اینجا بنویس..." required />
-                        <button type="submit" id="eduChatSend">ارسال</button>
-                    </form>
+        <div class="tutorial-container">
+            <!-- پنل‌های مربوط به هایلایت آموزش -->
+            <div class="edu-highlight-panels">
+                <article class="edu-panel active" data-edu-panel="basics">
+                    <h4>مبانی بازارهای مالی</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
                 </article>
-
-                <!-- کوئیز هوشمند -->
-                <article class="card" id="edu-quiz">
-                    <h3>کوئیز مهارت‌های ترید</h3>
-                    <p class="card-desc">سطح‌بندی پویا بر اساس عملکرد؛ بازخورد فوری و نکتهٔ آموزشی.</p>
-                    <div class="quiz-body" id="quizBody">
-                        <!-- سوال‌ها به‌صورت پویا تزریق می‌شوند -->
-                    </div>
-                    <div class="quiz-actions">
-                        <button id="quizStart">شروع</button>
-                        <button id="quizNext" disabled>بعدی</button>
-                    </div>
-                    <div class="quiz-feedback" id="quizFeedback" aria-live="polite"></div>
+                <article class="edu-panel" data-edu-panel="technical">
+                    <h4>تحلیل تکنیکال</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
                 </article>
-
-                <!-- تحلیل زنده -->
-                <article class="card" id="edu-live">
-                    <h3>تحلیل زنده بازار</h3>
-                    <p class="card-desc">نمایش داده‌های لحظه‌ای همراه با توضیح قابل فهم از هوش مصنوعی.</p>
-                    <div class="live-data">
-                        <canvas id="eduChart" height="220" aria-label="نمودار زنده بازار"></canvas>
-                    </div>
-                    <aside class="ai-explain">
-                        <h4>توضیح هوش مصنوعی</h4>
-                        <p id="aiExplainText">در حال آماده‌سازی توضیح...</p>
-                    </aside>
-                    <div class="live-actions">
-                        <button id="refreshLiveData">به‌روزرسانی داده‌ها</button>
-                    </div>
+                <article class="edu-panel" data-edu-panel="fundamental">
+                    <h4>تحلیل فاندامنتال</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="edu-panel" data-edu-panel="psychology">
+                    <h4>روانشناسی معامله‌گری</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="edu-panel" data-edu-panel="crypto">
+                    <h4>آموزش کریپتو</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="edu-panel" data-edu-panel="forex">
+                    <h4>دوره فارکس</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="edu-panel" data-edu-panel="risk">
+                    <h4>مدیریت ریسک</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="edu-panel" data-edu-panel="strategy">
+                    <h4>استراتژی معاملاتی</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
                 </article>
             </div>
         </div>
@@ -1480,52 +1728,59 @@
     <!-- 🧘‍♂️ بخش آرامش (AI) -->
     <!-- ==================== -->
     <div id="relaxView" class="view">
+        <!-- 🔘 هایلایت‌های آرامش -->
+        <section class="highlights-section relax-highlights">
+            <div class="highlights-container">
+                <div class="highlight-circle active" data-relax="adhd">
+                    <span>ADHD</span>
+                </div>
+                <div class="highlight-circle" data-relax="music">
+                    <span>موزیک</span>
+                </div>
+                <div class="highlight-circle" data-relax="game">
+                    <span>بازی</span>
+                </div>
+                <div class="highlight-circle" data-relax="3d">
+                    <span>3D</span>
+                </div>
+                <div class="highlight-circle" data-relax="meditation">
+                    <span>مدیتیشن</span>
+                </div>
+                <div class="highlight-circle" data-relax="breathing">
+                    <span>تنفس</span>
+                </div>
+            </div>
+        </section>
+
         <div class="relax-container">
-            <!-- هدر آرامش -->
-            <div class="relax-header">
-                <h2>🧘‍♂️ آرامش هوشمند</h2>
-                <p>موزیک، بازی ساده، و پیشنهادهای شخصی‌سازی‌شده با هوش مصنوعی</p>
-            </div>
-
-            <div class="panel-grid">
-                <!-- انتخاب حالت -->
-                <article class="card" id="moodSelect">
-                    <h3>حال و هوا</h3>
-                    <p class="card-desc">حالت امروزت را انتخاب کن تا پیشنهاد هوشمند دریافت کنی.</p>
-                    <form class="mood-form" id="moodForm">
-                        <label><input type="radio" name="mood" value="calm" checked /> آرامش</label>
-                        <label><input type="radio" name="mood" value="focus" /> تمرکز</label>
-                        <label><input type="radio" name="mood" value="energy" /> انرژی</label>
-                        <button type="submit" id="moodSubmit">دریافت پیشنهاد</button>
-                    </form>
-                    <div class="mood-suggestion" id="moodSuggestion" aria-live="polite"></div>
+            <!-- پنل‌های مربوط به هایلایت آرامش -->
+            <div class="relax-highlight-panels">
+                <article class="relax-panel active" data-relax-panel="adhd">
+                    <h4>روتین نظم‌دهی ADHD</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
                 </article>
-
-                <!-- پلیر موزیک -->
-                <article class="card" id="relaxMusic">
-                    <h3>موزیک منتخب</h3>
-                    <p class="card-desc">پلی‌لیست پویا بر اساس حالت انتخابی.</p>
-                    <audio controls preload="none" id="audioPlayer">
-                        <source src="assets/music/calm-01.mp3" type="audio/mpeg" />
-                    </audio>
-                    <ul id="playlist" class="playlist">
-                        <!-- آیتم‌های پلی‌لیست به‌صورت پویا ساخته می‌شوند -->
-                    </ul>
+                <article class="relax-panel" data-relax-panel="music">
+                    <h4>پلی‌لیست موزیک آرام</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
                 </article>
-
-                <!-- بازی ساده -->
-                <article class="card" id="relaxGame">
-                    <h3>بازی حافظه سریع</h3>
-                    <p class="card-desc">یک بازی کوتاه برای رهایی ذهن؛ سختی بر اساس عملکرد تنظیم می‌شود.</p>
-                    <div class="game-grid" id="gameGrid">
-                        <!-- کارت‌ها به‌صورت پویا تولید می‌شوند -->
-                    </div>
-                    <div class="game-ui">
-                        <button id="gameStart">شروع بازی</button>
-                        <span id="gameStatus" aria-live="polite"></span>
-                    </div>
+                <article class="relax-panel" data-relax-panel="game">
+                    <h4>مینى گیم‌های ذهنی</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="relax-panel" data-relax-panel="3d">
+                    <h4>تجربه سه‌بعدی</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="relax-panel" data-relax-panel="meditation">
+                    <h4>مدیتیشن</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
+                </article>
+                <article class="relax-panel" data-relax-panel="breathing">
+                    <h4>تنفس</h4>
+                    <p class="panel-placeholder">در حال توسعه</p>
                 </article>
             </div>
+
         </div>
     </div>
    
@@ -1547,6 +1802,29 @@
                     <span>• نفت ↑</span>
                     <span>• طلا →</span>
                     <span>• بورس ↑</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 💬 بخش چت هوشمند - نوار باریک -->
+    <section class="global-section ai-chat-section">
+        <div class="ai-chat-bar glass-card" id="aiChatBar">
+            <div class="chat-bar-header" id="aiChatFab">
+                <span class="chat-bar-icon">💬</span>
+                <span class="chat-bar-title">دستیار هوشمند</span>
+                <span class="chat-bar-status">آنلاین</span>
+                <span class="chat-bar-toggle">▼</span>
+            </div>
+            <div class="chat-bar-content" id="chatBarContent">
+                <div class="chat-messages-compact" id="chatMessages">
+                    <div class="ai-message">
+                        <p>سلام! من دستیار هوشمند LivePulse هستم. چطور می‌تونم کمکتون کنم؟</p>
+                    </div>
+                </div>
+                <div class="chat-input-compact">
+                    <input type="text" id="chatInput" placeholder="سوال خود را بپرسید...">
+                    <button id="sendMessage">↑</button>
                 </div>
             </div>
         </div>
@@ -1814,13 +2092,6 @@
         </div>
     </div>
     
-    <!-- دکمه چت AI شناور -->
-    <div class="ai-chat-fab" id="aiChatFab">
-        <div class="fab-button">
-            <span class="fab-icon">🤖</span>
-        </div>
-    </div>
-
     <!-- منوی شیشه‌ای جدید -->
     <div class="glass-menu-overlay" id="glassMenu">
         <div class="glass-menu">
@@ -1850,29 +2121,6 @@
         </div>
     </div>
     
-    <!-- مودال چت AI -->
-    <div class="ai-chat-modal" id="aiChatModal">
-        <div class="ai-chat-panel glass-card">
-            <div class="chat-header">
-                <h3>🤖 دستیار هوشمند</h3>
-                <button class="close-chat" id="closeAiChat">×</button>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="ai-message">
-                    <p>سلام! من دستیار هوشمند LivePulse هستم. چطور می‌تونم کمکتون کنم؟</p>
-                </div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="سوال خود را بپرسید...">
-                <button id="sendMessage">
-                    <span>↑</span>
-                </button>
-            </div>
-            <div class="chat-usage">
-                <span id="chatUsage">0</span>/4 پیام رایگان
-            </div>
-        </div>
-    </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
@@ -1883,7 +2131,10 @@
     <script src="globe/financial-globe.js"></script>
     <script src="globe/resources-globe.js"></script>
     <script src="data/mock-financial-data.js"></script>
-    <script src="data/mock-resources-data.js"></script>   
+    <script src="data/mock-resources-data.js"></script>
+    <script src="data/countries-data.js"></script>
+    <script src="data/geo-borders.js"></script>
+    <script src="data/world-resources.js"></script>   
 
          
     <script src="script.js"></script>
