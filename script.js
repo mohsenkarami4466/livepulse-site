@@ -220,65 +220,97 @@ function showView(view) {
 
 /* ========== Globe Clock - JS کامل و نهایی ========== */
 let marketData = [
-  // ایران
-  { name: "بورس تهران", open: "08:30", close: "12:30", utcOffset: "+03:30", coords: [35.6892, 51.3890] },
-  { name: "طلا و سکه تهران", open: "10:00", close: "17:00", utcOffset: "+03:30", coords: [35.6892, 51.3890] },
+  // ===== ایران =====
+  { name: "بورس تهران (TSE)", open: "05:00", close: "09:00", utcOffset: "+03:30", coords: [35.6892, 51.3890] },
+  { name: "فرابورس ایران", open: "05:00", close: "09:00", utcOffset: "+03:30", coords: [35.7219, 51.3347] },
+  { name: "بورس کالا ایران", open: "06:30", close: "10:30", utcOffset: "+03:30", coords: [35.6997, 51.4015] },
 
-  // اروپا
-  { name: "Forex - لندن", open: "08:00", close: "16:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
-  { name: "بورس فرانکفورت", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [50.1109, 8.6821] },
-  { name: "بورس پاریس", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [48.8566, 2.3522] },
-  { name: "بورس مادرید", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [40.4168, -3.7038] },
-  { name: "بورس میلان", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [45.4642, 9.1900] },
-  { name: "بورس زوریخ", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [47.3769, 8.5417] },
-  { name: "بورس استکهلم", open: "09:00", close: "17:30", utcOffset: "+02:00", coords: [59.3293, 18.0686] },
+  // ===== فارکس (ساعات UTC) =====
+  { name: "Forex سیدنی", open: "22:00", close: "07:00", utcOffset: "+00:00", coords: [-33.8688, 151.2093], major: true },
+  { name: "Forex توکیو", open: "00:00", close: "09:00", utcOffset: "+00:00", coords: [35.6762, 139.6503], major: true },
+  { name: "Forex لندن", open: "08:00", close: "17:00", utcOffset: "+00:00", coords: [51.5074, -0.1278], major: true },
+  { name: "Forex نیویورک", open: "13:00", close: "22:00", utcOffset: "+00:00", coords: [40.7128, -74.0060], major: true },
 
-  // آمریکا
-  { name: "Forex - نیویورک", open: "13:00", close: "21:00", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
-  { name: "بورس نیویورک", open: "09:30", close: "16:00", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
-  { name: "بورس نزدک", open: "09:30", close: "16:00", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
-  { name: "بورس شیکاگو", open: "09:30", close: "16:00", utcOffset: "-05:00", coords: [41.8781, -87.6298] },
-  { name: "بورس تورنتو", open: "09:30", close: "16:00", utcOffset: "-04:00", coords: [43.6532, -79.3832] },
+  // ===== اروپا =====
+  { name: "بورس لندن (LSE)", open: "08:00", close: "16:30", utcOffset: "+00:00", coords: [51.5155, -0.0922], major: true },
+  { name: "بورس فرانکفورت (XETRA)", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [50.1109, 8.6821], major: true },
+  { name: "یورونکست پاریس", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [48.8698, 2.3405] },
+  { name: "بورس آمستردام", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [52.3676, 4.9041] },
+  { name: "بورس مادرید", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [40.4168, -3.7038] },
+  { name: "بورس میلان", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [45.4654, 9.1859] },
+  { name: "بورس زوریخ (SIX)", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [47.3769, 8.5417] },
+  { name: "بورس بروکسل", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [50.8503, 4.3517] },
+  { name: "بورس استکهلم", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [59.3293, 18.0686] },
+  { name: "بورس کپنهاگ", open: "07:00", close: "15:00", utcOffset: "+00:00", coords: [55.6761, 12.5683] },
+  { name: "بورس اسلو", open: "07:00", close: "14:20", utcOffset: "+00:00", coords: [59.9139, 10.7522] },
+  { name: "بورس هلسینکی", open: "08:00", close: "16:30", utcOffset: "+00:00", coords: [60.1699, 24.9384] },
+  { name: "بورس وین", open: "07:00", close: "15:30", utcOffset: "+00:00", coords: [48.2082, 16.3738] },
+  { name: "بورس ورشو", open: "07:00", close: "15:00", utcOffset: "+00:00", coords: [52.2297, 21.0122] },
+  { name: "بورس مسکو (MOEX)", open: "07:00", close: "15:50", utcOffset: "+00:00", coords: [55.7558, 37.6173], major: true },
 
-  // آسیا
-  { name: "Forex - توکیو", open: "00:00", close: "08:00", utcOffset: "+09:00", coords: [35.6762, 139.6503] },
-  { name: "بورس توکیو", open: "09:00", close: "15:30", utcOffset: "+09:00", coords: [35.6762, 139.6503] },
-  { name: "بورس هنگ‌کنگ", open: "09:00", close: "16:00", utcOffset: "+08:00", coords: [22.3193, 114.1694] },
-  { name: "بورس شانگهای", open: "09:00", close: "15:00", utcOffset: "+08:00", coords: [31.2304, 121.4737] },
-  { name: "بورس سئول", open: "09:00", close: "15:30", utcOffset: "+09:00", coords: [37.5665, 126.9780] },
-  { name: "بورس سیدنی", open: "09:00", close: "16:00", utcOffset: "+10:00", coords: [-33.8688, 151.2093] },
+  // ===== آمریکای شمالی =====
+  { name: "بورس نیویورک (NYSE)", open: "14:30", close: "21:00", utcOffset: "+00:00", coords: [40.7069, -74.0089], major: true },
+  { name: "نزدک (NASDAQ)", open: "14:30", close: "21:00", utcOffset: "+00:00", coords: [40.7562, -73.9860], major: true },
+  { name: "بورس شیکاگو (CME)", open: "14:30", close: "21:00", utcOffset: "+00:00", coords: [41.8819, -87.6278] },
+  { name: "بورس تورنتو (TSX)", open: "14:30", close: "21:00", utcOffset: "+00:00", coords: [43.6477, -79.3818] },
 
-  // خاورمیانه
-  { name: "بورس دبی", open: "09:00", close: "14:00", utcOffset: "+04:00", coords: [25.2048, 55.2708] },
-  { name: "بورس ریاض", open: "09:00", close: "14:00", utcOffset: "+03:00", coords: [24.7136, 46.6753] },
-  { name: "بورس قطر", open: "09:00", close: "14:00", utcOffset: "+03:00", coords: [25.2854, 51.5310] },
+  // ===== آسیا و اقیانوسیه =====
+  { name: "بورس توکیو (TSE)", open: "00:00", close: "06:00", utcOffset: "+00:00", coords: [35.6804, 139.7690], major: true },
+  { name: "بورس هنگ‌کنگ (HKEX)", open: "01:30", close: "08:00", utcOffset: "+00:00", coords: [22.2846, 114.1580], major: true },
+  { name: "بورس شانگهای (SSE)", open: "01:30", close: "07:00", utcOffset: "+00:00", coords: [31.2336, 121.5057], major: true },
+  { name: "بورس شنزن (SZSE)", open: "01:30", close: "07:00", utcOffset: "+00:00", coords: [22.5431, 114.0579] },
+  { name: "بورس سئول (KRX)", open: "00:00", close: "06:30", utcOffset: "+00:00", coords: [37.5326, 126.9265] },
+  { name: "بورس تایوان (TWSE)", open: "01:00", close: "05:30", utcOffset: "+00:00", coords: [25.0330, 121.5654] },
+  { name: "بورس سنگاپور (SGX)", open: "01:00", close: "09:00", utcOffset: "+00:00", coords: [1.2840, 103.8517] },
+  { name: "بورس سیدنی (ASX)", open: "00:00", close: "06:00", utcOffset: "+00:00", coords: [-33.8678, 151.2073], major: true },
+  { name: "بورس ولینگتون (NZX)", open: "21:00", close: "05:45", utcOffset: "+00:00", coords: [-41.2865, 174.7762] },
+  { name: "بورس جاکارتا (IDX)", open: "02:30", close: "09:00", utcOffset: "+00:00", coords: [-6.2088, 106.8456] },
+  { name: "بورس بانکوک (SET)", open: "02:30", close: "09:30", utcOffset: "+00:00", coords: [13.7563, 100.5018] },
+  { name: "بورس مانیل (PSE)", open: "01:30", close: "06:30", utcOffset: "+00:00", coords: [14.5995, 120.9842] },
+  { name: "بورس کوالالامپور (Bursa)", open: "01:00", close: "09:00", utcOffset: "+00:00", coords: [3.1466, 101.6958] },
 
-  // طلا و نفت
-  { name: "طلا - لندن (LBMA)", open: "10:30", close: "15:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
-  { name: "نفت - نیویورک (NYMEX)", open: "09:00", close: "14:30", utcOffset: "-04:00", coords: [40.7128, -74.0060] },
-  { name: "نفت - لندن (ICE)", open: "08:00", close: "16:30", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
-  { name: "نقره - لندن (LBMA)", open: "10:30", close: "15:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
-  { name: "مس - لندن (LME)", open: "08:00", close: "16:00", utcOffset: "+01:00", coords: [51.5074, -0.1278] },
+  // ===== هند =====
+  { name: "بورس بمبئی (BSE)", open: "03:45", close: "10:00", utcOffset: "+00:00", coords: [18.9309, 72.8332] },
+  { name: "بورس ملی هند (NSE)", open: "03:45", close: "10:00", utcOffset: "+00:00", coords: [19.0607, 72.8747] },
 
-  // آفریقا
-  { name: "بورس Johannesburg", open: "08:00", close: "16:00", utcOffset: "+02:00", coords: [-26.2041, 28.0473] },
+  // ===== خاورمیانه =====
+  { name: "بورس دبی (DFM)", open: "06:00", close: "10:00", utcOffset: "+00:00", coords: [25.2242, 55.2748] },
+  { name: "بورس ابوظبی (ADX)", open: "06:00", close: "10:00", utcOffset: "+00:00", coords: [24.4539, 54.3773] },
+  { name: "بورس عربستان (Tadawul)", open: "07:00", close: "12:00", utcOffset: "+00:00", coords: [24.7136, 46.6753] },
+  { name: "بورس قطر (QSE)", open: "06:30", close: "10:30", utcOffset: "+00:00", coords: [25.2854, 51.5310] },
+  { name: "بورس کویت (Boursa)", open: "06:00", close: "10:00", utcOffset: "+00:00", coords: [29.3759, 47.9774] },
+  { name: "بورس بحرین (BHB)", open: "06:00", close: "10:30", utcOffset: "+00:00", coords: [26.2285, 50.5860] },
+  { name: "بورس عمان (MSM)", open: "06:00", close: "10:00", utcOffset: "+00:00", coords: [23.5880, 58.3829] },
+  { name: "بورس اردن (ASE)", open: "07:00", close: "10:30", utcOffset: "+00:00", coords: [31.9454, 35.9284] },
+  { name: "بورس مصر (EGX)", open: "08:30", close: "12:30", utcOffset: "+00:00", coords: [30.0444, 31.2357] },
+  { name: "بورس تل‌آویو (TASE)", open: "07:00", close: "15:24", utcOffset: "+00:00", coords: [32.0853, 34.7818] },
 
-  // آمریکای جنوبی
-  { name: "بورس سائوپائولو", open: "09:00", close: "17:00", utcOffset: "-03:00", coords: [-23.5505, -46.6333] },
-  { name: "بورس مکزیکو", open: "08:00", close: "15:00", utcOffset: "-05:00", coords: [19.4326, -99.1332] },
+  // ===== ترکیه =====
+  { name: "بورس استانبول (BIST)", open: "07:00", close: "15:00", utcOffset: "+00:00", coords: [41.0082, 28.9784] },
 
-  // ترکیه
-  { name: "بورس استانبول", open: "09:00", close: "17:30", utcOffset: "+03:00", coords: [41.0082, 28.9784] },
+  // ===== آفریقا =====
+  { name: "بورس ژوهانسبورگ (JSE)", open: "07:00", close: "15:00", utcOffset: "+00:00", coords: [-26.2041, 28.0473] },
+  { name: "بورس نایروبی (NSE)", open: "07:00", close: "12:00", utcOffset: "+00:00", coords: [-1.2921, 36.8219] },
+  { name: "بورس کازابلانکا", open: "08:30", close: "14:30", utcOffset: "+00:00", coords: [33.5731, -7.5898] },
+  { name: "بورس لاگوس (NGX)", open: "09:30", close: "13:30", utcOffset: "+00:00", coords: [6.5244, 3.3792] },
 
-  // هند
-  { name: "بورس بمبئی", open: "09:15", close: "15:30", utcOffset: "+05:30", coords: [19.0760, 72.8777] },
-  { name: "بورس دهلی", open: "09:15", close: "15:30", utcOffset: "+05:30", coords: [28.7041, 77.1025] },
+  // ===== آمریکای جنوبی =====
+  { name: "بورس سائوپائولو (B3)", open: "13:00", close: "20:00", utcOffset: "+00:00", coords: [-23.5505, -46.6333] },
+  { name: "بورس بوینس‌آیرس (BYMA)", open: "14:00", close: "20:00", utcOffset: "+00:00", coords: [-34.6037, -58.3816] },
+  { name: "بورس سانتیاگو (BCS)", open: "13:30", close: "21:00", utcOffset: "+00:00", coords: [-33.4489, -70.6693] },
+  { name: "بورس مکزیکو (BMV)", open: "14:30", close: "21:00", utcOffset: "+00:00", coords: [19.4326, -99.1332] },
+  { name: "بورس لیما (BVL)", open: "14:00", close: "21:00", utcOffset: "+00:00", coords: [-12.0464, -77.0428] },
+  { name: "بورس کلمبیا (BVC)", open: "14:30", close: "20:00", utcOffset: "+00:00", coords: [4.7110, -74.0721] },
 
-  // سنگاپور
-  { name: "بورس سنگاپور", open: "09:00", close: "17:00", utcOffset: "+08:00", coords: [1.3521, 103.8198] },
+  // ===== کامودیتی و فلزات =====
+  { name: "طلا COMEX", open: "13:20", close: "18:30", utcOffset: "+00:00", coords: [40.7580, -73.9855] },
+  { name: "LME لندن (فلزات)", open: "08:00", close: "17:00", utcOffset: "+00:00", coords: [51.5131, -0.0898] },
+  { name: "NYMEX نفت", open: "13:00", close: "18:30", utcOffset: "+00:00", coords: [40.7580, -73.9855] },
+  { name: "ICE برنت", open: "01:00", close: "23:00", utcOffset: "+00:00", coords: [51.5167, -0.0820] },
 
-  // نیوزیلند
-  { name: "بورس ولینگتون", open: "09:00", close: "16:45", utcOffset: "+12:00", coords: [-41.2865, 174.7762] },
+  // ===== کریپتو (24 ساعته) =====
+  { name: "Binance", open: "00:00", close: "23:59", utcOffset: "+00:00", coords: [1.3521, 103.8198] },
+  { name: "Coinbase", open: "00:00", close: "23:59", utcOffset: "+00:00", coords: [37.7749, -122.4194] },
 
   // روسیه
   { name: "بورس مسکو", open: "09:30", close: "18:45", utcOffset: "+03:00", coords: [55.7558, 37.6173] },
@@ -311,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAdsSlider();
 });
 
-/* راه‌اندازی اسلایدر GSAP تبلیغات */
+/* راه‌اندازی اسلایدر پیوسته (Infinite Loop) */
 function setupAdsSlider() {
   const track = document.getElementById('adsSliderTrack');
   const prevBtn = document.getElementById('adsPrevBtn');
@@ -323,36 +355,62 @@ function setupAdsSlider() {
     return;
   }
   
-  const slides = track.querySelectorAll('.ad-slide');
-  const slideCount = slides.length;
+  const originalSlides = Array.from(track.querySelectorAll('.ad-slide'));
+  const slideCount = originalSlides.length;
+  
+  if (slideCount === 0) {
+    console.log('⚠️ اسلایدی پیدا نشد');
+    return;
+  }
+  
+  // محاسبه عرض اسلاید - اگر صفر بود از مقدار پیش‌فرض استفاده کن
+  let slideWidth = originalSlides[0].offsetWidth;
+  if (slideWidth === 0) {
+    slideWidth = window.innerWidth <= 768 ? 260 : 320;
+  }
+  slideWidth += 16; // gap
+  
   let currentIndex = 0;
-  let slideWidth = slides[0].offsetWidth + 16; // width + gap
-  let visibleSlides = Math.floor(track.parentElement.offsetWidth / slideWidth);
-  let maxIndex = Math.max(0, slideCount - visibleSlides);
+  let isAnimating = false;
   let autoPlayInterval = null;
+  
+  // تنظیم موقعیت اولیه
+  track.style.transform = `translateX(0px)`;
   
   // ساخت نقاط نشانگر
   if (dotsContainer) {
     dotsContainer.innerHTML = '';
-    const dotsCount = Math.ceil(slideCount / Math.max(1, visibleSlides));
-    for (let i = 0; i < dotsCount; i++) {
+    for (let i = 0; i < slideCount; i++) {
       const dot = document.createElement('div');
       dot.className = `ads-dot ${i === 0 ? 'active' : ''}`;
       dot.dataset.index = i;
-      dot.addEventListener('click', () => goToSlide(i * visibleSlides));
+      dot.addEventListener('click', () => goToSlide(i));
       dotsContainer.appendChild(dot);
     }
   }
   
-  // تابع رفتن به اسلاید
+  // تابع رفتن به اسلاید با انیمیشن
   function goToSlide(index) {
-    currentIndex = Math.max(0, Math.min(index, maxIndex));
+    if (isAnimating) return;
+    
+    // حلقه پیوسته
+    if (index >= slideCount) {
+      currentIndex = 0;
+    } else if (index < 0) {
+      currentIndex = slideCount - 1;
+    } else {
+      currentIndex = index;
+    }
     
     if (typeof gsap !== 'undefined') {
+      isAnimating = true;
       gsap.to(track, {
         x: -currentIndex * slideWidth,
-        duration: 0.6,
-        ease: 'power2.out'
+        duration: 0.5,
+        ease: 'power2.out',
+        onComplete: () => {
+          isAnimating = false;
+        }
       });
     } else {
       track.style.transform = `translateX(${-currentIndex * slideWidth}px)`;
@@ -365,28 +423,19 @@ function setupAdsSlider() {
   function updateDots() {
     if (!dotsContainer) return;
     const dots = dotsContainer.querySelectorAll('.ads-dot');
-    const activeDotIndex = Math.floor(currentIndex / Math.max(1, visibleSlides));
     dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === activeDotIndex);
+      dot.classList.toggle('active', i === currentIndex);
     });
   }
   
   // رفتن به بعدی
   function nextSlide() {
-    if (currentIndex >= maxIndex) {
-      goToSlide(0);
-    } else {
-      goToSlide(currentIndex + 1);
-    }
+    goToSlide(currentIndex + 1);
   }
   
   // رفتن به قبلی
   function prevSlide() {
-    if (currentIndex <= 0) {
-      goToSlide(maxIndex);
-    } else {
-      goToSlide(currentIndex - 1);
-    }
+    goToSlide(currentIndex - 1);
   }
   
   // دکمه‌ها
@@ -396,12 +445,13 @@ function setupAdsSlider() {
   // اتوپلی
   function startAutoPlay() {
     stopAutoPlay();
-    autoPlayInterval = setInterval(nextSlide, 4000);
+    autoPlayInterval = setInterval(nextSlide, 3500);
   }
   
   function stopAutoPlay() {
     if (autoPlayInterval) {
       clearInterval(autoPlayInterval);
+      autoPlayInterval = null;
     }
   }
   
@@ -409,18 +459,46 @@ function setupAdsSlider() {
   track.addEventListener('mouseenter', stopAutoPlay);
   track.addEventListener('mouseleave', startAutoPlay);
   
+  // پشتیبانی از تاچ (swipe)
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  track.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    stopAutoPlay();
+  }, { passive: true });
+  
+  track.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+    startAutoPlay();
+  }, { passive: true });
+  
   // ریسایز
   window.addEventListener('resize', () => {
-    slideWidth = slides[0].offsetWidth + 16;
-    visibleSlides = Math.floor(track.parentElement.offsetWidth / slideWidth);
-    maxIndex = Math.max(0, slideCount - visibleSlides);
-    goToSlide(Math.min(currentIndex, maxIndex));
+    let newWidth = originalSlides[0].offsetWidth;
+    if (newWidth === 0) {
+      newWidth = window.innerWidth <= 768 ? 260 : 320;
+    }
+    slideWidth = newWidth + 16;
+    track.style.transition = 'none';
+    track.style.transform = `translateX(${-currentIndex * slideWidth}px)`;
+    track.offsetHeight;
+    track.style.transition = '';
   });
   
   // شروع اتوپلی
   startAutoPlay();
   
-  console.log('✅ اسلایدر GSAP راه‌اندازی شد');
+  console.log('✅ اسلایدر راه‌اندازی شد - ' + slideCount + ' اسلاید');
 }
 
 /* ساخت ساعت UTC دور کره کوچک */
@@ -495,9 +573,10 @@ function initGlobe() {
   
   console.log('✅ کره کوچک ساخته شد');
 
-  const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+  // نور بیشتر برای دید بهتر کره کوچک
+  const ambient = new THREE.AmbientLight(0xffffff, 0.9);
   scene.add(ambient);
-  sun = new THREE.DirectionalLight(0xffffff, 1.3);
+  sun = new THREE.DirectionalLight(0xffffff, 0.8);
   sun.name = 'sun';
   scene.add(sun);
 
@@ -559,12 +638,14 @@ function latLngToVector3(lat, lng) {
 function updateSunAndMarkets() {
   const now = new Date();
   const utcHour = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+  // همیشه از تکسچر روز استفاده کن (حالت شب خیلی تاریکه)
+  globe.material = dayMat;
+  
+  // خورشید فقط برای افکت نوری
   sunAngle = (utcHour / 24) * 2 * Math.PI;
   const sunX = Math.cos(sunAngle) * 6;
   const sunZ = Math.sin(sunAngle) * 6;
   sun.position.set(sunX, 2, sunZ);
-  const dayWeight = Math.max(0, Math.cos(sunAngle));
-  globe.material = dayWeight > 0.1 ? dayMat : nightMat;
 }
 
 function animate() {
@@ -935,8 +1016,8 @@ function createAdvancedGlobe(containerId, type) {
             
             console.log('✅ Renderer ساخته شد و به DOM اضافه شد');
 
-            // نورپردازی طبیعی‌تر - کاهش شدت برای جلوگیری از بازتابش زیاد
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.9); // افزایش ambient برای روشنایی یکنواخت
+            // نورپردازی یکنواخت بدون سایه
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
             scene.add(ambientLight);
             
             // نور اصلی - کاهش شدت
@@ -1220,44 +1301,22 @@ let simpleGlobeScenes = {
 
 function buildSimpleGlobe(containerId, type) {
     console.log(`🌍 buildSimpleGlobe شروع: ${type}`);
-    console.log(`🔍 جستجوی container: ${containerId}`);
     
     const container = document.getElementById(containerId);
-    
-    console.log(`📦 container پیدا شد:`, container);
-    console.log(`📦 container.parentElement:`, container ? container.parentElement : 'N/A');
-    
     if (!container) {
         console.error('❌ Container پیدا نشد:', containerId);
-        alert('خطا: Container پیدا نشد!');
         return;
     }
     
-    // چک وضعیت container
-    const containerStyle = window.getComputedStyle(container);
-    console.log(`📦 container display: ${containerStyle.display}`);
-    console.log(`📦 container visibility: ${containerStyle.visibility}`);
-    console.log(`📦 container opacity: ${containerStyle.opacity}`);
-    console.log(`📦 container size: ${container.offsetWidth}x${container.offsetHeight}`);
-    
-    // پاک کردن قبلی
     container.innerHTML = '';
     
-    // چک THREE.js
     if (typeof THREE === 'undefined') {
         console.error('❌ THREE.js لود نشده!');
-        alert('خطا: THREE.js لود نشده!');
         return;
     }
     
-    console.log('✅ THREE.js موجود است');
-    console.log('✅ THREE.OrbitControls:', typeof THREE.OrbitControls !== 'undefined' ? 'موجود' : 'ندارد');
-    
-    // استفاده مستقیم از اندازه پنجره
     const width = window.innerWidth;
     const height = window.innerHeight;
-    
-    console.log(`📐 اندازه پنجره: ${width}x${height}`);
     
     try {
         // Scene
@@ -1269,16 +1328,10 @@ function buildSimpleGlobe(containerId, type) {
         camera.position.set(0, 0, 2.5);
         
         // Renderer
-        const renderer = new THREE.WebGLRenderer({ 
-            antialias: true,
-            alpha: false
-        });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
-        
-        console.log('✅ Renderer ساخته و اضافه شد');
-        console.log('📺 Canvas size:', renderer.domElement.width, 'x', renderer.domElement.height);
         
         // Controls
         let controls = null;
@@ -1286,49 +1339,36 @@ function buildSimpleGlobe(containerId, type) {
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.minDistance = 1.5;
-            controls.maxDistance = 6;
+            controls.minDistance = 1.2;
+            controls.maxDistance = 8;
             controls.enablePan = false;
         }
         
-        // Lights
-        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-        const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+        // نورپردازی یکنواخت
+        scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+        const sun = new THREE.DirectionalLight(0xffffff, 0.4);
         sun.position.set(5, 3, 5);
         scene.add(sun);
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        fillLight.position.set(-5, -3, -5);
+        scene.add(fillLight);
         
         // کره زمین
         const earthGeo = new THREE.SphereGeometry(1, 64, 64);
-        const earthMat = new THREE.MeshPhongMaterial({
-            color: 0x2563eb,
-            shininess: 25
-        });
+        const earthMat = new THREE.MeshPhongMaterial({ color: 0x2563eb, shininess: 25 });
         const earth = new THREE.Mesh(earthGeo, earthMat);
         scene.add(earth);
         
-        console.log('✅ کره زمین ساخته شد');
-        
-        // یک render اولیه
+        // اولین render
         renderer.render(scene, camera);
-        console.log('✅ اولین render انجام شد');
         
         // بارگذاری تکسچر
         const loader = new THREE.TextureLoader();
         loader.crossOrigin = 'anonymous';
-        loader.load(
-            'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
-            (texture) => {
-                earth.material.map = texture;
-                earth.material.needsUpdate = true;
-                console.log('✅ تکسچر زمین بارگذاری شد');
-            },
-            (progress) => {
-                console.log('📥 تکسچر در حال بارگذاری...');
-            },
-            (error) => {
-                console.warn('⚠️ تکسچر بارگذاری نشد، ادامه با رنگ پیش‌فرض');
-            }
-        );
+        loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg', (texture) => {
+            earth.material.map = texture;
+            earth.material.needsUpdate = true;
+        });
         
         // هاله
         const atmosGeo = new THREE.SphereGeometry(1.03, 64, 64);
@@ -1340,42 +1380,198 @@ function buildSimpleGlobe(containerId, type) {
         });
         scene.add(new THREE.Mesh(atmosGeo, atmosMat));
         
-        // مارکرها
-        const data = type === 'financial' ? 
-            (window.mockFinancialData || []) :
-            (window.mockResourcesData || []);
+        // ذخیره مارکرها برای انیمیشن و کلیک
+        const markers = [];
+        const markerGroup = new THREE.Group();
+        earth.add(markerGroup);
         
-        console.log(`📍 تعداد داده‌ها: ${data.length}`);
+        // === کره مالی ===
+        if (type === 'financial' && typeof marketData !== 'undefined') {
+            console.log(`📍 تعداد بازارها: ${marketData.length}`);
+            
+            marketData.forEach((market, index) => {
+                const lat = market.coords[0];
+                const lng = market.coords[1];
+                const phi = (90 - lat) * (Math.PI / 180);
+                const theta = (lng + 180) * (Math.PI / 180);
+                
+                // چسبیده به سطح کره
+                const radius = 1.005;
+                const x = -radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.cos(phi);
+                const z = radius * Math.sin(phi) * Math.sin(theta);
+                
+                // رنگ بر اساس وضعیت بازار
+                const statusInfo = getMarketStatusInfo(market);
+                const isMajor = market.major === true;
+                
+                let core, glow, rays = [];
+                
+                if (isMajor) {
+                    // ⭐ بازار اصلی - ستاره‌ای و بزرگتر
+                    
+                    // مرکز ستاره
+                    const coreGeo = new THREE.SphereGeometry(0.018, 12, 12);
+                    const coreMat = new THREE.MeshBasicMaterial({ 
+                        color: statusInfo.coreColor
+                    });
+                    core = new THREE.Mesh(coreGeo, coreMat);
+                    core.position.set(x, y, z);
+                    core.userData = { market, index, type: 'market', major: true };
+                    markerGroup.add(core);
+                    
+                    // هاله بزرگتر
+                    const glowGeo = new THREE.SphereGeometry(0.028, 12, 12);
+                    const glowMat = new THREE.MeshBasicMaterial({ 
+                        color: statusInfo.glowColor,
+                        transparent: true,
+                        opacity: 0.6
+                    });
+                    glow = new THREE.Mesh(glowGeo, glowMat);
+                    glow.position.set(x, y, z);
+                    glow.userData = { market, index, type: 'market', major: true };
+                    markerGroup.add(glow);
+                    
+                    // پرتوهای ستاره (4 پرتو)
+                    const rayLength = 0.04;
+                    const rayWidth = 0.004;
+                    for (let i = 0; i < 4; i++) {
+                        const rayGeo = new THREE.BoxGeometry(rayWidth, rayLength, rayWidth);
+                        const rayMat = new THREE.MeshBasicMaterial({ 
+                            color: statusInfo.coreColor,
+                            transparent: true,
+                            opacity: 0.9
+                        });
+                        const ray = new THREE.Mesh(rayGeo, rayMat);
+                        
+                        // موقعیت پرتو
+                        ray.position.set(x, y, z);
+                        
+                        // چرخش پرتوها به سمت خارج
+                        const normal = new THREE.Vector3(x, y, z).normalize();
+                        ray.lookAt(normal.multiplyScalar(2).add(ray.position));
+                        ray.rotateZ(i * Math.PI / 4); // 45 درجه بین پرتوها
+                        
+                        ray.userData = { market, index, type: 'market', major: true, isRay: true };
+                        markerGroup.add(ray);
+                        rays.push(ray);
+                    }
+                    
+                    // حلقه دور ستاره
+                    const ringGeo = new THREE.RingGeometry(0.03, 0.035, 32);
+                    const ringMat = new THREE.MeshBasicMaterial({ 
+                        color: statusInfo.coreColor,
+                        transparent: true,
+                        opacity: 0.4,
+                        side: THREE.DoubleSide
+                    });
+                    const ring = new THREE.Mesh(ringGeo, ringMat);
+                    ring.position.set(x, y, z);
+                    
+                    // حلقه رو به سمت دوربین (بیرون کره)
+                    const normalVec = new THREE.Vector3(x, y, z).normalize();
+                    ring.lookAt(normalVec.multiplyScalar(10).add(ring.position));
+                    
+                    ring.userData = { market, index, type: 'market', major: true, isRing: true };
+                    markerGroup.add(ring);
+                    rays.push(ring);
+                    
+                } else {
+                    // ● بازار معمولی - نقطه کوچک
+                    
+                    const coreGeo = new THREE.SphereGeometry(0.010, 8, 8);
+                    const coreMat = new THREE.MeshBasicMaterial({ 
+                        color: statusInfo.coreColor
+                    });
+                    core = new THREE.Mesh(coreGeo, coreMat);
+                    core.position.set(x, y, z);
+                    core.userData = { market, index, type: 'market' };
+                    markerGroup.add(core);
+                    
+                    // هاله نور کوچک
+                    const glowGeo = new THREE.SphereGeometry(0.015, 8, 8);
+                    const glowMat = new THREE.MeshBasicMaterial({ 
+                        color: statusInfo.glowColor,
+                        transparent: true,
+                        opacity: 0.4
+                    });
+                    glow = new THREE.Mesh(glowGeo, glowMat);
+                    glow.position.set(x, y, z);
+                    glow.userData = { market, index, type: 'market' };
+                    markerGroup.add(glow);
+                }
+                
+                markers.push({ 
+                    core, glow, rays, market, 
+                    statusInfo,
+                    isMajor,
+                    position: { x, y, z }
+                });
+            });
+        }
         
-        data.forEach(item => {
-            const phi = (90 - item.lat) * (Math.PI / 180);
-            const theta = (item.lng + 180) * (Math.PI / 180);
-            
-            const x = -1.03 * Math.sin(phi) * Math.cos(theta);
-            const y = 1.03 * Math.cos(phi);
-            const z = 1.03 * Math.sin(phi) * Math.sin(theta);
-            
-            let color;
+        // === کره منابع ===
+        // نکته: آیکون‌های منابع از طریق سیستم worldResources اضافه میشن
+        // نه از mockResourcesData - حذف شد
+        if (type === 'resources') {
+            console.log('📍 کره منابع - آیکون‌ها از طریق فیلتر اضافه میشن');
+        }
+        
+        // Raycaster برای تشخیص کلیک
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let selectedMarker = null;
+        
+        // انیمیشن چراغ‌های بازار
+        let animTime = 0;
+        const blinkInterval = setInterval(() => {
             if (type === 'financial') {
-                color = item.status === 'open' ? 0x22c55e : 0xef4444;
-            } else {
-                color = item.resource === 'gold' ? 0xfbbf24 : 
-                        item.resource === 'oil' ? 0x374151 : 0xa855f7;
+                animTime += 0.1;
+                markers.forEach(m => {
+                    if (!m.core || !m.glow) return;
+                    
+                    // آپدیت وضعیت بازار
+                    const newStatus = getMarketStatusInfo(m.market);
+                    m.core.material.color.setHex(newStatus.coreColor);
+                    m.glow.material.color.setHex(newStatus.glowColor);
+                    
+                    if (m.isMajor) {
+                        // انیمیشن ستاره - درخشش قوی‌تر و چرخش
+                        const breathe = 0.5 + Math.sin(animTime * 4) * 0.3;
+                        m.glow.material.opacity = breathe;
+                        
+                        // چرخش پرتوها
+                        if (m.rays && m.rays.length > 0) {
+                            m.rays.forEach((ray, i) => {
+                                if (ray.userData.isRay) {
+                                    ray.rotation.z += 0.02;
+                                    ray.material.color.setHex(newStatus.coreColor);
+                                }
+                                if (ray.userData.isRing) {
+                                    ray.rotation.z += 0.01;
+                                    ray.material.color.setHex(newStatus.coreColor);
+                                    ray.material.opacity = 0.3 + Math.sin(animTime * 2) * 0.2;
+                                }
+                            });
+                        }
+                    } else {
+                        // بازار معمولی - افکت تنفس ساده
+                        const breathe = 0.4 + Math.sin(animTime * 3) * 0.2;
+                        m.glow.material.opacity = breathe;
+                    }
+                });
             }
-            
-            const dot = new THREE.Mesh(
-                new THREE.SphereGeometry(0.025, 12, 12),
-                new THREE.MeshBasicMaterial({ color })
-            );
-            dot.position.set(x, y, z);
-            scene.add(dot);
-        });
+        }, 50);
         
-        // انیمیشن
+        // چرخش اتوماتیک
+        let autoRotate = true;
         let frameId;
+        
         const animate = () => {
             frameId = requestAnimationFrame(animate);
-            earth.rotation.y += 0.002;
+            if (autoRotate) {
+                earth.rotation.y += 0.001;
+            }
             if (controls) controls.update();
             renderer.render(scene, camera);
         };
@@ -1391,26 +1587,518 @@ function buildSimpleGlobe(containerId, type) {
         };
         window.addEventListener('resize', onResize);
         
-        // ذخیره
-        simpleGlobeScenes[type] = {
-            destroy: () => {
-                cancelAnimationFrame(frameId);
-                window.removeEventListener('resize', onResize);
-                renderer.dispose();
-                container.innerHTML = '';
+        // تابع مشترک برای کلیک و تاچ روی مارکر
+        const handleMarkerInteraction = (clientX, clientY) => {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            
+            // بررسی برخورد با مارکرها
+            const allMarkerObjects = [];
+            markers.forEach(m => {
+                if (m.core) allMarkerObjects.push(m.core);
+                if (m.glow) allMarkerObjects.push(m.glow);
+            });
+            
+            const intersects = raycaster.intersectObjects(allMarkerObjects, false);
+            
+            if (intersects.length > 0) {
+                const clicked = intersects[0].object;
+                if (clicked.userData && clicked.userData.market) {
+                    console.log('📍 کلیک روی بازار:', clicked.userData.market.name);
+                    autoRotate = false;
+                    zoomToMarker(clicked.userData.market, camera, controls, earth);
+                    showMarketPopup(clicked.userData.market, container);
+                    return true;
+                }
+            }
+            
+            // در کره منابع: تشخیص کلیک روی کشور
+            if (type === 'resources') {
+                // فقط mesh اصلی کره، نه فرزندان (مرزها/آیکون‌ها)
+                const earthIntersects = raycaster.intersectObject(earth, false);
+                if (earthIntersects.length > 0) {
+                    const worldPoint = earthIntersects[0].point;
+                    
+                    // دیباگ: نمایش چرخش کره
+                    console.log('🔄 چرخش کره Y:', (earth.rotation.y * 180 / Math.PI).toFixed(1) + '°');
+                    console.log('🌍 نقطه جهانی:', worldPoint.x.toFixed(3), worldPoint.y.toFixed(3), worldPoint.z.toFixed(3));
+                    
+                    // تبدیل نقطه از سیستم جهانی به سیستم محلی کره
+                    const localPoint = earth.worldToLocal(worldPoint.clone());
+                    console.log('📌 نقطه محلی:', localPoint.x.toFixed(3), localPoint.y.toFixed(3), localPoint.z.toFixed(3));
+                    
+                    // تبدیل موقعیت 3D به lat/lng
+                    const latLng = vector3ToLatLng(localPoint);
+                    console.log('📍 مختصات:', 'lat=' + latLng.lat.toFixed(2), 'lng=' + latLng.lng.toFixed(2));
+                    
+                    // پیدا کردن کشور بر اساس مختصات
+                    const countryCode = findCountryByLatLng(latLng.lat, latLng.lng);
+                    if (countryCode) {
+                        console.log('🗺️ کشور:', countryCode);
+                        selectCountry(countryCode);
+                        return true;
+                    } else {
+                        console.log('❌ کشوری پیدا نشد برای این مختصات');
+                    }
+                }
+            }
+            
+            return false;
+        };
+        
+        // تبدیل Vector3 به lat/lng - معکوس latLngToVector3Globe
+        // فرمول اصلی latLngToVector3Globe:
+        // phi = (90 - lat) * π/180
+        // theta = (lng + 180) * π/180
+        // x = -r * sin(phi) * cos(theta)
+        // y = r * cos(phi)
+        // z = r * sin(phi) * sin(theta)
+        const vector3ToLatLng = (vec) => {
+            const r = Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+            if (r === 0) return { lat: 0, lng: 0 };
+            
+            // از y → lat
+            // y = r * cos(phi) → phi = acos(y/r)
+            // lat = 90 - phi * 180/π
+            const phi = Math.acos(Math.max(-1, Math.min(1, vec.y / r)));
+            const lat = 90 - (phi * 180 / Math.PI);
+            
+            // از x,z → lng
+            // x = -r * sin(phi) * cos(theta)
+            // z = r * sin(phi) * sin(theta)
+            // tan(theta) = z / (-x) = -z/x
+            // theta = atan2(z, -x)
+            // theta = (lng + 180) * π/180
+            // lng = theta * 180/π - 180
+            const theta = Math.atan2(vec.z, -vec.x);
+            let lng = (theta * 180 / Math.PI) - 180;
+            
+            // نرمال‌سازی به [-180, 180]
+            while (lng < -180) lng += 360;
+            while (lng > 180) lng -= 360;
+            
+            return { lat, lng };
+        };
+        
+        // پیدا کردن کشور بر اساس مختصات - روش پیشرفته با فاصله از مرکز
+        const findCountryByLatLng = (lat, lng) => {
+            if (typeof countriesData === 'undefined') return null;
+            
+            // استفاده از مختصات پایتخت‌ها و محاسبه نزدیک‌ترین کشور
+            // این روش دقیق‌تر از bounding box است
+            
+            let closestCountry = null;
+            let minDistance = Infinity;
+            
+            // محاسبه فاصله تقریبی (بدون نیاز به Haversine کامل)
+            const getDistance = (lat1, lng1, lat2, lng2) => {
+                const dLat = lat2 - lat1;
+                const dLng = lng2 - lng1;
+                // ضریب تصحیح برای عرض جغرافیایی
+                const latFactor = Math.cos((lat1 + lat2) / 2 * Math.PI / 180);
+                return Math.sqrt(dLat * dLat + (dLng * latFactor) * (dLng * latFactor));
+            };
+            
+            // محدوده تقریبی هر کشور - برخی کشورهای بزرگ چند منطقه دارن
+            const countryZones = [
+                // === کشورهای کوچک - اولویت بالا ===
+                { code: 'IL', center: [31.5, 35], radius: 1.5 },      // اسرائیل
+                { code: 'AE', center: [24, 54], radius: 2.5 },        // امارات
+                { code: 'KR', center: [36, 128], radius: 3 },         // کره جنوبی
+                { code: 'KP', center: [40, 127], radius: 2.5 },       // کره شمالی
+                { code: 'SY', center: [35, 38], radius: 3 },          // سوریه
+                { code: 'YE', center: [16, 47], radius: 4 },          // یمن
+                
+                // === کشورهای متوسط ===
+                { code: 'IQ', center: [33, 44], radius: 4 },          // عراق
+                { code: 'AF', center: [34, 66], radius: 5 },          // افغانستان
+                { code: 'UK', center: [54, -2], radius: 5 },          // بریتانیا
+                { code: 'DE', center: [51, 10], radius: 4 },          // آلمان
+                { code: 'FR', center: [46, 2], radius: 5 },           // فرانسه
+                { code: 'JP', center: [36, 138], radius: 6 },         // ژاپن
+                { code: 'EG', center: [27, 30], radius: 5 },          // مصر
+                { code: 'UA', center: [49, 32], radius: 5 },          // اوکراین
+                { code: 'PK', center: [30, 69], radius: 6 },          // پاکستان
+                { code: 'TR', center: [39, 35], radius: 6 },          // ترکیه
+                { code: 'IR', center: [32, 53], radius: 8 },          // ایران
+                
+                // === کشورهای بزرگ ===
+                { code: 'SA', center: [24, 45], radius: 8 },          // عربستان
+                { code: 'IN', center: [22, 80], radius: 12 },         // هند
+                { code: 'ZA', center: [-29, 25], radius: 8 },         // آفریقای جنوبی
+                { code: 'AU', center: [-25, 134], radius: 18 },       // استرالیا
+                
+                // === کشورهای خیلی بزرگ - چند منطقه ===
+                // چین
+                { code: 'CN', center: [35, 105], radius: 12 },        // چین شرقی
+                { code: 'CN', center: [40, 85], radius: 10 },         // چین غربی (سین‌کیانگ)
+                
+                // آمریکا
+                { code: 'US', center: [39, -98], radius: 15 },        // مرکز آمریکا
+                { code: 'US', center: [34, -118], radius: 8 },        // کالیفرنیا
+                { code: 'US', center: [40, -74], radius: 6 },         // نیویورک
+                { code: 'US', center: [25, -80], radius: 5 },         // فلوریدا
+                
+                // کانادا
+                { code: 'CA', center: [56, -106], radius: 20 },       // کانادا مرکزی
+                { code: 'CA', center: [49, -123], radius: 8 },        // ونکوور
+                { code: 'CA', center: [45, -75], radius: 6 },         // اتاوا/مونترال
+                
+                // برزیل
+                { code: 'BR', center: [-14, -51], radius: 15 },       // برزیل
+                { code: 'BR', center: [-23, -46], radius: 6 },        // سائوپائولو
+                
+                // روسیه - چند منطقه مهم
+                { code: 'RU', center: [55, 37], radius: 8 },          // مسکو و اروپایی
+                { code: 'RU', center: [55, 60], radius: 10 },         // اورال
+                { code: 'RU', center: [55, 83], radius: 12 },         // سیبری غربی
+                { code: 'RU', center: [55, 105], radius: 12 },        // سیبری شرقی
+                { code: 'RU', center: [55, 130], radius: 12 },        // خاور دور
+                { code: 'RU', center: [65, 90], radius: 15 },         // شمال سیبری
+                { code: 'RU', center: [45, 45], radius: 8 },          // قفقاز
+            ];
+            
+            // ابتدا چک کنیم در محدوده کدوم مناطق هستیم
+            const candidates = [];
+            
+            for (const zone of countryZones) {
+                const dist = getDistance(lat, lng, zone.center[0], zone.center[1]);
+                const ratio = dist / zone.radius;
+                if (ratio <= 1.3) { // حداکثر 30% خارج از شعاع
+                    candidates.push({ 
+                        code: zone.code, 
+                        dist, 
+                        radius: zone.radius,
+                        ratio,
+                        withinRadius: ratio <= 1.0 
+                    });
+                }
+            }
+            
+            // اگر کاندیدایی نداشتیم، نزدیک‌ترین رو برگردون
+            if (candidates.length === 0) {
+                for (const zone of countryZones) {
+                    const dist = getDistance(lat, lng, zone.center[0], zone.center[1]);
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        closestCountry = zone.code;
+                    }
+                }
+                console.log('⚠️ کشور نزدیک (خارج محدوده):', closestCountry);
+                return closestCountry;
+            }
+            
+            // حذف کشورهای تکراری - نگه داشتن بهترین منطقه هر کشور
+            const bestByCountry = {};
+            for (const c of candidates) {
+                if (!bestByCountry[c.code] || c.ratio < bestByCountry[c.code].ratio) {
+                    bestByCountry[c.code] = c;
+                }
+            }
+            const uniqueCandidates = Object.values(bestByCountry);
+            
+            // مرتب‌سازی هوشمند:
+            uniqueCandidates.sort((a, b) => {
+                // اگر یکی داخل شعاع و دیگری خارج، داخلی برنده
+                if (a.withinRadius && !b.withinRadius) return -1;
+                if (!a.withinRadius && b.withinRadius) return 1;
+                // هر دو داخل یا هر دو خارج - کمترین ratio
+                return a.ratio - b.ratio;
+            });
+            
+            console.log('🎯 کاندیداها:', uniqueCandidates.map(c => `${c.code}(${c.ratio.toFixed(2)})`).join(', '));
+            return uniqueCandidates[0].code;
+        };
+        
+        // متغیرهای مشترک برای تشخیص کلیک vs درگ
+        let pointerStartX = 0;
+        let pointerStartY = 0;
+        let pointerStartTime = 0;
+        
+        // Pointer events - کار می‌کنه هم با موس و هم با تاچ
+        const onPointerDown = (event) => {
+            pointerStartTime = Date.now();
+            pointerStartX = event.clientX;
+            pointerStartY = event.clientY;
+        };
+        
+        const onPointerUp = (event) => {
+            const duration = Date.now() - pointerStartTime;
+            const moveX = Math.abs(event.clientX - pointerStartX);
+            const moveY = Math.abs(event.clientY - pointerStartY);
+            const totalMove = Math.sqrt(moveX * moveX + moveY * moveY);
+            
+            // فقط اگر کلیک کوتاه بود و حرکت کمتر از 15 پیکسل
+            if (duration < 400 && totalMove < 15) {
+                console.log('✅ کلیک/تپ تشخیص داده شد (حرکت:', totalMove.toFixed(1), 'px)');
+                handleMarkerInteraction(event.clientX, event.clientY);
             }
         };
         
-        console.log(`✅ کره ${type} کاملاً آماده!`);
+        // استفاده از Pointer Events - یکپارچه برای موس و تاچ
+        renderer.domElement.addEventListener('pointerdown', onPointerDown);
+        renderer.domElement.addEventListener('pointerup', onPointerUp);
+        
+        // ذخیره برای پاکسازی
+        const globeData = {
+            scene, camera, renderer, controls, frameId, earth, markers, markerGroup,
+            autoRotate: () => { autoRotate = true; },
+            stopRotate: () => { autoRotate = false; },
+            destroy: function() {
+                console.log(`🗑️ پاکسازی کره ${type}...`);
+                try {
+                    clearInterval(blinkInterval);
+                    cancelAnimationFrame(frameId);
+                    window.removeEventListener('resize', onResize);
+                    renderer.domElement.removeEventListener('pointerdown', onPointerDown);
+                    renderer.domElement.removeEventListener('pointerup', onPointerUp);
+                    if (controls) controls.dispose();
+                    scene.traverse((obj) => {
+                        if (obj.geometry) obj.geometry.dispose();
+                        if (obj.material) {
+                            if (Array.isArray(obj.material)) {
+                                obj.material.forEach(m => { if (m.map) m.map.dispose(); m.dispose(); });
+                            } else {
+                                if (obj.material.map) obj.material.map.dispose();
+                                obj.material.dispose();
+                            }
+                        }
+                    });
+                    scene.clear();
+                    renderer.dispose();
+                    renderer.forceContextLoss();
+                    if (renderer.domElement.parentNode) {
+                        renderer.domElement.parentNode.removeChild(renderer.domElement);
+                    }
+                    // حذف popup اگر باز بود
+                    const popup = container.querySelector('.market-3d-popup');
+                    if (popup) popup.remove();
+                } catch (err) {
+                    console.error('خطا در پاکسازی:', err);
+                }
+            }
+        };
+        
+        // ذخیره در simpleGlobeScenes
+        simpleGlobeScenes[type] = globeData;
+        
+        // ذخیره در window برای دسترسی از توابع دیگر
+        if (type === 'financial') {
+            window.financialGlobeObjects = globeData;
+        } else if (type === 'resources') {
+            window.resourcesGlobeObjects = globeData;
+        }
+        
+        console.log(`✅ کره ${type} آماده!`);
         
     } catch (error) {
         console.error('❌ خطا:', error);
-        alert('خطا در ساخت کره: ' + error.message);
     }
 }
 
+// اطلاعات وضعیت بازار با رنگ‌های پررنگ
+function getMarketStatusInfo(market) {
+    const now = new Date();
+    const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+    
+    const [openH, openM] = market.open.split(':').map(Number);
+    const [closeH, closeM] = market.close.split(':').map(Number);
+    const openMin = openH * 60 + openM;
+    const closeMin = closeH * 60 + closeM;
+    
+    // در حال باز شدن (1 ساعت قبل از باز شدن)
+    if (utcMinutes >= openMin - 60 && utcMinutes < openMin) {
+        return {
+            status: 'opening',
+            isOpen: false,
+            coreColor: 0xffdd00,    // زرد پررنگ
+            glowColor: 0xffdd00,
+            label: 'در حال باز شدن'
+        };
+    }
+    // در حال بسته شدن (1 ساعت قبل از بسته شدن)
+    if (utcMinutes >= closeMin - 60 && utcMinutes < closeMin) {
+        return {
+            status: 'closing',
+            isOpen: true,
+            coreColor: 0xff8800,    // نارنجی پررنگ
+            glowColor: 0xff8800,
+            label: 'در حال بسته شدن'
+        };
+    }
+    // باز
+    if (utcMinutes >= openMin && utcMinutes < closeMin) {
+        return {
+            status: 'open',
+            isOpen: true,
+            coreColor: 0x00ff00,    // سبز پررنگ
+            glowColor: 0x00ff00,
+            label: 'باز'
+        };
+    }
+    // بسته
+    return {
+        status: 'closed',
+        isOpen: false,
+        coreColor: 0xff0000,    // قرمز پررنگ
+        glowColor: 0xff0000,
+        label: 'بسته'
+    };
+}
+
+// نسخه ساده برای سازگاری
+function getMarketStatusColor(market) {
+    return getMarketStatusInfo(market).coreColor;
+}
+
+// زوم به مارکر انتخاب شده
+function zoomToMarker(market, camera, controls, earth) {
+    if (!market || !camera) return;
+    
+    console.log(`🎯 زوم به: ${market.name} (${market.coords[0]}, ${market.coords[1]})`);
+    
+    const lat = market.coords[0];
+    const lng = market.coords[1];
+    
+    // تبدیل lat/lng به موقعیت روی کره
+    const phi = (90 - lat) * (Math.PI / 180);
+    const theta = (lng + 180) * (Math.PI / 180);
+    
+    // موقعیت نقطه روی کره
+    const targetX = -Math.sin(phi) * Math.cos(theta);
+    const targetY = Math.cos(phi);
+    const targetZ = Math.sin(phi) * Math.sin(theta);
+    
+    // ابتدا کره رو ریست کن به چرخش صفر
+    earth.rotation.y = 0;
+    
+    // موقعیت نهایی دوربین (کمی دورتر از نقطه هدف)
+    const distance = 2.0;
+    const targetCamPos = new THREE.Vector3(
+        targetX * distance,
+        targetY * distance,
+        targetZ * distance
+    );
+    
+    // انیمیشن
+    const startCamPos = camera.position.clone();
+    const duration = 1200;
+    const startTime = Date.now();
+    
+    const animateCamera = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // ease-out cubic
+        const ease = 1 - Math.pow(1 - progress, 3);
+        
+        // حرکت دوربین
+        camera.position.lerpVectors(startCamPos, targetCamPos, ease);
+        camera.lookAt(0, 0, 0);
+        
+        if (controls) {
+            controls.update();
+        }
+        
+        if (progress < 1) {
+            requestAnimationFrame(animateCamera);
+        }
+    };
+    animateCamera();
+}
+
+// نمایش پنجره اطلاعات بازار
+function showMarketPopup(market, container) {
+    // حذف popup قبلی
+    const oldPopup = container.querySelector('.market-3d-popup');
+    if (oldPopup) oldPopup.remove();
+    
+    const now = new Date();
+    const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+    const [openH, openM] = market.open.split(':').map(Number);
+    const [closeH, closeM] = market.close.split(':').map(Number);
+    const openMin = openH * 60 + openM;
+    const closeMin = closeH * 60 + closeM;
+    const isOpen = utcMinutes >= openMin && utcMinutes < closeMin;
+    
+    const popup = document.createElement('div');
+    popup.className = 'market-3d-popup';
+    popup.innerHTML = `
+        <div class="popup-header">
+            <span class="popup-status ${isOpen ? 'open' : 'closed'}">${isOpen ? '🟢 باز' : '🔴 بسته'}</span>
+            <button class="popup-close" onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+        <h3 class="popup-title">${market.name}</h3>
+        <div class="popup-times">
+            <div class="time-row">
+                <span>🕐 باز شدن:</span>
+                <span>${market.open} UTC</span>
+            </div>
+            <div class="time-row">
+                <span>🕐 بسته شدن:</span>
+                <span>${market.close} UTC</span>
+            </div>
+            <div class="time-row">
+                <span>🌍 منطقه زمانی:</span>
+                <span>UTC ${market.utcOffset}</span>
+            </div>
+        </div>
+        <div class="popup-notification">
+            <label>
+                <input type="checkbox" id="notify-${market.name.replace(/\s/g, '')}">
+                🔔 اعلان قبل از باز شدن
+            </label>
+            <select class="notify-time">
+                <option value="5">5 دقیقه قبل</option>
+                <option value="15" selected>15 دقیقه قبل</option>
+                <option value="30">30 دقیقه قبل</option>
+                <option value="60">1 ساعت قبل</option>
+            </select>
+        </div>
+        <button class="popup-save-btn" onclick="saveMarketNotification('${market.name}', this)">
+            💾 ذخیره تنظیمات
+        </button>
+    `;
+    
+    container.appendChild(popup);
+    
+    // انیمیشن ورود
+    setTimeout(() => popup.classList.add('visible'), 10);
+}
+
+// ذخیره تنظیمات ناتیفیکیشن
+window.saveMarketNotification = function(marketName, btn) {
+    const popup = btn.closest('.market-3d-popup');
+    const checkbox = popup.querySelector('input[type="checkbox"]');
+    const select = popup.querySelector('.notify-time');
+    
+    if (checkbox.checked) {
+        const settings = JSON.parse(localStorage.getItem('marketNotifications') || '{}');
+        settings[marketName] = {
+            enabled: true,
+            minutesBefore: parseInt(select.value)
+        };
+        localStorage.setItem('marketNotifications', JSON.stringify(settings));
+        
+        btn.textContent = '✅ ذخیره شد!';
+        btn.style.background = '#22c55e';
+        setTimeout(() => {
+            btn.textContent = '💾 ذخیره تنظیمات';
+            btn.style.background = '';
+        }, 2000);
+    }
+};
+
 // توابع مدیریت modal با افکت حرفه‌ای
 function openFinancialGlobe() {
+    // 🔐 چک لاگین
+    if (!checkLoginRequired()) {
+        console.log('⚠️ کاربر لاگین نیست - کره مالی باز نشد');
+        return;
+    }
+    
     console.log('📈 ========== باز کردن کره مالی ==========');
     
     const modal = document.getElementById('financialGlobeModal');
@@ -1455,15 +2143,35 @@ function openFinancialGlobe() {
         requestAnimationFrame(() => {
             buildSimpleGlobe('financialGlobeContainer', 'financial');
             
-            // راه‌اندازی پنل‌ها
-            if (typeof populateMarketList === 'function') {
-                populateMarketList();
-            }
+            // راه‌اندازی پنل‌ها و دکمه انتخاب بازار
+            populateMarketList();
+            setupMarketSelector();
+            
+            // بارگذاری مرزها برای کره مالی هم (async)
+            setTimeout(async () => {
+                if (window.financialGlobeObjects && window.financialGlobeObjects.earth) {
+                    const earth = window.financialGlobeObjects.earth;
+                    
+                    console.log('🗺️ اضافه کردن مرزها به کره مالی...');
+                    if (typeof createWorldBorders === 'function') {
+                        await createWorldBorders(earth, {
+                            defaultColor: 0x3366aa,  // آبی کمتر - برای تمایز از مارکرها
+                            defaultOpacity: 0.25     // کمرنگ‌تر
+                        });
+                    }
+                }
+            }, 1000);
         });
     });
 }
 
 function openResourcesGlobe() {
+    // 🔐 چک لاگین
+    if (!checkLoginRequired()) {
+        console.log('⚠️ کاربر لاگین نیست - کره منابع باز نشد');
+        return;
+    }
+    
     console.log('🌍 ========== باز کردن کره منابع ==========');
     
     const modal = document.getElementById('resourcesGlobeModal');
@@ -1497,19 +2205,56 @@ function openResourcesGlobe() {
         requestAnimationFrame(() => {
             buildSimpleGlobe('resourcesGlobeContainer', 'resources');
             
-            // راه‌اندازی لجند
-            if (typeof populateResourcesLegend === 'function') {
-                populateResourcesLegend();
+            // پر کردن لیست کشورها
+            if (typeof populateCountryList === 'function') {
+                populateCountryList();
             }
+            
+            // راه‌اندازی پنل‌ها
+            if (typeof setupResourcesGlobePanels === 'function') {
+                setupResourcesGlobePanels();
+            }
+            
+            // بارگذاری مرزها و درگیری‌ها و برچسب‌ها (async)
+            setTimeout(async () => {
+                if (window.resourcesGlobeObjects && window.resourcesGlobeObjects.earth) {
+                    const earth = window.resourcesGlobeObjects.earth;
+                    const camera = window.resourcesGlobeObjects.camera;
+                    
+                    // بارگذاری مرزها - اضافه شدن به earth
+                    console.log('🗺️ بارگذاری مرزهای کشورها...');
+                    if (typeof createWorldBorders === 'function') {
+                        resourcesGlobeData.bordersGroup = await createWorldBorders(earth, {
+                            defaultColor: 0x4488ff,
+                            defaultOpacity: 0.4
+                        });
+                    }
+                    
+                    // ایجاد خطوط درگیری
+                    console.log('⚔️ ایجاد خطوط درگیری...');
+                    if (typeof createAllConflicts === 'function') {
+                        resourcesGlobeData.conflictsGroup = createAllConflicts(earth);
+                    }
+                    
+                    // ایجاد برچسب‌های کشورها
+                    console.log('🏷️ ایجاد برچسب‌های کشورها...');
+                    if (typeof createCountryLabels === 'function') {
+                        resourcesGlobeData.labelsGroup = createCountryLabels(earth, camera);
+                    }
+                }
+            }, 1000);
         });
     });
 }
 
 function closeGlobeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
+    console.log('🔒 شروع بستن modal:', modalId);
     
-    console.log('🔒 بستن modal:', modalId);
+    const modal = document.getElementById(modalId);
+    if (!modal) {
+        console.warn('Modal پیدا نشد:', modalId);
+        return;
+    }
     
     // ریست کردن flag باز شدن کره
     globeOpening = false;
@@ -1517,30 +2262,33 @@ function closeGlobeModal(modalId) {
     // تعیین نوع کره
     const type = modalId.includes('financial') ? 'financial' : 'resources';
     
-    // پاک کردن کره ساده
-    if (simpleGlobeScenes[type] && simpleGlobeScenes[type].destroy) {
-        simpleGlobeScenes[type].destroy();
-        simpleGlobeScenes[type] = null;
-    }
-    
-    // پاک کردن کلاس‌ها
+    // اول modal رو مخفی کن
     modal.classList.remove('active');
-    document.body.classList.remove('globe-modal-open');
+    modal.style.display = 'none';
     
-    // بازگرداندن استایل‌های body
+    // بازگرداندن body
+    document.body.classList.remove('globe-modal-open');
     document.body.style.overflow = '';
     document.body.style.position = '';
     document.body.style.width = '';
     document.body.style.height = '';
     
-    // پاک کردن محتوای container
-    const containerId = type === 'financial' ? 'financialGlobeContainer' : 'resourcesGlobeContainer';
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = '';
-    }
-    
-    console.log('✅ Modal بسته شد');
+    // پاکسازی کره با تاخیر کوتاه (برای جلوگیری از هنگ)
+    setTimeout(() => {
+        if (simpleGlobeScenes[type] && typeof simpleGlobeScenes[type].destroy === 'function') {
+            simpleGlobeScenes[type].destroy();
+            simpleGlobeScenes[type] = null;
+        }
+        
+        // پاک کردن محتوای container
+        const containerId = type === 'financial' ? 'financialGlobeContainer' : 'resourcesGlobeContainer';
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = '';
+        }
+        
+        console.log('✅ Modal و کره پاکسازی شدند');
+    }, 50);
 }
 
 // در دسترس قرار دادن توابع در scope global
@@ -1548,6 +2296,691 @@ window.openFinancialGlobe = openFinancialGlobe;
 window.openResourcesGlobe = openResourcesGlobe;
 window.closeGlobeModal = closeGlobeModal;
 window.resetGlobeView = resetGlobeView;
+
+// ==================== //
+// 🌍 کره منابع - اطلاعات کشورها
+// ==================== //
+
+// متغیرهای سراسری برای کره منابع
+let resourcesGlobeData = {
+    selectedCountry: null,
+    bordersGroup: null,
+    conflictsGroup: null,
+    tradeLinesGroup: null,
+    labelsGroup: null,
+    showBorders: true,
+    showConflicts: true,
+    showTradeLines: false,
+    showLabels: true,
+    tradeType: 'exports'
+};
+
+// پر کردن لیست کشورها
+function populateCountryList() {
+    const listContainer = document.getElementById('countryList');
+    if (!listContainer || typeof countriesData === 'undefined') return;
+    
+    listContainer.innerHTML = '';
+    
+    // گرفتن پرچم کشور از کد کشور
+    const getFlag = (code) => {
+        const flags = {
+            'IR': '🇮🇷', 'US': '🇺🇸', 'RU': '🇷🇺', 'CN': '🇨🇳', 'UK': '🇬🇧',
+            'DE': '🇩🇪', 'FR': '🇫🇷', 'JP': '🇯🇵', 'IN': '🇮🇳', 'BR': '🇧🇷',
+            'SA': '🇸🇦', 'AE': '🇦🇪', 'TR': '🇹🇷', 'IL': '🇮🇱', 'EG': '🇪🇬',
+            'AU': '🇦🇺', 'CA': '🇨🇦', 'KR': '🇰🇷', 'KP': '🇰🇵', 'PK': '🇵🇰',
+            'AF': '🇦🇫', 'IQ': '🇮🇶', 'SY': '🇸🇾', 'YE': '🇾🇪', 'UA': '🇺🇦',
+            'ZA': '🇿🇦'
+        };
+        return flags[code] || '🏳️';
+    };
+    
+    // مرتب‌سازی بر اساس GDP
+    const sortedCountries = Object.entries(countriesData)
+        .sort((a, b) => (b[1].gdp || 0) - (a[1].gdp || 0));
+    
+    sortedCountries.forEach(([code, data]) => {
+        const item = document.createElement('div');
+        item.className = 'country-item';
+        item.dataset.code = code;
+        
+        // تعیین سطح ریسک
+        let riskClass = 'low';
+        if (data.investmentRisk >= 60) riskClass = 'high';
+        else if (data.investmentRisk >= 35) riskClass = 'medium';
+        
+        item.innerHTML = `
+            <span class="flag">${getFlag(code)}</span>
+            <span class="name">${data.name}</span>
+            <span class="risk ${riskClass}">${data.investmentRisk || 0}%</span>
+        `;
+        
+        item.addEventListener('click', () => selectCountry(code));
+        listContainer.appendChild(item);
+    });
+}
+
+// انتخاب کشور
+function selectCountry(code) {
+    console.log('🏳️ انتخاب کشور:', code);
+    
+    resourcesGlobeData.selectedCountry = code;
+    const countryData = countriesData[code];
+    
+    if (!countryData) {
+        console.error('داده کشور پیدا نشد:', code);
+        return;
+    }
+    
+    // به‌روزرسانی UI لیست
+    document.querySelectorAll('.country-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.code === code) {
+            item.classList.add('active');
+        }
+    });
+    
+    // نمایش پنل اطلاعات
+    showCountryInfo(code, countryData);
+    
+    // به‌روزرسانی مرزها بر اساس روابط
+    if (resourcesGlobeData.bordersGroup) {
+        updateBordersForCountry(resourcesGlobeData.bordersGroup, code);
+    }
+    
+    // نمایش راهنمای رنگ‌ها
+    document.getElementById('relationsLegend')?.classList.add('active');
+    
+    // نمایش آیکون‌های منابع این کشور
+    if (window.resourcesGlobeObjects && window.resourcesGlobeObjects.earth) {
+        const earth = window.resourcesGlobeObjects.earth;
+        
+        // پاک کردن آیکون‌های قبلی
+        if (typeof clearResourceIcons === 'function') {
+            clearResourceIcons(earth);
+        }
+        
+        // نمایش آیکون‌های منابع این کشور
+        if (typeof createResourceIcons === 'function') {
+            createResourceIcons(earth, code, 'all');
+        }
+    }
+    
+    // زوم به کشور
+    zoomToCountry(code);
+}
+
+// نمایش اطلاعات کشور
+function showCountryInfo(code, data) {
+    const panel = document.getElementById('countryInfoPanel');
+    const nameEl = document.getElementById('selectedCountryName');
+    const contentEl = document.getElementById('countryInfoContent');
+    
+    if (!panel || !contentEl) return;
+    
+    nameEl.textContent = `${data.name} (${data.nameEn})`;
+    
+    // فرمت‌کردن اعداد
+    const formatNumber = (num) => {
+        if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num?.toLocaleString() || '-';
+    };
+    
+    const formatMoney = (num) => {
+        return '$' + formatNumber(num);
+    };
+    
+    // ساخت HTML اطلاعات
+    contentEl.innerHTML = `
+        <!-- اقتصادی -->
+        <div class="info-section">
+            <h5>📊 اقتصادی</h5>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">GDP</div>
+                    <div class="value">${formatMoney(data.gdp)}B</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">رتبه جهانی</div>
+                    <div class="value">#${data.gdpRank || '-'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">درآمد سرانه</div>
+                    <div class="value">${formatMoney(data.gdpPerCapita)}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">تورم</div>
+                    <div class="value ${data.inflation > 10 ? 'negative' : ''}">${data.inflation || 0}%</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">بیکاری</div>
+                    <div class="value ${data.unemployment > 15 ? 'negative' : ''}">${data.unemployment || 0}%</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">ارز</div>
+                    <div class="value">${data.currencyName || '-'}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- جمعیتی -->
+        <div class="info-section">
+            <h5>👥 جمعیتی</h5>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">جمعیت</div>
+                    <div class="value">${formatNumber(data.population)}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">تراکم</div>
+                    <div class="value">${data.populationDensity || 0}/km²</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">نرخ رشد</div>
+                    <div class="value ${data.populationGrowth > 0 ? 'positive' : 'negative'}">${data.populationGrowth || 0}%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- منابع طبیعی -->
+        ${data.resources && Object.keys(data.resources).length > 0 ? `
+        <div class="info-section">
+            <h5>⛏️ منابع طبیعی</h5>
+            ${Object.entries(data.resources).map(([key, res]) => `
+                <div class="resource-bar">
+                    <div class="header">
+                        <span>${getResourceName(key)}</span>
+                        <span>رتبه ${res.rank || '-'}</span>
+                    </div>
+                    <div class="bar">
+                        <div class="fill ${key}" style="width: ${Math.min(100, 100 - (res.rank || 50) * 2)}%"></div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        ` : ''}
+        
+        <!-- صادرات -->
+        ${data.exports ? `
+        <div class="info-section">
+            <h5>📤 صادرات (${formatMoney(data.exports.total)}B)</h5>
+            <div class="trade-partners">
+                ${data.exports.partners?.slice(0, 5).map(p => `
+                    <div class="trade-partner" onclick="showTradeLine('${code}', '${p.country}', 'exports')">
+                        <span class="flag">${getCountryFlag(p.country)}</span>
+                        <span class="country">${getCountryName(p.country)}</span>
+                        <span class="amount">${formatMoney(p.amount)}B</span>
+                        <span class="percent">${p.percent}%</span>
+                    </div>
+                `).join('')}
+            </div>
+            <button class="filter-btn" style="margin-top:10px;width:100%" onclick="showAllTradeLines('${code}', 'exports')">
+                📤 نمایش همه صادرات روی نقشه
+            </button>
+        </div>
+        ` : ''}
+        
+        <!-- واردات -->
+        ${data.imports ? `
+        <div class="info-section">
+            <h5>📥 واردات (${formatMoney(data.imports.total)}B)</h5>
+            <div class="trade-partners">
+                ${data.imports.partners?.slice(0, 5).map(p => `
+                    <div class="trade-partner" onclick="showTradeLine('${code}', '${p.country}', 'imports')">
+                        <span class="flag">${getCountryFlag(p.country)}</span>
+                        <span class="country">${getCountryName(p.country)}</span>
+                        <span class="amount">${formatMoney(p.amount)}B</span>
+                        <span class="percent">${p.percent}%</span>
+                    </div>
+                `).join('')}
+            </div>
+            <button class="filter-btn" style="margin-top:10px;width:100%" onclick="showAllTradeLines('${code}', 'imports')">
+                📥 نمایش همه واردات روی نقشه
+            </button>
+        </div>
+        ` : ''}
+        
+        <!-- ریسک سرمایه‌گذاری -->
+        <div class="info-section">
+            <h5>⚠️ ریسک سرمایه‌گذاری</h5>
+            <div class="risk-indicator">
+                <div class="meter">
+                    <div class="needle" style="left: ${data.investmentRisk || 0}%"></div>
+                </div>
+                <div class="value" style="color: ${data.investmentRisk >= 60 ? '#ef4444' : data.investmentRisk >= 35 ? '#f59e0b' : '#22c55e'}">
+                    ${data.investmentRisk || 0}%
+                </div>
+            </div>
+            ${data.riskFactors?.length > 0 ? `
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:8px">
+                ⚡ ${data.riskFactors.join(' • ')}
+            </div>
+            ` : ''}
+        </div>
+        
+        <!-- درگیری‌ها -->
+        ${data.conflicts?.length > 0 ? `
+        <div class="info-section">
+            <h5>⚔️ درگیری‌ها</h5>
+            ${data.conflicts.map(c => `
+                <div style="background:rgba(239,68,68,0.2);padding:10px;border-radius:8px;margin-bottom:8px">
+                    <div style="font-weight:bold;color:#ef4444">
+                        ${c.intensity === 'war' ? '🔴 جنگ' : c.intensity === 'tension' ? '🟠 تنش' : '🟡 درگیری'}
+                        با ${getCountryName(c.opponent)}
+                    </div>
+                    <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-top:4px">
+                        ${c.description} (از ${c.since})
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        ` : ''}
+    `;
+    
+    panel.classList.add('active');
+}
+
+// بستن پنل اطلاعات کشور
+function closeCountryInfo() {
+    const panel = document.getElementById('countryInfoPanel');
+    if (panel) panel.classList.remove('active');
+    
+    document.getElementById('relationsLegend')?.classList.remove('active');
+    resourcesGlobeData.selectedCountry = null;
+    
+    // ریست رنگ مرزها
+    if (resourcesGlobeData.bordersGroup) {
+        resourcesGlobeData.bordersGroup.children.forEach(group => {
+            group.children.forEach(line => {
+                if (line.material) {
+                    line.material.color.setHex(0x4488ff);
+                    line.material.opacity = 0.4;
+                }
+            });
+        });
+    }
+}
+
+// گرفتن نام منبع
+function getResourceName(key) {
+    const names = {
+        'oil': '🛢️ نفت',
+        'gas': '💨 گاز طبیعی',
+        'gold': '🥇 طلا',
+        'iron': '⚫ آهن',
+        'copper': '🟤 مس',
+        'coal': '⬛ زغال‌سنگ',
+        'uranium': '☢️ اورانیوم',
+        'diamonds': '💎 الماس',
+        'platinum': '⚪ پلاتین',
+        'chromium': '🔘 کروم',
+        'rareEarth': '🌍 خاک‌های کمیاب',
+        'potash': '🧂 پتاس',
+        'manganese': '⚙️ منگنز',
+        'niobium': '🔷 نیوبیم',
+        'lithium': '🔋 لیتیم',
+        'boron': '💠 بور',
+        'mica': '✨ میکا'
+    };
+    return names[key] || key;
+}
+
+// گرفتن پرچم کشور
+function getCountryFlag(code) {
+    const flags = {
+        'IR': '🇮🇷', 'US': '🇺🇸', 'RU': '🇷🇺', 'CN': '🇨🇳', 'UK': '🇬🇧',
+        'DE': '🇩🇪', 'FR': '🇫🇷', 'JP': '🇯🇵', 'IN': '🇮🇳', 'BR': '🇧🇷',
+        'SA': '🇸🇦', 'AE': '🇦🇪', 'TR': '🇹🇷', 'IL': '🇮🇱', 'EG': '🇪🇬',
+        'AU': '🇦🇺', 'CA': '🇨🇦', 'KR': '🇰🇷', 'KP': '🇰🇵', 'PK': '🇵🇰',
+        'AF': '🇦🇫', 'IQ': '🇮🇶', 'SY': '🇸🇾', 'YE': '🇾🇪', 'UA': '🇺🇦',
+        'ZA': '🇿🇦', 'NL': '🇳🇱', 'IT': '🇮🇹', 'ES': '🇪🇸', 'MX': '🇲🇽',
+        'AR': '🇦🇷', 'VN': '🇻🇳', 'TW': '🇹🇼', 'HK': '🇭🇰', 'TH': '🇹🇭',
+        'ID': '🇮🇩', 'MY': '🇲🇾', 'PH': '🇵🇭', 'SG': '🇸🇬', 'NZ': '🇳🇿',
+        'CH': '🇨🇭', 'AT': '🇦🇹', 'BE': '🇧🇪', 'PL': '🇵🇱', 'SE': '🇸🇪',
+        'NO': '🇳🇴', 'DK': '🇩🇰', 'FI': '🇫🇮', 'IE': '🇮🇪', 'PT': '🇵🇹',
+        'GR': '🇬🇷', 'CZ': '🇨🇿', 'HU': '🇭🇺', 'RO': '🇷🇴', 'BY': '🇧🇾',
+        'KZ': '🇰🇿', 'UZ': '🇺🇿', 'AZ': '🇦🇿', 'GE': '🇬🇪', 'AM': '🇦🇲',
+        'QA': '🇶🇦', 'KW': '🇰🇼', 'BH': '🇧🇭', 'OM': '🇴🇲', 'JO': '🇯🇴',
+        'LB': '🇱🇧', 'PS': '🇵🇸', 'NG': '🇳🇬', 'KE': '🇰🇪', 'ET': '🇪🇹',
+        'MA': '🇲🇦', 'DZ': '🇩🇿', 'TN': '🇹🇳', 'LY': '🇱🇾', 'SD': '🇸🇩'
+    };
+    return flags[code] || '🏳️';
+}
+
+// گرفتن نام کشور
+function getCountryName(code) {
+    if (countriesData[code]) return countriesData[code].name;
+    return countryCodeToName[code] || code;
+}
+
+// زوم به کشور
+function zoomToCountry(code) {
+    const data = countriesData[code];
+    if (!data || !data.capital) return;
+    
+    const [lat, lng] = data.capital.coords;
+    console.log(`🎯 زوم به ${data.name}: lat=${lat}, lng=${lng}`);
+    
+    // استفاده از تابع موجود برای زوم
+    if (window.resourcesGlobeObjects) {
+        const { camera, controls, earth, stopRotate } = window.resourcesGlobeObjects;
+        if (camera && earth) {
+            // توقف چرخش اتوماتیک
+            if (stopRotate) stopRotate();
+            
+            // ریست چرخش کره برای هماهنگی با مختصات
+            earth.rotation.y = 0;
+            
+            // محاسبه موقعیت دوربین
+            // توجه: باید از همون فرمول مرزها استفاده کنیم
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lng + 180) * (Math.PI / 180);
+            
+            const distance = 2.2; // نزدیکتر برای دید بهتر
+            const x = -distance * Math.sin(phi) * Math.cos(theta);
+            const y = distance * Math.cos(phi);
+            const z = distance * Math.sin(phi) * Math.sin(theta);
+            
+            // انیمیشن دوربین
+            const startPos = camera.position.clone();
+            const endPos = new THREE.Vector3(x, y, z);
+            const duration = 1200;
+            const startTime = Date.now();
+            
+            const animateZoom = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                
+                camera.position.lerpVectors(startPos, endPos, eased);
+                camera.lookAt(0, 0, 0);
+                
+                if (controls) controls.update();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateZoom);
+                }
+            };
+            animateZoom();
+        }
+    }
+}
+
+// نمایش خط تجارت به یک کشور
+function showTradeLine(fromCode, toCode, type) {
+    console.log(`📊 نمایش خط ${type} از ${fromCode} به ${toCode}`);
+    
+    if (!window.resourcesGlobeObjects) return;
+    const { earth } = window.resourcesGlobeObjects;
+    
+    // پاک کردن خطوط قبلی
+    clearTradeLines(earth);
+    
+    const fromData = countriesData[fromCode];
+    const toData = countriesData[toCode];
+    
+    if (!fromData || !toData) return;
+    
+    const fromCoords = fromData.capital.coords;
+    const toCoords = toData.capital.coords;
+    
+    const color = type === 'exports' ? 0x22c55e : 0x3b82f6;
+    
+    const arc = createArcLine(fromCoords, toCoords, color, 0.3);
+    
+    const tradeGroup = new THREE.Group();
+    tradeGroup.name = 'tradeLines';
+    tradeGroup.add(arc);
+    
+    // اضافه کردن به earth نه scene
+    earth.add(tradeGroup);
+    resourcesGlobeData.tradeLinesGroup = tradeGroup;
+}
+
+// نمایش همه خطوط تجارت
+function showAllTradeLines(countryCode, type) {
+    console.log(`📊 نمایش همه ${type} برای ${countryCode}`);
+    
+    if (!window.resourcesGlobeObjects) return;
+    const { earth } = window.resourcesGlobeObjects;
+    
+    // پاک کردن خطوط قبلی
+    clearTradeLines(earth);
+    
+    // ایجاد خطوط جدید - اضافه کردن به earth نه scene
+    const tradeGroup = createTradeLines(countryCode, type, earth);
+    resourcesGlobeData.tradeLinesGroup = tradeGroup;
+}
+
+// راه‌اندازی پنل‌های کره منابع
+function setupResourcesGlobePanels() {
+    // دکمه نمایش/مخفی فیلترها
+    const toggleFiltersBtn = document.getElementById('toggleFiltersBtn');
+    if (toggleFiltersBtn) {
+        toggleFiltersBtn.addEventListener('click', () => {
+            const panel = document.getElementById('resourcesFilterPanel');
+            if (panel) panel.classList.toggle('active');
+        });
+    }
+    
+    // دکمه نمایش/مخفی لیست کشورها
+    const toggleCountriesBtn = document.getElementById('toggleCountriesBtn');
+    if (toggleCountriesBtn) {
+        toggleCountriesBtn.addEventListener('click', () => {
+            const panel = document.getElementById('countrySelectPanel');
+            if (panel) panel.classList.toggle('active');
+        });
+    }
+    
+    // جستجوی کشور
+    const searchInput = document.getElementById('countrySearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.country-item').forEach(item => {
+                const name = item.querySelector('.name')?.textContent.toLowerCase() || '';
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        });
+    }
+    
+    // فیلتر منابع (نفت، گاز، طلا و...)
+    document.querySelectorAll('#resourceFilters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // فقط یکی فعال باشه
+            document.querySelectorAll('#resourceFilters .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const filter = btn.dataset.filter;
+            filterCountriesByResource(filter);
+        });
+    });
+    
+    // فیلترهای نمایش (مرزها، صادرات، واردات، درگیری)
+    document.querySelectorAll('#viewFilters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            const view = btn.dataset.view;
+            
+            switch(view) {
+                case 'borders':
+                    resourcesGlobeData.showBorders = btn.classList.contains('active');
+                    if (resourcesGlobeData.bordersGroup) {
+                        resourcesGlobeData.bordersGroup.visible = resourcesGlobeData.showBorders;
+                    }
+                    break;
+                case 'labels':
+                    resourcesGlobeData.showLabels = btn.classList.contains('active');
+                    if (resourcesGlobeData.labelsGroup) {
+                        resourcesGlobeData.labelsGroup.visible = resourcesGlobeData.showLabels;
+                    }
+                    break;
+                case 'conflicts':
+                    resourcesGlobeData.showConflicts = btn.classList.contains('active');
+                    if (resourcesGlobeData.conflictsGroup) {
+                        resourcesGlobeData.conflictsGroup.visible = resourcesGlobeData.showConflicts;
+                    }
+                    break;
+                case 'exports':
+                case 'imports':
+                    if (btn.classList.contains('active')) {
+                        if (resourcesGlobeData.selectedCountry) {
+                            showAllTradeLines(resourcesGlobeData.selectedCountry, view);
+                        } else {
+                            alert('🌍 ابتدا یک کشور انتخاب کنید');
+                            btn.classList.remove('active');
+                        }
+                    } else {
+                        // پاک کردن خطوط تجارت
+                        if (window.resourcesGlobeObjects && window.resourcesGlobeObjects.earth) {
+                            clearTradeLines(window.resourcesGlobeObjects.earth);
+                        }
+                    }
+                    break;
+            }
+        });
+    });
+    
+    // فیلتر قاره
+    document.querySelectorAll('#continentFilters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#continentFilters .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const continent = btn.dataset.continent;
+            filterCountriesByContinent(continent);
+        });
+    });
+    
+    // فیلتر تاسیسات (پالایشگاه، کارخانه)
+    document.querySelectorAll('#facilityFilters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // غیرفعال کردن فیلتر منابع
+            document.querySelectorAll('#resourceFilters .filter-btn').forEach(b => b.classList.remove('active'));
+            
+            btn.classList.toggle('active');
+            const filter = btn.dataset.filter;
+            
+            if (btn.classList.contains('active')) {
+                filterCountriesByResource(filter);
+            } else {
+                // اگر هیچ فیلتری فعال نیست، همه رو فعال کن
+                document.querySelector('#resourceFilters .filter-btn[data-filter="all"]')?.classList.add('active');
+                filterCountriesByResource('all');
+            }
+        });
+    });
+    
+    // فیلتر سال
+    const yearFilter = document.getElementById('yearFilter');
+    if (yearFilter) {
+        yearFilter.addEventListener('change', (e) => {
+            const selectedYear = e.target.value;
+            console.log(`📅 تغییر سال به: ${selectedYear}`);
+            resourcesGlobeData.selectedYear = selectedYear;
+            
+            // در آینده: بارگذاری داده‌های سال از API
+            // برای الان فقط یک پیام نمایش می‌دهیم
+            if (selectedYear !== '2024') {
+                showYearChangeMessage(selectedYear);
+            }
+            
+            // به‌روزرسانی اطلاعات کشور انتخابی
+            if (resourcesGlobeData.selectedCountry) {
+                const countryData = countriesData[resourcesGlobeData.selectedCountry];
+                if (countryData) {
+                    showCountryInfo(resourcesGlobeData.selectedCountry, countryData);
+                }
+            }
+        });
+    }
+}
+
+// نمایش پیام تغییر سال
+function showYearChangeMessage(year) {
+    // اگر قبلاً پیام موجود است، حذفش کن
+    const existingMsg = document.querySelector('.year-change-message');
+    if (existingMsg) existingMsg.remove();
+    
+    const msg = document.createElement('div');
+    msg.className = 'year-change-message';
+    msg.innerHTML = `
+        <div class="year-msg-content">
+            <span>📅</span>
+            <span>داده‌های سال ${year} از طریق API بارگذاری خواهد شد</span>
+        </div>
+    `;
+    msg.style.cssText = `
+        position: fixed;
+        bottom: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(59, 130, 246, 0.9);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        z-index: 99999;
+        animation: slideUp 0.3s ease;
+    `;
+    
+    document.body.appendChild(msg);
+    
+    setTimeout(() => {
+        msg.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => msg.remove(), 300);
+    }, 3000);
+}
+
+// فیلتر کشورها بر اساس منبع طبیعی و نمایش آیکون‌ها روی نقشه
+function filterCountriesByResource(resourceType) {
+    // فیلتر لیست کشورها
+    document.querySelectorAll('.country-item').forEach(item => {
+        const code = item.dataset.code;
+        const data = countriesData[code];
+        
+        if (resourceType === 'all') {
+            item.style.display = 'flex';
+        } else if (data && data.resources && data.resources[resourceType]) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    // نمایش آیکون‌های منابع روی نقشه
+    if (window.resourcesGlobeObjects && window.resourcesGlobeObjects.earth) {
+        const earth = window.resourcesGlobeObjects.earth;
+        
+        if (typeof showResourcesByType === 'function') {
+            showResourcesByType(earth, resourceType);
+        }
+    }
+}
+
+// فیلتر کشورها بر اساس قاره
+function filterCountriesByContinent(continent) {
+    document.querySelectorAll('.country-item').forEach(item => {
+        const code = item.dataset.code;
+        const data = countriesData[code];
+        
+        if (continent === 'all' || (data && data.continent === continent)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Export توابع
+window.populateCountryList = populateCountryList;
+window.selectCountry = selectCountry;
+window.closeCountryInfo = closeCountryInfo;
+window.showTradeLine = showTradeLine;
+window.showAllTradeLines = showAllTradeLines;
+window.setupResourcesGlobePanels = setupResourcesGlobePanels;
 
 // تابع برای زوم روی یک نقطه روی کره
 window.zoomToLocation = function(lat, lng) {
@@ -1557,23 +2990,93 @@ window.zoomToLocation = function(lat, lng) {
 
 // راه‌اندازی پنل‌های کره بزرگ
 function setupGlobePanels() {
-    // پر کردن لیست بازارها
-    if (typeof populateMarketList === 'function') {
-        populateMarketList();
-    }
-    
-    // پر کردن لجند منابع
-    if (typeof populateResourcesLegend === 'function') {
-        populateResourcesLegend();
-    }
-    
-    // تشخیص منطقه زمانی
-    if (typeof detectUserTimezone === 'function') {
-        detectUserTimezone();
-    }
-    
-    // دکمه‌های fab تنظیمات
+    populateMarketList();
+    setupMarketSelector();
     setupGlobeFabMenus();
+}
+
+// پر کردن لیست بازارها در پنل انتخاب
+function populateMarketList() {
+    const listContainer = document.getElementById('marketSelectList');
+    if (!listContainer || typeof marketData === 'undefined') return;
+    
+    listContainer.innerHTML = '';
+    
+    marketData.forEach((market, index) => {
+        const statusColor = getMarketStatusColor(market);
+        let statusClass = 'closed';
+        if (statusColor === 0x22c55e) statusClass = 'open';
+        else if (statusColor === 0xfbbf24) statusClass = 'opening';
+        else if (statusColor === 0xf97316) statusClass = 'closing';
+        
+        const item = document.createElement('div');
+        item.className = 'market-select-item';
+        item.innerHTML = `
+            <span class="market-name">${market.name}</span>
+            <span class="market-status-dot ${statusClass}"></span>
+        `;
+        item.addEventListener('click', () => {
+            selectMarketFromList(market, index);
+        });
+        listContainer.appendChild(item);
+    });
+}
+
+// انتخاب بازار از لیست
+function selectMarketFromList(market, index) {
+    console.log('📍 انتخاب بازار:', market.name);
+    
+    // مخفی کردن پنل
+    const panel = document.getElementById('marketSelectPanel');
+    if (panel) panel.classList.remove('visible');
+    
+    // دسترسی به scene کره مالی
+    const globeScene = simpleGlobeScenes['financial'];
+    if (!globeScene) return;
+    
+    // توقف چرخش اتوماتیک
+    if (globeScene.stopRotate) globeScene.stopRotate();
+    
+    // زوم به بازار
+    zoomToMarker(market, globeScene.camera, globeScene.controls, globeScene.earth);
+    
+    // نمایش popup
+    const container = document.getElementById('financialGlobeContainer');
+    if (container) {
+        showMarketPopup(market, container);
+    }
+}
+
+// راه‌اندازی دکمه انتخاب بازار
+function setupMarketSelector() {
+    const btn = document.getElementById('marketSelectorBtn');
+    const panel = document.getElementById('marketSelectPanel');
+    const searchInput = document.getElementById('marketSearchInput');
+    
+    if (btn && panel) {
+        btn.addEventListener('click', () => {
+            panel.classList.toggle('visible');
+            populateMarketList(); // آپدیت وضعیت‌ها
+        });
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.market-select-item');
+            items.forEach(item => {
+                const name = item.querySelector('.market-name').textContent.toLowerCase();
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        });
+    }
+    
+    // بستن پنل با کلیک خارج
+    document.addEventListener('click', (e) => {
+        if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
+            panel.classList.remove('visible');
+        }
+    });
 }
 
 // راه‌اندازی منوهای fab کره‌ها
@@ -1674,17 +3177,53 @@ function showNotificationSettings() {
 }
 
 function resetGlobeView(type) {
-    // سیستم جدید
-    if (type === 'financial' && typeof resetFinancialGlobeView === 'function') {
-        resetFinancialGlobeView();
-    } else if (type === 'resources' && typeof resetResourcesGlobeView === 'function') {
-        resetResourcesGlobeView();
+    console.log(`🔄 بازیابی دید کره ${type}`);
+    
+    const globeScene = simpleGlobeScenes[type];
+    if (!globeScene) return;
+    
+    // شروع مجدد چرخش اتوماتیک
+    if (globeScene.autoRotate) {
+        globeScene.autoRotate();
     }
     
-    // سیستم قدیمی
-    if (activeScenes[type] && activeScenes[type].reset) {
-        activeScenes[type].reset();
+    // برگرداندن دوربین به حالت اول
+    if (globeScene.camera) {
+        const startPos = globeScene.camera.position.clone();
+        const targetPos = new THREE.Vector3(0, 0, 2.5);
+        const duration = 800;
+        const startTime = Date.now();
+        
+        const animateReset = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            
+            globeScene.camera.position.lerpVectors(startPos, targetPos, easeProgress);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateReset);
+            }
+        };
+        animateReset();
     }
+    
+    // ریست چرخش کره
+    if (globeScene.earth) {
+        globeScene.earth.rotation.y = 0;
+    }
+    
+    // حذف popup باز
+    const containerId = type === 'financial' ? 'financialGlobeContainer' : 'resourcesGlobeContainer';
+    const container = document.getElementById(containerId);
+    if (container) {
+        const popup = container.querySelector('.market-3d-popup');
+        if (popup) popup.remove();
+    }
+    
+    // مخفی کردن پنل انتخاب بازار
+    const panel = document.getElementById('marketSelectPanel');
+    if (panel) panel.classList.remove('visible');
 }
 
 // توابع isUserLoggedIn و showLoginPrompt قبلاً در بالا تعریف شدند
@@ -1744,7 +3283,7 @@ function generateHomeCards() {
 }
 
 /**
- * 🎴 ایجاد یک کارت قیمت
+ * 🎴 ایجاد یک کارت قیمت - طراحی جدید با نمودار SVG
  */
 function createPriceCard(item) {
     const card = document.createElement('div');
@@ -1752,28 +3291,232 @@ function createPriceCard(item) {
     card.setAttribute('data-symbol', item.symbol);
     
     const changeClass = item.change >= 0 ? 'positive' : 'negative';
-    const changeIcon = item.change >= 0 ? '📈' : '📉';
+    const isUp = item.change >= 0;
+    
+    // تولید نمودار SVG مینی
+    const miniChartSVG = generateMiniChartSVG(item.symbol, isUp);
+    
+    // تایم آخرین آپدیت
+    const lastUpdate = getLastUpdateTime();
     
     card.innerHTML = `
         <div class="card-header">
             <h3>${item.name}</h3>
             <span class="price-change ${changeClass}">
-                ${changeIcon} ${Math.abs(item.change)}%
+                ${item.change >= 0 ? '+' : ''}${item.change.toFixed(1)}%
             </span>
         </div>
         <div class="card-content">
             <p class="current-price">${formatPrice(item.price, item.symbol)}</p>
-            <div class="mini-chart ${item.chart}"></div>
+            <div class="mini-chart ${item.chart}">${miniChartSVG}</div>
         </div>
-        <div class="ad-space">
-            <div class="ad-banner">📍 محل تبلیغات ${item.name}</div>
+        <div class="card-update-time">
+            <span class="update-dot"></span>
+            <span class="update-text">${lastUpdate}</span>
         </div>
     `;
     
-    // اضافه کردن ایونت‌لیستنر برای کلیک
-    card.addEventListener('click', () => openPriceDetail(item));
+    // اضافه کردن ایونت‌لیستنر برای کلیک - با چک لاگین
+    card.addEventListener('click', () => {
+        if (checkLoginRequired()) {
+            openPriceDetail(item);
+        }
+    });
     
     return card;
+}
+
+/**
+ * ⏱️ دریافت زمان آخرین آپدیت
+ */
+function getLastUpdateTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+/**
+ * 📊 تولید نمودار SVG مینی برای کارت - مثل سایت‌های مالی واقعی
+ */
+function generateMiniChartSVG(symbol, isUp) {
+    // تولید داده‌های شبیه به نمودار واقعی قیمت
+    const seed = symbol.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const dataPoints = 24; // 24 نقطه داده
+    const points = [];
+    
+    // شروع از وسط
+    let value = 50;
+    
+    for (let i = 0; i < dataPoints; i++) {
+        // نوسانات طبیعی بازار
+        const noise1 = Math.sin(seed * 0.1 + i * 0.8) * 8;
+        const noise2 = Math.cos(seed * 0.2 + i * 0.5) * 5;
+        const noise3 = Math.sin(seed * 0.05 + i * 1.2) * 3;
+        
+        value += (noise1 + noise2 + noise3) * 0.15;
+        
+        // روند کلی
+        if (isUp) {
+            value += 0.6; // روند صعودی
+        } else {
+            value -= 0.6; // روند نزولی
+        }
+        
+        // محدود کردن به بازه مناسب
+        value = Math.max(15, Math.min(85, value));
+        
+        points.push(value);
+    }
+    
+    // نرمال‌سازی به بازه 10-90
+    const minVal = Math.min(...points);
+    const maxVal = Math.max(...points);
+    const range = maxVal - minVal || 1;
+    
+    const normalizedPoints = points.map(p => 
+        10 + ((p - minVal) / range) * 80
+    );
+    
+    // ساخت path با منحنی نرم (Bezier)
+    const width = 100;
+    const height = 100;
+    let pathD = '';
+    
+    normalizedPoints.forEach((val, i) => {
+        const x = (i / (dataPoints - 1)) * width;
+        const y = height - val;
+        
+        if (i === 0) {
+            pathD += `M${x},${y}`;
+        } else {
+            // منحنی نرم با Quadratic Bezier
+            const prevX = ((i - 1) / (dataPoints - 1)) * width;
+            const prevY = height - normalizedPoints[i - 1];
+            const cpX = (prevX + x) / 2;
+            pathD += ` Q${cpX},${prevY} ${x},${y}`;
+        }
+    });
+    
+    // ساخت path برای ناحیه پر شده
+    const areaPath = pathD + ` L${width},${height} L0,${height} Z`;
+    
+    // رنگ‌ها
+    const uniqueId = `chart-${symbol}-${Date.now()}`;
+    const strokeColor = isUp ? '#22c55e' : '#ef4444';
+    const fillColorStart = isUp ? 'rgba(34, 197, 94, 0.25)' : 'rgba(239, 68, 68, 0.25)';
+    const fillColorEnd = isUp ? 'rgba(34, 197, 94, 0.02)' : 'rgba(239, 68, 68, 0.02)';
+    
+    return `
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" style="width:100%;height:100%;">
+            <defs>
+                <linearGradient id="${uniqueId}" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="${fillColorStart}" />
+                    <stop offset="100%" stop-color="${fillColorEnd}" />
+                </linearGradient>
+            </defs>
+            <path d="${areaPath}" fill="url(#${uniqueId})" />
+            <path d="${pathD}" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    `;
+}
+
+/**
+ * 🔐 چک کردن نیاز به لاگین
+ * ⚠️ فعلاً غیرفعال - برای تست سریع
+ */
+function checkLoginRequired() {
+    // TODO: بعداً فعال کنید
+    // const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+    // if (!isLoggedIn) {
+    //     showLoginPrompt();
+    //     return false;
+    // }
+    return true; // فعلاً همیشه true برمیگردونه
+}
+
+/**
+ * 🔑 نمایش پیام نیاز به لاگین
+ */
+function showLoginPrompt() {
+    // ایجاد مودال لاگین
+    const existingPrompt = document.getElementById('loginPromptModal');
+    if (existingPrompt) {
+        existingPrompt.classList.add('active');
+        return;
+    }
+    
+    const promptModal = document.createElement('div');
+    promptModal.id = 'loginPromptModal';
+    promptModal.className = 'login-prompt-modal';
+    promptModal.innerHTML = `
+        <div class="login-prompt-content">
+            <div class="login-prompt-icon">🔐</div>
+            <h3>نیاز به ورود</h3>
+            <p>برای مشاهده جزئیات و نمودارها لطفاً وارد حساب کاربری خود شوید.</p>
+            <div class="login-prompt-buttons">
+                <button class="btn-login-prompt" onclick="openLoginModal()">ورود / ثبت‌نام</button>
+                <button class="btn-close-prompt" onclick="closeLoginPrompt()">بستن</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(promptModal);
+    setTimeout(() => promptModal.classList.add('active'), 10);
+}
+
+/**
+ * بستن مودال لاگین
+ */
+function closeLoginPrompt() {
+    const prompt = document.getElementById('loginPromptModal');
+    if (prompt) {
+        prompt.classList.remove('active');
+        setTimeout(() => prompt.remove(), 300);
+    }
+}
+
+/**
+ * باز کردن مودال لاگین اصلی
+ */
+function openLoginModal() {
+    closeLoginPrompt();
+    const loginModal = document.getElementById('loginModal');
+    if (loginModal) {
+        loginModal.classList.add('active');
+    }
+}
+
+/**
+ * 🎯 مدیریت تب‌های هایلایت در صفحات مختلف
+ */
+function setupHighlightPanels(triggerSelector, triggerAttr, panelSelector, panelAttr) {
+    const triggers = document.querySelectorAll(triggerSelector);
+    const panels = document.querySelectorAll(panelSelector);
+    
+    if (!triggers.length || !panels.length) return;
+    
+    const activate = (value) => {
+        triggers.forEach(trigger => {
+            trigger.classList.toggle('active', trigger.getAttribute(triggerAttr) === value);
+        });
+        
+        panels.forEach(panel => {
+            panel.classList.toggle('active', panel.getAttribute(panelAttr) === value);
+        });
+    };
+    
+    triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            const value = trigger.getAttribute(triggerAttr);
+            activate(value);
+        });
+    });
+    
+    // فعال‌سازی اولیه
+    const initialValue = triggers[0].getAttribute(triggerAttr);
+    activate(initialValue);
 }
 
 /**
@@ -2509,6 +4252,11 @@ function setupEventListeners() {
         });
     });
     
+    // تب‌های هایلایت در صفحات مختلف
+    setupHighlightPanels('.highlight-circle[data-news]', 'data-news', '.news-panel', 'data-news-panel');
+    setupHighlightPanels('.highlight-circle[data-edu]', 'data-edu', '.edu-panel', 'data-edu-panel');
+    setupHighlightPanels('.highlight-circle[data-relax]', 'data-relax', '.relax-panel', 'data-relax-panel');
+    
     // چت
     elements.sendMessage.addEventListener('click', sendChatMessage);
     elements.chatInput.addEventListener('keypress', (e) => {
@@ -2660,9 +4408,65 @@ function setupAllCardListeners() {
         card.replaceWith(card.cloneNode(true));
     });
     
+    // آپدیت mini-chart ها با SVG و اضافه کردن تایم آپدیت
+    document.querySelectorAll('.price-card').forEach(card => {
+        const miniChart = card.querySelector('.mini-chart');
+        const symbol = card.getAttribute('data-symbol') || 'UNKNOWN';
+        const changeEl = card.querySelector('.price-change');
+        
+        // تشخیص صعودی/نزولی از چند منبع
+        let isUp = true;
+        
+        // 1. اول از کلاس mini-chart چک کن
+        if (miniChart) {
+            if (miniChart.classList.contains('down')) {
+                isUp = false;
+            } else if (miniChart.classList.contains('up')) {
+                isUp = true;
+            }
+        }
+        
+        // 2. اگر کلاس نداره، از price-change چک کن
+        if (changeEl) {
+            if (changeEl.classList.contains('negative')) {
+                isUp = false;
+            } else if (changeEl.classList.contains('positive')) {
+                isUp = true;
+            } else {
+                // 3. از متن تغییرات چک کن
+                const text = changeEl.textContent.trim();
+                if (text.startsWith('-') || text.includes('-')) {
+                    isUp = false;
+                }
+            }
+        }
+        
+        if (miniChart && !miniChart.querySelector('svg')) {
+            miniChart.innerHTML = generateMiniChartSVG(symbol, isUp);
+        }
+        
+        // حذف تبلیغات
+        const adSpace = card.querySelector('.ad-space');
+        if (adSpace) adSpace.style.display = 'none';
+        
+        // اضافه کردن تایم آپدیت (اگر نداره)
+        if (!card.querySelector('.card-update-time')) {
+            const updateDiv = document.createElement('div');
+            updateDiv.className = 'card-update-time';
+            updateDiv.innerHTML = `
+                <span class="update-dot"></span>
+                <span class="update-text">${getLastUpdateTime()}</span>
+            `;
+            card.appendChild(updateDiv);
+        }
+    });
+    
     // دوباره پیدا کردن و اضافه کردن ایونت‌لیستنر
     document.querySelectorAll('.price-card').forEach(card => {
         card.addEventListener('click', function() {
+            // چک لاگین
+            if (!checkLoginRequired()) return;
+            
             const symbol = this.getAttribute('data-symbol');
             const cardTitle = this.querySelector('h3').textContent;
             const priceText = this.querySelector('.current-price').textContent;
@@ -3569,42 +5373,39 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ==================== //
-// 🤖 سیستم چت AI شناور
+// 💬 سیستم چت AI - نوار باریک
 // ==================== //
 
 function setupAiChat() {
+    const aiChatBar = document.getElementById('aiChatBar');
     const aiChatFab = document.getElementById('aiChatFab');
-    const aiChatModal = document.getElementById('aiChatModal');
-    const closeAiChat = document.getElementById('closeAiChat');
     const chatInput = document.getElementById('chatInput');
     const sendMessage = document.getElementById('sendMessage');
     const chatMessages = document.getElementById('chatMessages');
     
-    console.log('🤖 راه‌اندازی چت AI...', { 
-        fab: !!aiChatFab, 
-        modal: !!aiChatModal 
+    console.log('💬 راه‌اندازی چت AI...', { 
+        bar: !!aiChatBar, 
+        fab: !!aiChatFab 
     });
     
-    if (aiChatFab && aiChatModal) {
-        // رویداد کلیک روی دکمه
+    if (aiChatBar && aiChatFab) {
+        // رویداد کلیک روی هدر برای باز/بسته کردن
         aiChatFab.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('🤖 کلیک روی دکمه چت');
-            aiChatModal.classList.toggle('active');
+            console.log('💬 کلیک روی هدر چت');
+            aiChatBar.classList.toggle('expanded');
             
-            // تشخیص صفحه فعلی برای پیام مناسب
-            const currentPage = document.body.getAttribute('data-page') || 'home';
+            // تشخیص صفحه فعلی برای پیام مناسب - از appState استفاده می‌کنیم
+            const currentPage = (typeof appState !== 'undefined' && appState.currentView) ? appState.currentView : 'home';
+            console.log('💬 صفحه فعلی:', currentPage);
             updateChatContext(currentPage);
+            
+            // فوکوس روی input وقتی باز میشه
+            if (aiChatBar.classList.contains('expanded') && chatInput) {
+                setTimeout(() => chatInput.focus(), 300);
+            }
         };
-        
-        // بستن با دکمه ضربدر
-        if (closeAiChat) {
-            closeAiChat.onclick = function(e) {
-                e.preventDefault();
-                aiChatModal.classList.remove('active');
-            };
-        }
         
         // ارسال پیام
         if (sendMessage && chatInput && chatMessages) {
@@ -3651,18 +5452,43 @@ function setupAiChat() {
 // آپدیت context چت بر اساس صفحه
 function updateChatContext(pageName) {
     const chatMessages = document.getElementById('chatMessages');
+    const chatHeader = document.querySelector('.chat-header h3');
     if (!chatMessages) return;
     
     const contexts = {
-        'home': 'سلام! من دستیار هوشمند LivePulse هستم. چطور می‌تونم کمکتون کنم؟',
-        'tools': 'در صفحه ابزار هستید. درباره تبدیل ارز، محاسبه وام یا هر ابزاری سوال دارید؟',
-        'news': 'در صفحه اخبار هستید. می‌تونم اخبار رو برای شما خلاصه کنم یا تحلیل کنم.',
-        'tutorial': 'در صفحه آموزش هستید. چه موضوعی رو می‌خواید یاد بگیرید؟'
+        'home': {
+            title: '🏠 دستیار خانه',
+            message: 'سلام! در صفحه اصلی هستید. درباره قیمت‌ها، ارزها، طلا یا رمزارز سوال دارید؟'
+        },
+        'tools': {
+            title: '🛠️ دستیار ابزار',
+            message: 'در صفحه ابزار هستید. درباره تبدیل ارز، محاسبه سود، صندوق شخصی یا نقشه طلا سوال دارید؟'
+        },
+        'news': {
+            title: '📰 دستیار اخبار',
+            message: 'در صفحه اخبار هستید. می‌تونم اخبار رو برای شما خلاصه کنم یا تحلیل کنم.'
+        },
+        'tutorial': {
+            title: '📚 دستیار آموزش',
+            message: 'در صفحه آموزش هستید. درباره تحلیل تکنیکال، فاندامنتال، مدیریت ریسک یا استراتژی سوال دارید؟'
+        },
+        'relax': {
+            title: '🧘 دستیار آرامش',
+            message: 'در صفحه آرامش هستید. می‌تونم برای تمرکز، مدیریت استرس یا بهبود عملکرد کمکتون کنم.'
+        }
     };
     
+    const context = contexts[pageName] || contexts['home'];
+    
+    // آپدیت عنوان
+    if (chatHeader) {
+        chatHeader.textContent = context.title;
+    }
+    
+    // آپدیت پیام اول
     const firstMsg = chatMessages.querySelector('.ai-message p');
-    if (firstMsg && contexts[pageName]) {
-        firstMsg.textContent = contexts[pageName];
+    if (firstMsg) {
+        firstMsg.textContent = context.message;
     }
 }
 
