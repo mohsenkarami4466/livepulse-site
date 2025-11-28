@@ -5,8 +5,12 @@ class WorldGoldMapGlass {
         this.currentFilter = 'reserves';
         this.selectedCountries = [];
         this.worldData = null;
+        this.countriesInfo = null;
         this.isMobile = window.innerWidth <= 768;
         this.isDarkMode = document.documentElement.classList.contains('dark-theme');
+        this.countryNameToCode = {};
+        this.countryInfoByCode = {};
+        this.completeData = null;
 
         this.init();
     }
@@ -14,8 +18,11 @@ class WorldGoldMapGlass {
     async init() {
         try {
             await this.loadWorldData();
+            this.buildCountryCodeMap();
+            this.completeData = this.buildCompleteData();
             this.createMap();
             this.bindEvents();
+            this.updateFilterBadge();
             this.updateAll();
             this.setupMobileOptimizations();
             
@@ -58,12 +65,115 @@ class WorldGoldMapGlass {
 
     async loadWorldData() {
         try {
-            const response = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
-            this.worldData = await response.json();
+            const atlasResponse = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+            this.worldData = await atlasResponse.json();
+
+            // داده‌های کشورها از منبع داخلی استفاده می‌شود چون منبع خارجی قابل اعتماد نیست
+            this.countriesInfo = [];
+            console.log('✅ نقشه جهان بارگذاری شد');
         } catch (error) {
             console.error('خطا در بارگذاری داده‌های نقشه:', error);
             throw error;
         }
+    }
+
+    buildCountryCodeMap() {
+        this.countryNameToCode = {};
+        this.countryInfoByCode = {};
+
+        if (Array.isArray(this.countriesInfo)) {
+            this.countriesInfo.forEach(info => {
+                const code = info.cca3;
+                if (!code) return;
+                const names = new Set();
+                if (info.name?.common) names.add(info.name.common);
+                if (info.name?.official) names.add(info.name.official);
+
+                if (info.translations) {
+                    Object.values(info.translations).forEach(tr => {
+                        if (tr?.common) names.add(tr.common);
+                        if (tr?.official) names.add(tr.official);
+                    });
+                }
+
+                names.forEach(name => {
+                    if (!name) return;
+                    const normalized = this.normalizeCountryName(name);
+                    this.countryNameToCode[normalized] = code;
+                });
+
+                this.countryInfoByCode[code] = {
+                    nameEn: info.name?.common || code,
+                    nameFa: info.translations?.fas?.common || info.translations?.ara?.common
+                };
+            });
+        }
+
+        const overrides = {
+            'united states of america': 'USA',
+            'united states': 'USA',
+            'south korea': 'KOR',
+            'north korea': 'PRK',
+            'democratic republic of the congo': 'COD',
+            'dem. rep. congo': 'COD',
+            'republic of the congo': 'COG',
+            'czech republic': 'CZE',
+            'czech rep.': 'CZE',
+            'ivory coast': 'CIV',
+            'cote d ivoire': 'CIV',
+            'laos': 'LAO',
+            'bahamas': 'BHS',
+            'bolivia': 'BOL',
+            'myanmar (burma)': 'MMR',
+            'burma': 'MMR',
+            'syria': 'SYR',
+            'cape verde': 'CPV',
+            'bosnia and herzegovina': 'BIH',
+            'bosnia and herz.': 'BIH',
+            'solomon islands': 'SLB',
+            'solomon is.': 'SLB',
+            'eswatini': 'SWZ',
+            'swaziland': 'SWZ'
+        };
+
+        Object.entries(overrides).forEach(([name, code]) => {
+            this.countryNameToCode[this.normalizeCountryName(name)] = code;
+        });
+
+        this.extendCountryMapFromTopojson();
+    }
+
+    normalizeCountryName(name) {
+        return name.replace(/\s*\(.*?\)\s*/g, '').replace(/’/g, "'").toLowerCase().trim();
+    }
+
+    extendCountryMapFromTopojson() {
+        if (!this.worldData || !this.worldData.objects?.countries) return;
+        const features = topojson.feature(this.worldData, this.worldData.objects.countries).features;
+        features.forEach(feature => {
+            const name = feature.properties?.name;
+            if (!name) return;
+
+            const normalized = this.normalizeCountryName(name);
+            if (!this.countryNameToCode[normalized]) {
+                const fallbackCode = this.generateFallbackCode(feature, normalized);
+                this.countryNameToCode[normalized] = fallbackCode;
+                if (!this.countryInfoByCode[fallbackCode]) {
+                    this.countryInfoByCode[fallbackCode] = {
+                        nameEn: name,
+                        nameFa: name
+                    };
+                }
+            }
+        });
+    }
+
+    generateFallbackCode(feature, normalizedName) {
+        if (feature.id) {
+            return `C${feature.id}`;
+        }
+        const letters = (normalizedName || '').replace(/[^a-z]/g, '').toUpperCase();
+        return letters ? letters.slice(0, 6) : `C${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
     }
 
     createMap() {
@@ -210,7 +320,7 @@ class WorldGoldMapGlass {
     }
 
     bindEvents() {
-        // فیلترها
+        // فیلترهای قدیمی (دکمه‌ای)
         document.querySelectorAll('.glass-filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -218,13 +328,34 @@ class WorldGoldMapGlass {
             });
         });
 
-        // سال‌ها
+        // فیلتر جدید (select)
+        const mapFilterSelect = document.getElementById('mapFilter');
+        if (mapFilterSelect) {
+            this.currentFilter = mapFilterSelect.value;
+            mapFilterSelect.addEventListener('change', (e) => {
+                this.currentFilter = e.target.value;
+                this.updateFilterBadge();
+                this.updateAll();
+            });
+        }
+
+        // سال‌ها - قدیمی
         document.querySelectorAll('.glass-year-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.setActiveYear(btn);
             });
         });
+
+        // سال‌ها - dropdown جدید
+        const yearSelect = document.getElementById('yearFilter');
+        if (yearSelect) {
+            this.currentYear = yearSelect.value;
+            yearSelect.addEventListener('change', (e) => {
+                this.currentYear = e.target.value;
+                this.updateAll();
+            });
+        }
 
         // کنترل‌های نقشه
         const resetZoomBtn = document.getElementById('resetZoom');
@@ -262,11 +393,7 @@ class WorldGoldMapGlass {
         btn.classList.add('active');
         this.currentFilter = btn.dataset.filter;
         
-        const badge = document.getElementById('currentFilterBadge');
-        if (badge) {
-            badge.textContent = this.getFilterLabel(this.currentFilter);
-        }
-        
+        this.updateFilterBadge();
         this.updateAll();
     }
 
@@ -282,6 +409,13 @@ class WorldGoldMapGlass {
         this.updateTopCountries();
         this.updateCountryComparison();
         this.updateSelectionCount();
+    }
+
+    updateFilterBadge() {
+        const badge = document.getElementById('currentFilterBadge');
+        if (badge) {
+            badge.textContent = this.getFilterLabel(this.currentFilter);
+        }
     }
 
     updateMapColors() {
@@ -397,110 +531,30 @@ class WorldGoldMapGlass {
         const scales = {
             reserves: d3.scaleSequential()
                 .domain([0, 10000])
-                .interpolator(t => d3.interpolateRgb('#2d1f0d', '#ffd700')(t)),
+                .interpolator(t => d3.interpolateRgb('#2b1055', '#ffd166')(t)),
             production: d3.scaleSequential()
                 .domain([0, 400])
-                .interpolator(t => d3.interpolateRgb('#0d3320', '#10b981')(t)),
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#34d399')(t)),
             gdp: d3.scaleSequential()
                 .domain([0, 30000000])
-                .interpolator(t => d3.interpolateRgb('#1e1b4b', '#3b82f6')(t)),
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#60a5fa')(t)),
             economicRank: d3.scaleSequential()
-                .domain([60, 1])
-                .interpolator(t => d3.interpolateRgb('#4c0519', '#f43f5e')(t)),
+                .domain([200, 1])
+                .interpolator(t => d3.interpolateRgb('#4c0519', '#f472b6')(t)),
             oil: d3.scaleSequential()
                 .domain([0, 15000])
-                .interpolator(t => d3.interpolateRgb('#1c1917', '#f97316')(t)),
+                .interpolator(t => d3.interpolateRgb('#1f2937', '#fb923c')(t)),
             gas: d3.scaleSequential()
                 .domain([0, 1000000])
-                .interpolator(t => d3.interpolateRgb('#1e1b4b', '#a855f7')(t))
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#a78bfa')(t))
         };
 
         return scales[this.currentFilter] ? scales[this.currentFilter](value) : 'rgba(100, 116, 139, 0.5)';
     }
 
     getCountryData(country) {
-        const countryMap = {
-            'United States of America': 'USA',
-            'United States': 'USA',
-            'China': 'CHN',
-            'Russian Federation': 'RUS',
-            'Iran (Islamic Republic of)': 'IRN',
-            'Iran': 'IRN',
-            'Saudi Arabia': 'SAU',
-            'India': 'IND',
-            'Japan': 'JPN',
-            'South Korea': 'KOR',
-            'Turkey': 'TUR',
-            'Brazil': 'BRA',
-            'United Kingdom': 'GBR',
-            'Germany': 'DEU',
-            'France': 'FRA',
-            'Italy': 'ITA',
-            'Mexico': 'MEX',
-            'Canada': 'CAN',
-            'Australia': 'AUS',
-            'Spain': 'ESP',
-            'Indonesia': 'IDN',
-            'Netherlands': 'NLD',
-            'South Africa': 'ZAF',
-            'Switzerland': 'CHE',
-            'Taiwan': 'TWN',
-            'Poland': 'POL',
-            'Sweden': 'SWE',
-            'Belgium': 'BEL',
-            'Thailand': 'THA',
-            'Nigeria': 'NGA',
-            'Argentina': 'ARG',
-            'Norway': 'NOR',
-            'Israel': 'ISR',
-            'Hong Kong': 'HKG',
-            'Singapore': 'SGP',
-            'Malaysia': 'MYS',
-            'Philippines': 'PHL',
-            'Colombia': 'COL',
-            'Pakistan': 'PAK',
-            'Chile': 'CHL',
-            'Bangladesh': 'BGD',
-            'Egypt': 'EGY',
-            'Finland': 'FIN',
-            'Vietnam': 'VNM',
-            'Czech Republic': 'CZE',
-            'Romania': 'ROU',
-            'Portugal': 'PRT',
-            'Peru': 'PER',
-            'New Zealand': 'NZL',
-            'Greece': 'GRC',
-            'Iraq': 'IRQ',
-            'Algeria': 'DZA',
-            'Qatar': 'QAT',
-            'Kazakhstan': 'KAZ',
-            'Hungary': 'HUN',
-            'Ukraine': 'UKR',
-            'Kuwait': 'KWT',
-            'Morocco': 'MAR',
-            'Angola': 'AGO',
-            'Ecuador': 'ECU',
-            'Slovakia': 'SVK',
-            'Oman': 'OMN',
-            'Cuba': 'CUB',
-            'Azerbaijan': 'AZE',
-            'Belarus': 'BLR',
-            'Sri Lanka': 'LKA',
-            'Myanmar': 'MMR',
-            'Luxembourg': 'LUX',
-            'Dominican Republic': 'DOM',
-            'Uzbekistan': 'UZB',
-            'Kenya': 'KEN',
-            'Guatemala': 'GTM',
-            'Uruguay': 'URY',
-            'Croatia': 'HRV',
-            'Bulgaria': 'BGR',
-            'Macao': 'MAC',
-            'Ethiopia': 'ETH',
-            'Lebanon': 'LBN'
-        };
-
-        const code = countryMap[country.properties.name];
+        const code = this.getCountryCode(country.properties.name);
+        if (!code) return null;
         return this.getCompleteData()[this.currentYear]?.[code];
     }
 
@@ -610,30 +664,34 @@ class WorldGoldMapGlass {
     }
 
     getCountryCode(name) {
-        const map = {
+        if (!name) return null;
+        
+        // نگاشت مستقیم نام کشورها به کد ISO - این نگاشت باید با نام‌های TopoJSON مطابقت داشته باشد
+        const directMap = {
             'United States of America': 'USA',
+            'United States': 'USA',
             'China': 'CHN',
+            'Russia': 'RUS',
             'Russian Federation': 'RUS',
-            'Iran (Islamic Republic of)': 'IRN',
+            'Iran': 'IRN',
             'Saudi Arabia': 'SAU',
             'India': 'IND',
-            'Japan': 'JPN',
-            'South Korea': 'KOR',
-            'Turkey': 'TUR',
-            'Brazil': 'BRA',
-            'United Kingdom': 'GBR',
             'Germany': 'DEU',
+            'Japan': 'JPN',
+            'United Kingdom': 'GBR',
             'France': 'FRA',
-            'Italy': 'ITA',
-            'Mexico': 'MEX',
             'Canada': 'CAN',
             'Australia': 'AUS',
+            'Italy': 'ITA',
+            'Brazil': 'BRA',
+            'South Korea': 'KOR',
+            'Korea': 'KOR',
             'Spain': 'ESP',
+            'Mexico': 'MEX',
             'Indonesia': 'IDN',
             'Netherlands': 'NLD',
-            'South Africa': 'ZAF',
+            'Turkey': 'TUR',
             'Switzerland': 'CHE',
-            'Taiwan': 'TWN',
             'Poland': 'POL',
             'Sweden': 'SWE',
             'Belgium': 'BEL',
@@ -642,7 +700,8 @@ class WorldGoldMapGlass {
             'Argentina': 'ARG',
             'Norway': 'NOR',
             'Israel': 'ISR',
-            'Hong Kong': 'HKG',
+            'United Arab Emirates': 'ARE',
+            'South Africa': 'ZAF',
             'Singapore': 'SGP',
             'Malaysia': 'MYS',
             'Philippines': 'PHL',
@@ -653,7 +712,9 @@ class WorldGoldMapGlass {
             'Egypt': 'EGY',
             'Finland': 'FIN',
             'Vietnam': 'VNM',
+            'Viet Nam': 'VNM',
             'Czech Republic': 'CZE',
+            'Czechia': 'CZE',
             'Romania': 'ROU',
             'Portugal': 'PRT',
             'Peru': 'PER',
@@ -671,24 +732,233 @@ class WorldGoldMapGlass {
             'Ecuador': 'ECU',
             'Slovakia': 'SVK',
             'Oman': 'OMN',
-            'Cuba': 'CUB',
             'Azerbaijan': 'AZE',
+            'Turkmenistan': 'TKM',
+            'Uzbekistan': 'UZB',
+            'Ghana': 'GHA',
+            'Libya': 'LBY',
+            'Venezuela': 'VEN',
+            'Sudan': 'SDN',
+            'Tanzania': 'TZA',
+            'United Republic of Tanzania': 'TZA',
+            'Myanmar': 'MMR',
+            'Burma': 'MMR',
+            'Ireland': 'IRL',
+            'Austria': 'AUT',
+            'Denmark': 'DNK',
+            'Hong Kong': 'HKG',
+            'Taiwan': 'TWN',
+            'Cuba': 'CUB',
             'Belarus': 'BLR',
             'Sri Lanka': 'LKA',
-            'Myanmar': 'MMR',
             'Luxembourg': 'LUX',
             'Dominican Republic': 'DOM',
-            'Uzbekistan': 'UZB',
             'Kenya': 'KEN',
             'Guatemala': 'GTM',
             'Uruguay': 'URY',
             'Croatia': 'HRV',
             'Bulgaria': 'BGR',
-            'Macao': 'MAC',
             'Ethiopia': 'ETH',
-            'Lebanon': 'LBN'
+            'Lebanon': 'LBN',
+            'Serbia': 'SRB',
+            'Jordan': 'JOR',
+            'Tunisia': 'TUN',
+            'Bolivia': 'BOL',
+            'Paraguay': 'PRY',
+            'Panama': 'PAN',
+            'Costa Rica': 'CRI',
+            'Slovenia': 'SVN',
+            'Lithuania': 'LTU',
+            'Latvia': 'LVA',
+            'Estonia': 'EST',
+            'Bahrain': 'BHR',
+            'Cyprus': 'CYP',
+            'Afghanistan': 'AFG',
+            'Nepal': 'NPL',
+            'Cambodia': 'KHM',
+            'Yemen': 'YEM',
+            'Syria': 'SYR',
+            'Syrian Arab Republic': 'SYR',
+            'Zimbabwe': 'ZWE',
+            'Zambia': 'ZMB',
+            'Uganda': 'UGA',
+            'Senegal': 'SEN',
+            'Democratic Republic of the Congo': 'COD',
+            'Dem. Rep. Congo': 'COD',
+            'Democratic Rep. of the Congo': 'COD',
+            'D.R. Congo': 'COD',
+            'DRC': 'COD',
+            'Republic of the Congo': 'COG',
+            'Republic of Congo': 'COG',
+            'Congo': 'COG',
+            'Congo-Brazzaville': 'COG',
+            'Mali': 'MLI',
+            'Burkina Faso': 'BFA',
+            'Madagascar': 'MDG',
+            'Mozambique': 'MOZ',
+            // کشورهای آفریقایی بیشتر
+            'Nigeria': 'NGA',
+            'South Africa': 'ZAF',
+            'Kenya': 'KEN',
+            'Ethiopia': 'ETH',
+            'Tanzania': 'TZA',
+            'Algeria': 'DZA',
+            'Morocco': 'MAR',
+            'Ghana': 'GHA',
+            'Angola': 'AGO',
+            'Sudan': 'SDN',
+            'Libya': 'LBY',
+            'Tunisia': 'TUN',
+            'Cameroon': 'CMR',
+            'Ivory Coast': 'CIV',
+            "Côte d'Ivoire": 'CIV',
+            'Niger': 'NER',
+            'Chad': 'TCD',
+            'Mauritania': 'MRT',
+            'Benin': 'BEN',
+            'Togo': 'TGO',
+            'Sierra Leone': 'SLE',
+            'Liberia': 'LBR',
+            'Central African Republic': 'CAF',
+            'Central African Rep.': 'CAF',
+            'Eritrea': 'ERI',
+            'Somalia': 'SOM',
+            'South Sudan': 'SSD',
+            'S. Sudan': 'SSD',
+            'Malawi': 'MWI',
+            'Rwanda': 'RWA',
+            'Burundi': 'BDI',
+            'Lesotho': 'LSO',
+            'Guinea': 'GIN',
+            'Guinea-Bissau': 'GNB',
+            'Equatorial Guinea': 'GNQ',
+            'Eq. Guinea': 'GNQ',
+            'Djibouti': 'DJI',
+            'Mauritius': 'MUS',
+            'Comoros': 'COM',
+            'Cape Verde': 'CPV',
+            'Cabo Verde': 'CPV',
+            'Seychelles': 'SYC',
+            'Gambia': 'GMB',
+            'The Gambia': 'GMB',
+            'Gabon': 'GAB',
+            'Namibia': 'NAM',
+            'Botswana': 'BWA',
+            'Zimbabwe': 'ZWE',
+            'Swaziland': 'SWZ',
+            'Eswatini': 'SWZ',
+            'São Tomé and Príncipe': 'STP',
+            'Sao Tome and Principe': 'STP',
+            'Western Sahara': 'ESH',
+            'W. Sahara': 'ESH',
+            'Papua New Guinea': 'PNG',
+            'Mongolia': 'MNG',
+            'Botswana': 'BWA',
+            'Namibia': 'NAM',
+            'Gabon': 'GAB',
+            'Jamaica': 'JAM',
+            'Trinidad and Tobago': 'TTO',
+            'Iceland': 'ISL',
+            'Georgia': 'GEO',
+            'Armenia': 'ARM',
+            'Albania': 'ALB',
+            'North Macedonia': 'MKD',
+            'Macedonia': 'MKD',
+            'Bosnia and Herzegovina': 'BIH',
+            'Bosnia and Herz.': 'BIH',
+            'Moldova': 'MDA',
+            'Montenegro': 'MNE',
+            'Kosovo': 'XKX',
+            'Kyrgyzstan': 'KGZ',
+            'Tajikistan': 'TJK',
+            'Laos': 'LAO',
+            'Brunei': 'BRN',
+            'Bahamas': 'BHS',
+            'Haiti': 'HTI',
+            'Honduras': 'HND',
+            'El Salvador': 'SLV',
+            'Nicaragua': 'NIC',
+            'Chad': 'TCD',
+            'Niger': 'NER',
+            'Mauritania': 'MRT',
+            'Benin': 'BEN',
+            'Togo': 'TGO',
+            'Sierra Leone': 'SLE',
+            'Liberia': 'LBR',
+            'Central African Republic': 'CAF',
+            'Central African Rep.': 'CAF',
+            'Eritrea': 'ERI',
+            'Somalia': 'SOM',
+            'South Sudan': 'SSD',
+            'S. Sudan': 'SSD',
+            'Malawi': 'MWI',
+            'Rwanda': 'RWA',
+            'Burundi': 'BDI',
+            'Lesotho': 'LSO',
+            'Guinea': 'GIN',
+            'Guinea-Bissau': 'GNB',
+            'Equatorial Guinea': 'GNQ',
+            'Eq. Guinea': 'GNQ',
+            'Republic of the Congo': 'COG',
+            'Djibouti': 'DJI',
+            'Mauritius': 'MUS',
+            'Comoros': 'COM',
+            'Cape Verde': 'CPV',
+            'Cabo Verde': 'CPV',
+            'Seychelles': 'SYC',
+            'Fiji': 'FJI',
+            'Solomon Islands': 'SLB',
+            'Solomon Is.': 'SLB',
+            'Vanuatu': 'VUT',
+            'Samoa': 'WSM',
+            'New Caledonia': 'NCL',
+            'French Polynesia': 'PYF',
+            'Guam': 'GUM',
+            'Puerto Rico': 'PRI',
+            'Timor-Leste': 'TLS',
+            'East Timor': 'TLS',
+            'Bhutan': 'BTN',
+            'Maldives': 'MDV',
+            'Malta': 'MLT',
+            'Andorra': 'AND',
+            'Monaco': 'MCO',
+            'Liechtenstein': 'LIE',
+            'San Marino': 'SMR',
+            'North Korea': 'PRK',
+            'Dem. Rep. Korea': 'PRK',
+            'Western Sahara': 'ESH',
+            'W. Sahara': 'ESH',
+            'Greenland': 'GRL',
+            'Falkland Islands': 'FLK',
+            'Falkland Is.': 'FLK',
+            'French Guiana': 'GUF',
+            'Fr. Guiana': 'GUF',
+            'Suriname': 'SUR',
+            'Guyana': 'GUY',
+            'Belize': 'BLZ',
+            'Eswatini': 'SWZ',
+            'Swaziland': 'SWZ'
         };
-        return map[name] || name;
+        
+        // اول در نگاشت مستقیم جستجو کن
+        if (directMap[name]) {
+            return directMap[name];
+        }
+        
+        // سپس در نگاشت داینامیک جستجو کن
+        const normalized = this.normalizeCountryName(name);
+        if (this.countryNameToCode[normalized]) {
+            return this.countryNameToCode[normalized];
+        }
+        
+        // در نهایت در نگاشت مستقیم با نام نرمال شده جستجو کن
+        for (const [key, value] of Object.entries(directMap)) {
+            if (this.normalizeCountryName(key) === normalized) {
+                return value;
+            }
+        }
+        
+        return null;
     }
 
     resetZoom() {
@@ -798,39 +1068,64 @@ class WorldGoldMapGlass {
         }, 4000);
     }
 
-    getCompleteData() {
-        // داده‌های کامل با سال‌های مختلف
-        const baseData2024 = {
+    buildCompleteData() {
+        const baseData2024 = this.generateBaseData2024();
+        this.ensureCountryCoverage(baseData2024);
+
+        const dataset = { "2024": baseData2024 };
+        ['2023', '2022', '2021', '2020'].forEach((year, index) => {
+            dataset[year] = this.generateYearData(baseData2024, index + 1);
+        });
+        return dataset;
+    }
+
+    generateYearData(baseData, yearOffset) {
+        const result = {};
+        Object.keys(baseData).forEach(code => {
+            const country = { ...baseData[code] };
+            country.reserves = Math.max(0, Math.round(country.reserves * (1 - yearOffset * 0.02)));
+            country.production = Math.max(0, Math.round(country.production * (1 - yearOffset * 0.03)));
+            country.gdp = Math.max(0, Math.round(country.gdp * (1 - yearOffset * 0.04)));
+            country.oil = Math.max(0, Math.round(country.oil * (1 - yearOffset * 0.01)));
+            country.gas = Math.max(0, Math.round(country.gas * (1 - yearOffset * 0.01)));
+            result[code] = country;
+        });
+        return result;
+    }
+
+    generateBaseData2024() {
+        return {
+            // کشورهای اصلی با داده‌های کامل
             "USA": { name: "ایالات متحده آمریکا", code: "USA", reserves: 8133, production: 200, gdp: 25400000, economicRank: 1, oil: 12800, gas: 934000 },
             "CHN": { name: "چین", code: "CHN", reserves: 1948, production: 350, gdp: 17900000, economicRank: 2, oil: 4800, gas: 207000 },
-            "IRN": { name: "ایران", code: "IRN", reserves: 425, production: 85, gdp: 1620000, economicRank: 25, oil: 3100, gas: 258000 },
-            "RUS": { name: "روسیه", code: "RUS", reserves: 2299, production: 300, gdp: 1860000, economicRank: 11, oil: 10700, gas: 701000 },
-            "SAU": { name: "عربستان سعودی", code: "SAU", reserves: 323, production: 250, gdp: 1100000, economicRank: 18, oil: 11500, gas: 112000 },
-            "IND": { name: "هند", code: "IND", reserves: 754, production: 90, gdp: 3740000, economicRank: 5, oil: 800, gas: 32000 },
-            "DEU": { name: "آلمان", code: "DEU", reserves: 3366, production: 5, gdp: 4080000, economicRank: 4, oil: 220, gas: 68000 },
             "JPN": { name: "ژاپن", code: "JPN", reserves: 846, production: 8, gdp: 4910000, economicRank: 3, oil: 120, gas: 3200 },
+            "DEU": { name: "آلمان", code: "DEU", reserves: 3366, production: 5, gdp: 4080000, economicRank: 4, oil: 220, gas: 68000 },
+            "IND": { name: "هند", code: "IND", reserves: 754, production: 90, gdp: 3740000, economicRank: 5, oil: 800, gas: 32000 },
             "GBR": { name: "انگلستان", code: "GBR", reserves: 310, production: 1, gdp: 3130000, economicRank: 6, oil: 950, gas: 42000 },
             "FRA": { name: "فرانسه", code: "FRA", reserves: 2436, production: 2, gdp: 2930000, economicRank: 7, oil: 160, gas: 1800 },
-            "CAN": { name: "کانادا", code: "CAN", reserves: 180, production: 180, gdp: 2140000, economicRank: 9, oil: 5200, gas: 178000 },
-            "AUS": { name: "استرالیا", code: "AUS", reserves: 79, production: 320, gdp: 1540000, economicRank: 13, oil: 280, gas: 142000 },
             "ITA": { name: "ایتالیا", code: "ITA", reserves: 2451, production: 0, gdp: 2010000, economicRank: 8, oil: 90, gas: 3200 },
+            "CAN": { name: "کانادا", code: "CAN", reserves: 180, production: 180, gdp: 2140000, economicRank: 9, oil: 5200, gas: 178000 },
+            "RUS": { name: "روسیه", code: "RUS", reserves: 2299, production: 300, gdp: 1860000, economicRank: 11, oil: 10700, gas: 701000 },
             "BRA": { name: "برزیل", code: "BRA", reserves: 129, production: 60, gdp: 1920000, economicRank: 12, oil: 2700, gas: 24300 },
+            "AUS": { name: "استرالیا", code: "AUS", reserves: 79, production: 320, gdp: 1540000, economicRank: 13, oil: 280, gas: 142000 },
             "KOR": { name: "کره جنوبی", code: "KOR", reserves: 104, production: 0, gdp: 1730000, economicRank: 14, oil: 0, gas: 0 },
             "ESP": { name: "اسپانیا", code: "ESP", reserves: 281, production: 0, gdp: 1420000, economicRank: 15, oil: 20, gas: 50 },
             "MEX": { name: "مکزیک", code: "MEX", reserves: 120, production: 110, gdp: 1290000, economicRank: 16, oil: 1900, gas: 37000 },
             "IDN": { name: "اندونزی", code: "IDN", reserves: 78, production: 130, gdp: 1280000, economicRank: 17, oil: 740, gas: 89000 },
+            "SAU": { name: "عربستان سعودی", code: "SAU", reserves: 323, production: 250, gdp: 1100000, economicRank: 18, oil: 11500, gas: 112000 },
             "NLD": { name: "هلند", code: "NLD", reserves: 612, production: 0, gdp: 1010000, economicRank: 19, oil: 180, gas: 45000 },
             "TUR": { name: "ترکیه", code: "TUR", reserves: 478, production: 120, gdp: 906000, economicRank: 20, oil: 65, gas: 450 },
             "CHE": { name: "سوئیس", code: "CHE", reserves: 1040, production: 0, gdp: 840000, economicRank: 21, oil: 0, gas: 0 },
             "POL": { name: "لهستان", code: "POL", reserves: 228, production: 0, gdp: 679000, economicRank: 22, oil: 20, gas: 4000 },
             "SWE": { name: "سوئد", code: "SWE", reserves: 126, production: 0, gdp: 591000, economicRank: 23, oil: 0, gas: 0 },
             "BEL": { name: "بلژیک", code: "BEL", reserves: 227, production: 0, gdp: 578000, economicRank: 24, oil: 0, gas: 0 },
+            "IRN": { name: "ایران", code: "IRN", reserves: 425, production: 85, gdp: 1620000, economicRank: 25, oil: 3100, gas: 258000 },
             "THA": { name: "تایلند", code: "THA", reserves: 154, production: 0, gdp: 546000, economicRank: 26, oil: 220, gas: 38000 },
             "NGA": { name: "نیجریه", code: "NGA", reserves: 21, production: 85, gdp: 514000, economicRank: 27, oil: 1680, gas: 49000 },
             "ARG": { name: "آرژانتین", code: "ARG", reserves: 61, production: 60, gdp: 487000, economicRank: 28, oil: 510, gas: 40000 },
             "NOR": { name: "نروژ", code: "NOR", reserves: 37, production: 0, gdp: 482000, economicRank: 29, oil: 1750, gas: 112000 },
             "ISR": { name: "اسرائیل", code: "ISR", reserves: 0, production: 0, gdp: 522000, economicRank: 30, oil: 0, gas: 0 },
-            "ARE": { name: "امارات متحده عربی", code: "ARE", reserves: 215, production: 45, gdp: 501000, economicRank: 31, oil: 3800, gas: 62000 },
+            "ARE": { name: "امارات", code: "ARE", reserves: 215, production: 45, gdp: 501000, economicRank: 31, oil: 3800, gas: 62000 },
             "ZAF": { name: "آفریقای جنوبی", code: "ZAF", reserves: 125, production: 110, gdp: 406000, economicRank: 32, oil: 0, gas: 0 },
             "HKG": { name: "هنگ کنگ", code: "HKG", reserves: 2, production: 0, gdp: 383000, economicRank: 33, oil: 0, gas: 0 },
             "SGP": { name: "سنگاپور", code: "SGP", reserves: 0, production: 0, gdp: 424000, economicRank: 34, oil: 0, gas: 0 },
@@ -843,7 +1138,7 @@ class WorldGoldMapGlass {
             "EGY": { name: "مصر", code: "EGY", reserves: 80, production: 15, gdp: 477000, economicRank: 41, oil: 560, gas: 65000 },
             "FIN": { name: "فنلاند", code: "FIN", reserves: 49, production: 0, gdp: 297000, economicRank: 42, oil: 0, gas: 0 },
             "VNM": { name: "ویتنام", code: "VNM", reserves: 10, production: 5, gdp: 408000, economicRank: 43, oil: 260, gas: 9800 },
-            "CZE": { name: "جمهوری چک", code: "CZE", reserves: 0, production: 0, gdp: 330000, economicRank: 44, oil: 0, gas: 0 },
+            "CZE": { name: "چک", code: "CZE", reserves: 0, production: 0, gdp: 330000, economicRank: 44, oil: 0, gas: 0 },
             "ROU": { name: "رومانی", code: "ROU", reserves: 103, production: 0, gdp: 304000, economicRank: 45, oil: 70, gas: 10000 },
             "PRT": { name: "پرتغال", code: "PRT", reserves: 382, production: 0, gdp: 251000, economicRank: 46, oil: 0, gas: 0 },
             "PER": { name: "پرو", code: "PER", reserves: 34, production: 130, gdp: 264000, economicRank: 47, oil: 40, gas: 12000 },
@@ -860,7 +1155,6 @@ class WorldGoldMapGlass {
             "AGO": { name: "آنگولا", code: "AGO", reserves: 30, production: 40, gdp: 124000, economicRank: 58, oil: 1200, gas: 11000 },
             "ECU": { name: "اکوادور", code: "ECU", reserves: 11, production: 25, gdp: 121000, economicRank: 59, oil: 480, gas: 500 },
             "SVK": { name: "اسلواکی", code: "SVK", reserves: 0, production: 0, gdp: 127000, economicRank: 60, oil: 0, gas: 0 },
-            // کشورهای جدید
             "AZE": { name: "آذربایجان", code: "AZE", reserves: 30, production: 1, gdp: 69000, economicRank: 61, oil: 750, gas: 35000 },
             "TKM": { name: "ترکمنستان", code: "TKM", reserves: 24, production: 1, gdp: 68000, economicRank: 62, oil: 220, gas: 77000 },
             "UZB": { name: "ازبکستان", code: "UZB", reserves: 340, production: 100, gdp: 80000, economicRank: 63, oil: 40, gas: 58000 },
@@ -870,31 +1164,196 @@ class WorldGoldMapGlass {
             "VEN": { name: "ونزوئلا", code: "VEN", reserves: 161, production: 20, gdp: 95000, economicRank: 67, oil: 3000, gas: 38000 },
             "SDN": { name: "سودان", code: "SDN", reserves: 41, production: 1, gdp: 45000, economicRank: 68, oil: 75, gas: 5000 },
             "TZA": { name: "تانزانیا", code: "TZA", reserves: 0, production: 50, gdp: 64000, economicRank: 69, oil: 0, gas: 6400 },
-            "MMR": { name: "میانمار", code: "MMR", reserves: 7, production: 5, gdp: 58000, economicRank: 70, oil: 14, gas: 18000 }
+            "MMR": { name: "میانمار", code: "MMR", reserves: 7, production: 5, gdp: 58000, economicRank: 70, oil: 14, gas: 18000 },
+            // کشورهای بیشتر
+            "IRL": { name: "ایرلند", code: "IRL", reserves: 6, production: 0, gdp: 516000, economicRank: 71, oil: 0, gas: 3000 },
+            "AUT": { name: "اتریش", code: "AUT", reserves: 280, production: 0, gdp: 477000, economicRank: 72, oil: 15, gas: 1200 },
+            "DNK": { name: "دانمارک", code: "DNK", reserves: 66, production: 0, gdp: 395000, economicRank: 73, oil: 65, gas: 1800 },
+            "TWN": { name: "تایوان", code: "TWN", reserves: 423, production: 0, gdp: 785000, economicRank: 74, oil: 0, gas: 0 },
+            "CUB": { name: "کوبا", code: "CUB", reserves: 0, production: 0, gdp: 107000, economicRank: 75, oil: 45, gas: 1000 },
+            "BLR": { name: "بلاروس", code: "BLR", reserves: 0, production: 0, gdp: 73000, economicRank: 76, oil: 30, gas: 200 },
+            "LKA": { name: "سریلانکا", code: "LKA", reserves: 0, production: 0, gdp: 74000, economicRank: 77, oil: 0, gas: 0 },
+            "LUX": { name: "لوکزامبورگ", code: "LUX", reserves: 0, production: 0, gdp: 87000, economicRank: 78, oil: 0, gas: 0 },
+            "DOM": { name: "دومینیکن", code: "DOM", reserves: 0, production: 0, gdp: 95000, economicRank: 79, oil: 0, gas: 0 },
+            "KEN": { name: "کنیا", code: "KEN", reserves: 0, production: 0, gdp: 110000, economicRank: 80, oil: 0, gas: 0 },
+            "GTM": { name: "گواتمالا", code: "GTM", reserves: 0, production: 0, gdp: 92000, economicRank: 81, oil: 8, gas: 0 },
+            "URY": { name: "اروگوئه", code: "URY", reserves: 0, production: 0, gdp: 71000, economicRank: 82, oil: 0, gas: 0 },
+            "HRV": { name: "کرواسی", code: "HRV", reserves: 0, production: 0, gdp: 68000, economicRank: 83, oil: 12, gas: 1000 },
+            "BGR": { name: "بلغارستان", code: "BGR", reserves: 40, production: 0, gdp: 84000, economicRank: 84, oil: 1, gas: 100 },
+            "ETH": { name: "اتیوپی", code: "ETH", reserves: 0, production: 5, gdp: 126000, economicRank: 85, oil: 0, gas: 0 },
+            "LBN": { name: "لبنان", code: "LBN", reserves: 286, production: 0, gdp: 22000, economicRank: 86, oil: 0, gas: 0 },
+            "SRB": { name: "صربستان", code: "SRB", reserves: 18, production: 0, gdp: 63000, economicRank: 87, oil: 15, gas: 400 },
+            "JOR": { name: "اردن", code: "JOR", reserves: 0, production: 0, gdp: 46000, economicRank: 88, oil: 0, gas: 200 },
+            "TUN": { name: "تونس", code: "TUN", reserves: 7, production: 0, gdp: 46000, economicRank: 89, oil: 40, gas: 2000 },
+            "BOL": { name: "بولیوی", code: "BOL", reserves: 0, production: 0, gdp: 44000, economicRank: 90, oil: 18, gas: 15000 },
+            "PRY": { name: "پاراگوئه", code: "PRY", reserves: 0, production: 0, gdp: 42000, economicRank: 91, oil: 0, gas: 0 },
+            "CMR": { name: "کامرون", code: "CMR", reserves: 0, production: 0, gdp: 44000, economicRank: 92, oil: 75, gas: 2500 },
+            "CIV": { name: "ساحل عاج", code: "CIV", reserves: 0, production: 0, gdp: 70000, economicRank: 93, oil: 30, gas: 2800 },
+            "PAN": { name: "پاناما", code: "PAN", reserves: 0, production: 0, gdp: 66000, economicRank: 94, oil: 0, gas: 0 },
+            "CRI": { name: "کاستاریکا", code: "CRI", reserves: 0, production: 0, gdp: 64000, economicRank: 95, oil: 0, gas: 0 },
+            "SVN": { name: "اسلوونی", code: "SVN", reserves: 3, production: 0, gdp: 62000, economicRank: 96, oil: 0, gas: 0 },
+            "LTU": { name: "لیتوانی", code: "LTU", reserves: 6, production: 0, gdp: 66000, economicRank: 97, oil: 2, gas: 0 },
+            "LVA": { name: "لتونی", code: "LVA", reserves: 0, production: 0, gdp: 40000, economicRank: 98, oil: 0, gas: 0 },
+            "EST": { name: "استونی", code: "EST", reserves: 0, production: 0, gdp: 38000, economicRank: 99, oil: 0, gas: 0 },
+            "BHR": { name: "بحرین", code: "BHR", reserves: 0, production: 0, gdp: 44000, economicRank: 100, oil: 190, gas: 18000 },
+            "CYP": { name: "قبرس", code: "CYP", reserves: 0, production: 0, gdp: 28000, economicRank: 101, oil: 0, gas: 0 },
+            "AFG": { name: "افغانستان", code: "AFG", reserves: 0, production: 0, gdp: 14000, economicRank: 102, oil: 0, gas: 200 },
+            "NPL": { name: "نپال", code: "NPL", reserves: 0, production: 0, gdp: 36000, economicRank: 103, oil: 0, gas: 0 },
+            "KHM": { name: "کامبوج", code: "KHM", reserves: 0, production: 0, gdp: 29000, economicRank: 104, oil: 0, gas: 0 },
+            "YEM": { name: "یمن", code: "YEM", reserves: 0, production: 0, gdp: 21000, economicRank: 105, oil: 50, gas: 500 },
+            "SYR": { name: "سوریه", code: "SYR", reserves: 26, production: 0, gdp: 12000, economicRank: 106, oil: 20, gas: 3000 },
+            "ZWE": { name: "زیمبابوه", code: "ZWE", reserves: 0, production: 15, gdp: 28000, economicRank: 107, oil: 0, gas: 0 },
+            "ZMB": { name: "زامبیا", code: "ZMB", reserves: 0, production: 5, gdp: 29000, economicRank: 108, oil: 0, gas: 0 },
+            "UGA": { name: "اوگاندا", code: "UGA", reserves: 0, production: 0, gdp: 45000, economicRank: 109, oil: 0, gas: 0 },
+            "SEN": { name: "سنگال", code: "SEN", reserves: 0, production: 0, gdp: 28000, economicRank: 110, oil: 0, gas: 0 },
+            "COD": { name: "کنگو دموکراتیک", code: "COD", reserves: 0, production: 25, gdp: 64000, economicRank: 111, oil: 20, gas: 0 },
+            "COG": { name: "کنگو", code: "COG", reserves: 0, production: 0, gdp: 15000, economicRank: 112, oil: 300, gas: 2000 },
+            "MLI": { name: "مالی", code: "MLI", reserves: 0, production: 70, gdp: 19000, economicRank: 113, oil: 0, gas: 0 },
+            "BFA": { name: "بورکینافاسو", code: "BFA", reserves: 0, production: 60, gdp: 18000, economicRank: 114, oil: 0, gas: 0 },
+            "MDG": { name: "ماداگاسکار", code: "MDG", reserves: 0, production: 0, gdp: 14000, economicRank: 115, oil: 0, gas: 0 },
+            "MOZ": { name: "موزامبیک", code: "MOZ", reserves: 0, production: 0, gdp: 18000, economicRank: 116, oil: 0, gas: 5200 },
+            "PNG": { name: "پاپوآ گینه نو", code: "PNG", reserves: 0, production: 60, gdp: 30000, economicRank: 117, oil: 40, gas: 13000 },
+            "MNG": { name: "مغولستان", code: "MNG", reserves: 3, production: 20, gdp: 15000, economicRank: 118, oil: 25, gas: 0 },
+            "BWA": { name: "بوتسوانا", code: "BWA", reserves: 0, production: 0, gdp: 19000, economicRank: 119, oil: 0, gas: 0 },
+            "NAM": { name: "نامیبیا", code: "NAM", reserves: 0, production: 0, gdp: 13000, economicRank: 120, oil: 0, gas: 0 },
+            "GAB": { name: "گابن", code: "GAB", reserves: 0, production: 0, gdp: 19000, economicRank: 121, oil: 200, gas: 400 },
+            "JAM": { name: "جامائیکا", code: "JAM", reserves: 0, production: 0, gdp: 16000, economicRank: 122, oil: 0, gas: 0 },
+            "TTO": { name: "ترینیداد", code: "TTO", reserves: 0, production: 0, gdp: 24000, economicRank: 123, oil: 60, gas: 32000 },
+            "ISL": { name: "ایسلند", code: "ISL", reserves: 0, production: 0, gdp: 25000, economicRank: 124, oil: 0, gas: 0 },
+            "GEO": { name: "گرجستان", code: "GEO", reserves: 0, production: 0, gdp: 19000, economicRank: 125, oil: 0, gas: 0 },
+            "ARM": { name: "ارمنستان", code: "ARM", reserves: 0, production: 0, gdp: 14000, economicRank: 126, oil: 0, gas: 0 },
+            "ALB": { name: "آلبانی", code: "ALB", reserves: 3, production: 0, gdp: 18000, economicRank: 127, oil: 14, gas: 50 },
+            "MKD": { name: "مقدونیه", code: "MKD", reserves: 7, production: 0, gdp: 14000, economicRank: 128, oil: 0, gas: 0 },
+            "BIH": { name: "بوسنی", code: "BIH", reserves: 0, production: 0, gdp: 24000, economicRank: 129, oil: 0, gas: 0 },
+            "MDA": { name: "مولداوی", code: "MDA", reserves: 0, production: 0, gdp: 14000, economicRank: 130, oil: 0, gas: 0 },
+            "MNE": { name: "مونته‌نگرو", code: "MNE", reserves: 0, production: 0, gdp: 6000, economicRank: 131, oil: 0, gas: 0 },
+            "KGZ": { name: "قرقیزستان", code: "KGZ", reserves: 3, production: 25, gdp: 10000, economicRank: 132, oil: 4, gas: 30 },
+            "TJK": { name: "تاجیکستان", code: "TJK", reserves: 0, production: 4, gdp: 11000, economicRank: 133, oil: 0, gas: 20 },
+            "LAO": { name: "لائوس", code: "LAO", reserves: 0, production: 30, gdp: 19000, economicRank: 134, oil: 0, gas: 0 },
+            "BRN": { name: "برونئی", code: "BRN", reserves: 0, production: 0, gdp: 14000, economicRank: 135, oil: 100, gas: 11000 },
+            "BHS": { name: "باهاما", code: "BHS", reserves: 0, production: 0, gdp: 12000, economicRank: 136, oil: 0, gas: 0 },
+            "HTI": { name: "هائیتی", code: "HTI", reserves: 0, production: 0, gdp: 8000, economicRank: 137, oil: 0, gas: 0 },
+            "HND": { name: "هندوراس", code: "HND", reserves: 0, production: 0, gdp: 31000, economicRank: 138, oil: 0, gas: 0 },
+            "SLV": { name: "السالوادور", code: "SLV", reserves: 0, production: 0, gdp: 32000, economicRank: 139, oil: 0, gas: 0 },
+            "NIC": { name: "نیکاراگوئه", code: "NIC", reserves: 0, production: 0, gdp: 15000, economicRank: 140, oil: 0, gas: 0 },
+            "TCD": { name: "چاد", code: "TCD", reserves: 0, production: 0, gdp: 12000, economicRank: 141, oil: 120, gas: 0 },
+            "NER": { name: "نیجر", code: "NER", reserves: 0, production: 0, gdp: 14000, economicRank: 142, oil: 20, gas: 0 },
+            "MRT": { name: "موریتانی", code: "MRT", reserves: 0, production: 0, gdp: 10000, economicRank: 143, oil: 5, gas: 0 },
+            "BEN": { name: "بنین", code: "BEN", reserves: 0, production: 0, gdp: 18000, economicRank: 144, oil: 0, gas: 0 },
+            "TGO": { name: "توگو", code: "TGO", reserves: 0, production: 0, gdp: 8000, economicRank: 145, oil: 0, gas: 0 },
+            "SLE": { name: "سیرالئون", code: "SLE", reserves: 0, production: 0, gdp: 4000, economicRank: 146, oil: 0, gas: 0 },
+            "LBR": { name: "لیبریا", code: "LBR", reserves: 0, production: 0, gdp: 4000, economicRank: 147, oil: 0, gas: 0 },
+            "CAF": { name: "آفریقای مرکزی", code: "CAF", reserves: 0, production: 0, gdp: 2000, economicRank: 148, oil: 0, gas: 0 },
+            "ERI": { name: "اریتره", code: "ERI", reserves: 0, production: 0, gdp: 2000, economicRank: 149, oil: 0, gas: 0 },
+            "SOM": { name: "سومالی", code: "SOM", reserves: 0, production: 0, gdp: 8000, economicRank: 150, oil: 0, gas: 0 },
+            "SSD": { name: "سودان جنوبی", code: "SSD", reserves: 0, production: 0, gdp: 4000, economicRank: 151, oil: 150, gas: 0 },
+            "MWI": { name: "مالاوی", code: "MWI", reserves: 0, production: 0, gdp: 12000, economicRank: 152, oil: 0, gas: 0 },
+            "RWA": { name: "رواندا", code: "RWA", reserves: 0, production: 0, gdp: 13000, economicRank: 153, oil: 0, gas: 0 },
+            "BDI": { name: "بوروندی", code: "BDI", reserves: 0, production: 0, gdp: 3000, economicRank: 154, oil: 0, gas: 0 },
+            "LSO": { name: "لسوتو", code: "LSO", reserves: 0, production: 0, gdp: 2000, economicRank: 155, oil: 0, gas: 0 },
+            "GIN": { name: "گینه", code: "GIN", reserves: 0, production: 20, gdp: 16000, economicRank: 156, oil: 0, gas: 0 },
+            "GNB": { name: "گینه بیسائو", code: "GNB", reserves: 0, production: 0, gdp: 1500, economicRank: 157, oil: 0, gas: 0 },
+            "GNQ": { name: "گینه استوایی", code: "GNQ", reserves: 0, production: 0, gdp: 12000, economicRank: 158, oil: 100, gas: 6000 },
+            "DJI": { name: "جیبوتی", code: "DJI", reserves: 0, production: 0, gdp: 3500, economicRank: 159, oil: 0, gas: 0 },
+            "SWZ": { name: "اسواتینی", code: "SWZ", reserves: 0, production: 0, gdp: 5000, economicRank: 160, oil: 0, gas: 0 },
+            "FJI": { name: "فیجی", code: "FJI", reserves: 0, production: 0, gdp: 5000, economicRank: 161, oil: 0, gas: 0 },
+            "SLB": { name: "جزایر سلیمان", code: "SLB", reserves: 0, production: 0, gdp: 1500, economicRank: 162, oil: 0, gas: 0 },
+            "TLS": { name: "تیمور شرقی", code: "TLS", reserves: 0, production: 0, gdp: 3000, economicRank: 163, oil: 15, gas: 6000 },
+            "BTN": { name: "بوتان", code: "BTN", reserves: 0, production: 0, gdp: 2500, economicRank: 164, oil: 0, gas: 0 },
+            "MLT": { name: "مالت", code: "MLT", reserves: 0, production: 0, gdp: 18000, economicRank: 165, oil: 0, gas: 0 },
+            "PRK": { name: "کره شمالی", code: "PRK", reserves: 0, production: 0, gdp: 18000, economicRank: 166, oil: 0, gas: 0 },
+            "GRL": { name: "گرینلند", code: "GRL", reserves: 0, production: 0, gdp: 3000, economicRank: 167, oil: 0, gas: 0 },
+            "SUR": { name: "سورینام", code: "SUR", reserves: 0, production: 0, gdp: 4000, economicRank: 168, oil: 15, gas: 0 },
+            "GUY": { name: "گویان", code: "GUY", reserves: 0, production: 0, gdp: 14000, economicRank: 169, oil: 340, gas: 0 },
+            "BLZ": { name: "بلیز", code: "BLZ", reserves: 0, production: 0, gdp: 2000, economicRank: 170, oil: 1, gas: 0 },
+            // کشورهای بیشتر - تکمیل لیست
+            "MUS": { name: "موریس", code: "MUS", reserves: 0, production: 0, gdp: 12000, economicRank: 171, oil: 0, gas: 0 },
+            "VUT": { name: "وانواتو", code: "VUT", reserves: 0, production: 0, gdp: 900, economicRank: 172, oil: 0, gas: 0 },
+            "WSM": { name: "ساموآ", code: "WSM", reserves: 0, production: 0, gdp: 800, economicRank: 173, oil: 0, gas: 0 },
+            "COM": { name: "کومور", code: "COM", reserves: 0, production: 0, gdp: 1200, economicRank: 174, oil: 0, gas: 0 },
+            "CPV": { name: "کیپ ورد", code: "CPV", reserves: 0, production: 0, gdp: 2000, economicRank: 175, oil: 0, gas: 0 },
+            "SYC": { name: "سیشل", code: "SYC", reserves: 0, production: 0, gdp: 1800, economicRank: 176, oil: 0, gas: 0 },
+            "MDV": { name: "مالدیو", code: "MDV", reserves: 0, production: 0, gdp: 5000, economicRank: 177, oil: 0, gas: 0 },
+            "AND": { name: "آندورا", code: "AND", reserves: 0, production: 0, gdp: 3200, economicRank: 178, oil: 0, gas: 0 },
+            "MCO": { name: "موناکو", code: "MCO", reserves: 0, production: 0, gdp: 7000, economicRank: 179, oil: 0, gas: 0 },
+            "LIE": { name: "لیختن‌اشتاین", code: "LIE", reserves: 0, production: 0, gdp: 6500, economicRank: 180, oil: 0, gas: 0 },
+            "SMR": { name: "سان مارینو", code: "SMR", reserves: 0, production: 0, gdp: 1700, economicRank: 181, oil: 0, gas: 0 },
+            "XKX": { name: "کوزوو", code: "XKX", reserves: 0, production: 0, gdp: 9000, economicRank: 182, oil: 0, gas: 0 },
+            "ESH": { name: "صحرای غربی", code: "ESH", reserves: 0, production: 0, gdp: 900, economicRank: 183, oil: 0, gas: 0 },
+            "FLK": { name: "جزایر فالکلند", code: "FLK", reserves: 0, production: 0, gdp: 200, economicRank: 184, oil: 0, gas: 0 },
+            "GUF": { name: "گویان فرانسه", code: "GUF", reserves: 0, production: 0, gdp: 4500, economicRank: 185, oil: 0, gas: 0 },
+            "NCL": { name: "کالدونیای جدید", code: "NCL", reserves: 0, production: 0, gdp: 11000, economicRank: 186, oil: 0, gas: 0 },
+            "PYF": { name: "پلی‌نزی فرانسه", code: "PYF", reserves: 0, production: 0, gdp: 6000, economicRank: 187, oil: 0, gas: 0 },
+            "GUM": { name: "گوام", code: "GUM", reserves: 0, production: 0, gdp: 6000, economicRank: 188, oil: 0, gas: 0 },
+            "PRI": { name: "پورتوریکو", code: "PRI", reserves: 0, production: 0, gdp: 105000, economicRank: 189, oil: 0, gas: 0 },
+            "ATG": { name: "آنتیگوا و باربودا", code: "ATG", reserves: 0, production: 0, gdp: 1800, economicRank: 190, oil: 0, gas: 0 },
+            "BRB": { name: "باربادوس", code: "BRB", reserves: 0, production: 0, gdp: 5200, economicRank: 191, oil: 0, gas: 0 },
+            "DMA": { name: "دومینیکا", code: "DMA", reserves: 0, production: 0, gdp: 600, economicRank: 192, oil: 0, gas: 0 },
+            "GRD": { name: "گرنادا", code: "GRD", reserves: 0, production: 0, gdp: 1200, economicRank: 193, oil: 0, gas: 0 },
+            "KNA": { name: "سنت کیتس و نویس", code: "KNA", reserves: 0, production: 0, gdp: 1000, economicRank: 194, oil: 0, gas: 0 },
+            "LCA": { name: "سنت لوسیا", code: "LCA", reserves: 0, production: 0, gdp: 2000, economicRank: 195, oil: 0, gas: 0 },
+            "VCT": { name: "سنت وینسنت", code: "VCT", reserves: 0, production: 0, gdp: 900, economicRank: 196, oil: 0, gas: 0 },
+            "TON": { name: "تونگا", code: "TON", reserves: 0, production: 0, gdp: 500, economicRank: 197, oil: 0, gas: 0 },
+            "KIR": { name: "کیریباتی", code: "KIR", reserves: 0, production: 0, gdp: 200, economicRank: 198, oil: 0, gas: 0 },
+            "MHL": { name: "جزایر مارشال", code: "MHL", reserves: 0, production: 0, gdp: 250, economicRank: 199, oil: 0, gas: 0 },
+            "FSM": { name: "میکرونزی", code: "FSM", reserves: 0, production: 0, gdp: 400, economicRank: 200, oil: 0, gas: 0 },
+            "NRU": { name: "نائورو", code: "NRU", reserves: 0, production: 0, gdp: 130, economicRank: 201, oil: 0, gas: 0 },
+            "PLW": { name: "پالائو", code: "PLW", reserves: 0, production: 0, gdp: 280, economicRank: 202, oil: 0, gas: 0 },
+            "TUV": { name: "تووالو", code: "TUV", reserves: 0, production: 0, gdp: 50, economicRank: 203, oil: 0, gas: 0 },
+            "VAT": { name: "واتیکان", code: "VAT", reserves: 0, production: 0, gdp: 0, economicRank: 204, oil: 0, gas: 0 },
+            "GMB": { name: "گامبیا", code: "GMB", reserves: 0, production: 0, gdp: 2000, economicRank: 205, oil: 0, gas: 0 },
+            "GNQ": { name: "گینه استوایی", code: "GNQ", reserves: 0, production: 0, gdp: 12000, economicRank: 206, oil: 100, gas: 6000 },
+            "STP": { name: "سائوتومه", code: "STP", reserves: 0, production: 0, gdp: 500, economicRank: 207, oil: 0, gas: 0 },
+            "BDI": { name: "بوروندی", code: "BDI", reserves: 0, production: 0, gdp: 3000, economicRank: 208, oil: 0, gas: 0 },
+            "PSE": { name: "فلسطین", code: "PSE", reserves: 0, production: 0, gdp: 18000, economicRank: 209, oil: 0, gas: 0 },
+            "MAC": { name: "ماکائو", code: "MAC", reserves: 0, production: 0, gdp: 29000, economicRank: 210, oil: 0, gas: 0 }
         };
-        
-        // ساخت داده برای سال‌های مختلف با تغییرات واقعی‌تر
-        const generateYearData = (baseData, yearOffset) => {
-            const newData = {};
-            Object.keys(baseData).forEach(code => {
-                const country = {...baseData[code]};
-                // تغییرات منطقی بر اساس سال
-                country.reserves = Math.round(country.reserves * (1 - yearOffset * 0.02));
-                country.production = Math.round(country.production * (1 - yearOffset * 0.03));
-                country.gdp = Math.round(country.gdp * (1 - yearOffset * 0.04));
-                country.oil = Math.round(country.oil * (1 - yearOffset * 0.01));
-                country.gas = Math.round(country.gas * (1 - yearOffset * 0.01));
-                newData[code] = country;
+    }
+
+    getCompleteData() {
+        if (!this.completeData) {
+            this.completeData = this.buildCompleteData();
+        }
+        return this.completeData;
+    }
+
+    ensureCountryCoverage(baseData) {
+        if (this.countryInfoByCode) {
+            Object.entries(this.countryInfoByCode).forEach(([code, info]) => {
+                if (!baseData[code]) {
+                    baseData[code] = this.createDefaultCountryData(code, info);
+                }
             });
-            return newData;
-        };
-        
+        }
+
+        if (this.worldData?.objects?.countries) {
+            const features = topojson.feature(this.worldData, this.worldData.objects.countries).features;
+            features.forEach(feature => {
+                const code = this.getCountryCode(feature.properties?.name);
+                if (!code) return;
+                if (!this.countryInfoByCode[code]) {
+                    this.countryInfoByCode[code] = {
+                        nameEn: feature.properties?.name,
+                        nameFa: feature.properties?.name
+                    };
+                }
+                if (!baseData[code]) {
+                    baseData[code] = this.createDefaultCountryData(code, this.countryInfoByCode[code]);
+                }
+            });
+        }
+    }
+
+    createDefaultCountryData(code, info = {}) {
         return {
-            "2024": baseData2024,
-            "2023": generateYearData(baseData2024, 1),
-            "2022": generateYearData(baseData2024, 2),
-            "2021": generateYearData(baseData2024, 3),
-            "2020": generateYearData(baseData2024, 4)
+            name: info.nameFa || info.nameEn || code,
+            code,
+            reserves: 0,
+            production: 0,
+            gdp: 0,
+            economicRank: 999,
+            oil: 0,
+            gas: 0
         };
     }
 }
