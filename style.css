@@ -2,6 +2,10 @@
 /* 🎯 استایل‌های اصلی با پالت جدید */
 /* ==================== */
 
+/* 🖋️ فونت و تایپوگرافی - باید در ابتدای فایل باشد */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
 /* 🎨 پالت رنگی تم روشن - بهینه شده */
 [data-theme="light"] {
     --bg-primary: #f1f5f9;
@@ -69,11 +73,8 @@
     box-sizing: border-box;
 }
 
-/* 🔄 ریست استایل‌های پیش‌فرض */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+html {
+    scroll-behavior: smooth;
 }
 
 /* 🆕 این دو خط رو اضافه کن */
@@ -81,10 +82,6 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
-
-/* 🖋️ فونت و تایپوگرافی */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
 
 body {
     font-family: 'Vazirmatn', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -150,7 +147,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: clamp(0.6rem, 1.2vw, 0.75rem) clamp(1rem, 2.5vw, 1.5rem);
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -163,8 +160,8 @@ body {
 }
 
 .logo {
-    width: 40px;
-    height: 40px;
+    width: clamp(32px, 4vw, 36px);
+    height: clamp(32px, 4vw, 36px);
     background: var(--accent-blue);
     border-radius: 50%;
     display: flex;
@@ -172,11 +169,11 @@ body {
     justify-content: center;
     font-weight: bold;
     color: white;
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 1.2vw, 1rem);
 }
 
 .site-name {
-    font-size: 1.5rem;
+    font-size: clamp(1.1rem, 1.5vw, 1.2rem);
     font-weight: 700;
     color: var(--text-primary);
 }
@@ -192,11 +189,12 @@ body {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 12px);
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
+    font-size: clamp(0.8rem, 1.1vw, 0.9rem);
 }
 
 .theme-toggle:hover, 
@@ -214,13 +212,18 @@ body {
 /* ========== Globe Clock با ساعت UTC ========== */
 .globe-clock-wrapper {
   position: fixed;
-  top: 65px;
+  top: auto; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
+  bottom: auto;
   left: 8px;
-  z-index: 999;
+  z-index: 998; /* پایین‌تر از شاخص‌ها (z-index: 999) */
   width: clamp(100px, 14vw, 180px);
   height: clamp(100px, 14vw, 180px);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  /* محاسبه top بر اساس ارتفاع شاخص‌ها - با JavaScript تنظیم می‌شود */
 }
 
 #globeContainer {
@@ -297,13 +300,65 @@ body {
   background: rgba(5, 150, 105, 0.15);
 }
 
-/* کره کوچک در موبایل - مقادیر ثابت برای سازگاری بهتر */
+/* نقطه چشمک‌زن نیم‌ساعت - بین هر جفت عدد */
+.half-hour-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 255, 136, 0.4);
+  opacity: 0.3;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 0 4px rgba(0, 255, 136, 0.3);
+}
+
+.half-hour-dot.active {
+  opacity: 1;
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88;
+  animation: blink-dot 1s ease-in-out infinite;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+@keyframes blink-dot {
+  0%, 100% { 
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  50% { 
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+[data-theme="light"] .half-hour-dot {
+  background: rgba(5, 150, 105, 0.4);
+  box-shadow: 0 0 4px rgba(5, 150, 105, 0.3);
+}
+
+[data-theme="light"] .half-hour-dot.active {
+  background: #059669;
+  box-shadow: 0 0 8px #059669;
+}
+
+/* کره کوچک در تبلت و موبایل - مقادیر ثابت برای سازگاری بهتر */
+@media (max-width: 1024px) {
+  .globe-clock-wrapper {
+    width: clamp(90px, 12vw, 120px);
+    height: clamp(90px, 12vw, 120px);
+  }
+}
+
 @media (max-width: 768px) {
   .globe-clock-wrapper {
-    top: 60px !important;
+    top: auto !important; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
     left: 5px !important;
-    width: 65px !important;
-    height: 65px !important;
+    width: 80px !important;
+    height: 80px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .utc-clock-ring {
@@ -312,18 +367,21 @@ body {
   }
   
   .utc-hour {
-    font-size: 0.28rem;
-    width: 10px;
-    height: 10px;
+    font-size: 0.32rem;
+    width: 12px;
+    height: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .globe-clock-wrapper {
-    top: 58px !important;
+    top: auto !important; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
     left: 4px !important;
-    width: 55px !important;
-    height: 55px !important;
+    width: 70px !important;
+    height: 70px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .utc-clock-ring {
@@ -332,39 +390,72 @@ body {
   }
   
   .utc-hour {
-    font-size: 0.24rem;
-    width: 9px;
-    height: 9px;
+    font-size: 0.28rem;
+    width: 11px;
+    height: 11px;
+  }
+  
+  /* اطمینان از نمایش دکمه سیار در موبایل کوچک */
+  .assistive-touch {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    bottom: 20px !important;
+    left: 15px !important;
   }
 }
 
 @media (max-width: 390px) {
   .globe-clock-wrapper {
-    top: 56px !important;
+    top: auto !important; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
     left: 3px !important;
-    width: 50px !important;
-    height: 50px !important;
+    width: 65px !important;
+    height: 65px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .utc-hour {
-    font-size: 0.2rem;
-    width: 8px;
-    height: 8px;
+    font-size: 0.26rem;
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* اطمینان از نمایش دکمه سیار در موبایل خیلی کوچک */
+  .assistive-touch {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    bottom: 15px !important;
+    left: 10px !important;
   }
 }
 
 @media (max-width: 320px) {
   .globe-clock-wrapper {
-    top: 54px !important;
+    top: auto !important; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
     left: 2px !important;
-    width: 45px !important;
-    height: 45px !important;
+    width: 60px !important;
+    height: 60px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .utc-hour {
-    font-size: 0.18rem;
-    width: 7px;
-    height: 7px;
+    font-size: 0.24rem;
+    width: 9px;
+    height: 9px;
+  }
+  
+  /* اطمینان از نمایش دکمه سیار در موبایل خیلی خیلی کوچک */
+  .assistive-touch {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    bottom: 10px !important;
+    left: 8px !important;
   }
 }
 
@@ -434,6 +525,1339 @@ body {
   }
 }
 
+/* ==================== */
+/* 🎮 دکمه سیار داخل کره‌های بزرگ */
+/* ==================== */
+
+/* ==================== */
+/* 🎨 پنل‌های شیشه‌ای کره‌های بزرگ */
+/* ==================== */
+
+.globe-panel {
+    position: absolute;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 320px;
+    max-height: 70vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.globe-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.globe-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.02) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.globe-panel-header h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.globe-panel-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.globe-panel-close:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: scale(1.1);
+}
+
+.globe-panel-body {
+    padding: 14px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    min-height: 0;
+}
+
+.globe-panel-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.globe-panel-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.globe-panel-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.globe-panel-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.globe-panel-search {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.globe-panel-search::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.globe-panel-search:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* موقعیت پنل‌ها */
+.market-select-panel {
+    top: 80px;
+    right: 20px;
+    width: 280px;
+}
+
+.country-select-panel {
+    top: 80px;
+    left: 20px;
+    width: 260px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.country-info-panel {
+    bottom: 80px;
+    left: 20px;
+    width: 300px;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.country-info-panel .globe-panel-body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    flex: 1;
+    min-height: 0;
+    max-height: calc(60vh - 60px);
+}
+
+.market-select-panel {
+    top: 80px;
+    right: 20px;
+    width: 280px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.resources-filter-panel {
+    top: 80px;
+    right: 20px;
+    width: 280px;
+    max-height: 75vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.relations-legend {
+    bottom: 80px;
+    right: 20px;
+    width: 200px;
+}
+
+/* لیست کشورها و بازارها */
+.country-list,
+.market-select-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.country-list::-webkit-scrollbar,
+.market-select-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.country-list::-webkit-scrollbar-thumb,
+.market-select-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* آیتم‌های لیست */
+.country-item,
+.market-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+}
+
+.country-item:hover,
+.market-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.country-item.active,
+.market-item.active {
+    background: rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+}
+
+/* فیلترها */
+.filter-section {
+    margin-bottom: 16px;
+}
+
+.filter-section h5 {
+    margin: 0 0 10px 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.filter-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.filter-btn.active {
+    background: rgba(59, 130, 246, 0.3);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #fff;
+}
+
+/* راهنمای رنگ‌ها */
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Popup روی کره برای المان‌ها - ریسپانسیو */
+.globe-facility-popup {
+    position: absolute;
+    background: linear-gradient(135deg, 
+        rgba(15, 23, 42, 0.96) 0%, 
+        rgba(30, 41, 59, 0.96) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    padding: 0;
+    min-width: 180px;
+    max-width: 260px;
+    z-index: 1000;
+    pointer-events: auto;
+    animation: popupFadeIn 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .globe-facility-popup {
+        min-width: 160px;
+        max-width: 220px;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .globe-facility-popup {
+        min-width: 140px;
+        max-width: 200px;
+        border-radius: 8px;
+    }
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -100%) scale(1);
+    }
+}
+
+.popup-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.popup-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.popup-title-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.popup-header h4 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.popup-type {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+}
+
+@media (max-width: 768px) {
+    .popup-header {
+        padding: 8px 10px;
+        gap: 6px;
+    }
+    
+    .popup-icon {
+        font-size: 1rem;
+    }
+    
+    .popup-header h4 {
+        font-size: 0.8rem;
+    }
+    
+    .popup-type {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-header {
+        padding: 6px 8px;
+        gap: 5px;
+    }
+    
+    .popup-icon {
+        font-size: 0.9rem;
+    }
+    
+    .popup-header h4 {
+        font-size: 0.75rem;
+    }
+    
+    .popup-type {
+        font-size: 0.6rem;
+    }
+}
+
+.popup-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: scale(1.1);
+}
+
+.popup-body {
+    padding: 10px 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.popup-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.popup-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+}
+
+.popup-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.popup-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 5px 0;
+    font-size: 0.75rem;
+    gap: 8px;
+}
+
+.popup-info-row.popup-description {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.popup-info-row .label {
+    color: rgba(255, 255, 255, 0.65);
+    flex-shrink: 0;
+    min-width: 80px;
+}
+
+.popup-info-row .value {
+    color: #fff;
+    font-weight: 500;
+    text-align: right;
+    flex: 1;
+    word-break: break-word;
+}
+
+.popup-info-row.popup-description .value {
+    text-align: right;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .popup-body {
+        padding: 8px 10px;
+        max-height: 250px;
+    }
+    
+    .popup-info-row {
+        font-size: 0.7rem;
+        padding: 4px 0;
+    }
+    
+    .popup-info-row .label {
+        min-width: 70px;
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-body {
+        padding: 6px 8px;
+        max-height: 200px;
+    }
+    
+    .popup-info-row {
+        font-size: 0.65rem;
+        padding: 3px 0;
+        gap: 6px;
+    }
+    
+    .popup-info-row .label {
+        min-width: 60px;
+        font-size: 0.6rem;
+    }
+}
+
+/* راهنمای نقشه (Legend) - کوچک و ریسپانسیو */
+.globe-legend {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, 
+        rgba(15, 23, 42, 0.92) 0%, 
+        rgba(30, 41, 59, 0.92) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 10px;
+    min-width: 140px;
+    max-width: 160px;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.legend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legend-header h5 {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.legend-toggle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.legend-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.legend-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.legend-marker {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+    flex-shrink: 0;
+}
+
+/* ریسپانسیو راهنما */
+@media (max-width: 768px) {
+    .globe-legend {
+        bottom: 10px;
+        left: 10px;
+        padding: 6px 8px;
+        min-width: 120px;
+        max-width: 140px;
+    }
+    
+    .legend-header h5 {
+        font-size: 0.65rem;
+    }
+    
+    .legend-item {
+        font-size: 0.6rem;
+        gap: 5px;
+    }
+    
+    .legend-marker {
+        width: 7px;
+        height: 7px;
+    }
+}
+
+@media (max-width: 480px) {
+    .globe-legend {
+        bottom: 8px;
+        left: 8px;
+        padding: 5px 6px;
+        min-width: 100px;
+        max-width: 120px;
+    }
+    
+    .legend-header h5 {
+        font-size: 0.6rem;
+    }
+    
+    .legend-item {
+        font-size: 0.55rem;
+        gap: 4px;
+    }
+    
+    .legend-marker {
+        width: 6px;
+        height: 6px;
+    }
+}
+
+.legend-marker.customs {
+    background: #ffd700;
+    box-shadow: 0 0 8px #ffd700;
+}
+
+.legend-marker.refinery {
+    background: #3b82f6;
+    box-shadow: 0 0 8px #3b82f6;
+}
+
+.legend-marker.mine {
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+}
+
+.legend-marker.port {
+    background: #8b5cf6;
+    box-shadow: 0 0 8px #8b5cf6;
+}
+
+.legend-marker.oil-rig {
+    background: #f59e0b;
+    box-shadow: 0 0 8px #f59e0b;
+}
+
+/* ریسپانسیو پنل‌ها */
+@media (max-width: 768px) {
+    .globe-panel {
+        max-width: calc(100% - 40px);
+        max-height: 60vh;
+        left: 20px !important;
+        right: 20px !important;
+        width: auto !important;
+    }
+    
+    .market-select-panel,
+    .country-select-panel,
+    .resources-filter-panel {
+        top: 70px;
+    }
+    
+    .country-info-panel,
+    .relations-legend {
+        bottom: 70px;
+    }
+    
+    .globe-panel-header {
+        padding: 12px 14px;
+    }
+    
+    .globe-panel-body {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .globe-panel {
+        max-height: 50vh;
+        left: 10px !important;
+        right: 10px !important;
+        border-radius: 12px;
+    }
+    
+    .globe-panel-header h4 {
+        font-size: 0.9rem;
+    }
+    
+    .filter-btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ==================== */
+/* 🎨 پنجره اطلاعات بازار - شیشه‌ای */
+/* ==================== */
+
+.market-3d-popup.glass-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 340px;
+    max-width: 90%;
+    max-height: 85vh;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.18) 0%, 
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.12) 100%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    z-index: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow-y: auto;
+    direction: rtl;
+}
+
+.market-3d-popup.glass-popup.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.glass-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.popup-status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.popup-status-badge.open {
+    background: rgba(34, 197, 94, 0.25);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.popup-status-badge.closed {
+    background: rgba(239, 68, 68, 0.25);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.glass-popup-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.glass-popup-close:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+    transform: scale(1.1);
+}
+
+.glass-popup-title {
+    margin: 0;
+    padding: 16px 18px 8px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.popup-time-remaining {
+    margin: 0;
+    padding: 0 18px 16px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.glass-popup-section {
+    padding: 14px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-popup-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.time-item {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-item.local {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.time-label {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+}
+
+.time-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.notification-info {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 12px 0;
+    padding: 8px 10px;
+    background: rgba(59, 130, 246, 0.15);
+    border-radius: 8px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.notification-section .notification-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    transition: 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: rgba(59, 130, 246, 0.5);
+    border-color: rgba(59, 130, 246, 0.7);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+.notify-time-select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notify-time-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.notify-time-select option {
+    background: #1e293b;
+    color: #fff;
+}
+
+.glass-popup-save {
+    display: block;
+    width: calc(100% - 36px);
+    margin: 16px 18px;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.2));
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.glass-popup-save:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(59, 130, 246, 0.4));
+    transform: translateY(-2px);
+}
+
+/* ریسپانسیو popup بازار */
+@media (max-width: 768px) {
+    .market-3d-popup.glass-popup {
+        width: 320px;
+        max-height: 80vh;
+    }
+    
+    .glass-popup-title {
+        font-size: 1.1rem;
+    }
+    
+    .time-value {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .market-3d-popup.glass-popup {
+        width: calc(100% - 30px);
+        max-height: 75vh;
+        border-radius: 16px;
+    }
+    
+    .glass-popup-header {
+        padding: 12px 14px;
+    }
+    
+    .glass-popup-section {
+        padding: 12px 14px;
+    }
+    
+    .glass-popup-save {
+        margin: 12px 14px;
+        width: calc(100% - 28px);
+    }
+}
+
+/* ==================== */
+/* 🎮 دکمه سیار داخل کره‌های بزرگ */
+/* ==================== */
+
+.globe-assistive-touch {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.globe-touch-button {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%, 
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.15) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Responsive برای موبایل و تبلت */
+@media (max-width: 768px) {
+    .globe-assistive-touch {
+        top: 15px;
+        left: 15px;
+    }
+    
+    .globe-touch-button {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .globe-touch-icon {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .globe-assistive-touch {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .globe-touch-button {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .globe-touch-icon {
+        font-size: 1.1em;
+    }
+}
+
+.globe-touch-button:hover {
+    transform: scale(1.08);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.globe-touch-button:active {
+    transform: scale(0.95);
+}
+
+.globe-touch-icon {
+    font-size: 1.4em;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+/* حالت درگ */
+.globe-assistive-touch.dragging .globe-touch-button {
+    transform: scale(1.12);
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.5),
+        0 0 0 3px rgba(255, 255, 255, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* منوی شیشه‌ای کره */
+.globe-glass-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.globe-glass-menu.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.globe-menu-content {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.18) 0%, 
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.12) 100%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    padding: 24px;
+    min-width: 280px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.globe-glass-menu.active .globe-menu-content {
+    transform: scale(1) translateY(0);
+}
+
+.globe-menu-title {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.globe-menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.globe-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: right;
+    direction: rtl;
+}
+
+.globe-menu-item:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.1) 100%);
+    transform: translateX(-5px);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.globe-menu-item:active {
+    transform: scale(0.98) translateX(-3px);
+}
+
+.globe-menu-item .item-icon {
+    font-size: 1.3em;
+    width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.globe-menu-item .item-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+/* Indicator دکمه چرخش */
+.globe-menu-item {
+    position: relative;
+}
+
+.rotation-indicator {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.5);
+    border: 1px solid rgba(239, 68, 68, 0.8);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.rotation-indicator.active {
+    background: rgba(34, 197, 94, 0.8);
+    border-color: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.2);
+    }
+}
+
+.globe-menu-item.exit-item {
+    margin-top: 10px;
+    background: linear-gradient(135deg, 
+        rgba(239, 68, 68, 0.2) 0%,
+        rgba(239, 68, 68, 0.1) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.globe-menu-item.exit-item:hover {
+    background: linear-gradient(135deg, 
+        rgba(239, 68, 68, 0.35) 0%,
+        rgba(239, 68, 68, 0.2) 100%);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* ریسپانسیو دکمه سیار کره */
+@media (max-width: 768px) {
+    .globe-assistive-touch {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .globe-touch-button {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .globe-menu-content {
+        min-width: 250px;
+        padding: 20px;
+    }
+    
+    .globe-menu-item {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .globe-assistive-touch {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .globe-touch-button {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .globe-touch-icon {
+        font-size: 1.2em;
+    }
+    
+    .globe-menu-content {
+        min-width: 220px;
+        padding: 16px;
+        border-radius: 18px;
+    }
+    
+    .globe-menu-title {
+        font-size: 1rem;
+    }
+    
+    .globe-menu-item {
+        padding: 10px 12px;
+        gap: 10px;
+        border-radius: 12px;
+  }
+}
+
 
 /* ==================== */
 /* 💎 کارت‌های اصلی صفحه خانه */
@@ -447,6 +1871,9 @@ body {
     padding: 16px;
     max-width: 1200px;
     margin: 0 auto;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* کارت‌های اصلی - هر دو تم */
@@ -710,13 +2137,26 @@ body {
     margin: 0 auto;
 }
 
-/* فاصله یکسان برای همه هایلایت‌ها */
+/* فاصله یکسان برای همه هایلایت‌ها - محاسبه شده بر اساس ارتفاع هدر + شاخص‌ها + کره کوچک */
+/* هدر: ~56-60px + شاخص‌ها: ~90px (2 ردیف) + کره کوچک: ~100px + فاصله: ~15px = ~265px */
 .highlights-section,
 .news-highlights,
 .tools-highlights,
 .education-highlights,
-.relax-highlights {
-    padding-top: 150px;
+.relax-highlights,
+.globe-highlights {
+    padding-top: clamp(150px, 20vw, 170px); /* هدر (56-60px) + شاخص‌ها (90px) + فاصله (10px) */
+}
+
+@media (max-width: 1024px) {
+    .highlights-section,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
+        padding-top: clamp(155px, 19vw, 175px); /* هدر (56-60px) + شاخص‌ها (75px) + کره (120px) + فاصله (15px) */
+    }
 }
 
 @media (max-width: 768px) {
@@ -724,8 +2164,9 @@ body {
     .news-highlights,
     .tools-highlights,
     .education-highlights,
-    .relax-highlights {
-        padding-top: 130px;
+    .relax-highlights,
+    .globe-highlights {
+        padding-top: clamp(145px, 17vw, 165px); /* هدر (56-60px) + شاخص‌ها (60px) + کره (80px) + فاصله (15px) */
     }
 }
 
@@ -734,8 +2175,20 @@ body {
     .news-highlights,
     .tools-highlights,
     .education-highlights,
-    .relax-highlights {
-        padding-top: 120px;
+    .relax-highlights,
+    .globe-highlights {
+        padding-top: clamp(140px, 16vw, 160px); /* هدر (56-60px) + شاخص‌ها (50px) + کره (70px) + فاصله (15px) */
+    }
+}
+
+@media (max-width: 390px) {
+    .highlights-section,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
+        padding-top: clamp(135px, 15vw, 155px); /* هدر (56-60px) + شاخص‌ها (50px) + کره (65px) + فاصله (15px) */
     }
 }
 
@@ -762,13 +2215,61 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+    will-change: transform;
+    transform-origin: center;
+}
+
+@media (max-width: 1024px) {
+    .highlight-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 0.6rem;
+        padding: 5px;
+    }
 }
 
 @media (max-width: 768px) {
     .highlight-circle {
-        width: 70px;
-        height: 70px;
-        font-size: 0.7rem;
+        width: 42px;
+        height: 42px;
+        font-size: 0.55rem;
+        padding: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .highlight-circle {
+        width: 38px;
+        height: 38px;
+        font-size: 0.5rem;
+        padding: 3px;
+    }
+}
+
+@media (max-width: 390px) {
+    .highlight-circle {
+        width: 35px;
+        height: 35px;
+        font-size: 0.48rem;
+        padding: 3px;
+    }
+}
+
+@media (max-width: 320px) {
+    .highlight-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.45rem;
+        padding: 2px;
+    }
+    
+    .highlights-section,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
+        padding-top: clamp(130px, 14vw, 150px); /* هدر (56-60px) + شاخص‌ها (50px) + کره (60px) + فاصله (15px) */
     }
 }
 
@@ -778,31 +2279,8 @@ body {
     justify-content: center;
     gap: 12px;
     flex-wrap: wrap;
-}
-
-.highlight-circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--card-bg);
-    backdrop-filter: blur(30px) saturate(150%);
-    -webkit-backdrop-filter: blur(30px) saturate(150%);
-    border: 1px solid var(--card-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: 0.75rem;
-    text-align: center;
-    padding: 8px;
-    box-shadow: 
-        0 4px 16px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.3s ease;
+    min-height: 80px;
 }
 
 /* افکت شاین روی هایلایت */
@@ -827,6 +2305,7 @@ body {
     box-shadow: 
         0 8px 24px rgba(59, 130, 246, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    z-index: 1;
 }
 
 .highlight-circle.active::before {
@@ -887,10 +2366,37 @@ body {
 
 .view {
     display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    min-height: 100vh;
 }
 
 .view.active-view {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* اطمینان از اینکه هایلایت‌های هر صفحه فقط در همان صفحه نمایش داده شوند */
+.view:not(.active-view) .highlights-section {
+    display: none !important;
+}
+
+.view.active-view .highlights-section {
+    display: block;
+}
+
+/* 🎯 بخش‌های مشترک - همیشه نمایش داده می‌شوند در تمام صفحات */
+.global-section,
+.analysis-section-compact,
+.ai-chat-section,
+.gold-map-section,
+.ads-slider-section,
+.main-footer {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* ==================== */
@@ -901,6 +2407,9 @@ body {
     padding: 2rem;
     max-width: 1400px;
     margin: 0 auto;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* 🎨 کانتینر کارت‌ها - گرید منظم */
@@ -910,6 +2419,9 @@ body {
     gap: 14px;
     margin-bottom: 2rem;
     padding: 0 10px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* ریسپانسیو کارت‌ها */
@@ -1113,13 +2625,7 @@ body {
 /* 🛠️ بخش ابزارها */
 /* ==================== */
 
-.view {
-    display: none;
-}
-
-.active-view {
-    display: block;
-}
+/* این استایل‌ها duplicate هستند و در بالا تعریف شده‌اند - حذف می‌شوند */
 
 .tools-content {
     padding: 100px 2rem 2rem;
@@ -1589,6 +3095,92 @@ body {
     color: var(--card-text);
 }
 
+/* ==================== */
+/* 🌍 صفحه کره‌های سه‌بعدی */
+/* ==================== */
+#globeView {
+    margin-top: 0;
+    padding: 0 20px 20px;
+}
+
+.globe-container-view {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 20px;
+}
+
+.globe-highlight-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.globe-panel {
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    font-size: 0.9rem;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.globe-panel.active {
+    display: block;
+}
+
+.globe-panel h4 {
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.globe-panel .panel-description {
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.globe-open-btn {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--accent-blue);
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.globe-open-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.globe-open-btn:active {
+    transform: translateY(0);
+}
+
+.globe-open-btn .btn-icon {
+    font-size: 1.3rem;
+}
+
+.globe-open-btn .btn-text {
+    font-size: 0.95rem;
+}
+
 .panel-placeholder {
     margin: 0;
     color: var(--text-secondary);
@@ -1740,14 +3332,24 @@ body {
 }
 
 /* ==================== */
-/* 🎠 اسلایدر تبلیغاتی GSAP */
+/* 🎠 اسلایدر تبلیغاتی - طراحی مدرن */
 /* ==================== */
 
 .ads-slider-section {
-    padding: 30px 0;
-    background: var(--bg-secondary);
+    padding: 40px 0;
+    background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
     position: relative;
     overflow: hidden;
+}
+
+.ads-slider-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
 }
 
 .ads-slider-container {
@@ -1759,40 +3361,72 @@ body {
 
 .ads-slider-title {
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: var(--text-primary);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.ads-slider-title::before,
+.ads-slider-title::after {
+    content: '';
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
 }
 
 .ads-slider-wrapper {
     overflow: hidden;
     position: relative;
     margin: 0 50px;
-    padding: 10px 0;
+    padding: 15px 0;
+    mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
 }
 
 .ads-slider-track {
     display: flex;
-    gap: 16px;
+    gap: 20px;
     will-change: transform;
+    animation: slideScroll 40s linear infinite;
+}
+
+@keyframes slideScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.ads-slider-track:hover {
+    animation-play-state: paused;
 }
 
 .ad-slide {
     flex: 0 0 auto;
-    width: 320px;
-    height: 180px;
+    width: 300px;
+    height: 170px;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 
+        0 8px 32px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .ad-slide:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    border-color: rgba(255,215,0,0.3);
 }
 
 .ad-slide img {
@@ -1800,6 +3434,11 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.4s ease;
+}
+
+.ad-slide:hover img {
+    transform: scale(1.1);
 }
 
 .ad-overlay {
@@ -2357,22 +3996,28 @@ body {
 
 @media (max-width: 768px) {
   .header-container {
-    padding: 1rem;
+    padding: clamp(0.5rem, 1vw, 0.65rem) clamp(0.8rem, 2vw, 1rem);
+  }
+  
+  .logo {
+    width: clamp(28px, 3.5vw, 32px);
+    height: clamp(28px, 3.5vw, 32px);
+    font-size: clamp(0.8rem, 1.1vw, 0.9rem);
   }
   
   .site-name {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 1.3vw, 1.1rem);
   }
   
   .control-menu {
-    gap: 10px;
+    gap: clamp(6px, 1vw, 8px);
   }
   
   .theme-toggle, 
   .view-toggle, 
   .login-btn {
-    padding: 10px 18px;
-    font-size: 0.9rem;
+    padding: clamp(5px, 0.9vw, 7px) clamp(8px, 1.3vw, 10px);
+    font-size: clamp(0.75rem, 1vw, 0.85rem);
   }
   
   .cards-container {
@@ -2469,14 +4114,25 @@ body {
 }
 
 @media (max-width: 480px) {
+  .header-container {
+    padding: clamp(0.5rem, 1vw, 0.6rem) clamp(0.7rem, 1.8vw, 0.9rem);
+  }
+  
   .logo {
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
+    width: clamp(26px, 3.2vw, 30px);
+    height: clamp(26px, 3.2vw, 30px);
+    font-size: clamp(0.75rem, 1vw, 0.85rem);
   }
   
   .site-name {
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  }
+  
+  .theme-toggle, 
+  .view-toggle, 
+  .login-btn {
+    padding: clamp(4px, 0.8vw, 6px) clamp(7px, 1.2vw, 9px);
+    font-size: clamp(0.7rem, 0.95vw, 0.8rem);
   }
   
   .highlight-circle {
@@ -3693,16 +5349,36 @@ body, .glass-card, .glass-header {
     z-index: 9997;
     cursor: pointer;
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    touch-action: none; /* جلوگیری از scroll و zoom در موبایل */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* بهبود سازگاری با مرورگرهای مختلف */
+    will-change: transform, left, top;
+    transform: translateZ(0); /* Force hardware acceleration */
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
 }
 
 .touch-button {
     width: 60px;
     height: 60px;
     border-radius: 50%;
+    /* Fallback background برای مرورگرهایی که backdrop-filter را پشتیبانی نمی‌کنند */
+    background: rgba(255, 255, 255, 0.15);
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.15) 0%, 
         rgba(255, 255, 255, 0.05) 50%,
         rgba(255, 255, 255, 0.1) 100%);
+    /* backdrop-filter با prefix های مختلف برای سازگاری بیشتر */
+    -webkit-backdrop-filter: blur(20px);
+    -moz-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     box-shadow: 
@@ -3715,7 +5391,14 @@ body, .glass-card, .glass-header {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     user-select: none;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     touch-action: none;
+    /* بهبود rendering در مرورگرهای مختلف */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
 }
 
 .touch-button:active {
@@ -3905,16 +5588,37 @@ body, .glass-card, .glass-header {
 
 @media (max-width: 768px) {
     .assistive-touch {
-        bottom: 80px;
-        left: 20px;
+        /* حذف bottom و left از CSS - اجازه می‌دهیم JS کنترل کند */
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
+        position: fixed !important;
+        touch-action: none !important; /* جلوگیری از رفتار پیش‌فرض touch */
+        pointer-events: auto !important;
+        z-index: 9997 !important;
+        /* حذف right و bottom برای اجازه کنترل کامل توسط JS */
+        right: auto !important;
+        bottom: auto !important;
+        /* بهبود سازگاری با اپرا و سایر مرورگرها */
+        -webkit-transform: translateZ(0) !important;
+        -moz-transform: translateZ(0) !important;
+        -ms-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        /* اطمینان از نمایش در همه مرورگرها */
+        min-width: 55px !important;
+        min-height: 55px !important;
     }
     
     .touch-button {
         width: 55px;
         height: 55px;
+        touch-action: none !important; /* جلوگیری از رفتار پیش‌فرض touch */
+        pointer-events: auto !important;
+        /* بهبود rendering در اپرا */
+        -webkit-transform: translateZ(0) !important;
+        -moz-transform: translateZ(0) !important;
+        -ms-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
     }
     
     .glass-menu {
@@ -4130,49 +5834,12 @@ body, .glass-card, .glass-header {
 }
 
 /* ==================== */
-/* 📊 شاخص‌های لحظه‌ای - iOS Dynamic Island Style */
+/* 📊 شاخص‌های لحظه‌ای - استایل یکپارچه */
 /* ==================== */
 
-/* 💱 شاخص‌های برابری ارز - ردیف دوم */
-.currency-pairs-bar {
-    position: fixed;
-    top: 110px;
-    right: 120px;
-    left: auto;
-    max-width: calc(100vw - 250px);
-    z-index: 899;
-    display: flex;
-    gap: 4px;
-    padding: 4px 10px;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    overflow-x: auto;
-    scrollbar-width: none;
-}
+/* استایل‌های قدیمی live-indicators-bar و currency-pairs-bar حذف شدند */
 
-.currency-pairs-bar::-webkit-scrollbar {
-    display: none;
-}
-
-[data-theme="light"] .currency-pairs-bar {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.pair-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    font-size: 0.65rem;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-}
+/* استایل‌های pair-item در بالا با indicator-item یکپارچه شده‌اند */
 
 .pair-item.up {
     border-left: 2px solid #22c55e;
@@ -4182,29 +5849,7 @@ body, .glass-card, .glass-header {
     border-left: 2px solid #ef4444;
 }
 
-.pair-name {
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: 600;
-}
-
-[data-theme="light"] .pair-name {
-    color: rgba(0, 0, 0, 0.7);
-}
-
-.pair-value {
-    color: #fff;
-    font-weight: 700;
-    font-family: 'Inter', monospace;
-}
-
-[data-theme="light"] .pair-value {
-    color: #1e293b;
-}
-
-.pair-change {
-    font-size: 0.6rem;
-    font-weight: 600;
-}
+/* استایل‌های pair-name, pair-value, pair-change در بالا با indicator-name, indicator-value, indicator-change یکپارچه شده‌اند */
 
 .pair-item.up .pair-change {
     color: #22c55e;
@@ -4214,83 +5859,229 @@ body, .glass-card, .glass-header {
     color: #ef4444;
 }
 
-/* ریسپانسیو برابری ارز */
+/* ریسپانسیو شاخص‌ها - یکپارچه */
+@media (max-width: 1400px) {
+    .indicators-unified-container {
+        top: clamp(56px, 8vw, 60px);
+        padding: clamp(6px, 1vw, 10px) clamp(1rem, 2.5vw, 1.5rem);
+        gap: clamp(4px, 0.8vh, 6px);
+    }
+    
+    .indicators-row {
+        grid-template-columns: repeat(6, 1fr);
+        gap: clamp(5px, 0.9vw, 8px);
+    }
+    
+    .indicator-item,
+    .pair-item {
+        padding: clamp(5px, 0.9vw, 8px) clamp(7px, 1.2vw, 10px);
+        font-size: clamp(0.65rem, 1.1vw, 0.75rem);
+    }
+}
+
 @media (max-width: 1024px) {
-    .currency-pairs-bar {
-        right: 100px;
-        max-width: calc(100vw - 200px);
+    .indicators-unified-container {
+        top: clamp(56px, 8vw, 60px);
+        padding: clamp(6px, 1vw, 10px) clamp(0.8rem, 2vw, 1.2rem);
+        gap: clamp(4px, 0.8vh, 6px);
+    }
+    
+    .indicators-row {
+        grid-template-columns: repeat(3, 1fr); /* 3 ستون = 4 ردیف */
+        gap: clamp(5px, 0.9vw, 7px);
+    }
+    
+    .indicator-item,
+    .pair-item {
+        padding: clamp(5px, 0.9vw, 8px) clamp(6px, 1vw, 9px);
+        font-size: clamp(0.65rem, 1.2vw, 0.7rem);
+    }
+    
+    .indicator-icon {
+        font-size: clamp(0.75rem, 1.3vw, 0.85rem);
+    }
+    
+    .indicator-name,
+    .pair-name {
+        font-size: clamp(0.6rem, 1vw, 0.65rem);
+    }
+    
+    .indicator-value,
+    .pair-value {
+        font-size: clamp(0.65rem, 1.1vw, 0.7rem);
+    }
+    
+    .indicator-change,
+    .pair-change {
+        font-size: clamp(0.55rem, 0.95vw, 0.6rem);
     }
 }
 
 @media (max-width: 768px) {
-    .currency-pairs-bar {
-        position: fixed !important;
-        top: 86px !important;
-        right: 5px !important;
-        left: 75px !important;
-        max-width: none !important;
-        width: auto !important;
-        padding: 3px 6px !important;
-        gap: 3px !important;
-        border-radius: 10px !important;
-        -webkit-overflow-scrolling: touch;
+    .indicators-unified-container {
+        top: 72px;
+        padding: clamp(10px, 1.8vw, 12px) clamp(0.8rem, 2.5vw, 1.2rem);
+        gap: clamp(6px, 1.2vh, 8px);
     }
     
+    .indicators-row {
+        grid-template-columns: repeat(3, 1fr); /* 3 ستون = 4 ردیف */
+        gap: clamp(6px, 1.2vw, 8px);
+    }
+    
+    .indicator-item,
     .pair-item {
-        padding: 2px 5px !important;
-        font-size: 0.55rem !important;
-        flex-shrink: 0 !important;
+        padding: clamp(8px, 1.5vw, 10px) clamp(8px, 1.5vw, 10px);
+        font-size: clamp(0.7rem, 1.6vw, 0.8rem);
+        min-width: 0;
     }
     
+    .indicator-icon {
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        flex-shrink: 0;
+    }
+    
+    .indicator-name,
     .pair-name {
-        font-size: 0.5rem !important;
+        font-size: clamp(0.7rem, 1.4vw, 0.75rem);
+        flex-shrink: 1;
+        min-width: 0;
     }
     
+    .indicator-value,
     .pair-value {
-        font-size: 0.55rem !important;
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+        flex-shrink: 1;
+        min-width: 0;
     }
     
+    .indicator-change,
     .pair-change {
-        font-size: 0.45rem !important;
+        font-size: clamp(0.65rem, 1.3vw, 0.7rem);
+        flex-shrink: 0;
     }
+    
+    /* استایل‌های قدیمی live-indicators-bar و currency-pairs-bar حذف شدند - از indicators-unified-container استفاده می‌شود */
 }
 
 @media (max-width: 480px) {
-    .currency-pairs-bar {
-        top: 82px !important;
-        left: 62px !important;
-        padding: 2px 5px !important;
-        gap: 2px !important;
+    .indicators-unified-container {
+        top: clamp(56px, 8vw, 60px);
+        padding: clamp(6px, 1vw, 10px) clamp(0.6rem, 2vw, 0.9rem);
+        gap: clamp(4px, 0.8vh, 6px);
     }
     
+    .indicators-row {
+        grid-template-columns: repeat(2, 1fr); /* 2 ستون = 6 ردیف */
+        gap: clamp(5px, 0.9vw, 7px);
+    }
+    
+    .indicator-item,
     .pair-item {
-        padding: 2px 4px !important;
-        font-size: 0.5rem !important;
+        padding: clamp(5px, 0.9vw, 8px) clamp(6px, 1vw, 9px);
+        font-size: clamp(0.65rem, 1.4vw, 0.7rem);
+        min-width: 0;
     }
     
+    .indicator-icon {
+        font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+        flex-shrink: 0;
+    }
+    
+    .indicator-name,
     .pair-name {
-        display: none !important;
+        font-size: clamp(0.6rem, 1.2vw, 0.65rem);
+        flex-shrink: 1;
+        min-width: 0;
+    }
+    
+    .indicator-value,
+    .pair-value {
+        font-size: clamp(0.65rem, 1.3vw, 0.7rem);
+        flex-shrink: 1;
+        min-width: 0;
+    }
+    
+    .indicator-change,
+    .pair-change {
+        font-size: clamp(0.55rem, 1.1vw, 0.6rem);
+        flex-shrink: 0;
     }
 }
 
 @media (max-width: 390px) {
-    .currency-pairs-bar {
-        top: 78px !important;
-        left: 55px !important;
-        padding: 2px 4px !important;
-        gap: 2px !important;
+    .indicators-unified-container {
+        top: clamp(56px, 8vw, 60px);
+        padding: clamp(6px, 1vw, 10px) clamp(0.5rem, 2vw, 0.8rem);
+        gap: clamp(4px, 0.8vh, 6px);
     }
     
+    .indicators-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(5px, 0.9vw, 7px);
+    }
+    
+    .indicator-item,
     .pair-item {
-        padding: 1px 3px !important;
-        font-size: 0.45rem !important;
+        padding: clamp(5px, 0.9vw, 8px) clamp(6px, 1vw, 9px);
+        font-size: clamp(0.65rem, 1.5vw, 0.7rem);
+    }
+    
+    .indicator-icon {
+        font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    }
+    
+    .indicator-name,
+    .pair-name {
+        font-size: clamp(0.6rem, 1.3vw, 0.65rem);
+    }
+    
+    .indicator-value,
+    .pair-value {
+        font-size: clamp(0.65rem, 1.4vw, 0.7rem);
+    }
+    
+    .indicator-change,
+    .pair-change {
+        font-size: clamp(0.55rem, 1.2vw, 0.6rem);
     }
 }
 
 @media (max-width: 320px) {
-    .currency-pairs-bar {
-        top: 74px !important;
-        left: 50px !important;
+    .indicators-unified-container {
+        top: clamp(56px, 8vw, 60px);
+        padding: clamp(6px, 1vw, 10px) clamp(0.4rem, 2vw, 0.7rem);
+        gap: clamp(4px, 0.8vh, 6px);
+    }
+    
+    .indicators-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(5px, 0.9vw, 7px);
+    }
+    
+    .indicator-item,
+    .pair-item {
+        padding: clamp(5px, 0.9vw, 8px) clamp(6px, 1vw, 9px);
+        font-size: clamp(0.65rem, 1.6vw, 0.7rem);
+    }
+    
+    .indicator-icon {
+        font-size: clamp(0.75rem, 1.7vw, 0.85rem);
+    }
+    
+    .indicator-name,
+    .pair-name {
+        font-size: clamp(0.6rem, 1.4vw, 0.65rem);
+    }
+    
+    .indicator-value,
+    .pair-value {
+        font-size: clamp(0.65rem, 1.5vw, 0.7rem);
+    }
+    
+    .indicator-change,
+    .pair-change {
+        font-size: clamp(0.55rem, 1.3vw, 0.6rem);
     }
 }
 
@@ -4310,11 +6101,7 @@ body, .glass-card, .glass-header {
     border-color: rgba(0, 0, 0, 0.08);
 }
 
-/* شاخص‌ها */
-[data-theme="light"] .live-indicators-bar {
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
+/* شاخص‌ها - استایل‌های تم روشن در بالا تعریف شده‌اند */
 
 [data-theme="light"] .indicator-item {
     background: rgba(0, 0, 0, 0.04);
@@ -4387,53 +6174,89 @@ body, .glass-card, .glass-header {
     color: #94a3b8;
 }
 
-/* 📊 شاخص‌های زنده - ریسپانسیو */
-.live-indicators-bar {
+/* 📊 شاخص‌های زنده - یکپارچه و ریسپانسیو */
+/* Container یکپارچه برای هر دو ردیف */
+.indicators-unified-container {
     position: fixed;
-    top: 68px;
-    right: 120px;
-    left: auto;
-    max-width: calc(100vw - 250px);
-    z-index: 900;
+    top: clamp(56px, 8vw, 60px); /* دقیقاً زیر هدر (header height: ~56-60px) */
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 999; /* بالاتر از کره کوچک اما پایین‌تر از هدر (z-index: 1000) */
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 6px;
-    padding: 6px 12px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(30px) saturate(200%);
-    -webkit-backdrop-filter: blur(30px) saturate(200%);
-    border-radius: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    overflow-x: auto;
-    scrollbar-width: none;
+    flex-direction: column;
+    gap: clamp(4px, 0.8vh, 6px);
+    padding: clamp(6px, 1vw, 10px) clamp(1rem, 2.5vw, 1.5rem);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1400px;
+    margin: 0 auto;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
-[data-theme="light"] .live-indicators-bar {
+[data-theme="light"] .indicators-unified-container {
     background: rgba(255, 255, 255, 0.85);
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.live-indicators-bar::-webkit-scrollbar {
-    display: none;
+/* هر ردیف - ریسپانسیو با auto-fit */
+.indicators-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* پیش‌فرض: 6 ستون */
+    gap: clamp(6px, 1vw, 10px);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
-.indicator-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 5px 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    font-size: 0.7rem;
+/* جلوگیری از overflow و بهبود خوانایی */
+.indicators-row > * {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* استایل‌های قدیمی live-indicators-bar و currency-pairs-bar حذف شدند - از indicators-unified-container استفاده می‌شود */
+
+/* بهبود خوانایی متن‌ها */
+.indicator-item > *,
+.pair-item > * {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.indicator-icon {
+    flex-shrink: 0;
+}
+
+.indicator-name,
+.pair-name {
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.indicator-value,
+.pair-value {
+    font-weight: 700;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.indicator-change,
+.pair-change {
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 [data-theme="light"] .indicator-item {
@@ -4462,135 +6285,52 @@ body, .glass-card, .glass-header {
 }
 
 .indicator-icon {
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+    flex-shrink: 0;
+    line-height: 1;
 }
 
-.indicator-name {
-    color: rgba(255, 255, 255, 0.7);
+.indicator-name,
+.pair-name {
+    color: rgba(255, 255, 255, 0.8);
     font-weight: 500;
-    font-size: 0.65rem;
+    font-size: clamp(0.6rem, 0.95vw, 0.7rem);
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-[data-theme="light"] .indicator-name {
+[data-theme="light"] .indicator-name,
+[data-theme="light"] .pair-name {
     color: var(--text-secondary);
 }
 
-.indicator-value {
+.indicator-value,
+.pair-value {
     font-weight: 700;
     color: white;
-    font-size: 0.75rem;
+    font-size: clamp(0.65rem, 1vw, 0.75rem);
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-[data-theme="light"] .indicator-value {
+[data-theme="light"] .indicator-value,
+[data-theme="light"] .pair-value {
     color: var(--text-primary);
 }
 
-.indicator-change {
+.indicator-change,
+.pair-change {
     font-weight: 600;
-    font-size: 0.6rem;
+    font-size: clamp(0.55rem, 0.85vw, 0.65rem);
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
-/* تبلت */
-@media (max-width: 1024px) {
-    .live-indicators-bar {
-        right: 100px;
-        max-width: calc(100vw - 200px);
-    }
-}
-
-/* موبایل - مقادیر ثابت برای سازگاری بهتر */
-@media (max-width: 768px) {
-    .live-indicators-bar {
-        position: fixed !important;
-        top: 60px !important;
-        right: 5px !important;
-        left: 75px !important;
-        max-width: none !important;
-        width: auto !important;
-        padding: 4px 8px !important;
-        gap: 4px !important;
-        border-radius: 12px !important;
-        justify-content: flex-start !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .indicator-item {
-        padding: 3px 6px !important;
-        font-size: 0.6rem !important;
-        gap: 3px !important;
-        border-radius: 8px !important;
-        flex-shrink: 0 !important;
-    }
-    
-    .indicator-icon {
-        font-size: 0.7rem !important;
-    }
-    
-    .indicator-name {
-        font-size: 0.55rem !important;
-    }
-    
-    .indicator-value {
-        font-size: 0.6rem !important;
-    }
-    
-    .indicator-change {
-        font-size: 0.5rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .live-indicators-bar {
-        top: 58px !important;
-        left: 62px !important;
-        padding: 3px 6px !important;
-        gap: 3px !important;
-        border-radius: 10px !important;
-    }
-    
-    .indicator-item {
-        padding: 2px 5px !important;
-        font-size: 0.55rem !important;
-    }
-    
-    .indicator-name {
-        display: none !important;
-    }
-    
-    .indicator-icon {
-        font-size: 0.65rem !important;
-    }
-    
-    .indicator-value {
-        font-size: 0.55rem !important;
-    }
-}
-
-@media (max-width: 390px) {
-    .live-indicators-bar {
-        top: 56px !important;
-        left: 55px !important;
-        padding: 2px 5px !important;
-        gap: 2px !important;
-    }
-    
-    .indicator-item {
-        padding: 2px 4px !important;
-        font-size: 0.5rem !important;
-    }
-}
-
-@media (max-width: 320px) {
-    .live-indicators-bar {
-        top: 54px !important;
-        left: 50px !important;
-    }
-    
-    .indicator-item {
-        padding: 1px 3px !important;
-    }
-}
+/* استایل‌های اضافی indicator و pair items در بالا تعریف شده‌اند */
 
 /* ==================== */
 /* 💬 بخش چت هوشمند - نوار باریک */
@@ -4912,6 +6652,9 @@ body, .glass-card, .glass-header {
     .assistive-touch {
         bottom: 20px;
         left: 15px;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 }
 
@@ -5965,5 +7708,360 @@ body.modal-open {
         font-size: 28px;
         top: 30px;
         right: 30px;
+    }
+}
+
+/* ==================== */
+/* 🌍 استایل دکمه‌های 3D در صفحه آرامش */
+/* ==================== */
+.globe-3d-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.globe-3d-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 0.5rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.globe-3d-btn:hover,
+.globe-3d-btn:active,
+.globe-3d-btn:focus {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    outline: none;
+}
+
+.globe-3d-btn[data-globe="weather"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.globe-3d-btn[data-globe="military"] {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.globe-3d-btn[data-globe="universities"] {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.globe-3d-btn[data-globe="historical"] {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.globe-3d-btn[data-globe="earthquake"] {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.globe-3d-btn[data-globe="natural-resources"] {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.globe-btn-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+    line-height: 1;
+}
+
+.globe-btn-text {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* ریسپانسیو برای موبایل */
+@media (max-width: 768px) {
+    .globe-3d-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .globe-3d-btn {
+        padding: 0.6rem 0.4rem;
+        min-height: 60px;
+        font-size: 0.75rem;
+    }
+    
+    .globe-btn-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .globe-btn-text {
+        font-size: 0.7rem;
+    }
+}
+
+/* ریسپانسیو برای تبلت */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .globe-3d-buttons {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.65rem;
+    }
+    
+    .globe-3d-btn {
+        padding: 0.7rem 0.45rem;
+        min-height: 65px;
+    }
+}
+
+/* دکمه رفرش کره */
+.refresh-globe-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.refresh-globe-btn:hover {
+    background: rgba(59, 130, 246, 0.8);
+    transform: scale(1.1) rotate(180deg);
+    border-color: rgba(59, 130, 246, 0.5);
+}
+
+@media (max-width: 768px) {
+    .refresh-globe-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        top: 15px;
+        left: 15px;
+    }
+}
+
+/* ==================== */
+/* 📱 نوار ناوبری پایین (Bottom Navigation Bar) */
+/* ==================== */
+
+.bottom-nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 997; /* پایین‌تر از دکمه سیار (z-index: 9997) و مودال‌ها */
+    padding: clamp(8px, 1.2vw, 12px) clamp(0.5rem, 2vw, 1rem);
+    gap: clamp(4px, 1vw, 8px);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    touch-action: auto;
+}
+
+[data-theme="light"] .bottom-nav-bar {
+    background: rgba(255, 255, 255, 0.85);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(2px, 0.5vw, 4px);
+    padding: clamp(6px, 1vw, 10px) clamp(4px, 0.8vw, 8px);
+    background: transparent;
+    border: none;
+    border-radius: clamp(10px, 1.5vw, 14px);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-secondary);
+    position: relative;
+    min-width: 0;
+    overflow: visible;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; /* بهبود عملکرد touch در موبایل */
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: auto;
+    z-index: 1;
+    /* جلوگیری از تداخل با دکمه سیار */
+    isolation: isolate;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(59, 130, 246, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.nav-item:hover::before {
+    opacity: 1;
+}
+
+.nav-item:hover {
+    color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.nav-item.active {
+    color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.nav-item:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+.nav-item.active::before {
+    opacity: 1;
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.nav-icon {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1;
+    transition: transform 0.3s ease;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.nav-item:hover .nav-icon,
+.nav-item.active .nav-icon {
+    transform: scale(1.15);
+}
+
+.nav-text {
+    font-size: clamp(0.65rem, 1vw, 0.75rem);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    line-height: 1.2;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.nav-item.active .nav-text {
+    font-weight: 600;
+}
+
+/* ریسپانسیو برای موبایل - فقط آیکون */
+@media (max-width: 480px) {
+    .bottom-nav-bar {
+        padding: clamp(8px, 1.5vw, 10px) clamp(0.3rem, 1.5vw, 0.5rem);
+        gap: clamp(2px, 0.8vw, 4px);
+    }
+    
+    .nav-item {
+        padding: clamp(6px, 1.2vw, 8px) clamp(2px, 0.6vw, 4px);
+        gap: 2px;
+    }
+    
+    .nav-icon {
+        font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+    }
+    
+    .nav-text {
+        font-size: clamp(0.55rem, 1.1vw, 0.65rem);
+    }
+}
+
+/* ریسپانسیو برای تبلت */
+@media (min-width: 481px) and (max-width: 1024px) {
+    .bottom-nav-bar {
+        padding: clamp(10px, 1.5vw, 12px) clamp(0.5rem, 2vw, 1rem);
+    }
+    
+    .nav-icon {
+        font-size: clamp(1.3rem, 2.2vw, 1.4rem);
+    }
+    
+    .nav-text {
+        font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+    }
+}
+
+/* ریسپانسیو برای دسکتاپ - کوچکتر و کم ارتفاع‌تر */
+@media (min-width: 1025px) {
+    .bottom-nav-bar {
+        padding: clamp(6px, 0.8vw, 8px) clamp(1rem, 2vw, 2rem);
+        max-width: 1200px;
+    }
+    
+    .nav-item {
+        max-width: 150px;
+        padding: clamp(4px, 0.6vw, 6px) clamp(4px, 0.8vw, 8px);
+        gap: clamp(2px, 0.4vw, 3px);
+    }
+    
+    .nav-icon {
+        font-size: clamp(1.1rem, 1.3vw, 1.2rem);
+    }
+    
+    .nav-text {
+        font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+    }
+}
+
+/* اضافه کردن padding-bottom به body برای جلوگیری از پوشیده شدن محتوا */
+body {
+    padding-bottom: clamp(70px, 10vw, 85px);
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-bottom: clamp(60px, 9vw, 75px);
+    }
+}
+
+@media (min-width: 1025px) {
+    body {
+        padding-bottom: clamp(55px, 7vw, 65px);
     }
 }
