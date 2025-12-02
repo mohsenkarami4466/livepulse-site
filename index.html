@@ -28,77 +28,80 @@
         <div id="globeContainer" title="کلیک کنید برای نقشه جهانی"></div>
     </div>
     
-    <!-- 📊 شاخص‌های لحظه‌ای - زیر هدر -->
-    <div class="live-indicators-bar">
-        <div class="indicator-item up">
-            <span class="indicator-icon">🥇</span>
-            <span class="indicator-name">طلا</span>
-            <span class="indicator-value" id="goldIndicator">۲,۸۵۰,۰۰۰</span>
-            <span class="indicator-change">+۰.۵%</span>
+    <!-- 📊 شاخص‌های لحظه‌ای - یکپارچه (دو ردیف 6 تایی) -->
+    <div class="indicators-unified-container">
+        <!-- ردیف اول - 6 شاخص -->
+        <div class="indicators-row">
+            <div class="indicator-item up">
+                <span class="indicator-icon">🥇</span>
+                <span class="indicator-name">طلا</span>
+                <span class="indicator-value" id="goldIndicator">۲,۸۵۰,۰۰۰</span>
+                <span class="indicator-change">+۰.۵%</span>
+            </div>
+            <div class="indicator-item up">
+                <span class="indicator-icon">💵</span>
+                <span class="indicator-name">دلار</span>
+                <span class="indicator-value" id="usdIndicator">۵۸,۰۰۰</span>
+                <span class="indicator-change">+۰.۳%</span>
+            </div>
+            <div class="indicator-item down">
+                <span class="indicator-icon">💶</span>
+                <span class="indicator-name">یورو</span>
+                <span class="indicator-value" id="eurIndicator">۶۲,۰۰۰</span>
+                <span class="indicator-change">-۰.۲%</span>
+            </div>
+            <div class="indicator-item up">
+                <span class="indicator-icon">₿</span>
+                <span class="indicator-name">بیت‌کوین</span>
+                <span class="indicator-value" id="btcIndicator">$۴۵,۲۳۰</span>
+                <span class="indicator-change">+۲.۵%</span>
+            </div>
+            <div class="indicator-item down">
+                <span class="indicator-icon">🛢️</span>
+                <span class="indicator-name">نفت</span>
+                <span class="indicator-value" id="oilIndicator">$۸۲.۵</span>
+                <span class="indicator-change">-۱.۲%</span>
+            </div>
+            <div class="indicator-item up">
+                <span class="indicator-icon">📈</span>
+                <span class="indicator-name">نزدک</span>
+                <span class="indicator-value" id="nasdaqIndicator">۱۵,۲۸۵</span>
+                <span class="indicator-change">+۰.۹٪</span>
+            </div>
         </div>
-        <div class="indicator-item up">
-            <span class="indicator-icon">💵</span>
-            <span class="indicator-name">دلار</span>
-            <span class="indicator-value" id="usdIndicator">۵۸,۰۰۰</span>
-            <span class="indicator-change">+۰.۳%</span>
-        </div>
-        <div class="indicator-item down">
-            <span class="indicator-icon">💶</span>
-            <span class="indicator-name">یورو</span>
-            <span class="indicator-value" id="eurIndicator">۶۲,۰۰۰</span>
-            <span class="indicator-change">-۰.۲%</span>
-        </div>
-        <div class="indicator-item up">
-            <span class="indicator-icon">₿</span>
-            <span class="indicator-name">بیت‌کوین</span>
-            <span class="indicator-value" id="btcIndicator">$۴۵,۲۳۰</span>
-            <span class="indicator-change">+۲.۵%</span>
-        </div>
-        <div class="indicator-item down">
-            <span class="indicator-icon">🛢️</span>
-            <span class="indicator-name">نفت</span>
-            <span class="indicator-value" id="oilIndicator">$۸۲.۵</span>
-            <span class="indicator-change">-۱.۲%</span>
-        </div>
-        <div class="indicator-item up">
-            <span class="indicator-icon">📈</span>
-            <span class="indicator-name">نزدک</span>
-            <span class="indicator-value" id="nasdaqIndicator">۱۵,۲۸۵</span>
-            <span class="indicator-change">+۰.۹٪</span>
-        </div>
-    </div>
-    
-    <!-- 💱 شاخص‌های برابری ارز - ردیف دوم -->
-    <div class="currency-pairs-bar">
-        <div class="pair-item up">
-            <span class="pair-name">EUR/USD</span>
-            <span class="pair-value">1.0856</span>
-            <span class="pair-change">+0.12%</span>
-        </div>
-        <div class="pair-item down">
-            <span class="pair-name">USD/JPY</span>
-            <span class="pair-value">149.82</span>
-            <span class="pair-change">-0.08%</span>
-        </div>
-        <div class="pair-item up">
-            <span class="pair-name">GBP/USD</span>
-            <span class="pair-value">1.2715</span>
-            <span class="pair-change">+0.15%</span>
-        </div>
-        <div class="pair-item down">
-            <span class="pair-name">USD/CHF</span>
-            <span class="pair-value">0.8842</span>
-            <span class="pair-change">-0.05%</span>
-        </div>
-        <div class="pair-item up">
-            <span class="pair-name">AUD/USD</span>
-            <span class="pair-value">0.6548</span>
-            <span class="pair-change">+0.22%</span>
-        </div>
-        <div class="pair-item down">
-            <span class="pair-name">USD/CAD</span>
-            <span class="pair-value">1.3625</span>
-            <span class="pair-change">-0.10%</span>
+        
+        <!-- ردیف دوم - 6 شاخص -->
+        <div class="indicators-row">
+            <div class="pair-item up">
+                <span class="pair-name">EUR/USD</span>
+                <span class="pair-value">1.0856</span>
+                <span class="pair-change">+0.12%</span>
+            </div>
+            <div class="pair-item down">
+                <span class="pair-name">USD/JPY</span>
+                <span class="pair-value">149.82</span>
+                <span class="pair-change">-0.08%</span>
+            </div>
+            <div class="pair-item up">
+                <span class="pair-name">GBP/USD</span>
+                <span class="pair-value">1.2715</span>
+                <span class="pair-change">+0.15%</span>
+            </div>
+            <div class="pair-item down">
+                <span class="pair-name">USD/CHF</span>
+                <span class="pair-value">0.8842</span>
+                <span class="pair-change">-0.05%</span>
+            </div>
+            <div class="pair-item up">
+                <span class="pair-name">AUD/USD</span>
+                <span class="pair-value">0.6548</span>
+                <span class="pair-change">+0.22%</span>
+            </div>
+            <div class="pair-item down">
+                <span class="pair-name">USD/CAD</span>
+                <span class="pair-value">1.3625</span>
+                <span class="pair-change">-0.10%</span>
+            </div>
         </div>
     </div>
 
@@ -115,27 +118,56 @@
     <!-- کره بزرگ مالی - ساعت بازارها -->
     <div id="financialGlobeModal" class="globe-modal">
         <div class="globe-modal-content">
-            <span class="close-globe" id="closeFinancialGlobe">&times;</span>
             <div id="financialGlobeContainer" class="globe-container"></div>
             
-            <!-- دکمه انتخاب بازار -->
-            <button class="market-selector-btn" id="marketSelectorBtn">
-                📍 انتخاب بازار
-            </button>
-            
             <!-- پنل انتخاب بازار -->
-            <div class="market-select-panel" id="marketSelectPanel">
-                <div class="market-select-header">
+            <div class="globe-panel market-select-panel" id="marketSelectPanel">
+                <div class="globe-panel-header">
                     <h4>🌍 بازارهای جهانی</h4>
-                    <input type="text" class="market-select-search" placeholder="🔍 جستجوی بازار..." id="marketSearchInput">
+                    <button class="globe-panel-close" onclick="document.getElementById('marketSelectPanel').classList.remove('active')">×</button>
                 </div>
-                <div class="market-select-list" id="marketSelectList">
-                    <!-- لیست بازارها با JS پر می‌شود -->
-                </div>
+                <div class="globe-panel-body">
+                    <input type="text" class="globe-panel-search" placeholder="🔍 جستجوی بازار..." id="marketSearchInput">
+                    <div class="market-select-list" id="marketSelectList">
+                        <!-- لیست بازارها با JS پر می‌شود -->
+            </div>
+        </div>
+    </div>
+
+            <!-- 🎮 دکمه سیار کره مالی -->
+            <div class="globe-assistive-touch" id="financialGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
             </div>
             
-            <div class="globe-controls">
-                <button id="resetFinancialView" class="control-btn">🔄 بازیابی دید</button>
+            <!-- منوی شیشه‌ای کره مالی -->
+            <div class="globe-glass-menu" id="financialGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">🌍 کره ساعت بازارها</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="selectMarket">
+                            <span class="item-icon">📍</span>
+                            <span class="item-text">انتخاب بازار</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetAll">
+                            <span class="item-icon">♻️</span>
+                            <span class="item-text">ریست کامل</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -143,117 +175,593 @@
     <!-- کره بزرگ منابع - اطلاعات کشورها -->
     <div id="resourcesGlobeModal" class="globe-modal">
         <div class="globe-modal-content">
-            <span class="close-globe" id="closeResourcesGlobe">&times;</span>
             <div id="resourcesGlobeContainer" class="globe-container"></div>
             
             <!-- پنل انتخاب کشور -->
-            <div class="country-select-panel" id="countrySelectPanel">
-                <div class="panel-header">
-                    <h4>🌍 انتخاب کشور</h4>
-                    <input type="text" id="countrySearchInput" placeholder="جستجوی کشور..." />
+            <div class="globe-panel country-select-panel" id="countrySelectPanel">
+                <div class="globe-panel-header">
+                    <h4>🏳️ انتخاب کشور</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('countrySelectPanel').classList.remove('active')">×</button>
                 </div>
-                <div class="country-list" id="countryList"></div>
+                <div class="globe-panel-body">
+                    <input type="text" class="globe-panel-search" id="countrySearchInput" placeholder="🔍 جستجوی کشور..." />
+                    <div class="country-list" id="countryList"></div>
+                </div>
             </div>
             
             <!-- پنل اطلاعات کشور -->
-            <div class="country-info-panel" id="countryInfoPanel">
-                <div class="country-info-header">
-                    <h3 id="selectedCountryName">کشوری انتخاب نشده</h3>
-                    <span class="close-panel" onclick="closeCountryInfo()">×</span>
+            <div class="globe-panel country-info-panel" id="countryInfoPanel">
+                <div class="globe-panel-header">
+                    <h4 id="selectedCountryName">کشوری انتخاب نشده</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('countryInfoPanel').classList.remove('active')">×</button>
                 </div>
-                <div class="country-info-content" id="countryInfoContent">
+                <div class="globe-panel-body" id="countryInfoContent">
                     <p class="hint-text">روی یک کشور کلیک کنید یا از لیست انتخاب کنید</p>
                 </div>
             </div>
             
             <!-- پنل فیلترها -->
-            <div class="resources-filter-panel" id="resourcesFilterPanel">
-                <div class="filter-section">
-                    <h5>🏭 منابع طبیعی</h5>
-                    <div class="filter-buttons" id="resourceFilters">
-                        <button class="filter-btn active" data-filter="all">همه</button>
-                        <button class="filter-btn" data-filter="oil">🛢️ نفت</button>
-                        <button class="filter-btn" data-filter="gas">💨 گاز</button>
-                        <button class="filter-btn" data-filter="gold">🥇 طلا</button>
-                        <button class="filter-btn" data-filter="iron">⚫ آهن</button>
-                        <button class="filter-btn" data-filter="copper">🟤 مس</button>
-                        <button class="filter-btn" data-filter="coal">⬛ زغال</button>
-                        <button class="filter-btn" data-filter="diamond">💎 الماس</button>
-                        <button class="filter-btn" data-filter="uranium">☢️ اورانیوم</button>
+            <div class="globe-panel resources-filter-panel" id="resourcesFilterPanel">
+                <div class="globe-panel-header">
+                    <h4>⚙️ فیلترها</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('resourcesFilterPanel').classList.remove('active')">×</button>
+                </div>
+                <div class="globe-panel-body">
+                    <div class="filter-section">
+                        <h5>🏭 منابع طبیعی</h5>
+                        <div class="filter-buttons" id="resourceFilters">
+                            <button class="filter-btn active" data-filter="all">همه</button>
+                            <button class="filter-btn" data-filter="oil">🛢️ نفت</button>
+                            <button class="filter-btn" data-filter="gas">💨 گاز</button>
+                            <button class="filter-btn" data-filter="gold">🥇 طلا</button>
+                            <button class="filter-btn" data-filter="iron">⚫ آهن</button>
+                            <button class="filter-btn" data-filter="copper">🟤 مس</button>
+                            <button class="filter-btn" data-filter="coal">⬛ زغال</button>
+                            <button class="filter-btn" data-filter="diamond">💎 الماس</button>
+                            <button class="filter-btn" data-filter="uranium">☢️ اورانیوم</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h5>🏗️ تاسیسات</h5>
+                        <div class="filter-buttons" id="facilityFilters">
+                            <button class="filter-btn" data-filter="refinery">🏭 پالایشگاه</button>
+                            <button class="filter-btn" data-filter="factory">🏭 کارخانه</button>
+                            <button class="filter-btn" data-filter="customs">🛃 گمرک</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h5>📊 نمایش</h5>
+                        <div class="filter-buttons" id="viewFilters">
+                            <button class="filter-btn active" data-view="borders">🗺️ مرزها</button>
+                            <button class="filter-btn active" data-view="labels">🏷️ اسامی</button>
+                            <button class="filter-btn" data-view="exports">📤 صادرات</button>
+                            <button class="filter-btn" data-view="imports">📥 واردات</button>
+                            <button class="filter-btn" data-view="conflicts">⚔️ درگیری‌ها</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h5>⚔️ قدرت نظامی</h5>
+                        <div class="filter-buttons" id="militaryFilters">
+                            <button class="filter-btn" data-military="all">همه</button>
+                            <button class="filter-btn" data-military="air">✈️ هوایی</button>
+                            <button class="filter-btn" data-military="ground">🚛 زمینی</button>
+                            <button class="filter-btn" data-military="navy">🚢 دریایی</button>
+                            <button class="filter-btn" data-military="rank">🏆 رتبه</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h5>🌐 قاره</h5>
+                        <div class="filter-buttons" id="continentFilters">
+                            <button class="filter-btn active" data-continent="all">همه</button>
+                            <button class="filter-btn" data-continent="asia">آسیا</button>
+                            <button class="filter-btn" data-continent="europe">اروپا</button>
+                            <button class="filter-btn" data-continent="africa">آفریقا</button>
+                            <button class="filter-btn" data-continent="north_america">آمریکای شمالی</button>
+                            <button class="filter-btn" data-continent="south_america">آمریکای جنوبی</button>
+                            <button class="filter-btn" data-continent="oceania">اقیانوسیه</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h5>📅 سال</h5>
+                        <div class="year-filter-wrapper">
+                            <select id="yearFilter" class="year-select">
+                                <option value="2024" selected>2024 (جاری)</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="filter-section">
-                    <h5>🏗️ تاسیسات</h5>
-                    <div class="filter-buttons" id="facilityFilters">
-                        <button class="filter-btn" data-filter="refinery">🏭 پالایشگاه</button>
-                        <button class="filter-btn" data-filter="factory">🏭 کارخانه</button>
-                    </div>
+            </div>
+            
+            <!-- راهنمای نقشه (Legend) -->
+            <div class="globe-legend" id="globeLegend">
+                <div class="legend-header">
+                    <h5>🗺️ راهنمای نقشه</h5>
+                    <button class="legend-toggle" onclick="toggleLegend()">−</button>
                 </div>
-                
-                <div class="filter-section">
-                    <h5>📊 نمایش</h5>
-                    <div class="filter-buttons" id="viewFilters">
-                        <button class="filter-btn active" data-view="borders">🗺️ مرزها</button>
-                        <button class="filter-btn active" data-view="labels">🏷️ اسامی</button>
-                        <button class="filter-btn" data-view="exports">📤 صادرات</button>
-                        <button class="filter-btn" data-view="imports">📥 واردات</button>
-                        <button class="filter-btn active" data-view="conflicts">⚔️ درگیری‌ها</button>
+                <div class="legend-items" id="legendItems">
+                    <div class="legend-item" data-type="customs">
+                        <span class="legend-marker customs"></span>
+                        <span>🛃 گمرک</span>
                     </div>
-                </div>
-                
-                <div class="filter-section">
-                    <h5>🌐 قاره</h5>
-                    <div class="filter-buttons" id="continentFilters">
-                        <button class="filter-btn active" data-continent="all">همه</button>
-                        <button class="filter-btn" data-continent="asia">آسیا</button>
-                        <button class="filter-btn" data-continent="europe">اروپا</button>
-                        <button class="filter-btn" data-continent="africa">آفریقا</button>
-                        <button class="filter-btn" data-continent="north_america">آمریکای شمالی</button>
-                        <button class="filter-btn" data-continent="south_america">آمریکای جنوبی</button>
-                        <button class="filter-btn" data-continent="oceania">اقیانوسیه</button>
+                    <div class="legend-item" data-type="refinery">
+                        <span class="legend-marker refinery"></span>
+                        <span>🏭 پالایشگاه</span>
                     </div>
-                </div>
-                
-                <div class="filter-section">
-                    <h5>📅 سال</h5>
-                    <div class="year-filter-wrapper">
-                        <select id="yearFilter" class="year-select">
-                            <option value="2024" selected>2024 (جاری)</option>
-                            <option value="2023">2023</option>
-                            <option value="2022">2022</option>
-                            <option value="2021">2021</option>
-                            <option value="2020">2020</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
-                            <option value="2017">2017</option>
-                            <option value="2016">2016</option>
-                            <option value="2015">2015</option>
-                        </select>
-                        <span class="year-note">* اطلاعات سال‌های قبل از طریق API بارگذاری می‌شود</span>
+                    <div class="legend-item" data-type="mine">
+                        <span class="legend-marker mine"></span>
+                        <span>⛏️ معدن</span>
+                    </div>
+                    <div class="legend-item" data-type="port">
+                        <span class="legend-marker port"></span>
+                        <span>⚓ بندر</span>
+                    </div>
+                    <div class="legend-item" data-type="oil-rig">
+                        <span class="legend-marker oil-rig"></span>
+                        <span>🛢️ سکوی نفتی</span>
                     </div>
                 </div>
             </div>
             
             <!-- راهنمای رنگ روابط -->
-            <div class="relations-legend" id="relationsLegend">
-                <h5>🤝 رنگ مرزها (رابطه با کشور انتخابی)</h5>
-                <div class="legend-items">
-                    <span class="legend-color" style="background:#00ff00"></span> روابط عالی
-                    <span class="legend-color" style="background:#ffffff"></span> عادی
-                    <span class="legend-color" style="background:#888888"></span> بدون رابطه
-                    <span class="legend-color" style="background:#ff8800"></span> تنش
-                    <span class="legend-color" style="background:#ff0000"></span> دشمنی/جنگ
+            <div class="globe-panel relations-legend" id="relationsLegend">
+                <div class="globe-panel-header">
+                    <h4>🤝 راهنمای رنگ‌ها</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('relationsLegend').classList.remove('active')">×</button>
+                </div>
+                <div class="globe-panel-body">
+                    <div class="legend-items">
+                        <div class="legend-item"><span class="legend-color" style="background:#00ff00"></span> روابط عالی</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#ffffff"></span> عادی</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#888888"></span> بدون رابطه</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#ff8800"></span> تنش</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#ff0000"></span> دشمنی/جنگ</div>
+                    </div>
                 </div>
             </div>
             
-            <div class="globe-controls">
-                <button id="resetResourcesView" class="control-btn">🔄 بازیابی دید</button>
-                <button id="toggleFiltersBtn" class="control-btn">⚙️ فیلترها</button>
-                <button id="toggleCountriesBtn" class="control-btn">🏳️ کشورها</button>
+            <!-- 🎮 دکمه سیار کره منابع -->
+            <div class="globe-assistive-touch" id="resourcesGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
+            </div>
+            
+            <!-- منوی شیشه‌ای کره منابع -->
+            <div class="globe-glass-menu" id="resourcesGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">🌍 کره منابع جهان</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="selectCountry">
+                            <span class="item-icon">🏳️</span>
+                            <span class="item-text">انتخاب کشور</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="countryInfo">
+                            <span class="item-icon">📊</span>
+                            <span class="item-text">اطلاعات کشور</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleFilters">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">فیلترها</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>   
+    </div>
+
+    <!-- کره‌های 3D جدید برای قسمت آرامش -->
+    <!-- کره آب و هوا -->
+    <div id="weatherGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <div id="weatherGlobeContainer" class="globe-container"></div>
+            
+            <!-- پنل فیلتر آب و هوا -->
+            <div class="globe-panel weather-filter-panel" id="weatherFilterPanel">
+                <div class="globe-panel-header">
+                    <h4>🌤️ فیلتر آب و هوا</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('weatherFilterPanel').classList.remove('active')">×</button>
+                </div>
+                <div class="globe-panel-body">
+                    <div class="filter-section">
+                        <h5>🌡️ دما</h5>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">همه</button>
+                            <button class="filter-btn" data-filter="hot">🔥 گرم (25+)</button>
+                            <button class="filter-btn" data-filter="moderate">🌡️ معتدل (15-25)</button>
+                            <button class="filter-btn" data-filter="cold">❄️ سرد (کمتر از 15)</button>
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <h5>☁️ وضعیت</h5>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-condition="all">همه</button>
+                            <button class="filter-btn" data-condition="sunny">☀️ آفتابی</button>
+                            <button class="filter-btn" data-condition="cloudy">☁️ ابری</button>
+                            <button class="filter-btn" data-condition="rainy">🌧️ بارانی</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="globe-assistive-touch" id="weatherGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
+            </div>
+            <div class="globe-glass-menu" id="weatherGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">🌤️ کره آب و هوا</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="toggleFilters">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">فیلترها</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetAll">
+                            <span class="item-icon">♻️</span>
+                            <span class="item-text">ریست کامل</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- کره نظامی و جنگ‌ها -->
+    <div id="militaryGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <div id="militaryGlobeContainer" class="globe-container"></div>
+            <div class="globe-assistive-touch" id="militaryGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
+            </div>
+            <div class="globe-glass-menu" id="militaryGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">⚔️ کره نظامی و جنگ‌ها</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="toggleFilters">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">فیلترها</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetAll">
+                            <span class="item-icon">♻️</span>
+                            <span class="item-text">ریست کامل</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- کره دانشگاه‌ها -->
+    <div id="universitiesGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <div id="universitiesGlobeContainer" class="globe-container"></div>
+            
+            <!-- پنل فیلتر دانشگاه‌ها -->
+            <div class="globe-panel universities-filter-panel" id="universitiesFilterPanel">
+                <div class="globe-panel-header">
+                    <h4>🎓 فیلتر دانشگاه‌ها</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('universitiesFilterPanel').classList.remove('active')">×</button>
+                </div>
+                <div class="globe-panel-body">
+                    <div class="filter-section">
+                        <h5>🏆 رتبه</h5>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">همه</button>
+                            <button class="filter-btn" data-filter="top10">🥇 Top 10</button>
+                            <button class="filter-btn" data-filter="top50">🥈 Top 50</button>
+                            <button class="filter-btn" data-filter="top100">🥉 Top 100</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="globe-assistive-touch" id="universitiesGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
+            </div>
+            <div class="globe-glass-menu" id="universitiesGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">🎓 کره دانشگاه‌ها</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="toggleFilters">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">فیلترها</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetAll">
+                            <span class="item-icon">♻️</span>
+                            <span class="item-text">ریست کامل</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- کره مکان‌های تاریخی -->
+    <div id="historicalGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <div id="historicalGlobeContainer" class="globe-container"></div>
+            <div class="globe-assistive-touch" id="historicalGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
+            </div>
+            <div class="globe-glass-menu" id="historicalGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">🏛️ کره مکان‌های تاریخی</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="toggleFilters">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">فیلترها</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetAll">
+                            <span class="item-icon">♻️</span>
+                            <span class="item-text">ریست کامل</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- کره زلزله‌های دنیا -->
+    <div id="earthquakeGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <div id="earthquakeGlobeContainer" class="globe-container"></div>
+            
+            <!-- پنل فیلتر سال -->
+            <div class="globe-panel earthquake-filter-panel" id="earthquakeFilterPanel">
+                <div class="globe-panel-header">
+                    <h4>📅 فیلتر سال</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('earthquakeFilterPanel').classList.remove('active')">×</button>
+                </div>
+                <div class="globe-panel-body">
+                    <div class="filter-section">
+                        <h5>📅 سال</h5>
+                        <div class="year-filter-wrapper">
+                            <select id="earthquakeYearFilter" class="year-select">
+                                <option value="all" selected>همه سال‌ها</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                                <option value="2017">2017</option>
+                                <option value="2016">2016</option>
+                                <option value="2015">2015</option>
+                                <option value="2010-2014">2010-2014</option>
+                                <option value="2000-2009">2000-2009</option>
+                                <option value="1990-1999">1990-1999</option>
+                                <option value="1980-1989">1980-1989</option>
+                                <option value="before-1980">قبل از 1980</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <h5>📊 بزرگی</h5>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-magnitude="all">همه</button>
+                            <button class="filter-btn" data-magnitude="8+">8+ ریشتر</button>
+                            <button class="filter-btn" data-magnitude="7-8">7-8 ریشتر</button>
+                            <button class="filter-btn" data-magnitude="6-7">6-7 ریشتر</button>
+                            <button class="filter-btn" data-magnitude="5-6">5-6 ریشتر</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- پنل انتخاب شهر برای Notification -->
+            <div class="globe-panel earthquake-city-select-panel" id="earthquakeCitySelectPanel">
+                <div class="globe-panel-header">
+                    <h4>🔔 انتخاب شهر برای اعلان زلزله</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('earthquakeCitySelectPanel').classList.remove('active')">×</button>
+                </div>
+                <div class="globe-panel-body">
+                    <div class="filter-section">
+                        <h5>🏙️ انتخاب استان</h5>
+                        <select id="earthquakeProvinceSelect" class="year-select">
+                            <option value="all">همه استان‌ها</option>
+                        </select>
+                    </div>
+                    <div class="filter-section">
+                        <h5>📍 انتخاب شهر</h5>
+                        <div class="city-select-list" id="earthquakeCityList" style="max-height: 300px; overflow-y: auto;">
+                            <!-- لیست شهرها با JS پر می‌شود -->
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <h5>⚙️ تنظیمات اعلان</h5>
+                        <div class="notification-settings">
+                            <label style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                                <input type="checkbox" id="earthquakeNotificationEnabled" checked>
+                                <span>فعال‌سازی اعلان زلزله</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                                <span>حداقل بزرگی:</span>
+                                <select id="earthquakeMinMagnitude" style="flex: 1;">
+                                    <option value="4">4 ریشتر</option>
+                                    <option value="5" selected>5 ریشتر</option>
+                                    <option value="6">6 ریشتر</option>
+                                    <option value="7">7 ریشتر</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <button class="globe-panel-save" onclick="saveEarthquakeNotificationSettings()">💾 ذخیره تنظیمات</button>
+                </div>
+            </div>
+            
+            <div class="globe-assistive-touch" id="earthquakeGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
+            </div>
+            <div class="globe-glass-menu" id="earthquakeGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">🌋 کره زلزله‌های دنیا</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="toggleFilters">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">فیلترها</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetAll">
+                            <span class="item-icon">♻️</span>
+                            <span class="item-text">ریست کامل</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- کره منابع طبیعی -->
+    <div id="naturalResourcesGlobeModal" class="globe-modal">
+        <div class="globe-modal-content">
+            <div id="naturalResourcesGlobeContainer" class="globe-container"></div>
+            
+            <!-- پنل فیلتر منابع -->
+            <div class="globe-panel natural-resources-filter-panel" id="naturalResourcesFilterPanel">
+                <div class="globe-panel-header">
+                    <h4>🌿 فیلتر منابع</h4>
+                    <button class="globe-panel-close" onclick="document.getElementById('naturalResourcesFilterPanel').classList.remove('active')">×</button>
+                </div>
+                <div class="globe-panel-body">
+                    <div class="filter-section">
+                        <h5>🌳 منابع</h5>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-resource="all">همه</button>
+                            <button class="filter-btn" data-resource="forest">🌲 جنگل</button>
+                            <button class="filter-btn" data-resource="river">🌊 رودخانه</button>
+                            <button class="filter-btn" data-resource="desert">🏜️ بیابان</button>
+                            <button class="filter-btn" data-resource="groundwater">💧 آب زیرزمینی</button>
+                            <button class="filter-btn" data-resource="livestock">🐄 دام و طیور</button>
+                            <button class="filter-btn" data-resource="wildlife">🦁 حیوانات وحشی</button>
+                            <button class="filter-btn" data-resource="marine">🐋 حیوانات دریایی</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="globe-assistive-touch" id="naturalResourcesGlobeAssistive">
+                <button class="globe-touch-button">
+                    <span class="globe-touch-icon">⚙️</span>
+                </button>
+            </div>
+            <div class="globe-glass-menu" id="naturalResourcesGlobeMenu">
+                <div class="globe-menu-content">
+                    <h4 class="globe-menu-title">🌿 کره منابع طبیعی</h4>
+                    <div class="globe-menu-items">
+                        <button class="globe-menu-item" data-action="toggleFilters">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-text">فیلترها</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetView">
+                            <span class="item-icon">🔄</span>
+                            <span class="item-text">بازیابی دید</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="toggleRotation">
+                            <span class="item-icon">🌐</span>
+                            <span class="item-text">چرخش زمین</span>
+                        </button>
+                        <button class="globe-menu-item" data-action="resetAll">
+                            <span class="item-icon">♻️</span>
+                            <span class="item-text">ریست کامل</span>
+                        </button>
+                        <button class="globe-menu-item exit-item" data-action="exit">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">خروج</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- 🔝 هدر شیشه‌ای مات -->
     <header class="glass-header">
@@ -295,10 +803,13 @@
     <!-- 🏠 بخش خانه (HOME) -->
     <!-- ==================== -->
     <div id="homeView" class="view active-view">
-        <!-- 🔘 هایلایت‌های اصلی - 6 دایره -->
+        <!-- 🔘 هایلایت‌های اصلی - 7 دایره -->
         <section class="highlights-section">
             <div class="highlights-container">
-                <div class="highlight-circle active" data-category="crypto">
+                <div class="highlight-circle active" data-category="home">
+                    <span>خانه</span>
+                </div>
+                <div class="highlight-circle" data-category="crypto">
                     <span>رمزارز</span>
                 </div>
                 <div class="highlight-circle" data-category="currency">
@@ -1272,13 +1783,13 @@
                             <div class="total-header">
                                 <span class="total-label">💎 ارزش کل سرمایه</span>
                                 <span class="live-badge">🔴 لحظه‌ای</span>
-                            </div>
+                                </div>
                             <div class="total-value" id="totalPortfolioValue">۰</div>
                             <div class="total-currency">تومان</div>
                             <div class="total-change positive" id="portfolioChange">
                                 <span>+۰٪</span>
                                 <small>نسبت به دیروز</small>
-                            </div>
+                                </div>
                         </div>
 
                         <!-- لیست دارایی‌ها -->
@@ -1331,7 +1842,7 @@
                                             <optgroup label="بورس ایران">
                                                 <option value="STOCK">سهام (ریال)</option>
                                             </optgroup>
-                                        </select>
+                                </select>
                                     </div>
                                     <div class="form-group">
                                         <label>مقدار / تعداد</label>
@@ -1368,7 +1879,7 @@
                                 <span>🗑️</span>
                                 <small>پاک کردن</small>
                             </button>
-                        </div>
+                    </div>
 
                         <!-- مشاور هوش مصنوعی -->
                         <div class="ai-advisor glass-card">
@@ -1592,10 +2103,10 @@
             <div class="highlights-container">
                 <div class="highlight-circle active" data-news="all">
                     <span>همه</span>
-                </div>
+            </div>
                 <div class="highlight-circle" data-news="forex">
                     <span>فارکس</span>
-                </div>
+            </div>
                 <div class="highlight-circle" data-news="crypto">
                     <span>رمزارز</span>
                 </div>
@@ -1620,7 +2131,7 @@
                 <div class="news-panel active" data-news-panel="all">
                     <h4>📰 همه اخبار</h4>
                     <p class="panel-placeholder">در حال توسعه</p>
-                </div>
+                    </div>
                 <div class="news-panel" data-news-panel="forex">
                     <h4>💱 اخبار فارکس</h4>
                     <p class="panel-placeholder">در حال توسعه</p>
@@ -1628,7 +2139,7 @@
                 <div class="news-panel" data-news-panel="crypto">
                     <h4>₿ اخبار رمزارز</h4>
                     <p class="panel-placeholder">در حال توسعه</p>
-                </div>
+            </div>
                 <div class="news-panel" data-news-panel="iran-stock">
                     <h4>🇮🇷 اخبار بورس ایران</h4>
                     <p class="panel-placeholder">در حال توسعه</p>
@@ -1649,6 +2160,100 @@
         </div>
     </div>
 
+    <!-- ==================== -->
+    <!-- 🌍 بخش کره‌های سه‌بعدی -->
+    <!-- ==================== -->
+    <div id="globeView" class="view">
+        <!-- 🔘 هایلایت‌های کره‌ها -->
+        <section class="highlights-section globe-highlights">
+            <div class="highlights-container">
+                <div class="highlight-circle active" data-globe="resources">
+                    <span>منابع کشورها</span>
+                </div>
+                <div class="highlight-circle" data-globe="weather">
+                    <span>آب و هوا</span>
+                </div>
+                <div class="highlight-circle" data-globe="military">
+                    <span>نظامی</span>
+                </div>
+                <div class="highlight-circle" data-globe="universities">
+                    <span>دانشگاه‌ها</span>
+                </div>
+                <div class="highlight-circle" data-globe="historical">
+                    <span>تاریخی</span>
+                </div>
+                <div class="highlight-circle" data-globe="earthquake">
+                    <span>زلزله</span>
+                </div>
+                <div class="highlight-circle" data-globe="natural-resources">
+                    <span>منابع طبیعی</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="globe-container-view">
+            <!-- پنل‌های مربوط به هایلایت کره‌ها -->
+            <div class="globe-highlight-panels">
+                <article class="globe-panel active" data-globe-panel="resources">
+                    <h4>🌍 کره منابع کشورها</h4>
+                    <p class="panel-description">نمایش اطلاعات منابع طبیعی کشورهای جهان شامل طلا، نفت، گاز و سایر منابع</p>
+                    <button class="globe-open-btn" data-globe-action="open-resources">
+                        <span class="btn-icon">🌐</span>
+                        <span class="btn-text">باز کردن کره منابع</span>
+                    </button>
+                </article>
+                <article class="globe-panel" data-globe-panel="weather">
+                    <h4>🌤️ کره آب و هوا</h4>
+                    <p class="panel-description">نمایش اطلاعات آب و هوای شهرهای مختلف جهان</p>
+                    <button class="globe-open-btn" data-globe-action="open-weather">
+                        <span class="btn-icon">🌤️</span>
+                        <span class="btn-text">باز کردن کره آب و هوا</span>
+                    </button>
+                </article>
+                <article class="globe-panel" data-globe-panel="military">
+                    <h4>⚔️ کره نظامی و جنگ‌ها</h4>
+                    <p class="panel-description">نمایش اطلاعات نظامی و مناطق جنگی جهان</p>
+                    <button class="globe-open-btn" data-globe-action="open-military">
+                        <span class="btn-icon">⚔️</span>
+                        <span class="btn-text">باز کردن کره نظامی</span>
+                    </button>
+                </article>
+                <article class="globe-panel" data-globe-panel="universities">
+                    <h4>🎓 کره دانشگاه‌ها</h4>
+                    <p class="panel-description">نمایش موقعیت دانشگاه‌های معتبر جهان</p>
+                    <button class="globe-open-btn" data-globe-action="open-universities">
+                        <span class="btn-icon">🎓</span>
+                        <span class="btn-text">باز کردن کره دانشگاه‌ها</span>
+                    </button>
+                </article>
+                <article class="globe-panel" data-globe-panel="historical">
+                    <h4>🏛️ کره مکان‌های تاریخی</h4>
+                    <p class="panel-description">نمایش مکان‌های تاریخی و میراث فرهنگی جهان</p>
+                    <button class="globe-open-btn" data-globe-action="open-historical">
+                        <span class="btn-icon">🏛️</span>
+                        <span class="btn-text">باز کردن کره تاریخی</span>
+                    </button>
+                </article>
+                <article class="globe-panel" data-globe-panel="earthquake">
+                    <h4>🌋 کره زلزله‌های دنیا</h4>
+                    <p class="panel-description">نمایش اطلاعات زلزله‌های ثبت شده در جهان</p>
+                    <button class="globe-open-btn" data-globe-action="open-earthquake">
+                        <span class="btn-icon">🌋</span>
+                        <span class="btn-text">باز کردن کره زلزله</span>
+                    </button>
+                </article>
+                <article class="globe-panel" data-globe-panel="natural-resources">
+                    <h4>🌿 کره منابع طبیعی</h4>
+                    <p class="panel-description">نمایش منابع طبیعی و معادن جهان</p>
+                    <button class="globe-open-btn" data-globe-action="open-natural-resources">
+                        <span class="btn-icon">🌿</span>
+                        <span class="btn-text">باز کردن کره منابع طبیعی</span>
+                    </button>
+                </article>
+            </div>
+        </div>
+    </div>
+
         
     <!-- ==================== -->
     <!-- 📚 بخش آموزش (AI) -->
@@ -1659,29 +2264,29 @@
             <div class="highlights-container">
                 <div class="highlight-circle active" data-edu="basics">
                     <span>مبانی</span>
-                </div>
+            </div>
                 <div class="highlight-circle" data-edu="technical">
                     <span>تکنیکال</span>
-                </div>
+                    </div>
                 <div class="highlight-circle" data-edu="fundamental">
                     <span>فاندامنتال</span>
-                </div>
+                    </div>
                 <div class="highlight-circle" data-edu="crypto">
                     <span>کریپتو</span>
-                </div>
+                    </div>
                 <div class="highlight-circle" data-edu="forex">
                     <span>فارکس</span>
-                </div>
+                    </div>
                 <div class="highlight-circle" data-edu="psychology">
                     <span>روانشناسی</span>
-                </div>
+                    </div>
                 <div class="highlight-circle" data-edu="risk">
                     <span>ریسک</span>
-                </div>
+            </div>
                 <div class="highlight-circle" data-edu="strategy">
                     <span>استراتژی</span>
-                </div>
-            </div>
+        </div>
+    </div>
         </section>
 
         <div class="tutorial-container">
@@ -1722,8 +2327,8 @@
             </div>
         </div>
     </div>
+   
 
-    
     <!-- ==================== -->
     <!-- 🧘‍♂️ بخش آرامش (AI) -->
     <!-- ==================== -->
@@ -1736,10 +2341,10 @@
                 </div>
                 <div class="highlight-circle" data-relax="music">
                     <span>موزیک</span>
-                </div>
+            </div>
                 <div class="highlight-circle" data-relax="game">
                     <span>بازی</span>
-                </div>
+            </div>
                 <div class="highlight-circle" data-relax="3d">
                     <span>3D</span>
                 </div>
@@ -1748,9 +2353,9 @@
                 </div>
                 <div class="highlight-circle" data-relax="breathing">
                     <span>تنفس</span>
-                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
         <div class="relax-container">
             <!-- پنل‌های مربوط به هایلایت آرامش -->
@@ -1768,7 +2373,7 @@
                     <p class="panel-placeholder">در حال توسعه</p>
                 </article>
                 <article class="relax-panel" data-relax-panel="3d">
-                    <h4>تجربه سه‌بعدی</h4>
+                    <h4>🌍 تجربه سه‌بعدی جهان</h4>
                     <p class="panel-placeholder">در حال توسعه</p>
                 </article>
                 <article class="relax-panel" data-relax-panel="meditation">
@@ -1780,9 +2385,9 @@
                     <p class="panel-placeholder">در حال توسعه</p>
                 </article>
             </div>
-
-        </div>
-    </div>
+        
+                </div>
+            </div>
    
 
     <!-- ==================== -->
@@ -1795,18 +2400,18 @@
             <div class="ai-analysis-mini glass-card">
                 <h4>🤖 تحلیل AI</h4>
                 <p id="aiAnalysisText">بازار امروز با نوسانات ملایم همراه است.</p>
-            </div>
+                            </div>
             <div class="news-mini glass-card">
                 <h4>📰 اخبار</h4>
                 <div class="news-list-mini" id="newsList">
                     <span>• نفت ↑</span>
                     <span>• طلا →</span>
                     <span>• بورس ↑</span>
-                </div>
-            </div>
-        </div>
+                        </div>
+                            </div>
+                        </div>
     </section>
-
+                        
     <!-- 💬 بخش چت هوشمند - نوار باریک -->
     <section class="global-section ai-chat-section">
         <div class="ai-chat-bar glass-card" id="aiChatBar">
@@ -1815,21 +2420,21 @@
                 <span class="chat-bar-title">دستیار هوشمند</span>
                 <span class="chat-bar-status">آنلاین</span>
                 <span class="chat-bar-toggle">▼</span>
-            </div>
+                            </div>
             <div class="chat-bar-content" id="chatBarContent">
                 <div class="chat-messages-compact" id="chatMessages">
                     <div class="ai-message">
                         <p>سلام! من دستیار هوشمند LivePulse هستم. چطور می‌تونم کمکتون کنم؟</p>
-                    </div>
-                </div>
+                        </div>
+                            </div>
                 <div class="chat-input-compact">
                     <input type="text" id="chatInput" placeholder="سوال خود را بپرسید...">
                     <button id="sendMessage">↑</button>
-                </div>
-            </div>
-        </div>
+                        </div>
+                            </div>
+                        </div>
     </section>
-
+                        
     <!-- نقشه طلای جهان - نسخه کامپکت -->
     <section class="gold-map-section" id="goldMapSection">
         <div class="gold-map-container">
@@ -1849,10 +2454,9 @@
                         <option value="2023">۲۰۲۳</option>
                         <option value="2022">۲۰۲۲</option>
                     </select>
-                    <button class="btn-3d" id="globe3dBtn">🌐 3D</button>
-                </div>
-            </div>
-            
+                            </div>
+                        </div>
+                        
             <!-- نقشه و رتبه‌بندی -->
             <div class="map-content-row">
                 <!-- نقشه -->
@@ -1862,22 +2466,22 @@
                         <button id="zoomIn">+</button>
                         <button id="zoomOut">−</button>
                         <button id="resetZoom">⟲</button>
-                    </div>
-                </div>
-                
+                            </div>
+                        </div>
+                        
                 <!-- رتبه‌بندی کوچک -->
                 <div class="ranking-sidebar">
                     <div class="ranking-header">
                         <span>🏆 برترین‌ها</span>
                         <span class="filter-badge" id="currentFilterBadge">ذخایر طلا</span>
-                    </div>
+                            </div>
                     <div class="ranking-list" id="topCountriesList">
                         <!-- لیست کشورها -->
-                    </div>
+                        </div>
                     <button class="compare-toggle" id="compareToggle">📊 مقایسه</button>
+                    </div>
                 </div>
-            </div>
-            
+                
             <!-- پنل مقایسه (پنهان) -->
             <div class="compare-panel hidden" id="comparePanel">
                 <div class="compare-header">
@@ -1905,8 +2509,8 @@
                             <span class="ad-badge">ویژه</span>
                             <h4>تحلیل رایگان بازار طلا</h4>
                             <p>دریافت تحلیل روزانه</p>
-                        </div>
                     </div>
+                </div>
                     <!-- اسلاید 2 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=2" alt="تبلیغ 2">
@@ -1914,8 +2518,8 @@
                             <span class="ad-badge hot">داغ</span>
                             <h4>سیگنال‌های VIP</h4>
                             <p>۳۰٪ تخفیف اشتراک</p>
-                        </div>
                     </div>
+                </div>
                     <!-- اسلاید 3 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=3" alt="تبلیغ 3">
@@ -1923,8 +2527,8 @@
                             <span class="ad-badge new">جدید</span>
                             <h4>آموزش تحلیل تکنیکال</h4>
                             <p>دوره جامع رایگان</p>
-                        </div>
-                    </div>
+                </div>
+            </div>
                     <!-- اسلاید 4 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=4" alt="تبلیغ 4">
@@ -1932,8 +2536,8 @@
                             <span class="ad-badge">پیشنهاد</span>
                             <h4>ربات معامله‌گر هوشمند</h4>
                             <p>تست رایگان ۷ روزه</p>
+                            </div>
                         </div>
-                    </div>
                     <!-- اسلاید 5 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=5" alt="تبلیغ 5">
@@ -1941,8 +2545,8 @@
                             <span class="ad-badge hot">محدود</span>
                             <h4>مسابقه پیش‌بینی</h4>
                             <p>جایزه ۱۰ میلیون تومان</p>
-                        </div>
                     </div>
+                </div>
                     <!-- اسلاید 6 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=6" alt="تبلیغ 6">
@@ -1951,7 +2555,7 @@
                             <h4>اپلیکیشن موبایل</h4>
                             <p>دانلود از کافه‌بازار</p>
                         </div>
-                    </div>
+                        </div>
                     <!-- اسلاید 7 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=7" alt="تبلیغ 7">
@@ -1959,8 +2563,8 @@
                             <span class="ad-badge">تخفیف</span>
                             <h4>اشتراک سالانه</h4>
                             <p>۵۰٪ تخفیف ویژه</p>
-                        </div>
                     </div>
+                            </div>
                     <!-- اسلاید 8 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=8" alt="تبلیغ 8">
@@ -1969,7 +2573,7 @@
                             <h4>هشدار قیمت رایگان</h4>
                             <p>فعال‌سازی آسان</p>
                         </div>
-                    </div>
+                            </div>
                     <!-- اسلاید 9 -->
                     <div class="ad-slide">
                         <img src="https://picsum.photos/400/200?random=9" alt="تبلیغ 9">
@@ -1986,9 +2590,9 @@
                             <span class="ad-badge">ویژه</span>
                             <h4>مشاوره سرمایه‌گذاری</h4>
                             <p>اولین جلسه رایگان</p>
-                        </div>
-                    </div>
                 </div>
+            </div>
+        </div>
             </div>
             
             <!-- دکمه‌های ناوبری -->
@@ -2091,7 +2695,7 @@
             <div class="touch-icon">☰</div>
         </div>
     </div>
-    
+
     <!-- منوی شیشه‌ای جدید -->
     <div class="glass-menu-overlay" id="glassMenu">
         <div class="glass-menu">
@@ -2108,6 +2712,10 @@
                 <button class="glass-menu-item" data-page="news">
                     <span class="glass-icon">📰</span>
                     <span class="glass-text">اخبار</span>
+                </button>
+                <button class="glass-menu-item" data-page="globe">
+                    <span class="glass-icon">🌍</span>
+                    <span class="glass-text">کره‌ها</span>
                 </button>
                 <button class="glass-menu-item" data-page="tutorial">
                     <span class="glass-icon">📚</span>
@@ -2127,16 +2735,47 @@
     <script src="gold-map.js"></script>
 
     <!-- در <head> یا قبل از </body> اینا رو اضافه کن -->
+    <script src="data/iran-provinces-cities.js"></script>
     <script src="globe/globe-base.js"></script>
     <script src="globe/financial-globe.js"></script>
     <script src="globe/resources-globe.js"></script>
     <script src="data/mock-financial-data.js"></script>
-    <script src="data/mock-resources-data.js"></script>
+    <script src="data/mock-resources-data.js"></script>   
     <script src="data/countries-data.js"></script>
     <script src="data/geo-borders.js"></script>
     <script src="data/world-resources.js"></script>   
 
          
     <script src="script.js"></script>
+    
+    <!-- ==================== -->
+    <!-- 📱 نوار ناوبری پایین (Bottom Navigation Bar) -->
+    <!-- ==================== -->
+    <nav class="bottom-nav-bar" id="bottomNavBar">
+        <button class="nav-item" data-page="home" title="خانه">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">خانه</span>
+        </button>
+        <button class="nav-item" data-page="news" title="اخبار">
+            <span class="nav-icon">📰</span>
+            <span class="nav-text">اخبار</span>
+        </button>
+        <button class="nav-item" data-page="globe" title="کره‌ها">
+            <span class="nav-icon">🌍</span>
+            <span class="nav-text">کره‌ها</span>
+        </button>
+        <button class="nav-item" data-page="tutorial" title="آموزش">
+            <span class="nav-icon">📚</span>
+            <span class="nav-text">آموزش</span>
+        </button>
+        <button class="nav-item" data-page="relax" title="آرامش">
+            <span class="nav-icon">🧘</span>
+            <span class="nav-text">آرامش</span>
+        </button>
+        <button class="nav-item" data-page="tools" title="ابزارها">
+            <span class="nav-icon">🛠️</span>
+            <span class="nav-text">ابزارها</span>
+        </button>
+    </nav>
 </body>
 </html>
