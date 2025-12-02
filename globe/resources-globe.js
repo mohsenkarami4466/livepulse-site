@@ -76,9 +76,18 @@ class ResourcesGlobe {
             this.scene = new THREE.Scene();
             this.scene.background = new THREE.Color(0x0a0a0f);
 
-            // Camera
+            // Camera - موقعیت اولیه به سمت ایران
             this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-            this.camera.position.set(0, 0, 3);
+            const iranLat = 32.4279;
+            const iranLng = 53.6880;
+            const phi = (90 - iranLat) * (Math.PI / 180);
+            const theta = (iranLng + 180) * (Math.PI / 180);
+            const distance = 3;
+            const x = -distance * Math.sin(phi) * Math.cos(theta);
+            const y = distance * Math.cos(phi);
+            const z = distance * Math.sin(phi) * Math.sin(theta);
+            this.camera.position.set(x, y, z);
+            this.camera.lookAt(0, 0, 0);
 
             // Renderer
             this.renderer = new THREE.WebGLRenderer({ 
@@ -99,6 +108,21 @@ class ResourcesGlobe {
                 this.controls.minDistance = 1.5;
                 this.controls.maxDistance = 10;
                 this.controls.enablePan = false;
+                this.controls.enableRotate = true;
+                this.controls.autoRotate = false; // پیش‌فرض: چرخش اتوماتیک خاموش
+                this.controls.autoRotateSpeed = 0;
+                
+                // جلوگیری از چرخش با wheel event
+                const originalWheelHandler = this.controls.handleMouseWheel;
+                this.controls.handleMouseWheel = function(event) {
+                    // فقط zoom، نه rotate
+                    if (event.deltaY !== 0) {
+                        const zoom = event.deltaY > 0 ? 1.1 : 0.9;
+                        this.dolly(zoom);
+                        this.update();
+                    }
+                };
+                
                 console.log('✅ OrbitControls فعال شد');
             } else {
                 console.warn('⚠️ OrbitControls در دسترس نیست');
@@ -311,7 +335,8 @@ class ResourcesGlobe {
         
         this.animationId = requestAnimationFrame(() => this.animate());
         
-        if (this.globe) {
+        // چرخش کره فقط اگر autoRotate فعال باشد
+        if (this.globe && this.globe.rotation && this.controls && this.controls.autoRotate) {
             this.globe.rotation.y += 0.0008;
         }
         
@@ -326,9 +351,27 @@ class ResourcesGlobe {
 
     resetView() {
         if (this.camera) {
-            this.camera.position.set(0, 0, 3);
+            // بازگشت به موقعیت ایران
+            const iranLat = 32.4279;
+            const iranLng = 53.6880;
+            const phi = (90 - iranLat) * (Math.PI / 180);
+            const theta = (iranLng + 180) * (Math.PI / 180);
+            const distance = 3;
+            const x = -distance * Math.sin(phi) * Math.cos(theta);
+            const y = distance * Math.cos(phi);
+            const z = distance * Math.sin(phi) * Math.sin(theta);
+            this.camera.position.set(x, y, z);
             this.camera.lookAt(0, 0, 0);
         }
+    }
+    
+    toggleRotate() {
+        if (this.controls) {
+            this.controls.autoRotate = !this.controls.autoRotate;
+            this.controls.autoRotateSpeed = this.controls.autoRotate ? 0.5 : 0;
+            return this.controls.autoRotate;
+        }
+        return false;
     }
 
     showError() {
