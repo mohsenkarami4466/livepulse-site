@@ -872,6 +872,9 @@ function showResourcesByType(earthMesh, resourceType) {
 if (typeof window !== 'undefined') {
     window.loadCountryBorders = loadCountryBorders;
     window.createWorldBorders = createWorldBorders;
+    window.showResourcesByType = showResourcesByType;
+    window.createResourceIcons = createResourceIcons;
+    window.clearResourceIcons = clearResourceIcons;
     window.updateBordersForCountry = updateBordersForCountry;
     window.createTradeLines = createTradeLines;
     window.createConflictLine = createConflictLine;
