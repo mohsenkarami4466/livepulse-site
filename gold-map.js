@@ -1,6 +1,6 @@
 // gold-map-glass.js - نسخه کامل با 60 کشور
 class WorldGoldMapGlass {
-    constructor(containerId) {
+    constructor() {
         this.currentYear = '2024';
         this.currentFilter = 'reserves';
         this.selectedCountries = [];
@@ -11,8 +11,6 @@ class WorldGoldMapGlass {
         this.countryNameToCode = {};
         this.countryInfoByCode = {};
         this.completeData = null;
-        this.containerId = containerId || null; // اگر containerId داده شده باشد
-        this.globeType = null; // نوع کره (برای نقشه‌های هایلایت)
 
         this.init();
     }
@@ -60,10 +58,7 @@ class WorldGoldMapGlass {
     }
 
     handleTouchStart(e) {
-        // چک کردن همه container های ممکن
-        const containers = ['#goldMapGlass', '.gold-map-visual', '.globe-2d-map-container'];
-        const isInMap = containers.some(selector => e.target.closest(selector));
-        if (isInMap && e.touches.length > 1) {
+        if (e.target.closest('#goldMapGlass') && e.touches.length > 1) {
             e.preventDefault();
         }
     }
@@ -182,19 +177,9 @@ class WorldGoldMapGlass {
     }
 
     createMap() {
-        // استفاده از containerId سفارشی اگر تعریف شده باشد
-        let container = null;
-        if (this.containerId) {
-            container = document.getElementById(this.containerId);
-        }
-        
-        // اگر پیدا نشد، از ID پیش‌فرض استفاده کن
+        const container = document.getElementById('goldMapGlass');
         if (!container) {
-            container = document.getElementById('goldMapGlass');
-        }
-        
-        if (!container) {
-            console.error(`Container not found. containerId: ${this.containerId || 'goldMapGlass'}`);
+            console.error('Container #goldMapGlass not found');
             return;
         }
 
@@ -204,8 +189,7 @@ class WorldGoldMapGlass {
         // پاکسازی قبلی
         container.innerHTML = '';
 
-        // استفاده از container پیدا شده به جای hard-coded ID
-        this.svg = d3.select(container)
+        this.svg = d3.select('#goldMapGlass')
             .append('svg')
             .attr('width', '100%')
             .attr('height', '100%')
@@ -593,9 +577,20 @@ class WorldGoldMapGlass {
 
         this.updateCountryComparison();
         
-        // نقشه مشترک دیگر به هیچ کره 3D متصل نیست
-        // فقط نقشه‌های 2D در هایلایت‌های کره‌ها (با globeType) به کره 3D متصل می‌شوند
-        // این نقشه مشترک فقط برای انتخاب و مقایسه کشورها استفاده می‌شود
+        // انتخاب کشور در کره منابع (اگر باز باشد)
+        if (typeof window.selectCountry === 'function') {
+            console.log('🌍 انتخاب کشور در کره منابع:', code);
+            window.selectCountry(code);
+            
+            // اگر کره منابع باز نیست، باز کردن آن
+            const resourcesModal = document.getElementById('resourcesGlobeModal');
+            if (resourcesModal && !resourcesModal.classList.contains('active')) {
+                // باز کردن کره منابع
+                if (typeof window.openResourcesGlobe === 'function') {
+                    window.openResourcesGlobe();
+                }
+            }
+        }
     }
 
     handleCountryHover(event, d) {
@@ -992,11 +987,38 @@ class WorldGoldMapGlass {
     }
 
     showGlobeModal() {
-        // این تابع دیگر استفاده نمی‌شود - نقشه 2D مشترک دیگر به کره متصل نیست
-        // برای باز کردن کره، از نقشه 2D در هایلایت‌ها استفاده کنید
+        // ============================================
+        // این بخش برای نمای سه بعدی آماده شده است
+        // می‌توانید از کتابخانه‌های زیر استفاده کنید:
+        // 1. Three.js + D3 برای نقشه سه بعدی
+        // 2. Globe.gl برای گلوب تعاملی
+        // 3. Cesium برای زمین سه بعدی حرفه‌ای
+        // ============================================
+        
+        // نمونه کد برای شروع:
+        /*
+        const globeContainer = document.createElement('div');
+        globeContainer.className = 'globe-3d-container';
+        globeContainer.innerHTML = `
+            <div class="globe-modal">
+                <div class="modal-header">
+                    <h3>🌍 نمای سه بعدی زمین</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="globe-content">
+                    <div id="globe3d"></div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(globeContainer);
+        
+        // اینجا کدهای three.js یا globe.gl را اضافه کنید
+        */
+        
+        // فعلاً پیام ساده نمایش داده می‌شود
         this.showMessage(
-            '🌍 کره سه بعدی', 
-            'برای مشاهده نمای سه بعدی، لطفاً به صفحه "کره‌ها" بروید و از نقشه 2D در هایلایت مورد نظر استفاده کنید.'
+            '🌍 نمای سه بعدی', 
+            'این قابلیت در نسخه بعدی اضافه خواهد شد. می‌توانید از کتابخانه Three.js یا Globe.gl استفاده کنید.'
         );
     }
 
