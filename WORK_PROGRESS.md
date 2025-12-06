@@ -194,8 +194,136 @@
 
 ---
 
+---
+
+## ✅ کارهای تکمیل شده (ادامه - فاز 2)
+
+### کار 8: بررسی Code Duplication در Globe Classes
+**وضعیت:** ✅ **گزارش ایجاد شد**  
+**تاریخ:** 2024-12-05  
+**زمان:** ~20 دقیقه
+
+**یافته‌ها:**
+- حدود 325 خط کد مشترک از ~470 خط در هر کلاس
+- درصد Duplication: حدود 70%
+- 12 بخش مشترک شناسایی شد
+
+**گزارش کامل:** `CODE_DUPLICATION_REPORT.md` ایجاد شد
+
+---
+
+### کار 9: ایجاد Utility Functions مشترک
+**وضعیت:** ✅ **تکمیل شد**  
+**تاریخ:** 2024-12-05  
+**زمان:** ~30 دقیقه
+
+**تغییرات انجام شده:**
+1. ✅ ایجاد فایل `utils/globe-helpers.js` با 7 utility function:
+   - `latLngToVector3()` - تبدیل lat/lng به Vector3
+   - `calculateCameraPositionForIran()` - محاسبه موقعیت camera برای ایران
+   - `createGlobeMarker()` - ساخت marker با پارامترهای قابل تنظیم
+   - `loadTextureWithFallback()` - بارگذاری texture با fallback
+   - `setupGlobeResizeHandler()` - setup resize handler
+   - `cleanupGlobeResizeHandler()` - cleanup resize handler
+   - `createGlobeAtmosphere()` - ساخت atmosphere برای کره
+
+2. ✅ اضافه کردن `globe-helpers.js` به `index.html`
+
+**جمع تغییرات:** 
+- 1 فایل جدید با 7 utility function
+- آماده برای استفاده در کلاس‌های Globe
+
+**تست:**
+- ✅ Syntax check: بدون خطا
+- ✅ Linter: بدون خطا
+- ✅ فایل به index.html اضافه شد
+
+---
+
+### کار 10: بهینه‌سازی Performance
+**وضعیت:** ✅ **تکمیل شد (موارد مهم)**  
+**تاریخ:** 2024-12-05  
+**زمان:** ~30 دقیقه
+
+**تغییرات انجام شده:**
+1. ✅ ایجاد فایل `utils/performance.js` با 5 utility function:
+   - `debounce()` - اجرای تابع را به تاخیر می‌اندازد
+   - `throttle()` - اجرای تابع را محدود می‌کند
+   - `requestAnimationFrameSafe()` - wrapper برای requestAnimationFrame
+   - `cancelAnimationFrameSafe()` - wrapper برای cancelAnimationFrame
+   - `createDebouncedResizeHandler()` - helper برای ایجاد debounced resize handler
+
+2. ✅ اضافه کردن `performance.js` به `index.html`
+
+3. ✅ بهبود `setupEvents()` در `FinancialGlobe` و `ResourcesGlobe`:
+   - استفاده از debounce برای resize events
+   - ذخیره handler برای cleanup
+
+4. ✅ بهبود `destroy()` در هر دو کلاس:
+   - Cleanup resize handler
+   - استفاده از `cancelAnimationFrameSafe` برای اطمینان از cleanup
+
+**جمع تغییرات:** 
+- 1 فایل جدید با 5 utility function
+- 2 کلاس Globe بهبود یافتند
+- Performance بهینه شد
+
+**تست:**
+- ✅ Syntax check: بدون خطا
+- ✅ Linter: بدون خطا
+- ✅ فایل به index.html اضافه شد
+
+---
+
+### کار 11: بهبود مدیریت State
+**وضعیت:** ✅ **تکمیل شد**  
+**تاریخ:** 2024-12-05  
+**زمان:** ~30 دقیقه
+
+**تغییرات انجام شده:**
+1. ✅ ایجاد فایل `utils/state-manager.js` با StateManager class:
+   - مدیریت متمرکز state
+   - پشتیبانی از nested paths (مثل 'globe.resources.selectedCountry')
+   - Subscribe/unsubscribe برای تغییرات state
+   - ذخیره خودکار در localStorage
+   - Backward compatibility با appState موجود
+
+2. ✅ اضافه کردن `state-manager.js` به `index.html`
+
+3. ✅ بهبود `saveUserState()` در `script-main.js` و `script-init.js`:
+   - استفاده از stateManager اگر موجود باشد
+   - Mark کردن به عنوان deprecated برای استفاده آینده
+
+**جمع تغییرات:** 
+- 1 فایل جدید با StateManager class
+- 2 تابع `saveUserState()` بهبود یافتند
+- State management متمرکز شد
+
+**نکته:** StateManager آماده استفاده است و می‌تواند به تدریج جایگزین استفاده مستقیم از `appState` شود. برای backward compatibility، `appState` به صورت Proxy به stateManager متصل شده است.
+
+**تست:**
+- ✅ Syntax check: بدون خطا
+- ✅ Linter: بدون خطا
+- ✅ فایل به index.html اضافه شد
+
+---
+
+## 🎉 خلاصه فاز 2 - تمام کارهای بهبود کد تکمیل شد!
+
+**تمام کارهای فاز 2 (Code Improvements) تکمیل شدند:**
+1. ✅ بررسی Code Duplication - گزارش ایجاد شد
+2. ✅ ایجاد utility functions مشترک - 7 function
+3. ✅ بهینه‌سازی Performance - debounce و cleanup
+4. ✅ بهبود مدیریت State - StateManager ایجاد شد
+
+**جمع:** بیش از 15 مورد بهبود انجام شد!
+
+---
+
 ## 📝 یادداشت‌ها
 
 - تمام hardcoded values در `script-globes.js` به CONFIG تبدیل شدند
 - کد آماده برای ادامه کار است
+- تمام کارهای فاز 1 و فاز 2 تکمیل شدند
+- کد آماده برای کارهای شما (UI/UX changes, Logic changes, React migration)
 

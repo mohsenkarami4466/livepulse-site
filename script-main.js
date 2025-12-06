@@ -148,9 +148,13 @@ function initializeApp() {
 
 /**
  * 💾 ذخیره وضعیت کاربر در localStorage
+ * @deprecated استفاده از stateManager.save() به جای این تابع
  */
 function saveUserState() {
-    if (typeof appState !== 'undefined') {
+    // استفاده از stateManager اگر موجود باشد
+    if (typeof stateManager !== 'undefined') {
+        stateManager.save();
+    } else if (typeof appState !== 'undefined') {
         localStorage.setItem('livepulseState', JSON.stringify(appState));
     }
 }

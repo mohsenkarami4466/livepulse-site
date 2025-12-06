@@ -351,7 +351,19 @@ class ResourcesGlobe {
     }
 
     setupEvents() {
-        window.addEventListener('resize', () => this.handleResize());
+        // استفاده از debounce برای بهینه‌سازی performance
+        const debouncedResize = typeof debounce !== 'undefined' 
+            ? debounce(() => this.handleResize(), 250)
+            : (() => {
+                let timeout;
+                return () => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => this.handleResize(), 250);
+                };
+            })();
+        
+        window.addEventListener('resize', debouncedResize);
+        this._resizeHandler = debouncedResize; // ذخیره برای cleanup
     }
 
     handleResize() {
@@ -432,8 +444,18 @@ class ResourcesGlobe {
         
         this.isInitialized = false;
         
+        // Cleanup resize handler
+        if (this._resizeHandler) {
+            window.removeEventListener('resize', this._resizeHandler);
+            this._resizeHandler = null;
+        }
+        
         if (this.animationId) {
-            cancelAnimationFrame(this.animationId);
+            if (typeof cancelAnimationFrameSafe !== 'undefined') {
+                cancelAnimationFrameSafe(this.animationId);
+            } else {
+                cancelAnimationFrame(this.animationId);
+            }
             this.animationId = null;
         }
         
