@@ -3,7 +3,7 @@ import './Globe.css'
 
 function Globe() {
   return (
-    <div id="globeView" className="view">
+    <div id="globeView" className="view active-view" style={{ display: 'block' }}>
       <div className="view-content">
         <h1>🌍 کره‌ها</h1>
         <p>صفحه کره‌ها - در حال توسعه...</p>

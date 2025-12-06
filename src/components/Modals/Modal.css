@@ -1,0 +1,22 @@
+/* استایل‌های Modal از style.css استفاده می‌کنند */
+/* این فایل فقط برای override های خاص React است */
+
+.modal-overlay {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.modal-overlay.active {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+

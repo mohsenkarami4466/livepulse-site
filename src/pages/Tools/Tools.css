@@ -1,7 +1,7 @@
 /* استایل‌های Tools page از style.css استفاده می‌کنند */
+/* این فایل فقط برای override های خاص React است */
 
-.view-content {
-  padding: 2rem;
-  text-align: center;
+/* اطمینان از نمایش view */
+#toolsView.view.active-view {
+  display: block !important;
 }
-

@@ -1,9 +1,37 @@
 /* استایل‌های Home page از style.css استفاده می‌کنند */
 /* این فایل فقط برای override های خاص React است */
 
+/* اطمینان از نمایش view */
+#homeView.view.active-view {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* اطمینان از نمایش کارت‌ها */
+.main-content {
+  display: block !important;
+  width: 100% !important;
+}
+
+.main-cards-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 1rem !important;
+  padding: 1rem !important;
+  width: 100% !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.price-card {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 .loading-placeholder {
   text-align: center;
   padding: 2rem;
   color: var(--text-secondary);
 }
-

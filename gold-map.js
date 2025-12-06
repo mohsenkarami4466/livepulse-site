@@ -1378,14 +1378,67 @@ class WorldGoldMapGlass {
 // مقداردهی اولیه
 let worldGoldMapGlass;
 
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof d3 !== 'undefined') {
-        worldGoldMapGlass = new WorldGoldMapGlass();
-    } else {
-        const log = window.logger || { error: console.error };
-        log.error('D3.js بارگذاری نشده است');
-        if (window.errorHandler) {
-            window.errorHandler.showUserError('کتابخانه D3.js بارگذاری نشده است. لطفاً صفحه را رفرش کنید.', 'خطای بارگذاری');
-        }
+// تابع برای initialize کردن نقشه (برای استفاده در React)
+window.initGoldMap = function() {
+    const container = document.getElementById('goldMapGlass');
+    if (!container) {
+        const log = window.logger || { warn: console.warn };
+        log.warn('Container #goldMapGlass هنوز پیدا نشد - بعداً تلاش می‌کنیم');
+        return;
     }
+    
+    // بررسی D3.js - با تاخیر برای اطمینان از بارگذاری کامل
+    const checkD3AndInit = () => {
+        if (typeof d3 === 'undefined' || typeof d3.select === 'undefined') {
+            const log = window.logger || { error: console.error };
+            log.error('D3.js بارگذاری نشده است');
+            if (window.errorHandler) {
+                window.errorHandler.showUserError('کتابخانه D3.js بارگذاری نشده است. لطفاً صفحه را رفرش کنید.', 'خطای بارگذاری');
+            }
+            return;
+        }
+        
+        // اگر قبلاً ساخته شده، فقط createMap را فراخوانی کن
+        if (worldGoldMapGlass) {
+            try {
+                worldGoldMapGlass.createMap();
+            } catch (error) {
+                const log = window.logger || { error: console.error };
+                log.error('خطا در createMap:', error);
+                if (window.errorHandler) {
+                    window.errorHandler.handleError(error, 'WorldGoldMapGlass.createMap');
+                }
+            }
+        } else {
+            // ایجاد instance جدید
+            try {
+                worldGoldMapGlass = new WorldGoldMapGlass();
+                window.worldGoldMapGlass = worldGoldMapGlass; // برای دسترسی از React
+            } catch (error) {
+                const log = window.logger || { error: console.error };
+                log.error('خطا در ایجاد WorldGoldMapGlass:', error);
+                if (window.errorHandler) {
+                    window.errorHandler.handleError(error, 'WorldGoldMapGlass.constructor');
+                }
+            }
+        }
+    };
+    
+    // اگر D3.js آماده است، بلافاصله اجرا کن، وگرنه کمی صبر کن
+    if (typeof d3 !== 'undefined' && typeof d3.select !== 'undefined') {
+        checkD3AndInit();
+    } else {
+        setTimeout(checkD3AndInit, 500);
+    }
+};
+
+// برای backward compatibility - فقط اگر container وجود داشت
+document.addEventListener('DOMContentLoaded', function() {
+    // تاخیر برای اطمینان از render شدن React
+    setTimeout(() => {
+        const container = document.getElementById('goldMapGlass');
+        if (container && typeof d3 !== 'undefined') {
+            window.initGoldMap();
+        }
+    }, 2000);
 });

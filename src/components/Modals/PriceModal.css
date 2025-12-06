@@ -1,0 +1,69 @@
+/* استایل‌های PriceModal از style.css استفاده می‌کنند */
+
+.price-modal .modal-content {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 700px;
+}
+
+.price-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.price-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.price-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.price-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.price-change {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.change-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.change-value.positive {
+  color: #22c55e;
+}
+
+.change-value.negative {
+  color: #ef4444;
+}
+
+.change-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.price-chart {
+  min-height: 300px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

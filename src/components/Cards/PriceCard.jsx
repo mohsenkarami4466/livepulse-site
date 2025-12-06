@@ -1,12 +1,22 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { generateMiniChartSVG, formatPrice, getLastUpdateTime } from '../../utils/card-helpers'
 import './PriceCard.css'
 
 function PriceCard({ item, onClick }) {
   const changeClass = item.change >= 0 ? 'positive' : 'negative'
   const isUp = item.change >= 0
-  const miniChartSVG = generateMiniChartSVG(item.symbol, isUp)
-  const lastUpdate = getLastUpdateTime()
+  
+  // استفاده از useMemo برای جلوگیری از محاسبه مجدد
+  const miniChartSVG = useMemo(() => {
+    try {
+      return generateMiniChartSVG(item.symbol, isUp)
+    } catch (error) {
+      console.error('Error generating chart:', error)
+      return ''
+    }
+  }, [item.symbol, isUp])
+  
+  const lastUpdate = useMemo(() => getLastUpdateTime(), [])
 
   const handleClick = () => {
     if (onClick) {

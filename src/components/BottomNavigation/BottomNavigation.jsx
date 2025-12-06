@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useApp } from '../../contexts/AppContext'
 import './BottomNavigation.css'
 
 const navItems = [

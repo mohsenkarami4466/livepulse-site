@@ -1,0 +1,9 @@
+/* استایل‌های Indicators از style.css استفاده می‌کنند */
+/* این فایل فقط برای override های خاص React است */
+
+.indicators-unified-container {
+  display: block !important;
+  visibility: visible !important;
+}
+
+

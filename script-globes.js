@@ -161,7 +161,7 @@ function updateGlobePosition() {
   const globeWrapper = document.getElementById('globeClockWrapper');
   
   if (!indicatorsContainer || !globeWrapper) {
-    const log = window.logger || { warn: console.warn }; log.warn('⚠️ indicatorsContainer یا globeWrapper پیدا نشد');
+    const log = window.logger || { debug: console.log }; log.debug('indicatorsContainer یا globeWrapper پیدا نشد - ممکن است در React مدیریت شود');
     return;
   }
   

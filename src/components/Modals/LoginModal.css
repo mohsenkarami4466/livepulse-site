@@ -1,0 +1,10 @@
+/* استایل‌های LoginModal از style.css استفاده می‌کنند */
+
+.login-modal .modal-content {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 500px;
+}
+

@@ -1,2 +1,19 @@
 /* استایل‌های CardContainer از style.css استفاده می‌کنند */
 
+/* اطمینان از نمایش container */
+.main-cards-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+/* برای موبایل */
+@media (max-width: 768px) {
+  .main-cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}

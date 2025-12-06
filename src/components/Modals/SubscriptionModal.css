@@ -1,0 +1,45 @@
+/* استایل‌های SubscriptionModal از style.css استفاده می‌کنند */
+
+.subscription-modal .modal-content {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.subscription-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.plan-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--glass-border);
+}
+
+.plan-card.featured {
+  border: 2px solid var(--accent-blue);
+}
+
+.plan-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  color: var(--accent-blue);
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.plan-features li {
+  padding: 0.5rem 0;
+}
+

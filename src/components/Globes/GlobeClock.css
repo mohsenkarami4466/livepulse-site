@@ -1,0 +1,35 @@
+/* استایل‌های GlobeClock از style.css و globe-styles.css استفاده می‌کنند */
+/* این فایل فقط برای override های خاص React است */
+
+/* اطمینان از نمایش Globe Clock */
+.globe-clock-wrapper {
+  position: fixed !important;
+  left: 8px !important;
+  top: auto !important;
+  z-index: 998 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: clamp(100px, 14vw, 180px) !important;
+  height: clamp(100px, 14vw, 180px) !important;
+  pointer-events: auto !important;
+}
+
+/* تنظیم top بر اساس header - باید با JS تنظیم شود */
+.globe-clock-wrapper[style*="top"] {
+  /* اگر top تنظیم شده، استفاده کن */
+}
+
+#globeContainer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.utc-clock-ring {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}

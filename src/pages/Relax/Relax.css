@@ -1,7 +1,28 @@
 /* استایل‌های Relax page از style.css استفاده می‌کنند */
 
+/* اطمینان از نمایش view */
+#relaxView.view.active-view {
+  display: block !important;
+}
+
 .view-content {
   padding: 2rem;
   text-align: center;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+.view-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.view-content p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+}

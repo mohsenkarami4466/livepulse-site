@@ -1,31 +1,32 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useApp } from '../../contexts/AppContext'
+import LoginModal from '../Modals/LoginModal'
 import './Header.css'
 
 function Header() {
   const navigate = useNavigate()
+  const { currentTheme, setTheme } = useApp()
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+
+  useEffect(() => {
+    // اعمال theme به body
+    document.body.setAttribute('data-theme', currentTheme)
+  }, [currentTheme])
 
   useEffect(() => {
     // Setup theme toggle
     const themeToggle = document.getElementById('themeToggle')
     if (themeToggle) {
       const handleThemeToggle = () => {
-        const currentTheme = document.body.getAttribute('data-theme') || 'light'
         const newTheme = currentTheme === 'light' ? 'dark' : 'light'
-        document.body.setAttribute('data-theme', newTheme)
-        
-        // ذخیره در localStorage
-        if (window.stateManager) {
-          window.stateManager.set('currentTheme', newTheme)
-        } else if (localStorage) {
-          localStorage.setItem('livepulse-theme', newTheme)
-        }
+        setTheme(newTheme)
       }
 
       themeToggle.addEventListener('click', handleThemeToggle)
       return () => themeToggle.removeEventListener('click', handleThemeToggle)
     }
-  }, [])
+  }, [currentTheme, setTheme])
 
   useEffect(() => {
     // Setup fullscreen toggle
@@ -46,19 +47,13 @@ function Header() {
     }
   }, [])
 
-  useEffect(() => {
-    // Setup login button
-    const loginBtn = document.getElementById('loginBtn')
-    if (loginBtn) {
-      const handleLoginClick = () => {
-        // TODO: پیاده‌سازی login modal
-        console.log('Login clicked')
-      }
-
-      loginBtn.addEventListener('click', handleLoginClick)
-      return () => loginBtn.removeEventListener('click', handleLoginClick)
+  const handleLoginClick = () => {
+    setIsLoginModalOpen(true)
+    // هماهنگی با کد vanilla JS
+    if (typeof window !== 'undefined' && window.openLoginModal) {
+      window.openLoginModal()
     }
-  }, [])
+  }
 
   const handleLogoClick = () => {
     navigate('/')
@@ -86,9 +81,14 @@ function Header() {
           </div>
           
           {/* دکمه ورود */}
-          <button className="login-btn" id="loginBtn">ورود</button>
+          <button className="login-btn" id="loginBtn" onClick={handleLoginClick}>ورود</button>
         </div>
       </div>
+      
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+      />
     </header>
   )
 }

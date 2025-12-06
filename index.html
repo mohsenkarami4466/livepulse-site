@@ -18,6 +18,25 @@
     <!-- D3.js -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
+    
+    <!-- Utilities - باید قبل از React app لود شوند -->
+    <script src="/utils/logger.js"></script>
+    <script src="/utils/error-handler.js"></script>
+    <script src="/utils/performance.js"></script>
+    <script src="/utils/globe-helpers.js"></script>
+    <script src="/utils/state-manager.js"></script>
+    <script src="/config.js"></script>
+    
+    <!-- Main Scripts - برای integration با React -->
+    <script src="/script-main.js"></script>
+    <script src="/script-views.js"></script>
+    <script src="/script-cards.js"></script>
+    <script src="/script-globes.js"></script>
+    <script src="/script-ui.js"></script>
+    <script src="/script-tools.js"></script>
+    <script src="/gold-map.js"></script>
+    <script src="/data/geo-borders.js"></script>
+    <script src="/script-init.js"></script>
 </head>
 <body data-theme="light">
     <div id="root"></div>

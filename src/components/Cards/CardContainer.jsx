@@ -14,7 +14,7 @@ function CardContainer({ items = [], className = '', onCardClick }) {
   }
 
   return (
-    <div className={`main-cards-container ${className}`} id="homeMainCards">
+    <div className={`main-cards-container ${className}`} id="homeMainCards" style={{ display: 'grid' }}>
       {items.map((item, index) => (
         <PriceCard 
           key={item.symbol || index} 

@@ -12,6 +12,11 @@ let lastGeneratedView = null;
 /**
  * 🏠 تولید ۴ کارت اصلی صفحه خانه
  */
+// Export to window for global access
+if (typeof window !== 'undefined') {
+    window.generateHomeCards = generateHomeCards;
+}
+
 function generateHomeCards() {
     // جلوگیری از فراخوانی همزمان
     if (isGeneratingHomeCards) {
@@ -576,6 +581,14 @@ function startAnalysisTimer(item, countdownElement) {
             clearInterval(timer);
         }
     }, 1000);
+}
+
+// Export functions to window for global access
+if (typeof window !== 'undefined') {
+    window.generateHomeCards = generateHomeCards;
+    window.createPriceCard = createPriceCard;
+    window.checkLoginRequired = checkLoginRequired;
+    window.openPriceDetail = openPriceDetail;
 }
 
 // ==================== //

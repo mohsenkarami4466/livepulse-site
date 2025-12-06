@@ -51,7 +51,14 @@ function setupEventListeners() {
     eventListenersSetup = true;
     
     // 📱 نوار ناوبری پایین
-    setupBottomNavigation();
+    if (typeof setupBottomNavigation === 'function') {
+        setupBottomNavigation();
+    } else if (typeof window.setupBottomNavigation === 'function') {
+        window.setupBottomNavigation();
+    } else {
+        const log = window.logger || { warn: console.warn };
+        log.warn('setupBottomNavigation function not found');
+    }
     
     // بستن مودال‌ها
     if (elements.closeLoginModal) {
@@ -406,34 +413,71 @@ function setupEventListeners() {
         }
     }, true);
     
-    // چت
-    elements.sendMessage.addEventListener('click', sendChatMessage);
-    elements.chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendChatMessage();
-        }
-    });
-    
-    // فرم ورود
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
+    // چت - فقط اگر elements وجود داشته باشند (در React ممکن است وجود نداشته باشند)
+    if (elements.sendMessage && elements.chatInput) {
+        const sendMessageHandler = () => {
+            if (typeof sendChatMessage === 'function') {
+                sendChatMessage();
+            }
+        };
+        elements.sendMessage.removeEventListener('click', sendMessageHandler);
+        addEventListenerOnceUI(elements.sendMessage, 'click', sendMessageHandler, 'send-message-click');
         
-        // شبیه‌سازی ورود موفق
-        if (username && password) {
-            alert('✅ ورود موفقیت‌آمیز بود!');
-            elements.loginModal.classList.remove('active');
-        } else {
-            alert('⚠️ لطفا اطلاعات را کامل وارد کنید.');
-        }
-    });
+        const chatInputHandler = (e) => {
+            if (e.key === 'Enter') {
+                if (typeof sendChatMessage === 'function') {
+                    sendChatMessage();
+                }
+            }
+        };
+        elements.chatInput.removeEventListener('keypress', chatInputHandler);
+        addEventListenerOnceUI(elements.chatInput, 'keypress', chatInputHandler, 'chat-input-keypress');
+    } else {
+        // در React، chat elements ممکن است وجود نداشته باشند
+        const log = window.logger || { debug: console.log };
+        log.debug('Chat elements در React موجود نیستند - نادیده گرفته شد');
+    }
     
-    // دکمه خرید اشتراک
-    document.getElementById('goToSubscription').addEventListener('click', () => {
-        elements.loginModal.classList.remove('active');
-        elements.subscriptionModal.classList.add('active');
-    });
+    // فرم ورود - فقط اگر وجود داشته باشد (در React ممکن است وجود نداشته باشد)
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        const loginFormHandler = (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+            
+            // شبیه‌سازی ورود موفق
+            if (username && password) {
+                alert('✅ ورود موفقیت‌آمیز بود!');
+                if (elements.loginModal) {
+                    elements.loginModal.classList.remove('active');
+                }
+            } else {
+                alert('⚠️ لطفا اطلاعات را کامل وارد کنید.');
+            }
+        };
+        loginForm.removeEventListener('submit', loginFormHandler);
+        addEventListenerOnceUI(loginForm, 'submit', loginFormHandler, 'login-form-submit');
+    } else {
+        // در React، login form ممکن است وجود نداشته باشد
+        const log = window.logger || { debug: console.log };
+        log.debug('Login form در React موجود نیست - نادیده گرفته شد');
+    }
+    
+    // دکمه خرید اشتراک - فقط اگر وجود داشته باشد
+    const goToSubscriptionBtn = document.getElementById('goToSubscription');
+    if (goToSubscriptionBtn) {
+        const goToSubscriptionHandler = () => {
+            if (elements.loginModal) {
+                elements.loginModal.classList.remove('active');
+            }
+            if (elements.subscriptionModal) {
+                elements.subscriptionModal.classList.add('active');
+            }
+        };
+        goToSubscriptionBtn.removeEventListener('click', goToSubscriptionHandler);
+        addEventListenerOnceUI(goToSubscriptionBtn, 'click', goToSubscriptionHandler, 'go-to-subscription-click');
+    }
     
     // دکمه‌های خرید اشتراک
     document.querySelectorAll('.subscribe-btn').forEach(btn => {
@@ -449,69 +493,85 @@ function setupEventListeners() {
         });
     });
     
-    // ارسال نظر
-    document.getElementById('submitFeedback').addEventListener('click', () => {
-        const feedback = document.getElementById('feedbackText').value;
-        if (feedback.trim()) {
-            alert('✅ نظر شما با موفقیت ثبت شد. با تشکر!');
-            document.getElementById('feedbackText').value = '';
-        } else {
-            alert('⚠️ لطفا نظر خود را بنویسید.');
-        }
-    });
+    // ارسال نظر - فقط اگر element وجود داشته باشد
+    const submitFeedback = document.getElementById('submitFeedback');
+    if (submitFeedback) {
+        addEventListenerOnceUI(submitFeedback, 'click', () => {
+            const feedback = document.getElementById('feedbackText');
+            if (feedback && feedback.value.trim()) {
+                alert('✅ نظر شما با موفقیت ثبت شد. با تشکر!');
+                feedback.value = '';
+            } else {
+                alert('⚠️ لطفا نظر خود را بنویسید.');
+            }
+        }, 'submit-feedback-click');
+    }
     
-    // ابزارها
-    elements.calculateGold.addEventListener('click', calculateGoldPrice);
-    elements.analyzeDiamond.addEventListener('click', analyzeDiamond);
-    elements.convertCurrency.addEventListener('click', convertCurrency);
-    elements.analyzeCoin.addEventListener('click', analyzeCoin);
+    // ابزارها - فقط اگر elements وجود داشته باشند
+    if (elements.calculateGold) {
+        addEventListenerOnceUI(elements.calculateGold, 'click', calculateGoldPrice, 'calculate-gold-click');
+    }
+    if (elements.analyzeDiamond) {
+        addEventListenerOnceUI(elements.analyzeDiamond, 'click', analyzeDiamond, 'analyze-diamond-click');
+    }
+    if (elements.convertCurrency) {
+        addEventListenerOnceUI(elements.convertCurrency, 'click', convertCurrency, 'convert-currency-click');
+    }
+    if (elements.analyzeCoin) {
+        addEventListenerOnceUI(elements.analyzeCoin, 'click', analyzeCoin, 'analyze-coin-click');
+    }
     
     // رویدادهای کره‌ها از طریق دکمه سیار مدیریت می‌شوند
     // (کدهای قبلی حذف شدند - دکمه‌های X جایشان را به منوی شیشه‌ای دادند)
     
-    // بستن modal با کلیک روی overlay
+    // بستن modal با کلیک روی overlay - فقط اگر modals وجود داشته باشند
     const financialModal = document.getElementById('financialGlobeModal');
     const resourcesModal = document.getElementById('resourcesGlobeModal');
     
     if (financialModal) {
-        financialModal.addEventListener('click', (e) => {
+        addEventListenerOnceUI(financialModal, 'click', (e) => {
             if (e.target === financialModal) {
                 closeGlobeModal('financialGlobeModal');
             }
-        });
+        }, 'financial-modal-overlay-click');
     }
     
     if (resourcesModal) {
-        resourcesModal.addEventListener('click', (e) => {
+        addEventListenerOnceUI(resourcesModal, 'click', (e) => {
             if (e.target === resourcesModal) {
                 closeGlobeModal('resourcesGlobeModal');
             }
-        });
+        }, 'resources-modal-overlay-click');
     }
     
-    // آپلود عکس
-    document.getElementById('diamondUploadArea').addEventListener('click', () => {
-        document.getElementById('diamondImage').click();
-    });
+    // آپلود عکس - فقط اگر elements وجود داشته باشند
+    const diamondUploadArea = document.getElementById('diamondUploadArea');
+    const diamondImage = document.getElementById('diamondImage');
+    if (diamondUploadArea && diamondImage) {
+        addEventListenerOnceUI(diamondUploadArea, 'click', () => {
+            diamondImage.click();
+        }, 'diamond-upload-click');
+        
+        addEventListenerOnceUI(diamondImage, 'change', function(e) {
+            if (this.files.length > 0) {
+                diamondUploadArea.innerHTML = `📁 ${this.files[0].name}`;
+            }
+        }, 'diamond-image-change');
+    }
     
-    document.getElementById('coinUploadArea').addEventListener('click', () => {
-        document.getElementById('coinImage').click();
-    });
-    
-    // نمایش نام فایل آپلود شده
-    document.getElementById('diamondImage').addEventListener('change', function(e) {
-        if (this.files.length > 0) {
-            document.getElementById('diamondUploadArea').innerHTML = 
-                `📁 ${this.files[0].name}`;
-        }
-    });
-    
-    document.getElementById('coinImage').addEventListener('change', function(e) {
-        if (this.files.length > 0) {
-            document.getElementById('coinUploadArea').innerHTML = 
-                `📁 ${this.files[0].name}`;
-        }
-    });
+    const coinUploadArea = document.getElementById('coinUploadArea');
+    const coinImage = document.getElementById('coinImage');
+    if (coinUploadArea && coinImage) {
+        addEventListenerOnceUI(coinUploadArea, 'click', () => {
+            coinImage.click();
+        }, 'coin-upload-click');
+        
+        addEventListenerOnceUI(coinImage, 'change', function(e) {
+            if (this.files.length > 0) {
+                coinUploadArea.innerHTML = `📁 ${this.files[0].name}`;
+            }
+        }, 'coin-image-change');
+    }
 }
 
 // ==================== //
@@ -804,6 +864,11 @@ if (gameStart) {
 class AssistiveTouch {
     constructor() {
         this.touchElement = document.getElementById('assistiveTouch');
+        if (!this.touchElement) {
+            const log = window.logger || { error: console.error };
+            log.error('assistiveTouch element not found');
+            return;
+        }
         this.touchButton = this.touchElement.querySelector('.touch-button');
         this.glassMenu = document.getElementById('glassMenu');
         
@@ -825,6 +890,9 @@ class AssistiveTouch {
     }
     
     init() {
+        if (!this.touchElement) {
+            return; // اگر element وجود ندارد، init را متوقف کن
+        }
         this.setupEventListeners();
         this.setupGlassMenu();
         this.loadPosition();
@@ -1114,26 +1182,40 @@ class AssistiveTouch {
     }
     
     setupGlassMenu() {
-        document.getElementById('closeGlassMenu').addEventListener('click', () => {
-            this.closeGlassMenu();
-        });
+        // بررسی وجود elements
+        const closeGlassMenuBtn = document.getElementById('closeGlassMenu');
+        if (!closeGlassMenuBtn) {
+            const log = window.logger || { warn: console.warn };
+            log.warn('closeGlassMenu element not found - skipping setup');
+            return;
+        }
         
-        this.glassMenu.addEventListener('click', (e) => {
+        if (!this.glassMenu) {
+            const log = window.logger || { warn: console.warn };
+            log.warn('glassMenu element not found - skipping setup');
+            return;
+        }
+        
+        addEventListenerOnceUI(closeGlassMenuBtn, 'click', () => {
+            this.closeGlassMenu();
+        }, 'close-glass-menu-click');
+        
+        addEventListenerOnceUI(this.glassMenu, 'click', (e) => {
             if (e.target === this.glassMenu) {
                 this.closeGlassMenu();
             }
-        });
+        }, 'glass-menu-overlay-click');
         
         document.querySelectorAll('.glass-menu-item').forEach(item => {
-            item.addEventListener('click', (e) => {
+            addEventListenerOnceUI(item, 'click', (e) => {
                 const page = e.currentTarget.getAttribute('data-page');
                 this.navigateToPage(page);
                 this.closeGlassMenu();
-            });
+            }, `glass-menu-item-${item.getAttribute('data-page')}-click`);
         });
         
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.glassMenu.classList.contains('active')) {
+            if (e.key === 'Escape' && this.glassMenu && this.glassMenu.classList.contains('active')) {
                 this.closeGlassMenu();
             }
         });
@@ -1151,7 +1233,30 @@ class AssistiveTouch {
     
     navigateToPage(page) {
         const log = window.logger || { info: console.log }; log.info(`🎮 رفتن به صفحه: ${page}`);
-        if (typeof showView !== 'undefined') {
+        
+        // اگر در React Router هستیم، از React Router استفاده کن
+        if (window.React && document.getElementById('root')) {
+            // Map page names to React Router paths
+            const pageToPath = {
+                'home': '/',
+                'news': '/news',
+                'globe': '/globe',
+                'tutorial': '/tutorial',
+                'relax': '/relax',
+                'tools': '/tools'
+            };
+            
+            const path = pageToPath[page] || '/';
+            
+            // استفاده از window.navigate که از React Router می‌آید
+            if (typeof window.navigate === 'function') {
+                window.navigate(path);
+            } else {
+                // Fallback: استفاده از window.location
+                window.location.href = path;
+            }
+        } else if (typeof showView !== 'undefined') {
+            // در حالت vanilla JS
             showView(page);
         }
     }
@@ -1259,6 +1364,10 @@ if (!window.hasAttribute || !window.hasAttribute('data-listener-window-resize'))
     window.addEventListener('resize', resizeHandler);
 }
 
+// Export AssistiveTouch class to window for React components
+if (typeof window !== 'undefined') {
+    window.AssistiveTouch = AssistiveTouch;
+}
 
 // ==================== //
 // 🎮 دکمه سیار داخل کره‌های بزرگ

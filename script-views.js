@@ -9,9 +9,35 @@
  * 📱 نمایش صفحه مشخص + مدیریت منو
  */
 function showView(view) {
+    // در React Router، نمایش صفحات توسط React مدیریت می‌شود
+    // این تابع فقط برای backward compatibility و کارهای خاص استفاده می‌شود
+    const log = window.logger || { debug: console.log };
+    
+    // بررسی اینکه آیا در React Router هستیم
+    const isReactRouter = document.getElementById('root') && window.React;
+    
+    if (isReactRouter) {
+        // در React Router، فقط کارهای خاص را انجام می‌دهیم
+        log.debug(`showView called for ${view} in React Router context - skipping view management`);
+        
+        // فقط اگر کارت‌ها وجود ندارند، تولید می‌کنیم
+        if (view === 'home') {
+            setTimeout(() => {
+                const container = document.getElementById('homeMainCards');
+                if (container && container.children.length === 0) {
+                    if (typeof generateHomeCards === 'function') {
+                        generateHomeCards();
+                    }
+                }
+            }, 100);
+        }
+        
+        currentActiveView = view;
+        return;
+    }
+    
     // جلوگیری از فراخوانی همزمان - فقط اگر در حال تغییر است
     if (isChangingView && currentActiveView !== view) {
-        const log = window.logger || { debug: console.log };
         log.debug('در حال تغییر صفحه...');
         return;
     }
@@ -33,7 +59,7 @@ function showView(view) {
     isChangingView = true;
     currentActiveView = view;
     
-    // مخفی کردن همه صفحات
+    // مخفی کردن همه صفحات - فقط در حالت vanilla JS
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
 
     // نمایش صفحه انتخاب شده
@@ -474,4 +500,10 @@ function updateBottomNavigation(currentView) {
     }
 }
 
+// Export functions to window for global access
+if (typeof window !== 'undefined') {
+    window.showView = showView;
+    window.updateBottomNavigation = updateBottomNavigation;
+    window.setupBottomNavigation = setupBottomNavigation;
+}
 

@@ -1,0 +1,7 @@
+/* استایل‌های AssistiveTouch از style.css استفاده می‌کنند */
+
+.assistive-touch {
+  display: block !important;
+  visibility: visible !important;
+}
+

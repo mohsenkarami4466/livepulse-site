@@ -1,12 +1,22 @@
+/* استایل‌های Layout از style.css استفاده می‌کنند */
+
 .layout {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .layout-main {
   flex: 1;
-  padding-bottom: 80px; /* فضا برای bottom navigation */
-  overflow-y: auto;
+  padding-top: 60px; /* برای header */
+  padding-bottom: 70px; /* برای bottom navigation */
+  width: 100%;
 }
 
+/* برای موبایل */
+@media (max-width: 768px) {
+  .layout-main {
+    padding-top: 50px;
+    padding-bottom: 60px;
+  }
+}

@@ -52,7 +52,7 @@ function saveUserState() {
  * 🎯 راه‌اندازی کامل و یکپارچه برنامه
  */
 function initializeLivePulse() {
-    const log = window.logger || { info: console.log }; log.info('🚀 راه‌اندازی یکپارچه LivePulse...');
+    const logInit = window.logger || { info: console.log }; logInit.info('🚀 راه‌اندازی یکپارچه LivePulse...');
     
     try {
         // 1. سیستم state
@@ -75,7 +75,7 @@ function initializeLivePulse() {
         // 2.5 ایونت‌لیستنرهای اصلی (شامل دکمه فول اسکرین)
         if (typeof setupEventListeners === 'function') {
             setupEventListeners();
-            const log = window.logger || { info: console.log }; log.info('✅ ایونت‌لیستنرهای اصلی راه‌اندازی شدند');
+            logInit.info('✅ ایونت‌لیستنرهای اصلی راه‌اندازی شدند');
         }
         
         // راه‌اندازی event listener برای تغییر حالت تمام صفحه (برای به‌روزرسانی آیکون)
@@ -108,17 +108,22 @@ function initializeLivePulse() {
         if (document.getElementById('assistiveTouch')) {
             setTimeout(() => {
                 try {
-                    window.assistiveTouch = new AssistiveTouch();
-                    const log = window.logger || { info: console.log }; log.info('🎮 دکمه شناور راه‌اندازی شد');
-                    // اطمینان از نمایش در موبایل و همه مرورگرها
-                    if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
-                        window.assistiveTouch.ensureVisibility();
-                        // یک بار دیگر بعد از تاخیر کوتاه برای اطمینان (مخصوص اپرا)
-                        setTimeout(() => {
-                    if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
-                        window.assistiveTouch.ensureVisibility();
-                            }
-                        }, 500);
+                    // فقط اگر قبلاً ایجاد نشده باشد
+                    if (!window.assistiveTouch) {
+                        window.assistiveTouch = new AssistiveTouch();
+                        logInit.info('🎮 دکمه شناور راه‌اندازی شد');
+                        // اطمینان از نمایش در موبایل و همه مرورگرها
+                        if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
+                            window.assistiveTouch.ensureVisibility();
+                            // یک بار دیگر بعد از تاخیر کوتاه برای اطمینان (مخصوص اپرا)
+                            setTimeout(() => {
+                                if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
+                                    window.assistiveTouch.ensureVisibility();
+                                }
+                            }, 500);
+                        }
+                    } else {
+                        logInit.info('✅ دکمه شناور قبلاً راه‌اندازی شده است');
                     }
                 } catch (error) {
                     const log = window.logger || { error: console.error };
@@ -134,17 +139,32 @@ function initializeLivePulse() {
         // 5.5. دکمه‌های سیار کره‌های بزرگ
         setTimeout(() => {
             if (typeof initGlobeAssistiveTouches === 'function') {
-                initGlobeAssistiveTouches();
+                try {
+                    initGlobeAssistiveTouches();
+                } catch (error) {
+                    const log = window.logger || { debug: console.log };
+                    log.debug('خطا در initGlobeAssistiveTouches - ممکن است در React مدیریت شود:', error);
+                }
             }
         }, 1200);
         
         // 5.6. راه‌اندازی نقشه‌های 2D در هایلایت‌های کره‌ها
         setTimeout(() => {
             if (typeof setupGlobe2DMaps === 'function') {
-                setupGlobe2DMaps();
+                try {
+                    setupGlobe2DMaps();
+                } catch (error) {
+                    const log = window.logger || { debug: console.log };
+                    log.debug('خطا در setupGlobe2DMaps - ممکن است در React مدیریت شود:', error);
+                }
             }
             if (typeof initGlobe2DMapsOnViewChange === 'function') {
-                initGlobe2DMapsOnViewChange();
+                try {
+                    initGlobe2DMapsOnViewChange();
+                } catch (error) {
+                    const log = window.logger || { debug: console.log };
+                    log.debug('خطا در initGlobe2DMapsOnViewChange - ممکن است در React مدیریت شود:', error);
+                }
             }
         }, 1500);
         
