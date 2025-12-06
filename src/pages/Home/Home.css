@@ -1,0 +1,9 @@
+/* استایل‌های Home page از style.css استفاده می‌کنند */
+/* این فایل فقط برای override های خاص React است */
+
+.loading-placeholder {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
