@@ -29,7 +29,11 @@ class WorldGoldMapGlass {
             // تشخیص تغییر تم
             this.setupThemeObserver();
         } catch (error) {
-            console.error('خطا در بارگذاری نقشه:', error);
+            const log = window.logger || { error: console.error };
+            log.error('خطا در بارگذاری نقشه:', error);
+            if (window.errorHandler) {
+                window.errorHandler.handleError(error, 'WorldGoldMapGlass.init');
+            }
             this.showError('خطا در بارگذاری نقشه. لطفاً صفحه را رفرش کنید.');
         }
     }
@@ -70,9 +74,14 @@ class WorldGoldMapGlass {
 
             // داده‌های کشورها از منبع داخلی استفاده می‌شود چون منبع خارجی قابل اعتماد نیست
             this.countriesInfo = [];
-            console.log('✅ نقشه جهان بارگذاری شد');
+            const log = window.logger || { info: console.log, error: console.error };
+            log.info('✅ نقشه جهان بارگذاری شد');
         } catch (error) {
-            console.error('خطا در بارگذاری داده‌های نقشه:', error);
+            const log = window.logger || { error: console.error };
+            log.error('خطا در بارگذاری داده‌های نقشه:', error);
+            if (window.errorHandler) {
+                window.errorHandler.handleError(error, 'WorldGoldMapGlass.loadWorldData');
+            }
             throw error;
         }
     }
@@ -179,7 +188,8 @@ class WorldGoldMapGlass {
     createMap() {
         const container = document.getElementById('goldMapGlass');
         if (!container) {
-            console.error('Container #goldMapGlass not found');
+            const log = window.logger || { error: console.error };
+            log.error('Container #goldMapGlass not found');
             return;
         }
 
@@ -579,7 +589,8 @@ class WorldGoldMapGlass {
         
         // انتخاب کشور در کره منابع (اگر باز باشد)
         if (typeof window.selectCountry === 'function') {
-            console.log('🌍 انتخاب کشور در کره منابع:', code);
+            const log = window.logger || { info: console.log };
+            log.info('🌍 انتخاب کشور در کره منابع:', code);
             window.selectCountry(code);
             
             // اگر کره منابع باز نیست، باز کردن آن
@@ -1371,6 +1382,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof d3 !== 'undefined') {
         worldGoldMapGlass = new WorldGoldMapGlass();
     } else {
-        console.error('D3.js بارگذاری نشده است');
+        const log = window.logger || { error: console.error };
+        log.error('D3.js بارگذاری نشده است');
+        if (window.errorHandler) {
+            window.errorHandler.showUserError('کتابخانه D3.js بارگذاری نشده است. لطفاً صفحه را رفرش کنید.', 'خطای بارگذاری');
+        }
     }
 });

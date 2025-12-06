@@ -54,9 +54,10 @@ function updateAssetsDisplay() {
 function calculateGoldPrice() {
     if (!checkUsageLimit('tools')) return;
     
+    const cfg = window.CONFIG || CONFIG;
     const weight = parseFloat(document.getElementById('goldWeight').value) || 0;
-    const carat = parseInt(document.getElementById('goldCarat').value) || 24;
-    const wage = parseFloat(document.getElementById('goldWage').value) || 0;
+    const carat = parseInt(document.getElementById('goldCarat').value) || cfg.TOOLS.GOLD.DEFAULT_CARAT;
+    const wage = parseFloat(document.getElementById('goldWage').value) || cfg.TOOLS.GOLD.DEFAULT_WAGE;
     
     if (weight <= 0) {
         elements.goldResult.innerHTML = '<div class="error">⚠️ لطفا وزن را وارد کنید</div>';
@@ -64,7 +65,7 @@ function calculateGoldPrice() {
     }
     
     // قیمت پایه طلای ۲۴ عیار (تومان)
-    const basePrice24 = 3750000;
+    const basePrice24 = cfg.PRICES.GOLD.BASE_PRICE_24;
     const caratRatio = carat / 24;
     const basePrice = basePrice24 * caratRatio * weight;
     const wageAmount = basePrice * (wage / 100);
@@ -468,7 +469,9 @@ function formatPrice(price, symbol) {
  * ✅ بررسی محدودیت استفاده
  */
 function checkUsageLimit(type) {
-    if (appState.userUsage[type] >= 4) {
+    const cfg = window.CONFIG || CONFIG;
+    const limit = type === 'chat' ? cfg.TOOLS.USAGE_LIMIT.CHAT : cfg.TOOLS.USAGE_LIMIT.TOOLS;
+    if (appState.userUsage[type] >= limit) {
         alert(`⚠️ شما از ${type === 'chat' ? 'چت' : 'ابزار'} رایگان خود استفاده کرده‌اید. لطفا اشتراک خریداری کنید.`);
         return false;
     }

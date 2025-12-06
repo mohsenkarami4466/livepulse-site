@@ -1,69 +1,115 @@
 // ==================== //
 // 🎨 UI Interactions (Event Listeners, Chat, etc.)
 // ==================== //
+
+/**
+ * 🔧 Helper function برای جلوگیری از duplicate event listeners
+ * (استفاده از helper function از script-globes.js اگر موجود باشد)
+ */
+function addEventListenerOnceUI(element, event, handler, uniqueId, options = {}) {
+    // استفاده از helper function از script-globes.js اگر موجود باشد
+    if (typeof addEventListenerOnce === 'function') {
+        return addEventListenerOnce(element, event, handler, uniqueId, options);
+    }
+    
+    // Fallback: پیاده‌سازی ساده
+    if (!element) return;
+    
+    const flagKey = `data-listener-${uniqueId}`;
+    
+    // بررسی اینکه آیا listener قبلاً اضافه شده
+    if (element.hasAttribute && element.hasAttribute(flagKey)) {
+        try {
+            element.removeEventListener(event, handler, options);
+        } catch (e) {
+            // ignore
+        }
+    }
+    
+    // اضافه کردن listener
+    element.addEventListener(event, handler, options);
+    
+    // علامت‌گذاری
+    if (element.setAttribute) {
+        element.setAttribute(flagKey, 'true');
+    }
+}
+
+// Flag برای جلوگیری از اجرای چندباره setupEventListeners
+let eventListenersSetup = false;
+
 /**
  * 🎯 تنظیم همه ایونت‌لیستنرها
  */
 function setupEventListeners() {
-    // دکمه تغییر تم
-    elements.themeToggle.addEventListener('click', toggleTheme);
-    
-    // دکمه تمام صفحه برای کل سایت
-    const fullscreenToggle = document.getElementById('fullscreenToggle');
-    if (fullscreenToggle) {
-        fullscreenToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleSiteFullscreen();
-        });
+    // جلوگیری از اجرای چندباره
+    if (eventListenersSetup) {
+        const log = window.logger || { warn: console.warn };
+        log.warn('⚠️ setupEventListeners قبلاً اجرا شده است');
+        return;
     }
-    
-    // دکمه ورود
-    elements.loginBtn.addEventListener('click', () => {
-        elements.loginModal.classList.add('active');
-    });
-    
-    // 🆕 لوگو برای بازگشت به خانه
-    elements.homeLogo.addEventListener('click', () => {
-        showView('home');
-    });
+    eventListenersSetup = true;
     
     // 📱 نوار ناوبری پایین
     setupBottomNavigation();
     
     // بستن مودال‌ها
-    elements.closeLoginModal.addEventListener('click', () => {
-        elements.loginModal.classList.remove('active');
-    });
-    
-    elements.closeSubscriptionModal.addEventListener('click', () => {
-        elements.subscriptionModal.classList.remove('active');
-    });
-    
-    elements.closePriceModal.addEventListener('click', () => {
-        elements.priceModal.classList.remove('active');
-        appState.openModals = Math.max(0, appState.openModals - 1);
-    });
-    
-    // بستن مودال با کلیک خارج
-    elements.loginModal.addEventListener('click', (e) => {
-        if (e.target === elements.loginModal || e.target.classList.contains('modal-overlay')) {
+    if (elements.closeLoginModal) {
+        const closeLoginHandler = () => {
             elements.loginModal.classList.remove('active');
-        }
-    });
-
-    elements.subscriptionModal.addEventListener('click', (e) => {
-        if (e.target === elements.subscriptionModal || e.target.classList.contains('modal-overlay')) {
+        };
+        elements.closeLoginModal.removeEventListener('click', closeLoginHandler);
+        addEventListenerOnceUI(elements.closeLoginModal, 'click', closeLoginHandler, 'close-login-modal');
+    }
+    
+    if (elements.closeSubscriptionModal) {
+        const closeSubscriptionHandler = () => {
             elements.subscriptionModal.classList.remove('active');
-        }
-    });
-
-    elements.priceModal.addEventListener('click', (e) => {
-        if (e.target === elements.priceModal || e.target.classList.contains('modal-overlay')) {
+        };
+        elements.closeSubscriptionModal.removeEventListener('click', closeSubscriptionHandler);
+        addEventListenerOnceUI(elements.closeSubscriptionModal, 'click', closeSubscriptionHandler, 'close-subscription-modal');
+    }
+    
+    if (elements.closePriceModal) {
+        const closePriceHandler = () => {
             elements.priceModal.classList.remove('active');
             appState.openModals = Math.max(0, appState.openModals - 1);
-        }
-    });
+        };
+        elements.closePriceModal.removeEventListener('click', closePriceHandler);
+        addEventListenerOnceUI(elements.closePriceModal, 'click', closePriceHandler, 'close-price-modal');
+    }
+    
+    // بستن مودال با کلیک خارج
+    if (elements.loginModal) {
+        const loginModalClickHandler = (e) => {
+            if (e.target === elements.loginModal || e.target.classList.contains('modal-overlay')) {
+                elements.loginModal.classList.remove('active');
+            }
+        };
+        elements.loginModal.removeEventListener('click', loginModalClickHandler);
+        addEventListenerOnceUI(elements.loginModal, 'click', loginModalClickHandler, 'login-modal-click');
+    }
+
+    if (elements.subscriptionModal) {
+        const subscriptionModalClickHandler = (e) => {
+            if (e.target === elements.subscriptionModal || e.target.classList.contains('modal-overlay')) {
+                elements.subscriptionModal.classList.remove('active');
+            }
+        };
+        elements.subscriptionModal.removeEventListener('click', subscriptionModalClickHandler);
+        addEventListenerOnceUI(elements.subscriptionModal, 'click', subscriptionModalClickHandler, 'subscription-modal-click');
+    }
+
+    if (elements.priceModal) {
+        const priceModalClickHandler = (e) => {
+            if (e.target === elements.priceModal || e.target.classList.contains('modal-overlay')) {
+                elements.priceModal.classList.remove('active');
+                appState.openModals = Math.max(0, appState.openModals - 1);
+            }
+        };
+        elements.priceModal.removeEventListener('click', priceModalClickHandler);
+        addEventListenerOnceUI(elements.priceModal, 'click', priceModalClickHandler, 'price-modal-click');
+    }
     
     // هایلایت‌های خانه - با جلوگیری از duplicate event listener
     // استفاده از flag برای جلوگیری از duplicate listener به جای cloneNode
@@ -226,9 +272,10 @@ function setupEventListeners() {
                 
                 const log = window.logger || { info: console.log }; log.info(`🌍 کلیک روی دکمه 3D: ${globeType}`);
                 
+                const cfg = window.CONFIG || CONFIG;
                 setTimeout(() => {
                     btn.disabled = false;
-                }, 1000);
+                }, cfg.UI.ANIMATION.BUTTON_DISABLE_DURATION);
                 
                 if (globeType) {
                     if (typeof open3DGlobe === 'function') {
@@ -268,7 +315,8 @@ function setupEventListeners() {
     }
     
     // راه‌اندازی اولیه
-    setTimeout(setup3DGlobeButtons, 1000);
+    const cfg = window.CONFIG || CONFIG;
+    setTimeout(setup3DGlobeButtons, cfg.UI.ANIMATION.SETUP_DELAY);
     
     // راه‌اندازی مجدد وقتی پنل 3D فعال میشه
     const relaxView = document.getElementById('relaxView');
@@ -278,7 +326,8 @@ function setupEventListeners() {
             const panel3d = document.querySelector('.relax-panel[data-relax-panel="3d"]');
             if (panel3d && panel3d.classList.contains('active')) {
                 const log = window.logger || { info: console.log }; log.info('🔄 پنل 3D فعال شد، راه‌اندازی مجدد دکمه‌ها...');
-                setTimeout(setup3DGlobeButtons, 300);
+                const cfg = window.CONFIG || CONFIG;
+                setTimeout(setup3DGlobeButtons, cfg.UI.ANIMATION.RETRY_DELAY);
             }
         });
         observer.observe(relaxView, { 
@@ -782,9 +831,10 @@ class AssistiveTouch {
         this.ensureVisibility(); // اطمینان از نمایش
         
         // یک بار دیگر بعد از تاخیر برای اطمینان از نمایش در همه مرورگرها (مخصوص اپرا)
+        const cfg = window.CONFIG || CONFIG;
         setTimeout(() => {
             this.ensureVisibility();
-        }, 200);
+        }, cfg.UI.ANIMATION.FADE_DURATION);
     }
     
     ensureVisibility() {
@@ -804,7 +854,8 @@ class AssistiveTouch {
             this.touchElement.style.setProperty('transform', 'translateZ(0)', 'important');
             
             // اطمینان از اندازه در موبایل
-            if (window.innerWidth <= 768) {
+            const cfg = window.CONFIG || CONFIG;
+            if (window.innerWidth <= cfg.UI.MOBILE_BREAKPOINT) {
                 this.touchElement.style.setProperty('min-width', '55px', 'important');
                 this.touchElement.style.setProperty('min-height', '55px', 'important');
                 
@@ -1056,9 +1107,10 @@ class AssistiveTouch {
         this.touchElement.style.setProperty('right', 'auto', 'important');
         this.touchElement.style.setProperty('bottom', 'auto', 'important');
         
+        const cfg = window.CONFIG || CONFIG;
         setTimeout(() => {
             this.touchElement.style.setProperty('transition', '', 'important');
-        }, 300);
+        }, cfg.UI.ANIMATION.TRANSITION_DURATION);
     }
     
     setupGlassMenu() {
@@ -1139,7 +1191,8 @@ class AssistiveTouch {
             }
         } else {
             // اگر موقعیت ذخیره نشده، در موبایل موقعیت اولیه را تنظیم کن
-            if (window.innerWidth <= 768) {
+            const cfg = window.CONFIG || CONFIG;
+            if (window.innerWidth <= cfg.UI.MOBILE_BREAKPOINT) {
                 const bottomNavBar = document.getElementById('bottomNavBar');
                 const bottomNavHeight = bottomNavBar ? bottomNavBar.offsetHeight : 0;
                 const initialTop = window.innerHeight - bottomNavHeight - this.touchElement.offsetHeight - 20;
@@ -1162,7 +1215,12 @@ class AssistiveTouch {
 // });
 
 // همچنین برای اطمینان از کارکرد در موبایل و همه مرورگرها
-window.addEventListener('load', () => {
+// محافظت از duplicate listener برای window.load
+if (!window.hasAttribute || !window.hasAttribute('data-listener-window-load')) {
+    if (window.setAttribute) {
+        window.setAttribute('data-listener-window-load', 'true');
+    }
+    window.addEventListener('load', () => {
     try {
         if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
             window.assistiveTouch.ensureVisibility();
@@ -1176,22 +1234,30 @@ window.addEventListener('load', () => {
     } catch (error) {
         const log = window.logger || { error: console.error }; log.error('❌ خطا در ensureVisibility:', error);
     }
-});
+    });
+}
 
 // همچنین برای اطمینان از کارکرد در resize (مخصوص اپرا)
 let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        try {
-            if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
-                window.assistiveTouch.ensureVisibility();
+// محافظت از duplicate listener برای window.resize
+if (!window.hasAttribute || !window.hasAttribute('data-listener-window-resize')) {
+    if (window.setAttribute) {
+        window.setAttribute('data-listener-window-resize', 'true');
+    }
+    const resizeHandler = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            try {
+                if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
+                    window.assistiveTouch.ensureVisibility();
+                }
+            } catch (error) {
+                const log = window.logger || { error: console.error }; log.error('❌ خطا در ensureVisibility در resize:', error);
             }
-        } catch (error) {
-            const log = window.logger || { error: console.error }; log.error('❌ خطا در ensureVisibility در resize:', error);
-        }
-    }, 250);
-});
+        }, 250);
+    };
+    window.addEventListener('resize', resizeHandler);
+}
 
 
 // ==================== //
@@ -1763,7 +1829,8 @@ class GlobeAssistiveTouch {
                 toast.textContent = '✓ همه اطلاعات ریست شد';
                 toast.style.cssText = 'position: absolute; top: 20px; right: 20px; background: rgba(0, 200, 0, 0.9); color: white; padding: 12px 20px; border-radius: 8px; z-index: 10000; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
                 container.appendChild(toast);
-                setTimeout(() => toast.remove(), 2000);
+                const cfg = window.CONFIG || CONFIG;
+                setTimeout(() => toast.remove(), cfg.UI.ANIMATION.TOAST_DURATION);
             }
         }
     }

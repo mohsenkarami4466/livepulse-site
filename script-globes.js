@@ -5,6 +5,38 @@
 // 🕒 سیستم کامل ساعت بازارهای جهانی
 // ==================== //
 
+/**
+ * 🔧 Helper function برای جلوگیری از duplicate event listeners
+ * @param {HTMLElement|Window} element - المان یا window
+ * @param {string} event - نوع event
+ * @param {Function} handler - تابع handler
+ * @param {string} uniqueId - شناسه یکتا برای این listener
+ * @param {Object} options - گزینه‌های addEventListener
+ */
+function addEventListenerOnce(element, event, handler, uniqueId, options = {}) {
+    if (!element) return;
+    
+    const flagKey = `data-listener-${uniqueId}`;
+    
+    // بررسی اینکه آیا listener قبلاً اضافه شده
+    if (element.hasAttribute && element.hasAttribute(flagKey)) {
+        // حذف listener قبلی و اضافه کردن دوباره (برای اطمینان از به‌روز بودن)
+        try {
+            element.removeEventListener(event, handler, options);
+        } catch (e) {
+            // ignore
+        }
+    }
+    
+    // اضافه کردن listener
+    element.addEventListener(event, handler, options);
+    
+    // علامت‌گذاری
+    if (element.setAttribute) {
+        element.setAttribute(flagKey, 'true');
+    }
+}
+
 /* ========== Globe Clock - JS کامل و نهایی ========== */
 let marketData = [
   // ===== ایران =====
@@ -112,7 +144,9 @@ const utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '
 /* ========== سه‌بعدی سازی ========== */
 let scene, camera, renderer, globe, dayMat, nightMat, sun;
 let sunAngle = 0;
-const UPDATE_MS = 30_000; // ۳۰ ثانیه
+// استفاده از CONFIG برای UPDATE_MS
+const cfg = window.CONFIG || CONFIG;
+const UPDATE_MS = cfg.TIME.UPDATE_INTERVAL; // ۳۰ ثانیه
 
 /* fetch داده‌ها (در این نسخه داده‌ها داخلی هستند) */
 // این بخش در DOMContentLoaded یکپارچه در انتهای فایل اجرا می‌شود
@@ -136,8 +170,9 @@ function updateGlobePosition() {
   const indicatorsTop = indicatorsContainer.offsetTop || 60; // fallback به 60px
   
   // بررسی اندازه صفحه برای تنظیم فاصله
-  const isMobile = window.innerWidth <= 768;
-  const gap = isMobile ? 4 : 2; // در دسکتاپ فاصله کمتر (2px)، در موبایل 4px
+  const cfg = window.CONFIG || CONFIG;
+  const isMobile = window.innerWidth <= cfg.UI.MOBILE_BREAKPOINT;
+  const gap = isMobile ? cfg.UI.GAP.MOBILE : cfg.UI.GAP.DESKTOP;
   
   // تنظیم top کره کوچک
   const globeTop = indicatorsTop + indicatorsHeight + gap;
@@ -180,7 +215,8 @@ function updateHighlightsPosition() {
   
   // محاسبه padding-top یکسان برای همه صفحات
   // استفاده از همان مقادیر CSS برای یکسان بودن
-  const isMobile = window.innerWidth <= 768;
+  const cfg = window.CONFIG || CONFIG;
+  const isMobile = window.innerWidth <= cfg.UI.MOBILE_BREAKPOINT;
   let finalPadding;
   
   if (window.innerWidth <= 320) {
@@ -189,7 +225,7 @@ function updateHighlightsPosition() {
     finalPadding = clampValue(110, 12, 130);
   } else if (window.innerWidth <= 480) {
     finalPadding = clampValue(115, 13, 135);
-  } else if (window.innerWidth <= 768) {
+  } else if (window.innerWidth <= (window.CONFIG || CONFIG).UI.MOBILE_BREAKPOINT) {
     finalPadding = clampValue(120, 14, 140);
   } else if (window.innerWidth <= 1024) {
     finalPadding = clampValue(125, 15, 145);
@@ -1132,8 +1168,9 @@ function setupScene(scene, camera, renderer, globe, type, container) {
     }
 
     // تنظیم موقعیت camera - به سمت ایران
-    const iranLat = 32.4279;
-    const iranLng = 53.6880;
+    const cfg = window.CONFIG || CONFIG;
+    const iranLat = cfg.GLOBE.IRAN.LAT;
+    const iranLng = cfg.GLOBE.IRAN.LNG;
     const phi = (90 - iranLat) * (Math.PI / 180);
     const theta = (iranLng + 180) * (Math.PI / 180);
     const distance = 5;
@@ -1301,14 +1338,15 @@ function buildSimpleGlobe(containerId, type) {
         scene.background = new THREE.Color(0x000510);
         
         // Camera - موقعیت اولیه به سمت ایران با فاصله مناسب برای نمایش کامل کره
-        const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-        // مختصات ایران: 32.4279, 53.6880
-        const iranLat = 32.4279;
-        const iranLng = 53.6880;
+        const cfg = window.CONFIG || CONFIG;
+        const camera = new THREE.PerspectiveCamera(50, width / height, cfg.GLOBE.CAMERA.NEAR, cfg.GLOBE.CAMERA.FAR);
+        // مختصات ایران از CONFIG
+        const iranLat = cfg.GLOBE.IRAN.LAT;
+        const iranLng = cfg.GLOBE.IRAN.LNG;
         const phi = (90 - iranLat) * (Math.PI / 180);
         const theta = (iranLng + 180) * (Math.PI / 180);
         // فاصله بیشتر برای نمایش کامل کره در همه ریسپانسیوها
-        const distance = Math.max(3.5, Math.min(width, height) / 200); // تطبیق با اندازه صفحه
+        const distance = Math.max(cfg.GLOBE.MIN_DISTANCE, Math.min(width, height) / cfg.GLOBE.DISTANCE_RATIO);
         const x = -distance * Math.sin(phi) * Math.cos(theta);
         const y = distance * Math.cos(phi);
         const z = distance * Math.sin(phi) * Math.sin(theta);
@@ -1658,9 +1696,10 @@ function buildSimpleGlobe(containerId, type) {
             renderer.setSize(w, h);
             
             // تنظیم مجدد فاصله دوربین برای نمایش کامل کره در همه ریسپانسیوها
-            const baseDistance = Math.max(3.5, Math.min(w, h) / 200);
-            const iranLat = 32.4279;
-            const iranLng = 53.6880;
+            const cfg = window.CONFIG || CONFIG;
+            const baseDistance = Math.max(cfg.GLOBE.MIN_DISTANCE, Math.min(w, h) / cfg.GLOBE.DISTANCE_RATIO);
+            const iranLat = cfg.GLOBE.IRAN.LAT;
+            const iranLng = cfg.GLOBE.IRAN.LNG;
             const phi = (90 - iranLat) * (Math.PI / 180);
             const theta = (iranLng + 180) * (Math.PI / 180);
             const x = -baseDistance * Math.sin(phi) * Math.cos(theta);
@@ -2758,15 +2797,24 @@ function openFinancialGlobe() {
             
             // بارگذاری مرزها برای کره مالی هم (async)
             setTimeout(async () => {
-                if (window.financialGlobeObjects && window.financialGlobeObjects.earth) {
-                    const earth = window.financialGlobeObjects.earth;
-                    
+                try {
+                    if (window.financialGlobeObjects && window.financialGlobeObjects.earth) {
+                        const earth = window.financialGlobeObjects.earth;
+                        
                         log.debug('اضافه کردن مرزها به کره مالی...');
-                    if (typeof createWorldBorders === 'function') {
-                        await createWorldBorders(earth, {
-                            defaultColor: 0x3366aa,  // آبی کمتر - برای تمایز از مارکرها
-                            defaultOpacity: 0.25     // کمرنگ‌تر
-                        });
+                        if (typeof createWorldBorders === 'function') {
+                            await createWorldBorders(earth, {
+                                defaultColor: 0x3366aa,  // آبی کمتر - برای تمایز از مارکرها
+                                defaultOpacity: 0.25     // کمرنگ‌تر
+                            });
+                        }
+                    }
+                } catch (error) {
+                    const errorHandler = window.errorHandler;
+                    if (errorHandler) {
+                        errorHandler.handleError(error, 'openFinancialGlobe - loadBorders');
+                    } else {
+                        log.error('❌ خطا در بارگذاری مرزهای کره مالی:', error);
                     }
                 }
             }, 1000);
@@ -2846,29 +2894,38 @@ function openResourcesGlobe() {
             
             // بارگذاری مرزها و درگیری‌ها و برچسب‌ها (async)
             setTimeout(async () => {
-                if (window.resourcesGlobeObjects && window.resourcesGlobeObjects.earth) {
-                    const earth = window.resourcesGlobeObjects.earth;
-                    const camera = window.resourcesGlobeObjects.camera;
-                    
-                    // بارگذاری مرزها - اضافه شدن به earth
-                    log.debug('بارگذاری مرزهای کشورها...');
-                    if (typeof createWorldBorders === 'function') {
-                        resourcesGlobeData.bordersGroup = await createWorldBorders(earth, {
-                            defaultColor: 0x4488ff,
-                            defaultOpacity: 0.4
-                        });
+                try {
+                    if (window.resourcesGlobeObjects && window.resourcesGlobeObjects.earth) {
+                        const earth = window.resourcesGlobeObjects.earth;
+                        const camera = window.resourcesGlobeObjects.camera;
+                        
+                        // بارگذاری مرزها - اضافه شدن به earth
+                        log.debug('بارگذاری مرزهای کشورها...');
+                        if (typeof createWorldBorders === 'function') {
+                            resourcesGlobeData.bordersGroup = await createWorldBorders(earth, {
+                                defaultColor: 0x4488ff,
+                                defaultOpacity: 0.4
+                            });
+                        }
+                        
+                        // ایجاد خطوط درگیری
+                        log.debug('ایجاد خطوط درگیری...');
+                        if (typeof createAllConflicts === 'function') {
+                            resourcesGlobeData.conflictsGroup = createAllConflicts(earth);
+                        }
+                        
+                        // ایجاد برچسب‌های کشورها
+                        log.debug('ایجاد برچسب‌های کشورها...');
+                        if (typeof createCountryLabels === 'function') {
+                            resourcesGlobeData.labelsGroup = createCountryLabels(earth, camera);
+                        }
                     }
-                    
-                    // ایجاد خطوط درگیری
-                    log.debug('ایجاد خطوط درگیری...');
-                    if (typeof createAllConflicts === 'function') {
-                        resourcesGlobeData.conflictsGroup = createAllConflicts(earth);
-                    }
-                    
-                    // ایجاد برچسب‌های کشورها
-                    log.debug('ایجاد برچسب‌های کشورها...');
-                    if (typeof createCountryLabels === 'function') {
-                        resourcesGlobeData.labelsGroup = createCountryLabels(earth, camera);
+                } catch (error) {
+                    const errorHandler = window.errorHandler;
+                    if (errorHandler) {
+                        errorHandler.handleError(error, 'openResourcesGlobe - loadBordersAndLabels');
+                    } else {
+                        log.error('❌ خطا در بارگذاری مرزها/درگیری‌ها/برچسب‌های کره منابع:', error);
                     }
                 }
             }, 1000);
@@ -3194,10 +3251,20 @@ function open3DGlobe(type) {
                         const log = window.logger || { warn: console.warn }; log.warn('⚠️ تابع createWorldBorders پیدا نشد');
                     }
                 } catch (error) {
-                    const log = window.logger || { error: console.error }; log.error(`❌ خطا در بارگذاری مرزها برای کره ${type}:`, error);
+                    const log = window.logger || { error: console.error };
+                    const errorHandler = window.errorHandler;
+                    
+                    log.error(`❌ خطا در بارگذاری مرزها برای کره ${type}:`, error);
+                    
+                    if (errorHandler) {
+                        errorHandler.handleError(error, `open3DGlobe - loadBorders (${type})`);
+                    }
+                    
                     if (retryCount < maxRetries) {
-                        const log = window.logger || { info: console.log }; log.info(`🔄 تلاش مجدد بعد از خطا (${retryCount + 1}/${maxRetries})...`);
+                        log.info(`🔄 تلاش مجدد بعد از خطا (${retryCount + 1}/${maxRetries})...`);
                         setTimeout(() => loadBorders(retryCount + 1), 2000);
+                    } else {
+                        log.warn(`⚠️ بارگذاری مرزها برای کره ${type} بعد از ${maxRetries} تلاش ناموفق بود`);
                     }
                 }
             };
@@ -3240,16 +3307,21 @@ function open3DGlobe(type) {
                     return;
                 }
                 
-                const log = window.logger || { info: console.log }; log.info(`📊 بارگذاری داده‌های کره ${type}...`);
+                const log = window.logger || { info: console.log };
+                log.info(`📊 بارگذاری داده‌های کره ${type}...`);
                 if (typeof load3DGlobeData === 'function') {
                     try {
                         load3DGlobeData(type, container);
-                        const log = window.logger || { info: console.log }; log.info(`✅ داده‌های کره ${type} بارگذاری شدند`);
+                        log.info(`✅ داده‌های کره ${type} بارگذاری شدند`);
                     } catch (error) {
-                        const log = window.logger || { error: console.error }; log.error(`❌ خطا در بارگذاری داده‌های کره ${type}:`, error);
+                        const errorHandler = window.errorHandler;
+                        log.error(`❌ خطا در بارگذاری داده‌های کره ${type}:`, error);
+                        if (errorHandler) {
+                            errorHandler.handleError(error, `open3DGlobe - loadDataWithRetry (${type})`);
+                        }
                     }
                 } else {
-                    const log = window.logger || { warn: console.warn }; log.warn('⚠️ تابع load3DGlobeData پیدا نشد');
+                    log.warn('⚠️ تابع load3DGlobeData پیدا نشد');
                 }
             };
             
@@ -3265,19 +3337,25 @@ function open3DGlobe(type) {
 function setupEarthquakeFilters() {
     const yearFilter = document.getElementById('earthquakeYearFilter');
     if (yearFilter) {
-        yearFilter.addEventListener('change', (e) => {
+        const handler = (e) => {
             const year = e.target.value;
             filterEarthquakesByYear(year);
-        });
+        };
+        // حذف listener قبلی اگر وجود داشت
+        yearFilter.removeEventListener('change', handler);
+        addEventListenerOnce(yearFilter, 'change', handler, 'earthquake-year-filter');
     }
     
-    document.querySelectorAll('#earthquakeFilterPanel [data-magnitude]').forEach(btn => {
-        btn.addEventListener('click', () => {
+    document.querySelectorAll('#earthquakeFilterPanel [data-magnitude]').forEach((btn, index) => {
+        const handler = () => {
             document.querySelectorAll('#earthquakeFilterPanel [data-magnitude]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const magnitude = btn.dataset.magnitude;
             filterEarthquakesByMagnitude(magnitude);
-        });
+        };
+        // حذف listener قبلی اگر وجود داشت
+        btn.removeEventListener('click', handler);
+        addEventListenerOnce(btn, 'click', handler, `earthquake-magnitude-${index}`);
     });
     
     // راه‌اندازی انتخاب شهر
@@ -3300,7 +3378,7 @@ function setupEarthquakeCitySelection() {
     });
     
     // تغییر استان - نمایش شهرهای آن استان
-    provinceSelect.addEventListener('change', (e) => {
+    const provinceChangeHandler = (e) => {
         const selectedProvince = e.target.value;
         cityList.innerHTML = '';
         
@@ -3316,7 +3394,7 @@ function setupEarthquakeCitySelection() {
                         <span>📍 ${city.name}</span>
                         <span>${province.name}</span>
                     `;
-                    cityItem.addEventListener('click', () => {
+                    const cityClickHandler = () => {
                         document.querySelectorAll('.city-item').forEach(item => item.classList.remove('selected'));
                         cityItem.classList.add('selected');
                         // ذخیره انتخاب
@@ -3325,7 +3403,8 @@ function setupEarthquakeCitySelection() {
                             province: province.name,
                             coords: city.coords
                         }));
-                    });
+                    };
+                    cityItem.addEventListener('click', cityClickHandler);
                     cityList.appendChild(cityItem);
                 });
             });
@@ -3340,7 +3419,7 @@ function setupEarthquakeCitySelection() {
                     <span>📍 ${city.name}</span>
                     <span>${iranProvinces[selectedProvince].name}</span>
                 `;
-                cityItem.addEventListener('click', () => {
+                const cityClickHandler2 = () => {
                     document.querySelectorAll('.city-item').forEach(item => item.classList.remove('selected'));
                     cityItem.classList.add('selected');
                     // ذخیره انتخاب
@@ -3349,11 +3428,16 @@ function setupEarthquakeCitySelection() {
                         province: iranProvinces[selectedProvince].name,
                         coords: city.coords
                     }));
-                });
+                };
+                cityItem.addEventListener('click', cityClickHandler2);
                 cityList.appendChild(cityItem);
             });
         }
-    });
+    };
+    
+    // اضافه کردن event listener با محافظت از duplicate
+    provinceSelect.removeEventListener('change', provinceChangeHandler);
+    addEventListenerOnce(provinceSelect, 'change', provinceChangeHandler, 'earthquake-province-select');
     
     // بارگذاری انتخاب قبلی
     const savedCity = localStorage.getItem('earthquakeSelectedCity');
@@ -3484,13 +3568,15 @@ function filterEarthquakesByMagnitude(magnitude) {
 
 // راه‌اندازی فیلترهای کره منابع طبیعی
 function setupNaturalResourcesFilters() {
-    document.querySelectorAll('#naturalResourcesFilterPanel [data-resource]').forEach(btn => {
-        btn.addEventListener('click', () => {
+    document.querySelectorAll('#naturalResourcesFilterPanel [data-resource]').forEach((btn, index) => {
+        const handler = () => {
             document.querySelectorAll('#naturalResourcesFilterPanel [data-resource]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const resource = btn.dataset.resource;
             filterNaturalResources(resource);
-        });
+        };
+        btn.removeEventListener('click', handler);
+        addEventListenerOnce(btn, 'click', handler, `natural-resources-filter-${index}`);
     });
 }
 
@@ -4157,7 +4243,8 @@ function loadIranProvincialBorders(scene) {
     
     // ایجاد خطوط مرزی بین استان‌ها (خطوط مستقیم بین مراکز استان‌ها)
     const provinces = Object.values(iranProvinces);
-    const iranCenter = [32.4279, 53.6880]; // مرکز تقریبی ایران
+    const cfg = window.CONFIG || CONFIG;
+    const iranCenter = [cfg.GLOBE.IRAN.LAT, cfg.GLOBE.IRAN.LNG]; // مرکز تقریبی ایران
     
     // ایجاد خطوط مرزی بین استان‌های مجاور
     provinces.forEach((province, index) => {
@@ -7822,8 +7909,9 @@ function resetGlobeView(type) {
     
     // برگرداندن دوربین به موقعیت ایران
     if (globeScene.camera) {
-        const iranLat = 32.4279;
-        const iranLng = 53.6880;
+        const cfg = window.CONFIG || CONFIG;
+        const iranLat = cfg.GLOBE.IRAN.LAT;
+        const iranLng = cfg.GLOBE.IRAN.LNG;
         const phi = (90 - iranLat) * (Math.PI / 180);
         const theta = (iranLng + 180) * (Math.PI / 180);
         const distance = 2.5;

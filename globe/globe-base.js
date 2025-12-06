@@ -9,11 +9,12 @@ class GlobeBase {
 
   // ایجاد کره پایه
   createBaseGlobe() {
+    const log = window.logger || { error: console.error, info: console.log };
     const globeElement = document.getElementById(this.containerId);
     
     // چک کن که المان وجود داره
     if (!globeElement) {
-      console.error('المان پیدا نشد:', this.containerId);
+      log.error('المان پیدا نشد:', this.containerId);
       return null;
     }
 
@@ -31,10 +32,13 @@ class GlobeBase {
       // اضافه کردن به DOM
       globeElement.appendChild(this.globe());
       
-      console.log('✅ کره ساخته شد برای:', this.containerId);
+      log.info('✅ کره ساخته شد برای:', this.containerId);
       return this.globe;
     } catch (error) {
-      console.error('خطا در ساخت کره:', error);
+      log.error('خطا در ساخت کره:', error);
+      if (window.errorHandler) {
+        window.errorHandler.handleError(error, 'GlobeBase.createBaseGlobe');
+      }
       return null;
     }
   }

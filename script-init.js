@@ -25,7 +25,12 @@ function initializeAppState() {
             const parsed = JSON.parse(savedState);
             Object.assign(appState, parsed);
         } catch (e) {
-            const log = window.logger || { warn: console.warn }; log.warn('⚠️ خطا در بارگذاری state:', e);
+            const log = window.logger || { warn: console.warn };
+            const errorHandler = window.errorHandler;
+            log.warn('⚠️ خطا در بارگذاری state:', e);
+            if (errorHandler) {
+                errorHandler.handleError(e, 'initializeAppState - loadState');
+            }
         }
     }
 }
@@ -112,7 +117,12 @@ function initializeLivePulse() {
                         }, 500);
                     }
                 } catch (error) {
-                    const log = window.logger || { error: console.error }; log.error('❌ خطا در راه‌اندازی دکمه شناور:', error);
+                    const log = window.logger || { error: console.error };
+                    const errorHandler = window.errorHandler;
+                    log.error('❌ خطا در راه‌اندازی دکمه شناور:', error);
+                    if (errorHandler) {
+                        errorHandler.handleError(error, 'initializeLivePulse - AssistiveTouch');
+                    }
                 }
             }, 800);
         }
@@ -264,7 +274,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 // راه‌اندازی اسلایدر یکپارچه - ساده و تمیز
                 // کدهای اسلایدر حذف شد
             } catch (error) {
-                const log = window.logger || { error: console.error }; log.error('❌ خطا در تنظیمات اولیه:', error);
+                const log = window.logger || { error: console.error };
+                const errorHandler = window.errorHandler;
+                log.error('❌ خطا در تنظیمات اولیه:', error);
+                if (errorHandler) {
+                    errorHandler.handleError(error, 'DOMContentLoaded - initialSetup');
+                }
             }
         }, 100);
         
@@ -277,7 +292,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const log = window.logger || { warn: console.warn }; log.warn('⚠️ تابع initializeLivePulse پیدا نشد');
                 }
             } catch (error) {
-                const log = window.logger || { error: console.error }; log.error('❌ خطا در initializeLivePulse:', error);
+                const log = window.logger || { error: console.error };
+                const errorHandler = window.errorHandler;
+                log.error('❌ خطا در initializeLivePulse:', error);
+                if (errorHandler) {
+                    errorHandler.handleError(error, 'DOMContentLoaded - initializeLivePulse');
+                }
             }
         }, 200);
         
@@ -296,7 +316,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
         */
     } catch (error) {
-        const log = window.logger || { error: console.error }; log.error('❌ خطا در DOMContentLoaded:', error);
+        const log = window.logger || { error: console.error };
+        const errorHandler = window.errorHandler;
+        log.error('❌ خطا در DOMContentLoaded:', error);
+        if (errorHandler) {
+            errorHandler.handleError(error, 'DOMContentLoaded');
+        }
     }
 });
 
@@ -462,4 +487,7 @@ function updateChatContext(pageName) {
 // این listener قبلاً در initializeLivePulse اجرا می‌شود
 // کدهای duplicate حذف شدند - همه چیز در initializeLivePulse مدیریت می‌شود
 
-const log = window.logger || { info: console.log }; log.info('📄 فایل JavaScript لود شد - آماده راه‌اندازی...');
+(function() {
+    const log = window.logger || { info: console.log };
+    log.info('📄 فایل JavaScript لود شد - آماده راه‌اندازی...');
+})();

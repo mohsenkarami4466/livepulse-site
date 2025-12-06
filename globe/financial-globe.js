@@ -17,11 +17,12 @@ class FinancialGlobe {
     }
 
     init(containerId) {
-        console.log('🏦 شروع ساخت کره مالی...');
+        const log = window.logger || { info: console.log, error: console.error };
+        log.info('🏦 شروع ساخت کره مالی...');
         
         this.container = document.getElementById(containerId);
         if (!this.container) {
-            console.error('Container پیدا نشد:', containerId);
+            log.error('Container پیدا نشد:', containerId);
             return;
         }
 
@@ -36,20 +37,21 @@ class FinancialGlobe {
         let attempts = 0;
         const maxAttempts = 50;
         
+        const log = window.logger || { info: console.log, error: console.error };
         const check = () => {
             const width = this.container.clientWidth;
             const height = this.container.clientHeight;
             
-            console.log(`🔍 کره مالی - تلاش ${attempts + 1}: ${width}x${height}`);
+            log.info(`🔍 کره مالی - تلاش ${attempts + 1}: ${width}x${height}`);
             
             if (width > 100 && height > 100) {
-                console.log(`✅ کره مالی - اندازه OK: ${width}x${height}`);
+                log.info(`✅ کره مالی - اندازه OK: ${width}x${height}`);
                 this.createScene();
             } else if (attempts < maxAttempts) {
                 attempts++;
                 setTimeout(check, 100);
             } else {
-                console.error('❌ کره مالی - Container اندازه ندارد!');
+                log.error('❌ کره مالی - Container اندازه ندارد!');
                 this.showError();
             }
         };
@@ -58,15 +60,17 @@ class FinancialGlobe {
     }
 
     createScene() {
+        const log = window.logger || { info: console.log, error: console.error, warn: console.warn };
+        const cfg = window.CONFIG || CONFIG;
         try {
             const width = this.container.clientWidth;
             const height = this.container.clientHeight;
 
-            console.log(`🌍 ساخت کره مالی: ${width}x${height}`);
+            log.info(`🌍 ساخت کره مالی: ${width}x${height}`);
 
             // بررسی THREE.js
             if (typeof THREE === 'undefined') {
-                console.error('❌ THREE.js لود نشده!');
+                log.error('❌ THREE.js لود نشده!');
                 this.showError();
                 return;
             }
@@ -76,13 +80,18 @@ class FinancialGlobe {
             this.scene.background = new THREE.Color(0x000814);
 
             // Camera - موقعیت اولیه به سمت ایران با فاصله مناسب برای نمایش کامل کره
-            this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-            const iranLat = 32.4279;
-            const iranLng = 53.6880;
+            this.camera = new THREE.PerspectiveCamera(
+                cfg.GLOBE.CAMERA.FOV, 
+                width / height, 
+                cfg.GLOBE.CAMERA.NEAR, 
+                cfg.GLOBE.CAMERA.FAR
+            );
+            const iranLat = cfg.GLOBE.IRAN.LAT;
+            const iranLng = cfg.GLOBE.IRAN.LNG;
             const phi = (90 - iranLat) * (Math.PI / 180);
             const theta = (iranLng + 180) * (Math.PI / 180);
             // فاصله بیشتر برای نمایش کامل کره در همه ریسپانسیوها
-            const distance = Math.max(3.5, Math.min(width, height) / 200);
+            const distance = Math.max(cfg.GLOBE.MIN_DISTANCE, Math.min(width, height) / cfg.GLOBE.DISTANCE_RATIO);
             const x = -distance * Math.sin(phi) * Math.cos(theta);
             const y = distance * Math.cos(phi);
             const z = distance * Math.sin(phi) * Math.sin(theta);
@@ -95,26 +104,26 @@ class FinancialGlobe {
                 alpha: false 
             });
             this.renderer.setSize(width, height);
-            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 3));
+            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, cfg.GLOBE.RENDERER.MAX_PIXEL_RATIO));
             this.container.appendChild(this.renderer.domElement);
 
-            console.log('✅ Renderer اضافه شد');
+            log.info('✅ Renderer اضافه شد');
 
             // Controls
             if (typeof THREE.OrbitControls !== 'undefined') {
                 this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-                this.controls.enableDamping = true;
-                this.controls.dampingFactor = 0.05;
+                this.controls.enableDamping = cfg.GLOBE.CONTROLS.ENABLE_DAMPING;
+                this.controls.dampingFactor = cfg.GLOBE.CONTROLS.DAMPING_FACTOR;
                 // تنظیم فاصله برای نمایش کامل کره در همه ریسپانسیوها
-                const baseDistance = Math.max(3.5, Math.min(width, height) / 200);
-                this.controls.minDistance = baseDistance * 0.8;
-                this.controls.maxDistance = baseDistance * 2.5;
+                const baseDistance = Math.max(cfg.GLOBE.MIN_DISTANCE, Math.min(width, height) / cfg.GLOBE.DISTANCE_RATIO);
+                this.controls.minDistance = baseDistance * cfg.GLOBE.DISTANCE_MULTIPLIER.MIN;
+                this.controls.maxDistance = baseDistance * cfg.GLOBE.DISTANCE_MULTIPLIER.MAX;
                 this.controls.target.set(0, 0, 0);
                 this.controls.update();
-                this.controls.enablePan = false;
-                this.controls.enableRotate = true;
-                this.controls.autoRotate = false; // پیش‌فرض: چرخش اتوماتیک خاموش
-                this.controls.autoRotateSpeed = 0;
+                this.controls.enablePan = cfg.GLOBE.CONTROLS.ENABLE_PAN;
+                this.controls.enableRotate = cfg.GLOBE.CONTROLS.ENABLE_ROTATE;
+                this.controls.autoRotate = cfg.GLOBE.CONTROLS.AUTO_ROTATE;
+                this.controls.autoRotateSpeed = cfg.GLOBE.CONTROLS.AUTO_ROTATE ? cfg.GLOBE.CONTROLS.AUTO_ROTATE_SPEED : 0;
                 
                 // جلوگیری از چرخش با wheel event
                 const originalWheelHandler = this.controls.handleMouseWheel;
@@ -127,9 +136,9 @@ class FinancialGlobe {
                     }
                 };
                 
-                console.log('✅ OrbitControls فعال شد');
+                log.info('✅ OrbitControls فعال شد');
             } else {
-                console.warn('⚠️ OrbitControls در دسترس نیست');
+                log.warn('⚠️ OrbitControls در دسترس نیست');
             }
 
             // Globe
@@ -148,28 +157,33 @@ class FinancialGlobe {
             this.isInitialized = true;
             this.animate();
 
-            console.log('✅ کره مالی آماده شد!');
+            log.info('✅ کره مالی آماده شد!');
         } catch (error) {
-            console.error('❌ خطا در ساخت کره مالی:', error);
+            log.error('❌ خطا در ساخت کره مالی:', error);
+            if (window.errorHandler) {
+                window.errorHandler.handleError(error, 'FinancialGlobe.createScene');
+            }
             this.showError();
         }
     }
 
     createGlobe() {
+        const cfg = window.CONFIG || CONFIG;
         // کره با کیفیت بسیار بالا
-        const geometry = new THREE.SphereGeometry(1, 256, 256);
+        const geometry = new THREE.SphereGeometry(1, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS);
         
         // ساخت کره اولیه با رنگ پیش‌فرض تا بلافاصله نمایش داده شود
         const baseMaterial = new THREE.MeshPhongMaterial({
-            color: 0x1d4ed8,
-            shininess: 25,
-            emissive: 0x0f172a,
-            emissiveIntensity: 0.08
+            color: cfg.GLOBE.MATERIAL.FINANCIAL_COLOR,
+            shininess: cfg.GLOBE.MATERIAL.FINANCIAL_SHININESS,
+            emissive: cfg.GLOBE.MATERIAL.FINANCIAL_EMISSIVE,
+            emissiveIntensity: cfg.GLOBE.MATERIAL.FINANCIAL_EMISSIVE_INTENSITY
         });
         
         this.globe = new THREE.Mesh(geometry, baseMaterial);
         this.scene.add(this.globe);
-        console.log('✅ کره مالی اولیه ساخته شد');
+        const log = window.logger || { info: console.log, warn: console.warn };
+        log.info('✅ کره مالی اولیه ساخته شد');
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const loader = new THREE.TextureLoader();
@@ -186,7 +200,7 @@ class FinancialGlobe {
         
         const tryLoadTexture = (index) => {
             if (index >= texturePaths.length) {
-                console.warn('⚠️ هیچ تکسچری بارگذاری نشد، از رنگ پیش‌فرض استفاده می‌شود');
+                log.warn('⚠️ هیچ تکسچری بارگذاری نشد، از رنگ پیش‌فرض استفاده می‌شود');
                 return;
             }
             
@@ -206,11 +220,11 @@ class FinancialGlobe {
                     this.globe.material.map = texture;
                     this.globe.material.needsUpdate = true;
                     
-                    console.log('✅ تکسچر کره مالی با کیفیت بالا بارگذاری شد:', texturePaths[index]);
+                    log.info('✅ تکسچر کره مالی با کیفیت بالا بارگذاری شد:', texturePaths[index]);
                 },
                 undefined,
                 () => {
-                    console.warn(`⚠️ تکسچر ${texturePaths[index]} بارگذاری نشد، تلاش بعدی...`);
+                    log.warn(`⚠️ تکسچر ${texturePaths[index]} بارگذاری نشد، تلاش بعدی...`);
                     tryLoadTexture(index + 1);
                 }
             );
@@ -223,8 +237,9 @@ class FinancialGlobe {
     }
 
     addAtmosphere() {
+        const cfg = window.CONFIG || CONFIG;
         // هاله با کیفیت بسیار بالا
-        const geometry = new THREE.SphereGeometry(1.02, 256, 256);
+        const geometry = new THREE.SphereGeometry(cfg.GLOBE.GEOMETRY.ATMOSPHERE_RADIUS, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS);
         const material = new THREE.ShaderMaterial({
             vertexShader: `
                 varying vec3 vNormal;
@@ -250,14 +265,15 @@ class FinancialGlobe {
     }
 
     addLights() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        const cfg = window.CONFIG || CONFIG;
+        const ambientLight = new THREE.AmbientLight(0xffffff, cfg.GLOBE.LIGHTS.AMBIENT_INTENSITY);
         this.scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, cfg.GLOBE.LIGHTS.DIRECTIONAL_INTENSITY);
         directionalLight.position.set(5, 3, 5);
         this.scene.add(directionalLight);
 
-        const pointLight = new THREE.PointLight(0x3b82f6, 0.5);
+        const pointLight = new THREE.PointLight(0x3b82f6, cfg.GLOBE.LIGHTS.POINT_INTENSITY);
         pointLight.position.set(-5, -3, -5);
         this.scene.add(pointLight);
     }
@@ -269,9 +285,10 @@ class FinancialGlobe {
 
         // دریافت داده‌های بازارها
         const markets = typeof mockFinancialData !== 'undefined' ? mockFinancialData : [];
+        const log = window.logger || { warn: console.warn, info: console.log };
         
         if (markets.length === 0) {
-            console.warn('⚠️ داده‌های بازار موجود نیست');
+            log.warn('⚠️ داده‌های بازار موجود نیست');
             return;
         }
         
@@ -283,7 +300,7 @@ class FinancialGlobe {
             }
         });
         
-        console.log(`✅ ${this.markers.length} مارکر بازار اضافه شد`);
+        log.info(`✅ ${this.markers.length} مارکر بازار اضافه شد`);
     }
 
     createMarker(market) {
@@ -297,11 +314,12 @@ class FinancialGlobe {
         const y = 1.02 * Math.cos(phi);
         const z = 1.02 * Math.sin(phi) * Math.sin(theta);
 
+        const cfg = window.CONFIG || CONFIG;
         // رنگ بر اساس وضعیت
-        const color = status === 'open' ? 0x10b981 : 0xef4444;
+        const color = status === 'open' ? cfg.GLOBE.MARKER_COLORS.MARKET_OPEN : cfg.GLOBE.MARKER_COLORS.MARKET_CLOSED;
         
         // نقطه
-        const geometry = new THREE.SphereGeometry(0.025, 16, 16);
+        const geometry = new THREE.SphereGeometry(cfg.GLOBE.GEOMETRY.MARKER_SIZE, cfg.GLOBE.GEOMETRY.MARKER_SEGMENTS, cfg.GLOBE.GEOMETRY.MARKER_SEGMENTS);
         const material = new THREE.MeshBasicMaterial({ 
             color: color
         });
@@ -337,7 +355,8 @@ class FinancialGlobe {
         
         // چرخش کره فقط اگر autoRotate فعال باشد
         if (this.globe && this.globe.rotation && this.controls && this.controls.autoRotate) {
-            this.globe.rotation.y += 0.001;
+            const cfg = window.CONFIG || CONFIG;
+            this.globe.rotation.y += cfg.GLOBE.ANIMATION.ROTATION_SPEED;
         }
         
         if (this.controls) {
@@ -351,12 +370,13 @@ class FinancialGlobe {
 
     resetView() {
         if (this.camera) {
+            const cfg = window.CONFIG || CONFIG;
             // بازگشت به موقعیت ایران
-            const iranLat = 32.4279;
-            const iranLng = 53.6880;
+            const iranLat = cfg.GLOBE.IRAN.LAT;
+            const iranLng = cfg.GLOBE.IRAN.LNG;
             const phi = (90 - iranLat) * (Math.PI / 180);
             const theta = (iranLng + 180) * (Math.PI / 180);
-            const distance = 3;
+            const distance = cfg.GLOBE.DEFAULT_DISTANCE;
             const x = -distance * Math.sin(phi) * Math.cos(theta);
             const y = distance * Math.cos(phi);
             const z = distance * Math.sin(phi) * Math.sin(theta);
@@ -367,8 +387,9 @@ class FinancialGlobe {
     
     toggleRotate() {
         if (this.controls) {
+            const cfg = window.CONFIG || CONFIG;
             this.controls.autoRotate = !this.controls.autoRotate;
-            this.controls.autoRotateSpeed = this.controls.autoRotate ? 0.5 : 0;
+            this.controls.autoRotateSpeed = this.controls.autoRotate ? cfg.GLOBE.CONTROLS.AUTO_ROTATE_SPEED : 0;
             return this.controls.autoRotate;
         }
         return false;
@@ -387,7 +408,8 @@ class FinancialGlobe {
     }
 
     destroy() {
-        console.log('🗑️ پاک کردن کره مالی...');
+        const log = window.logger || { info: console.log };
+        log.info('🗑️ پاک کردن کره مالی...');
         
         this.isInitialized = false;
         
@@ -416,7 +438,8 @@ class FinancialGlobe {
 var financialGlobeInstance = null;
 
 function initFinancialGlobe(containerId) {
-    console.log('📞 initFinancialGlobe فراخوانی شد');
+    const log = window.logger || { info: console.log };
+    log.info('📞 initFinancialGlobe فراخوانی شد');
     
     // اگر قبلاً ساخته شده، پاک کن
     if (financialGlobeInstance) {
@@ -438,4 +461,7 @@ window.initFinancialGlobe = initFinancialGlobe;
 window.resetFinancialGlobeView = resetFinancialGlobeView;
 window.financialGlobeInstance = financialGlobeInstance;
 
-console.log('✅ financial-globe.js لود شد');
+(function() {
+    const log = window.logger || { info: console.log };
+    log.info('✅ financial-globe.js لود شد');
+})();

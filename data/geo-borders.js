@@ -12,7 +12,8 @@ async function loadCountryBorders() {
         return countriesGeoJSON;
     }
     
-    console.log('📥 در حال بارگذاری مرزهای کشورها...');
+    const log = window.logger || { info: console.log, error: console.error };
+    log.info('📥 در حال بارگذاری مرزهای کشورها...');
     
     try {
         // استفاده از Natural Earth Data - کم‌حجم و دقیق
@@ -25,11 +26,14 @@ async function loadCountryBorders() {
         countriesGeoJSON = await response.json();
         bordersLoaded = true;
         
-        console.log(`✅ ${countriesGeoJSON.features.length} کشور بارگذاری شد`);
+        log.info(`✅ ${countriesGeoJSON.features.length} کشور بارگذاری شد`);
         return countriesGeoJSON;
         
     } catch (error) {
-        console.error('❌ خطا در بارگذاری مرزها:', error);
+        log.error('❌ خطا در بارگذاری مرزها:', error);
+        if (window.errorHandler) {
+            window.errorHandler.handleError(error, 'loadCountryBorders');
+        }
         return null;
     }
 }
@@ -106,7 +110,8 @@ async function createWorldBorders(earthMesh, options = {}) {
     } = options;
     
     if (!earthMesh) {
-        console.error('❌ earthMesh برای مرزها لازمه!');
+        const log = window.logger || { error: console.error };
+        log.error('❌ earthMesh برای مرزها لازمه!');
         return null;
     }
     

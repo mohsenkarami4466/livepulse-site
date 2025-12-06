@@ -18,11 +18,12 @@ class ResourcesGlobe {
     }
 
     init(containerId) {
-        console.log('💎 شروع ساخت کره منابع...');
+        const log = window.logger || { info: console.log, error: console.error };
+        log.info('💎 شروع ساخت کره منابع...');
         
         this.container = document.getElementById(containerId);
         if (!this.container) {
-            console.error('Container پیدا نشد:', containerId);
+            log.error('Container پیدا نشد:', containerId);
             return;
         }
 
@@ -37,20 +38,21 @@ class ResourcesGlobe {
         let attempts = 0;
         const maxAttempts = 50;
         
+        const log = window.logger || { info: console.log, error: console.error };
         const check = () => {
             const width = this.container.clientWidth;
             const height = this.container.clientHeight;
             
-            console.log(`🔍 کره منابع - تلاش ${attempts + 1}: ${width}x${height}`);
+            log.info(`🔍 کره منابع - تلاش ${attempts + 1}: ${width}x${height}`);
             
             if (width > 100 && height > 100) {
-                console.log(`✅ کره منابع - اندازه OK: ${width}x${height}`);
+                log.info(`✅ کره منابع - اندازه OK: ${width}x${height}`);
                 this.createScene();
             } else if (attempts < maxAttempts) {
                 attempts++;
                 setTimeout(check, 100);
             } else {
-                console.error('❌ کره منابع - Container اندازه ندارد!');
+                log.error('❌ کره منابع - Container اندازه ندارد!');
                 this.showError();
             }
         };
@@ -59,15 +61,17 @@ class ResourcesGlobe {
     }
 
     createScene() {
+        const log = window.logger || { info: console.log, error: console.error, warn: console.warn };
+        const cfg = window.CONFIG || CONFIG;
         try {
             const width = this.container.clientWidth;
             const height = this.container.clientHeight;
 
-            console.log(`🌍 ساخت کره منابع: ${width}x${height}`);
+            log.info(`🌍 ساخت کره منابع: ${width}x${height}`);
 
             // بررسی THREE.js
             if (typeof THREE === 'undefined') {
-                console.error('❌ THREE.js لود نشده!');
+                log.error('❌ THREE.js لود نشده!');
                 this.showError();
                 return;
             }
@@ -77,13 +81,18 @@ class ResourcesGlobe {
             this.scene.background = new THREE.Color(0x0a0a0f);
 
             // Camera - موقعیت اولیه به سمت ایران با فاصله مناسب برای نمایش کامل کره
-            this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-            const iranLat = 32.4279;
-            const iranLng = 53.6880;
+            this.camera = new THREE.PerspectiveCamera(
+                cfg.GLOBE.CAMERA.FOV, 
+                width / height, 
+                cfg.GLOBE.CAMERA.NEAR, 
+                cfg.GLOBE.CAMERA.FAR
+            );
+            const iranLat = cfg.GLOBE.IRAN.LAT;
+            const iranLng = cfg.GLOBE.IRAN.LNG;
             const phi = (90 - iranLat) * (Math.PI / 180);
             const theta = (iranLng + 180) * (Math.PI / 180);
             // فاصله بیشتر برای نمایش کامل کره در همه ریسپانسیوها
-            const distance = Math.max(3.5, Math.min(width, height) / 200);
+            const distance = Math.max(cfg.GLOBE.MIN_DISTANCE, Math.min(width, height) / cfg.GLOBE.DISTANCE_RATIO);
             const x = -distance * Math.sin(phi) * Math.cos(theta);
             const y = distance * Math.cos(phi);
             const z = distance * Math.sin(phi) * Math.sin(theta);
@@ -96,26 +105,27 @@ class ResourcesGlobe {
                 alpha: false 
             });
             this.renderer.setSize(width, height);
-            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 3));
+            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, cfg.GLOBE.RENDERER.MAX_PIXEL_RATIO));
             this.container.appendChild(this.renderer.domElement);
 
-            console.log('✅ Renderer اضافه شد');
+            log.info('✅ Renderer اضافه شد');
 
             // Controls
             if (typeof THREE.OrbitControls !== 'undefined') {
                 this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-                this.controls.enableDamping = true;
-                this.controls.dampingFactor = 0.05;
+                this.controls.enableDamping = cfg.GLOBE.CONTROLS.ENABLE_DAMPING;
+                this.controls.dampingFactor = cfg.GLOBE.CONTROLS.DAMPING_FACTOR;
                 // تنظیم فاصله برای نمایش کامل کره در همه ریسپانسیوها
-                const baseDistance = Math.max(3.5, Math.min(width, height) / 200);
-                this.controls.minDistance = baseDistance * 0.8;
-                this.controls.maxDistance = baseDistance * 2.5;
+                const baseDistance = Math.max(cfg.GLOBE.MIN_DISTANCE, Math.min(width, height) / cfg.GLOBE.DISTANCE_RATIO);
+                this.controls.minDistance = baseDistance * cfg.GLOBE.DISTANCE_MULTIPLIER.MIN;
+                this.controls.maxDistance = baseDistance * cfg.GLOBE.DISTANCE_MULTIPLIER.MAX;
                 this.controls.target.set(0, 0, 0);
                 this.controls.update();
-                this.controls.enablePan = false;
-                this.controls.enableRotate = true;
-                this.controls.autoRotate = false; // پیش‌فرض: چرخش اتوماتیک خاموش
-                this.controls.autoRotateSpeed = 0;
+                const cfg = window.CONFIG || CONFIG;
+                this.controls.enablePan = cfg.GLOBE.CONTROLS.ENABLE_PAN;
+                this.controls.enableRotate = cfg.GLOBE.CONTROLS.ENABLE_ROTATE;
+                this.controls.autoRotate = cfg.GLOBE.CONTROLS.AUTO_ROTATE;
+                this.controls.autoRotateSpeed = cfg.GLOBE.CONTROLS.AUTO_ROTATE ? cfg.GLOBE.CONTROLS.AUTO_ROTATE_SPEED : 0;
                 
                 // جلوگیری از چرخش با wheel event
                 const originalWheelHandler = this.controls.handleMouseWheel;
@@ -128,9 +138,9 @@ class ResourcesGlobe {
                     }
                 };
                 
-                console.log('✅ OrbitControls فعال شد');
+                log.info('✅ OrbitControls فعال شد');
             } else {
-                console.warn('⚠️ OrbitControls در دسترس نیست');
+                log.warn('⚠️ OrbitControls در دسترس نیست');
             }
 
             // Globe
@@ -149,28 +159,33 @@ class ResourcesGlobe {
             this.isInitialized = true;
             this.animate();
 
-            console.log('✅ کره منابع آماده شد!');
+            log.info('✅ کره منابع آماده شد!');
         } catch (error) {
-            console.error('❌ خطا در ساخت کره منابع:', error);
+            log.error('❌ خطا در ساخت کره منابع:', error);
+            if (window.errorHandler) {
+                window.errorHandler.handleError(error, 'ResourcesGlobe.createScene');
+            }
             this.showError();
         }
     }
 
     createGlobe() {
+        const cfg = window.CONFIG || CONFIG;
         // کره با کیفیت بسیار بالا
-        const geometry = new THREE.SphereGeometry(1, 256, 256);
+        const geometry = new THREE.SphereGeometry(1, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS);
         
         // ساخت کره اولیه با رنگ پیش‌فرض
         const baseMaterial = new THREE.MeshPhongMaterial({
-            color: 0x14532d,
-            shininess: 30,
-            emissive: 0x052e16,
-            emissiveIntensity: 0.1
+            color: cfg.GLOBE.MATERIAL.RESOURCES_COLOR,
+            shininess: cfg.GLOBE.MATERIAL.RESOURCES_SHININESS,
+            emissive: cfg.GLOBE.MATERIAL.RESOURCES_EMISSIVE,
+            emissiveIntensity: cfg.GLOBE.MATERIAL.RESOURCES_EMISSIVE_INTENSITY
         });
         
         this.globe = new THREE.Mesh(geometry, baseMaterial);
         this.scene.add(this.globe);
-        console.log('✅ کره منابع اولیه ساخته شد');
+        const log = window.logger || { info: console.log, warn: console.warn };
+        log.info('✅ کره منابع اولیه ساخته شد');
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const loader = new THREE.TextureLoader();
@@ -187,7 +202,7 @@ class ResourcesGlobe {
         
         const tryLoadTexture = (index) => {
             if (index >= texturePaths.length) {
-                console.warn('⚠️ هیچ تکسچری برای کره منابع بارگذاری نشد، از رنگ پیش‌فرض استفاده می‌شود');
+                log.warn('⚠️ هیچ تکسچری برای کره منابع بارگذاری نشد، از رنگ پیش‌فرض استفاده می‌شود');
                 return;
             }
             
@@ -207,11 +222,11 @@ class ResourcesGlobe {
                     this.globe.material.map = texture;
                     this.globe.material.needsUpdate = true;
                     
-                    console.log('✅ تکسچر کره منابع با کیفیت بالا بارگذاری شد:', texturePaths[index]);
+                    log.info('✅ تکسچر کره منابع با کیفیت بالا بارگذاری شد:', texturePaths[index]);
                 },
                 undefined,
                 () => {
-                    console.warn(`⚠️ تکسچر ${texturePaths[index]} بارگذاری نشد، تلاش بعدی...`);
+                    log.warn(`⚠️ تکسچر ${texturePaths[index]} بارگذاری نشد، تلاش بعدی...`);
                     tryLoadTexture(index + 1);
                 }
             );
@@ -224,8 +239,9 @@ class ResourcesGlobe {
     }
 
     addAtmosphere() {
+        const cfg = window.CONFIG || CONFIG;
         // هاله با کیفیت بسیار بالا
-        const geometry = new THREE.SphereGeometry(1.02, 256, 256);
+        const geometry = new THREE.SphereGeometry(cfg.GLOBE.GEOMETRY.ATMOSPHERE_RADIUS, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS, cfg.GLOBE.GEOMETRY.SPHERE_SEGMENTS);
         const material = new THREE.ShaderMaterial({
             vertexShader: `
                 varying vec3 vNormal;
@@ -251,15 +267,16 @@ class ResourcesGlobe {
     }
 
     addLights() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        const cfg = window.CONFIG || CONFIG;
+        const ambientLight = new THREE.AmbientLight(0xffffff, cfg.GLOBE.LIGHTS.AMBIENT_INTENSITY * 0.8);
         this.scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, cfg.GLOBE.LIGHTS.DIRECTIONAL_INTENSITY * 0.8);
         directionalLight.position.set(5, 3, 5);
         this.scene.add(directionalLight);
 
         // نور طلایی برای منابع
-        const goldLight = new THREE.PointLight(0xffd700, 0.5);
+        const goldLight = new THREE.PointLight(0xffd700, cfg.GLOBE.LIGHTS.GOLD_LIGHT_INTENSITY);
         goldLight.position.set(-5, -3, -5);
         this.scene.add(goldLight);
     }
@@ -271,9 +288,10 @@ class ResourcesGlobe {
 
         // دریافت داده‌های منابع
         let resources = typeof mockResourcesData !== 'undefined' ? mockResourcesData : [];
+        const log = window.logger || { warn: console.warn, info: console.log };
         
         if (resources.length === 0) {
-            console.warn('⚠️ داده‌های منابع موجود نیست');
+            log.warn('⚠️ داده‌های منابع موجود نیست');
             return;
         }
         
@@ -290,7 +308,7 @@ class ResourcesGlobe {
             }
         });
         
-        console.log(`✅ ${this.markers.length} مارکر منبع اضافه شد`);
+        log.info(`✅ ${this.markers.length} مارکر منبع اضافه شد`);
     }
 
     createMarker(resource) {
@@ -304,17 +322,18 @@ class ResourcesGlobe {
         const y = 1.02 * Math.cos(phi);
         const z = 1.02 * Math.sin(phi) * Math.sin(theta);
 
+        const cfg = window.CONFIG || CONFIG;
         // رنگ بر اساس نوع منبع
         let color;
         switch(type) {
-            case 'gold': color = 0xffd700; break;
-            case 'oil': color = 0x333333; break;
-            case 'gas': color = 0xa855f7; break;
-            default: color = 0xffa500;
+            case 'gold': color = cfg.GLOBE.MARKER_COLORS.GOLD; break;
+            case 'oil': color = cfg.GLOBE.MARKER_COLORS.OIL; break;
+            case 'gas': color = cfg.GLOBE.MARKER_COLORS.GAS; break;
+            default: color = cfg.GLOBE.MARKER_COLORS.DEFAULT;
         }
         
         // نقطه
-        const geometry = new THREE.SphereGeometry(0.03, 16, 16);
+        const geometry = new THREE.SphereGeometry(cfg.GLOBE.GEOMETRY.RESOURCES_MARKER_SIZE, cfg.GLOBE.GEOMETRY.MARKER_SEGMENTS, cfg.GLOBE.GEOMETRY.MARKER_SEGMENTS);
         const material = new THREE.MeshBasicMaterial({ 
             color: color
         });
@@ -355,7 +374,8 @@ class ResourcesGlobe {
         
         // چرخش کره فقط اگر autoRotate فعال باشد
         if (this.globe && this.globe.rotation && this.controls && this.controls.autoRotate) {
-            this.globe.rotation.y += 0.0008;
+            const cfg = window.CONFIG || CONFIG;
+            this.globe.rotation.y += cfg.GLOBE.ANIMATION.RESOURCES_ROTATION_SPEED;
         }
         
         if (this.controls) {
@@ -369,12 +389,13 @@ class ResourcesGlobe {
 
     resetView() {
         if (this.camera) {
+            const cfg = window.CONFIG || CONFIG;
             // بازگشت به موقعیت ایران
-            const iranLat = 32.4279;
-            const iranLng = 53.6880;
+            const iranLat = cfg.GLOBE.IRAN.LAT;
+            const iranLng = cfg.GLOBE.IRAN.LNG;
             const phi = (90 - iranLat) * (Math.PI / 180);
             const theta = (iranLng + 180) * (Math.PI / 180);
-            const distance = 3;
+            const distance = cfg.GLOBE.DEFAULT_DISTANCE;
             const x = -distance * Math.sin(phi) * Math.cos(theta);
             const y = distance * Math.cos(phi);
             const z = distance * Math.sin(phi) * Math.sin(theta);
@@ -385,8 +406,9 @@ class ResourcesGlobe {
     
     toggleRotate() {
         if (this.controls) {
+            const cfg = window.CONFIG || CONFIG;
             this.controls.autoRotate = !this.controls.autoRotate;
-            this.controls.autoRotateSpeed = this.controls.autoRotate ? 0.5 : 0;
+            this.controls.autoRotateSpeed = this.controls.autoRotate ? cfg.GLOBE.CONTROLS.AUTO_ROTATE_SPEED : 0;
             return this.controls.autoRotate;
         }
         return false;
@@ -405,7 +427,8 @@ class ResourcesGlobe {
     }
 
     destroy() {
-        console.log('🗑️ پاک کردن کره منابع...');
+        const log = window.logger || { info: console.log };
+        log.info('🗑️ پاک کردن کره منابع...');
         
         this.isInitialized = false;
         
@@ -434,7 +457,8 @@ class ResourcesGlobe {
 var resourcesGlobeInstance = null;
 
 function initResourcesGlobe(containerId) {
-    console.log('📞 initResourcesGlobe فراخوانی شد');
+    const log = window.logger || { info: console.log };
+    log.info('📞 initResourcesGlobe فراخوانی شد');
     
     // اگر قبلاً ساخته شده، پاک کن
     if (resourcesGlobeInstance) {
@@ -463,4 +487,7 @@ window.resetResourcesGlobeView = resetResourcesGlobeView;
 window.setResourcesFilter = setResourcesFilter;
 window.resourcesGlobeInstance = resourcesGlobeInstance;
 
-console.log('✅ resources-globe.js لود شد');
+(function() {
+    const log = window.logger || { info: console.log };
+    log.info('✅ resources-globe.js لود شد');
+})();
