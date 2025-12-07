@@ -1,0 +1,87 @@
+/**
+ * ============================================
+ * 🎨 استایل‌های Footer - Footer.css
+ * ============================================
+ * 
+ * این فایل شامل استایل‌های فوتر اصلی اپلیکیشن است.
+ * استایل‌ها از style.css اصلی کپی شده‌اند.
+ * 
+ * تاریخ ایجاد: 2025-12-06
+ * آخرین بروزرسانی: 2025-12-06
+ */
+
+/* فوتر اصلی */
+.main-footer {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    padding: 1.2rem 1rem;
+    margin-top: 2rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.footer-links a:hover {
+    background: var(--accent-blue);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.footer-info {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    line-height: 1.6;
+}
+
+.footer-info p {
+    margin: 4px 0;
+}
+
+.copyright {
+    margin-top: 4px;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .main-footer {
+        padding: 1rem 0.8rem;
+    }
+    
+    .footer-links {
+        gap: 8px;
+    }
+    
+    .footer-links a {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+}
+

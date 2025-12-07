@@ -501,6 +501,12 @@ function initGlobe() {
   scene.add(globe);
 
   addMarketPoints();
+  
+  // اطمینان از اینکه animate() همیشه اجرا می‌شود
+  // اگر قبلاً animate در حال اجرا است، آن را متوقف کن و دوباره شروع کن
+  if (window.smallGlobeAnimationId) {
+    cancelAnimationFrame(window.smallGlobeAnimationId);
+  }
   animate();
 }
 
@@ -562,9 +568,12 @@ function updateSunAndMarkets() {
 }
 
 function animate() {
-  requestAnimationFrame(animate);
-  globe.rotation.y += 0.0008;
-  renderer.render(scene, camera);
+  window.smallGlobeAnimationId = requestAnimationFrame(animate);
+  // بررسی وجود globe, renderer, scene, camera قبل از استفاده
+  if (globe && renderer && scene && camera) {
+    globe.rotation.y += 0.0008;
+    renderer.render(scene, camera);
+  }
 }
 
 /* باز/بسته مودال */
@@ -619,9 +628,11 @@ function handleSmallGlobeClick(e) {
     globeOpening = true;
     log.info('🚀 در حال باز کردن کره بزرگ...');
     
-    // باز کردن کره مالی
+    // باز کردن کره مالی (کره بزرگ 3D با تمام ساعت‌های بازار)
     if (typeof openFinancialGlobe === 'function') {
         openFinancialGlobe();
+    } else if (typeof window.openFinancialGlobe === 'function') {
+        window.openFinancialGlobe();
     } else {
         log.error('❌ تابع openFinancialGlobe یافت نشد!');
     }
@@ -668,6 +679,14 @@ function isUserLoggedIn() {
 // تابع نمایش پیام لاگین
 function showLoginPrompt() {
   alert('🔐 برای دسترسی به این قابلیت، لطفاً وارد حساب کاربری خود شوید.\n\nاین قسمت فقط برای کاربران دارای اشتراک فعال می‌باشد.');
+}
+
+// Export functions to window for React integration
+if (typeof window !== 'undefined') {
+    window.handleSmallGlobeClick = handleSmallGlobeClick;
+    window.setupSmallGlobeClick = setupSmallGlobeClick;
+    window.openFinancialGlobe = openFinancialGlobe;
+    window.open3DGlobe = open3DGlobe;
 }
 
 // تنظیم کلیک روی کره کوچک در DOMContentLoaded انجام میشه
@@ -1373,8 +1392,9 @@ function buildSimpleGlobe(containerId, type) {
             controls.dampingFactor = 0.05;
             controls.minDistance = 1.2;
             controls.maxDistance = 8;
-            controls.enablePan = false;
+            controls.enablePan = true; // فعال کردن pan برای جابجایی
             controls.enableRotate = true; // چرخش با ماوس فعال است
+            controls.enableZoom = true; // فعال کردن zoom
             controls.autoRotate = false; // پیش‌فرض: چرخش اتوماتیک خاموش
             controls.autoRotateSpeed = 0;
             
@@ -2245,6 +2265,66 @@ function buildSimpleGlobe(containerId, type) {
         } else if (type === 'resources') {
             window.resourcesGlobeObjects = globeData;
         }
+        
+        // اضافه کردن خطوط مرز کشورها به کره
+        const loadBorders = async (retryCount = 0) => {
+            const maxRetries = 3;
+            const scene = simpleGlobeScenes[type];
+            
+            if (!scene || !scene.earth) {
+                if (retryCount < maxRetries) {
+                    setTimeout(() => loadBorders(retryCount + 1), 1000);
+                } else {
+                    const log = window.logger || { warn: console.warn };
+                    log.warn(`⚠️ earth برای کره ${type} پیدا نشد - مرزها اضافه نشدند`);
+                }
+                return;
+            }
+            
+            // بررسی وجود createWorldBorders
+            if (typeof createWorldBorders === 'undefined') {
+                if (retryCount < maxRetries) {
+                    setTimeout(() => loadBorders(retryCount + 1), 1000);
+                } else {
+                    const log = window.logger || { warn: console.warn };
+                    log.warn('⚠️ تابع createWorldBorders پیدا نشد');
+                }
+                return;
+            }
+            
+            const log = window.logger || { info: console.log };
+            log.info(`🗺️ اضافه کردن مرزها به کره ${type}...`);
+            
+            try {
+                if (typeof createWorldBorders === 'function') {
+                    const bordersGroup = await createWorldBorders(scene.earth, {
+                        defaultColor: 0x4488ff,
+                        defaultOpacity: 0.4
+                    });
+                    if (bordersGroup) {
+                        log.info(`✅ مرزها به کره ${type} اضافه شدند`);
+                        // ذخیره bordersGroup در scene برای دسترسی بعدی
+                        scene.bordersGroup = bordersGroup;
+                    } else {
+                        log.warn(`⚠️ مرزها برای کره ${type} لود نشدند`);
+                    }
+                } else {
+                    log.warn('⚠️ تابع createWorldBorders پیدا نشد');
+                }
+            } catch (error) {
+                const log = window.logger || { error: console.error };
+                log.error(`❌ خطا در اضافه کردن مرزها به کره ${type}:`, error);
+                if (window.errorHandler) {
+                    window.errorHandler.handleError(error, `buildSimpleGlobe - loadBorders (${type})`);
+                }
+                if (retryCount < maxRetries) {
+                    setTimeout(() => loadBorders(retryCount + 1), 2000);
+                }
+            }
+        };
+        
+        // شروع بارگذاری مرزها با تاخیر
+        setTimeout(() => loadBorders(), 2000);
         
         const log = window.logger || { info: console.log }; log.info(`✅ کره ${type} آماده!`, {
             hasScene: !!globeData.scene,
@@ -3120,10 +3200,41 @@ function open3DGlobe(type) {
     const container = document.getElementById(containerId);
     
     if (!modal || !container) {
+        // اگر modal یا container پیدا نشد، صبر کن و دوباره تلاش کن
+        log.warn(`⚠️ Modal یا Container پیدا نشد - تلاش مجدد... (${modalId}, ${containerId})`);
+        
+        // اگر window.open3DGlobe override شده (React environment)، از آن استفاده کن
+        if (typeof window.open3DGlobe === 'function' && window.React) {
+            // در React environment، window.open3DGlobe توسط Layout.jsx override شده
+            // فقط state را set کن، modal خودش render می‌شود
+            log.info(`✅ استفاده از React state برای باز کردن کره ${type}`);
+            globe3DOpening = false;
+            return; // React state را set کرده‌ایم، ادامه نمی‌دهیم
+        }
+        
+        // اگر در vanilla JS environment هستیم و modal پیدا نشد، خطا بده
+        if (!window.React) {
         log.error('Modal یا Container پیدا نشد!');
         if (window.errorHandler) {
             window.errorHandler.showUserError(`خطا در باز کردن کره ${type}. لطفاً صفحه را رفرش کنید.`, 'خطا');
         }
+            globe3DOpening = false;
+            return;
+        }
+        
+        // در React environment، کمی صبر کن و دوباره تلاش کن
+        setTimeout(() => {
+            const retryModal = document.getElementById(modalId);
+            const retryContainer = document.getElementById(containerId);
+            if (!retryModal || !retryContainer) {
+                log.error('Modal یا Container پیدا نشد (بعد از retry)!');
+                globe3DOpening = false;
+            } else {
+                // اگر پیدا شد، ادامه بده
+                log.info('✅ Modal و Container پیدا شدند (بعد از retry)');
+            }
+        }, 500);
+        
         globe3DOpening = false;
         return;
     }

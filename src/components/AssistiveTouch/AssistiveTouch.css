@@ -1,7 +1,293 @@
-/* استایل‌های AssistiveTouch از style.css استفاده می‌کنند */
+/* استایل‌های AssistiveTouch - کامل از style.css */
 
 .assistive-touch {
-  display: block !important;
-  visibility: visible !important;
+    position: fixed;
+    /* موقعیت اولیه - بعداً توسط JS تنظیم می‌شود */
+    bottom: 25px;
+    left: 20px;
+    z-index: 9997;
+    cursor: pointer;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    touch-action: none; /* جلوگیری از scroll و zoom در موبایل */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* بهبود سازگاری با مرورگرهای مختلف */
+    will-change: transform, left, top;
+    transform: translateZ(0); /* Force hardware acceleration */
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    /* جلوگیری از jump - استفاده از contain برای layout stability */
+    contain: layout style paint;
 }
 
+.touch-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    /* Fallback background برای مرورگرهایی که backdrop-filter را پشتیبانی نمی‌کنند */
+    background: rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0.1) 100%);
+    /* backdrop-filter با prefix های مختلف برای سازگاری بیشتر */
+    -webkit-backdrop-filter: blur(20px);
+    -moz-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: none;
+    /* بهبود rendering در مرورگرهای مختلف */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+}
+
+.touch-button:active {
+    transform: scale(0.92);
+}
+
+.touch-icon {
+    font-size: 1.3em;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+/* حالت درگ شدن */
+.assistive-touch.dragging .touch-button {
+    transform: scale(1.1);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ==================== */
+/* 🎯 استایل برای تم روشن */
+/* ==================== */
+
+[data-theme="light"] .touch-button {
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.1) 0%, 
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.08) 100%);
+    border: 1.5px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .touch-icon {
+    color: #333;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme="light"] .assistive-touch.dragging .touch-button {
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.2),
+        0 0 0 2px rgba(0, 0, 0, 0.15),
+        inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ==================== */
+/* 🪟 منوی شیشه‌ای */
+/* ==================== */
+
+.glass-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glass-menu-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.glass-menu {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    min-width: 280px;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.glass-menu-overlay.active .glass-menu {
+    transform: scale(1);
+}
+
+.glass-close-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+}
+
+.glass-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.glass-menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.glass-menu-item {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    font-family: inherit;
+    font-size: 1em;
+    border: none;
+}
+
+.glass-menu-item:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateX(5px);
+}
+
+.glass-icon {
+    font-size: 1.3em;
+}
+
+.glass-text {
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
+/* ==================== */
+/* 🎯 منوی شیشه‌ای برای تم روشن */
+/* ==================== */
+
+[data-theme="light"] .glass-menu-overlay {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .glass-menu {
+    background: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(25px);
+}
+
+[data-theme="light"] .glass-close-btn {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #333;
+}
+
+[data-theme="light"] .glass-menu-item {
+    background: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #333;
+}
+
+[data-theme="light"] .glass-menu-item:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+/* ==================== */
+/* 📱 ریسپانسیو */
+/* ==================== */
+
+@media (max-width: 768px) {
+    .assistive-touch {
+        /* حذف bottom و left از CSS - اجازه می‌دهیم JS کنترل کند */
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        touch-action: none !important; /* جلوگیری از رفتار پیش‌فرض touch */
+        pointer-events: auto !important;
+        z-index: 9997 !important;
+        /* حذف right و bottom برای اجازه کنترل کامل توسط JS */
+        right: auto !important;
+        bottom: auto !important;
+        /* بهبود سازگاری با اپرا و سایر مرورگرها */
+        -webkit-transform: translateZ(0) !important;
+        -moz-transform: translateZ(0) !important;
+        -ms-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        /* اطمینان از نمایش در همه مرورگرها */
+        min-width: 55px !important;
+        min-height: 55px !important;
+    }
+    
+    .touch-button {
+        width: 55px;
+        height: 55px;
+        touch-action: none !important; /* جلوگیری از رفتار پیش‌فرض touch */
+        pointer-events: auto !important;
+        /* بهبود rendering در اپرا */
+        -webkit-transform: translateZ(0) !important;
+        -moz-transform: translateZ(0) !important;
+        -ms-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+    
+    .glass-menu {
+        min-width: 250px;
+        margin: 20px;
+    }
+    
+    .glass-menu-item {
+        padding: 12px 18px;
+    }
+}

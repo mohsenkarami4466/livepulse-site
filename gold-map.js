@@ -1398,6 +1398,14 @@ window.initGoldMap = function() {
             return;
         }
         
+        // بررسی دوباره container قبل از فراخوانی createMap
+        const containerCheck = document.getElementById('goldMapGlass');
+        if (!containerCheck) {
+            const log = window.logger || { warn: console.warn };
+            log.warn('Container #goldMapGlass هنوز پیدا نشد - بعداً تلاش می‌کنیم');
+            return;
+        }
+        
         // اگر قبلاً ساخته شده، فقط createMap را فراخوانی کن
         if (worldGoldMapGlass) {
             try {

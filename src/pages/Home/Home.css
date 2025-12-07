@@ -12,6 +12,10 @@
 .main-content {
   display: block !important;
   width: 100% !important;
+  min-height: 300px !important;
+  padding: 2rem !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .main-cards-container {

@@ -1,7 +1,40 @@
+/**
+ * ============================================
+ * 💳 کامپوننت PriceCard - PriceCard.jsx
+ * ============================================
+ * 
+ * این کامپوننت یک کارت قیمت را نمایش می‌دهد.
+ * شامل: نام، قیمت، تغییرات، نمودار کوچک، زمان آخرین بروزرسانی
+ * 
+ * وابستگی‌ها:
+ * - generateMiniChartSVG: تابع تولید نمودار کوچک SVG (از card-helpers.js)
+ * - formatPrice: تابع فرمت کردن قیمت (از card-helpers.js)
+ * - getLastUpdateTime: تابع دریافت زمان آخرین بروزرسانی (از card-helpers.js)
+ * 
+ * Props:
+ * - item: آیتم قیمت شامل name, symbol, price, change, chart
+ * - onClick: تابع handler برای کلیک روی کارت
+ * 
+ * عملکرد:
+ * - نمایش اطلاعات قیمت
+ * - نمایش نمودار کوچک (up/down)
+ * - نمایش زمان آخرین بروزرسانی
+ * - باز کردن مودال جزئیات با کلیک
+ * 
+ * تاریخ ایجاد: 2025-12-06
+ * آخرین بروزرسانی: 2025-12-06
+ */
+
 import React, { useMemo } from 'react'
 import { generateMiniChartSVG, formatPrice, getLastUpdateTime } from '../../utils/card-helpers'
 import './PriceCard.css'
 
+/**
+ * کامپوننت PriceCard
+ * 
+ * @param {object} item - آیتم قیمت
+ * @param {Function} onClick - تابع handler برای کلیک روی کارت
+ */
 function PriceCard({ item, onClick }) {
   const changeClass = item.change >= 0 ? 'positive' : 'negative'
   const isUp = item.change >= 0

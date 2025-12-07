@@ -1,12 +1,49 @@
-// ==================== //
-// 🔄 مدیریت نمایش صفحات
-// ==================== //
+/**
+ * ============================================
+ * 🔄 فایل script-views.js - مدیریت نمایش صفحات
+ * ============================================
+ * 
+ * این فایل شامل:
+ * - مدیریت نمایش صفحات (showView)
+ * - راه‌اندازی ناوبری پایین (setupBottomNavigation)
+ * - هماهنگی با React Router
+ * - به‌روزرسانی ناوبری (updateBottomNavigation)
+ * 
+ * وابستگی‌ها:
+ * - React Router: برای ناوبری در React
+ * - window.navigate: تابع ناوبری از React (از Layout.jsx)
+ * - window.logger: برای لاگ کردن
+ * 
+ * Export ها:
+ * - window.setupBottomNavigation: تابع راه‌اندازی ناوبری پایین
+ * - window.updateBottomNavigation: تابع به‌روزرسانی ناوبری
+ * 
+ * نکته مهم:
+ * - این فایل با React Router هماهنگ شده است
+ * - اگر React Router فعال باشد، از window.navigate استفاده می‌کند
+ * - در غیر این صورت، از showView برای نمایش صفحات استفاده می‌کند
+ * 
+ * تاریخ ایجاد: 2025-12-06
+ * آخرین بروزرسانی: 2025-12-06
+ */
+
 // ==================== //
 // 🔄 مدیریت نمایش صفحات
 // ==================== //
 
 /**
  * 📱 نمایش صفحه مشخص + مدیریت منو
+ * 
+ * این تابع:
+ * 1. بررسی می‌کند که آیا در React Router هستیم
+ * 2. اگر در React Router هستیم، فقط کارهای خاص را انجام می‌دهد
+ * 3. در غیر این صورت، صفحه را با vanilla JS نمایش می‌دهد
+ * 
+ * @param {string} view - شناسه صفحه (home, news, globe, tutorial, relax, tools)
+ * 
+ * نکته:
+ * - در React Router، نمایش صفحات توسط React مدیریت می‌شود
+ * - این تابع فقط برای backward compatibility استفاده می‌شود
  */
 function showView(view) {
     // در React Router، نمایش صفحات توسط React مدیریت می‌شود
@@ -234,11 +271,11 @@ function showView(view) {
         }, 150);
     } else {
         // اگر view پیدا نشد، flag را آزاد کن
-        const log = window.logger || { warn: console.warn }; log.warn(`⚠️ صفحه ${view} پیدا نشد!`, viewElements);
+        const logWarn = window.logger || { warn: console.warn }; logWarn.warn(`⚠️ صفحه ${view} پیدا نشد!`, viewElements);
         isChangingView = false;
     }
 
-    const log = window.logger || { info: console.log }; log.info(`📱 صفحه تغییر کرد به: ${view}`);
+    const logInfo = window.logger || { info: console.log }; logInfo.info(`📱 صفحه تغییر کرد به: ${view}`);
     
     // راه‌اندازی نقشه‌های 2D اگر صفحه کره‌ها فعال شد
     if (view === 'globe' && typeof setupGlobe2DMaps === 'function') {
@@ -293,6 +330,12 @@ function setupBottomNavigation() {
         return;
     }
     
+    // اگر در React Router هستیم، از vanilla JS navigation استفاده نکن
+    if (window.React && document.getElementById('root')) {
+        log.info('✅ React Router فعال است - vanilla JS navigation غیرفعال شد');
+        return; // React Router navigation را استفاده می‌کند
+    }
+    
     // جلوگیری از اضافه کردن event listener های تکراری
     if (bottomNavBar.hasAttribute('data-navigation-setup')) {
         log.debug('نوار ناوبری پایین قبلاً راه‌اندازی شده است');
@@ -327,9 +370,34 @@ function setupBottomNavigation() {
     const navigateToPage = (page) => {
         if (!page) return;
         
-        log.debug(`رفتن به صفحه: ${page}`);
+        log.debug(`🔍 رفتن به صفحه: ${page}`);
         
-        // بررسی وجود view قبل از فراخوانی
+        // اگر در React Router هستیم، از React Router استفاده کن
+        if (window.React && document.getElementById('root')) {
+            const pageToPath = {
+                'home': '/',
+                'news': '/news',
+                'globe': '/globe',
+                'tutorial': '/tutorial',
+                'relax': '/relax',
+                'tools': '/tools'
+            };
+            
+            const path = pageToPath[page] || '/';
+            
+            // استفاده از window.navigate که از React Router می‌آید
+            if (typeof window.navigate === 'function') {
+                window.navigate(path);
+                log.info(`✅ Navigation به ${path} انجام شد (React Router)`);
+            } else {
+                // Fallback: استفاده از window.location
+                window.location.href = path;
+                log.info(`✅ Navigation به ${path} انجام شد (window.location)`);
+            }
+            return;
+        }
+        
+        // برای vanilla JS (backward compatibility)
         const viewElements = {
             'home': elements.homeView || document.getElementById('homeView'),
             'tools': elements.toolsView || document.getElementById('toolsView'),
@@ -344,12 +412,19 @@ function setupBottomNavigation() {
             log.debug(`نمایش صفحه: ${page}`);
             showView(page);
         } else {
-            log.warn(`صفحه ${page} پیدا نشد`);
+            log.warn(`⚠️ صفحه ${page} پیدا نشد`);
         }
     };
     
     // Event listener برای کلیک (دسکتاپ)
+    // ⚠️ این event listener فقط برای vanilla JS است و در React Router غیرفعال می‌شود
     bottomNavBar.addEventListener('click', (e) => {
+        // بررسی اینکه آیا در React Router هستیم - اگر هستیم، این listener را نادیده بگیر
+        if (window.React && document.getElementById('root')) {
+            // React Router خودش navigation را مدیریت می‌کند
+            return;
+        }
+        
         // بررسی اینکه آیا کلیک روی دکمه سیار بوده یا نه
         if (e.target.closest('.assistive-touch') || e.target.closest('.touch-button')) {
             return;

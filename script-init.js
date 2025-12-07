@@ -25,9 +25,9 @@ function initializeAppState() {
             const parsed = JSON.parse(savedState);
             Object.assign(appState, parsed);
         } catch (e) {
-            const log = window.logger || { warn: console.warn };
+            const logInit = window.logger || { warn: console.warn };
             const errorHandler = window.errorHandler;
-            log.warn('⚠️ خطا در بارگذاری state:', e);
+            logInit.warn('⚠️ خطا در بارگذاری state:', e);
             if (errorHandler) {
                 errorHandler.handleError(e, 'initializeAppState - loadState');
             }
@@ -126,9 +126,8 @@ function initializeLivePulse() {
                         logInit.info('✅ دکمه شناور قبلاً راه‌اندازی شده است');
                     }
                 } catch (error) {
-                    const log = window.logger || { error: console.error };
                     const errorHandler = window.errorHandler;
-                    log.error('❌ خطا در راه‌اندازی دکمه شناور:', error);
+                    logInit.error('❌ خطا در راه‌اندازی دکمه شناور:', error);
                     if (errorHandler) {
                         errorHandler.handleError(error, 'initializeLivePulse - AssistiveTouch');
                     }
@@ -142,8 +141,7 @@ function initializeLivePulse() {
                 try {
                     initGlobeAssistiveTouches();
                 } catch (error) {
-                    const log = window.logger || { debug: console.log };
-                    log.debug('خطا در initGlobeAssistiveTouches - ممکن است در React مدیریت شود:', error);
+                    logInit.debug('خطا در initGlobeAssistiveTouches - ممکن است در React مدیریت شود:', error);
                 }
             }
         }, 1200);
@@ -154,16 +152,14 @@ function initializeLivePulse() {
                 try {
                     setupGlobe2DMaps();
                 } catch (error) {
-                    const log = window.logger || { debug: console.log };
-                    log.debug('خطا در setupGlobe2DMaps - ممکن است در React مدیریت شود:', error);
+                    logInit.debug('خطا در setupGlobe2DMaps - ممکن است در React مدیریت شود:', error);
                 }
             }
             if (typeof initGlobe2DMapsOnViewChange === 'function') {
                 try {
                     initGlobe2DMapsOnViewChange();
                 } catch (error) {
-                    const log = window.logger || { debug: console.log };
-                    log.debug('خطا در initGlobe2DMapsOnViewChange - ممکن است در React مدیریت شود:', error);
+                    logInit.debug('خطا در initGlobe2DMapsOnViewChange - ممکن است در React مدیریت شود:', error);
                 }
             }
         }, 1500);
@@ -184,19 +180,16 @@ function initializeLivePulse() {
                 });
             });
             
-            const log = window.logger || { success: console.log };
-            log.success('هایلایت‌های ابزار راه‌اندازی شدند');
+            logInit.success('هایلایت‌های ابزار راه‌اندازی شدند');
         }, 1000);
         
-        const log = window.logger || { success: console.log, error: console.error };
-        log.success('برنامه با موفقیت راه‌اندازی شد');
+        logInit.success('برنامه با موفقیت راه‌اندازی شد');
         
     } catch (error) {
         if (window.errorHandler) {
             window.errorHandler.handleError(error, 'initializeLivePulse');
         } else {
-            const log = window.logger || { error: console.error };
-            log.error('خطا در راه‌اندازی:', error);
+            logInit.error('خطا در راه‌اندازی:', error);
         }
     }
 }
@@ -218,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
     isInitialized = true;
     
     try {
-        const log = window.logger || { error: console.error };
         // 1. بررسی وجود THREE.js و راه‌اندازی کره
         if (typeof THREE === 'undefined') {
             log.error('THREE.js لود نشده! منتظر می‌مانیم...');
@@ -297,10 +289,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // راه‌اندازی اسلایدر یکپارچه - ساده و تمیز
                 // کدهای اسلایدر حذف شد
-            } catch (error) {
-                const log = window.logger || { error: console.error };
-                const errorHandler = window.errorHandler;
-                log.error('❌ خطا در تنظیمات اولیه:', error);
+                } catch (error) {
+                    const errorHandler = window.errorHandler;
+                    log.error('❌ خطا در تنظیمات اولیه:', error);
                 if (errorHandler) {
                     errorHandler.handleError(error, 'DOMContentLoaded - initialSetup');
                 }
@@ -313,10 +304,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (typeof initializeLivePulse === 'function') {
                     initializeLivePulse();
                 } else {
-                    const log = window.logger || { warn: console.warn }; log.warn('⚠️ تابع initializeLivePulse پیدا نشد');
+                    log.warn('⚠️ تابع initializeLivePulse پیدا نشد');
                 }
             } catch (error) {
-                const log = window.logger || { error: console.error };
                 const errorHandler = window.errorHandler;
                 log.error('❌ خطا در initializeLivePulse:', error);
                 if (errorHandler) {
@@ -340,7 +330,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
         */
     } catch (error) {
-        const log = window.logger || { error: console.error };
         const errorHandler = window.errorHandler;
         log.error('❌ خطا در DOMContentLoaded:', error);
         if (errorHandler) {
@@ -398,7 +387,8 @@ function setupAiChat() {
     const sendMessage = document.getElementById('sendMessage');
     const chatMessages = document.getElementById('chatMessages');
     
-    const log = window.logger || { info: console.log }; log.info('💬 راه‌اندازی چت AI...', { 
+    const log = window.logger || { info: console.log, warn: console.warn }; 
+    log.info('💬 راه‌اندازی چت AI...', { 
         bar: !!aiChatBar, 
         fab: !!aiChatFab 
     });
@@ -408,7 +398,6 @@ function setupAiChat() {
         aiChatFab.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            const log = window.logger || { info: console.log };
             log.info('💬 کلیک روی هدر چت');
             aiChatBar.classList.toggle('expanded');
             
@@ -459,9 +448,9 @@ function setupAiChat() {
             };
         }
         
-        const log = window.logger || { info: console.log }; log.info('✅ چت AI راه‌اندازی شد');
+        log.info('✅ چت AI راه‌اندازی شد');
     } else {
-        const log = window.logger || { warn: console.warn }; log.warn('⚠️ المان‌های چت AI پیدا نشدند');
+        log.warn('⚠️ المان‌های چت AI پیدا نشدند');
     }
 }
 

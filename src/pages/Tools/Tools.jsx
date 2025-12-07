@@ -1,7 +1,40 @@
-import React, { useState } from 'react'
+/**
+ * ============================================
+ * 🛠️ صفحه ابزارها - Tools.jsx
+ * ============================================
+ * 
+ * این کامپوننت صفحه ابزارها را نمایش می‌دهد.
+ * شامل: Highlights (ابزارها), بخش‌های مختلف ابزارها
+ * 
+ * وابستگی‌ها:
+ * - useApp: Context برای دسترسی به currentTool و state
+ * - window.activateTool: تابع فعال‌سازی ابزار (از script-tools.js)
+ * - window.addAssetToPortfolio: تابع افزودن دارایی (از script-tools.js)
+ * - window.calculateGoldPrice: تابع محاسبه قیمت طلا (از script-tools.js)
+ * - window.convertCurrency: تابع تبدیل ارز (از script-tools.js)
+ * - window.analyzeDiamond: تابع آنالیز الماس (از script-tools.js)
+ * 
+ * عملکرد:
+ * - نمایش Highlights (ابزارها: صندوق، طلا، نقره، الماس، سنگ، سکه، تبدیل ارز)
+ * - نمایش بخش مربوط به ابزار انتخاب شده
+ * - اجرای توابع مربوط به هر ابزار
+ * 
+ * تاریخ ایجاد: 2025-12-06
+ * آخرین بروزرسانی: 2025-12-06
+ */
+
+import React, { useState, useEffect } from 'react'
 import { useApp } from '../../contexts/AppContext'
 import './Tools.css'
 
+/**
+ * لیست ابزارها
+ * 
+ * هر ابزار شامل:
+ * - id: شناسه ابزار
+ * - name: نام فارسی
+ * - icon: آیکون emoji
+ */
 const tools = [
   { id: 'personalFund', name: 'صندوق', icon: '💰' },
   { id: 'goldTool', name: 'طلا', icon: '🥇' },
@@ -16,6 +49,29 @@ function Tools() {
   const { currentTool, setTool } = useApp()
   const [activeTool, setActiveTool] = useState(currentTool || 'personalFund')
 
+  /**
+   * Effect: تنظیم اولین هایلایت به صورت پیش‌فرض
+   */
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        const firstCircle = document.querySelector('.highlight-circle[data-tool="personalFund"]')
+        if (firstCircle) {
+          firstCircle.classList.add('active')
+        }
+        const firstSection = document.querySelector('.tool-section[id="personalFundSection"]')
+        if (firstSection) {
+          firstSection.classList.add('active-tool')
+        }
+        
+        // به‌روزرسانی نمایش صندوق
+        if (typeof window.updatePortfolioDisplay === 'function') {
+          window.updatePortfolioDisplay()
+        }
+      }, 100)
+    }
+  }, [])
+
   const handleToolClick = (toolId) => {
     setActiveTool(toolId)
     setTool(toolId)
@@ -27,7 +83,7 @@ function Tools() {
   }
 
   return (
-    <div id="toolsView" className="view active-view" style={{ display: 'block' }}>
+    <div id="toolsView" className="view">
       {/* Highlights Section */}
       <section className="highlights-section tools-highlights">
         <div className="highlights-container">
@@ -112,6 +168,8 @@ function Tools() {
                   <button type="button" className="btn-primary" onClick={() => {
                     if (typeof window !== 'undefined' && window.addAssetToPortfolio) {
                       window.addAssetToPortfolio()
+                    } else {
+                      alert('⚠️ تابع addAssetToPortfolio پیدا نشد')
                     }
                   }}>
                     ➕ افزودن دارایی
@@ -204,21 +262,51 @@ function Tools() {
           </div>
         </div>
 
-        {/* Other Tools - Placeholder */}
+        {/* Silver Tool Section */}
         <div className={`tool-section ${activeTool === 'silverTool' ? 'active-tool' : ''}`} id="silverToolSection">
           <div className="tool-card glass-card">
-            <h3>🥈 محاسبه قیمت نقره</h3>
-            <p>در حال توسعه...</p>
+            <h3>🪙 محاسبه قیمت نقره</h3>
+            <div className="tool-form">
+              <div className="form-group">
+                <label>وزن نقره (گرم)</label>
+                <input type="number" id="silverWeight" className="form-input" placeholder="مثلاً 10" step="0.1" />
+              </div>
+              <div className="form-group">
+                <label>عیار نقره</label>
+                <select id="silverCarat" className="form-select">
+                  <option value="999">۹۹۹ (نقره خالص)</option>
+                  <option value="925">۹۲۵ (استرلینگ)</option>
+                  <option value="800">۸۰۰</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>اجرت و کارمزد (%)</label>
+                <input type="number" id="silverWage" className="form-input" placeholder="مثلاً 5" defaultValue="5" />
+              </div>
+              <button 
+                type="button" 
+                className="btn-primary" 
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.calculateSilver) {
+                    window.calculateSilver()
+                  }
+                }}
+              >
+                🧮 محاسبه قیمت
+              </button>
+              <div id="silverResult" className="tool-result"></div>
+            </div>
           </div>
         </div>
 
+        {/* Diamond Tool Section */}
         <div className={`tool-section ${activeTool === 'diamondTool' ? 'active-tool' : ''}`} id="diamondToolSection">
           <div className="tool-card glass-card">
-            <h3>💎 آنالیز الماس</h3>
-            <div className="tool-form">
-              <div className="form-group">
-                <label>عکس الماس</label>
-                <input type="file" id="diamondImage" accept="image/*" className="form-input" />
+            <h3>💎 تشخیص الماس از روی عکس</h3>
+            <div className="upload-section">
+              <div className="upload-area" id="diamondUploadArea">
+                <span>📸 عکس الماس را آپلود کنید</span>
+                <input type="file" id="diamondImage" accept="image/*" hidden />
               </div>
               <button 
                 type="button" 
@@ -229,24 +317,60 @@ function Tools() {
                   }
                 }}
               >
-                🔍 آنالیز
+                🔍 آنالیز تصویر
               </button>
-              <div id="diamondResult" className="tool-result"></div>
+              <div id="diamondResult" className="analysis-result"></div>
             </div>
           </div>
         </div>
 
+        {/* Gem Tool Section */}
         <div className={`tool-section ${activeTool === 'gemTool' ? 'active-tool' : ''}`} id="gemToolSection">
           <div className="tool-card glass-card">
-            <h3>💠 آنالیز سنگ قیمتی</h3>
-            <p>در حال توسعه...</p>
+            <h3>💎 تشخیص سنگ از روی عکس</h3>
+            <div className="upload-section">
+              <div className="upload-area" id="gemUploadArea">
+                <span>📸 عکس سنگ را آپلود کنید</span>
+                <input type="file" id="gemlImage" accept="image/*" hidden />
+              </div>
+              <button 
+                type="button" 
+                className="btn-primary" 
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.analyzeGem) {
+                    window.analyzeGem()
+                  }
+                }}
+              >
+                🔍 آنالیز تصویر
+              </button>
+              <div id="gemlResult" className="analysis-result"></div>
+            </div>
           </div>
         </div>
 
+        {/* Coin Tool Section */}
         <div className={`tool-section ${activeTool === 'coinTool' ? 'active-tool' : ''}`} id="coinToolSection">
           <div className="tool-card glass-card">
-            <h3>🪙 محاسبه قیمت سکه</h3>
-            <p>در حال توسعه...</p>
+            <h3>🪙 تشخیص سکه‌های قدیمی</h3>
+            <div className="upload-section">
+              <div className="upload-area" id="coinUploadArea">
+                <span>📸 عکس سکه را آپلود کنید</span>
+                <input type="file" id="coinImage" accept="image/*" hidden />
+              </div>
+              <button 
+                type="button" 
+                className="btn-primary" 
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.analyzeCoin) {
+                    window.analyzeCoin()
+                  }
+                }}
+              >
+                🔍 آنالیز سکه
+              </button>
+              <div id="coinResult" className="analysis-result"></div>
+            </div>
           </div>
         </div>
       </main>

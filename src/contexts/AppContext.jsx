@@ -1,9 +1,51 @@
+/**
+ * ============================================
+ * 🗂️ Context اصلی اپلیکیشن - AppContext.jsx
+ * ============================================
+ * 
+ * این فایل Context اصلی اپلیکیشن را تعریف می‌کند.
+ * برای مدیریت state سراسری در تمام کامپوننت‌ها استفاده می‌شود.
+ * 
+ * وابستگی‌ها:
+ * - React: createContext, useContext, useState, useEffect, useCallback
+ * 
+ * State مدیریت شده:
+ * - currentTheme: تم فعلی (light/dark)
+ * - currentView: صفحه فعلی
+ * - currentCategory: دسته‌بندی فعلی (home, crypto, currency, gold, ...)
+ * - currentTool: ابزار فعلی (personalFund, goldTool, ...)
+ * - openModals: تعداد مودال‌های باز
+ * - userUsage: استفاده کاربر (chat, tools)
+ * - globe: state مربوط به کره‌ها (financial, resources)
+ * 
+ * عملکرد:
+ * - ذخیره state در localStorage
+ * - بارگذاری state از localStorage
+ * - هماهنگی با window.appState برای backward compatibility
+ * - ایجاد stateManager برای استفاده vanilla JS
+ * 
+ * تاریخ ایجاد: 2025-12-06
+ * آخرین بروزرسانی: 2025-12-06
+ */
+
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
-// ایجاد Context
+/**
+ * ایجاد Context اصلی
+ * 
+ * این Context برای دسترسی به state سراسری در تمام کامپوننت‌ها استفاده می‌شود.
+ */
 const AppContext = createContext()
 
-// Hook برای استفاده از Context
+/**
+ * Hook برای استفاده از Context
+ * 
+ * این hook برای دسترسی به state و functions از Context استفاده می‌شود.
+ * باید داخل AppProvider استفاده شود.
+ * 
+ * @returns {object} Context value شامل state و functions
+ * @throws {Error} اگر خارج از AppProvider استفاده شود
+ */
 export function useApp() {
   const context = useContext(AppContext)
   if (!context) {
@@ -12,40 +54,56 @@ export function useApp() {
   return context
 }
 
-// Provider Component
+/**
+ * Provider Component
+ * 
+ * این کامپوننت تمام state و functions را در Context قرار می‌دهد.
+ * باید در سطح بالا (App.jsx) استفاده شود.
+ * 
+ * @param {React.ReactNode} children - کامپوننت‌های فرزند
+ */
 export function AppProvider({ children }) {
-  // State اصلی
+  /**
+   * State اصلی اپلیکیشن
+   * 
+   * این state شامل تمام اطلاعات سراسری اپلیکیشن است:
+   * - UI State: theme, view, category, tool, modals
+   * - User State: usage statistics, previous view
+   * - Globe State: تنظیمات کره‌های مالی و منابع
+   */
   const [state, setState] = useState({
-    // UI State
-    currentTheme: 'light',
-    currentView: 'home',
-    currentCategory: 'crypto',
-    currentTool: 'goldTool',
-    openModals: 0,
-    maxModals: { home: 4, category: 2 },
+    // UI State - وضعیت رابط کاربری
+    currentTheme: 'dark', // تم پیش‌فرض: dark (می‌تواند light یا dark باشد)
+    currentView: 'home', // صفحه فعلی (home, news, globe, tutorial, relax, tools)
+    currentCategory: 'home', // دسته‌بندی فعلی (home, crypto, currency, gold, forex, stock, oil)
+    currentTool: 'personalFund', // ابزار فعلی (personalFund, goldTool, silverTool, ...)
+    openModals: 0, // تعداد مودال‌های باز
+    maxModals: { home: 4, category: 2 }, // حداکثر تعداد مودال‌های مجاز
     
-    // User State
-    userUsage: { chat: 0, tools: 0 },
-    previousViewBeforeGlobe: null,
+    // User State - وضعیت کاربر
+    userUsage: { chat: 0, tools: 0 }, // آمار استفاده کاربر
+    previousViewBeforeGlobe: null, // صفحه قبلی قبل از باز کردن کره (برای بازگشت)
     
-    // Globe State
+    // Globe State - وضعیت کره‌ها
     globe: {
+      // کره مالی - ساعت بازارها
       financial: {
-        selectedCountry: null,
-        showBorders: true,
-        showMarkers: true
+        selectedCountry: null, // کشور انتخاب شده
+        showBorders: true, // نمایش مرزها
+        showMarkers: true // نمایش نشانگرها
       },
+      // کره منابع - اطلاعات کشورها
       resources: {
-        selectedCountry: null,
-        bordersGroup: null,
-        conflictsGroup: null,
-        tradeLinesGroup: null,
-        labelsGroup: null,
-        showBorders: true,
-        showConflicts: true,
-        showTradeLines: false,
-        showLabels: true,
-        tradeType: 'exports'
+        selectedCountry: null, // کشور انتخاب شده
+        bordersGroup: null, // گروه مرزها (Three.js)
+        conflictsGroup: null, // گروه درگیری‌ها (Three.js)
+        tradeLinesGroup: null, // گروه خطوط تجاری (Three.js)
+        labelsGroup: null, // گروه برچسب‌ها (Three.js)
+        showBorders: true, // نمایش مرزها
+        showConflicts: true, // نمایش درگیری‌ها
+        showTradeLines: false, // نمایش خطوط تجاری
+        showLabels: true, // نمایش برچسب‌ها
+        tradeType: 'exports' // نوع تجارت (exports/imports)
       }
     }
   })
@@ -57,9 +115,14 @@ export function AppProvider({ children }) {
       if (savedState) {
         const parsed = JSON.parse(savedState)
         setState(prev => ({ ...prev, ...parsed }))
+      } else {
+        // اگر state ذخیره شده‌ای وجود ندارد، تم پیش‌فرض را dark قرار بده
+        setState(prev => ({ ...prev, currentTheme: 'dark' }))
       }
     } catch (error) {
       console.error('Error loading state from localStorage:', error)
+      // در صورت خطا، تم پیش‌فرض را dark قرار بده
+      setState(prev => ({ ...prev, currentTheme: 'dark' }))
     }
   }, [])
 

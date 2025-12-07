@@ -38,6 +38,96 @@ function addEventListenerOnceUI(element, event, handler, uniqueId, options = {})
 // Flag برای جلوگیری از اجرای چندباره setupEventListeners
 let eventListenersSetup = false;
 
+// Handler برای دکمه‌های 3D در قسمت آرامش
+// جلوگیری از راه‌اندازی چندباره دکمه‌ها
+let buttons3DSetup = false;
+
+function setup3DGlobeButtons() {
+    // پیدا کردن دکمه‌ها با استفاده از querySelector در پنل 3D
+    const panel3d = document.querySelector('.relax-panel[data-relax-panel="3d"]');
+    if (!panel3d) {
+        const log = window.logger || { warn: console.warn }; log.warn('⚠️ پنل 3D پیدا نشد');
+        return;
+    }
+    
+    // پیدا کردن دکمه‌ها در پنل 3D
+    const buttons = panel3d.querySelectorAll('button[data-globe]');
+    const log = window.logger || { info: console.log }; log.info(`🔘 پیدا کردن ${buttons.length} دکمه 3D در پنل`);
+    
+    if (buttons.length === 0) {
+        return;
+    }
+    
+    buttons.forEach(btn => {
+        // حذف listener های قبلی با clone
+        if (btn.hasAttribute('data-listener-attached')) {
+            return; // قبلا listener اضافه شده
+        }
+        
+        const globeType = btn.getAttribute('data-globe');
+        if (!globeType) {
+            const log = window.logger || { warn: console.warn }; log.warn('⚠️ دکمه بدون data-globe:', btn);
+            return;
+        }
+        
+        const log = window.logger || { info: console.log }; log.info(`🌍 راه‌اندازی دکمه: ${globeType}`);
+        
+        // بهبود event listener برای راحت‌تر کلیک شدن
+        const handleClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
+            // جلوگیری از کلیک‌های مکرر
+            if (btn.disabled) {
+                return;
+            }
+            btn.disabled = true;
+            
+            const log = window.logger || { info: console.log }; log.info(`🌍 کلیک روی دکمه 3D: ${globeType}`);
+            
+            const cfg = window.CONFIG || CONFIG;
+            setTimeout(() => {
+                btn.disabled = false;
+            }, cfg.UI.ANIMATION.BUTTON_DISABLE_DURATION);
+            
+            if (globeType) {
+                if (typeof open3DGlobe === 'function') {
+                    open3DGlobe(globeType);
+                } else if (typeof window.open3DGlobe === 'function') {
+                    window.open3DGlobe(globeType);
+                } else {
+                    const log = window.logger || { error: console.error }; log.error('❌ تابع open3DGlobe پیدا نشد!');
+                    alert('خطا: تابع باز کردن کره پیدا نشد');
+                }
+            }
+        };
+        
+        // اضافه کردن listener فقط یکبار
+        btn.addEventListener('click', handleClick, { passive: false, once: false });
+        btn.addEventListener('touchend', handleClick, { passive: false, once: false });
+        btn.setAttribute('data-listener-attached', 'true');
+        
+        // بهبود UX - اضافه کردن cursor pointer
+        btn.style.cursor = 'pointer';
+        btn.style.userSelect = 'none';
+        btn.style.webkitUserSelect = 'none';
+        
+        // افکت hover
+        btn.addEventListener('mouseenter', () => {
+            if (!btn.disabled) {
+                btn.style.transform = 'scale(1.05)';
+                btn.style.transition = 'transform 0.2s ease';
+            }
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'scale(1)';
+        });
+    });
+    
+    buttons3DSetup = true;
+}
+
 /**
  * 🎯 تنظیم همه ایونت‌لیستنرها
  */
@@ -230,96 +320,6 @@ function setupEventListeners() {
             }
         }
     });
-    
-    // Handler برای دکمه‌های 3D در قسمت آرامش
-    // جلوگیری از راه‌اندازی چندباره دکمه‌ها
-    let buttons3DSetup = false;
-    
-    function setup3DGlobeButtons() {
-        // پیدا کردن دکمه‌ها با استفاده از querySelector در پنل 3D
-        const panel3d = document.querySelector('.relax-panel[data-relax-panel="3d"]');
-        if (!panel3d) {
-            const log = window.logger || { warn: console.warn }; log.warn('⚠️ پنل 3D پیدا نشد');
-            return;
-        }
-        
-        // پیدا کردن دکمه‌ها در پنل 3D
-        const buttons = panel3d.querySelectorAll('button[data-globe]');
-        const log = window.logger || { info: console.log }; log.info(`🔘 پیدا کردن ${buttons.length} دکمه 3D در پنل`);
-        
-        if (buttons.length === 0) {
-            return;
-        }
-        
-        buttons.forEach(btn => {
-            // حذف listener های قبلی با clone
-            if (btn.hasAttribute('data-listener-attached')) {
-                return; // قبلا listener اضافه شده
-            }
-            
-            const globeType = btn.getAttribute('data-globe');
-            if (!globeType) {
-                const log = window.logger || { warn: console.warn }; log.warn('⚠️ دکمه بدون data-globe:', btn);
-                return;
-            }
-            
-            const log = window.logger || { info: console.log }; log.info(`🌍 راه‌اندازی دکمه: ${globeType}`);
-            
-            // بهبود event listener برای راحت‌تر کلیک شدن
-            const handleClick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                // جلوگیری از کلیک‌های مکرر
-                if (btn.disabled) {
-                    return;
-                }
-                btn.disabled = true;
-                
-                const log = window.logger || { info: console.log }; log.info(`🌍 کلیک روی دکمه 3D: ${globeType}`);
-                
-                const cfg = window.CONFIG || CONFIG;
-                setTimeout(() => {
-                    btn.disabled = false;
-                }, cfg.UI.ANIMATION.BUTTON_DISABLE_DURATION);
-                
-                if (globeType) {
-                    if (typeof open3DGlobe === 'function') {
-                        open3DGlobe(globeType);
-                    } else if (typeof window.open3DGlobe === 'function') {
-                        window.open3DGlobe(globeType);
-                    } else {
-                        const log = window.logger || { error: console.error }; log.error('❌ تابع open3DGlobe پیدا نشد!');
-                        alert('خطا: تابع باز کردن کره پیدا نشد');
-                    }
-                }
-            };
-            
-            // اضافه کردن listener فقط یکبار
-            btn.addEventListener('click', handleClick, { passive: false, once: false });
-            btn.addEventListener('touchend', handleClick, { passive: false, once: false });
-            btn.setAttribute('data-listener-attached', 'true');
-            
-            // بهبود UX - اضافه کردن cursor pointer
-            btn.style.cursor = 'pointer';
-            btn.style.userSelect = 'none';
-            btn.style.webkitUserSelect = 'none';
-            
-            // افکت hover
-            btn.addEventListener('mouseenter', () => {
-                if (!btn.disabled) {
-                    btn.style.transform = 'scale(1.05)';
-                    btn.style.transition = 'transform 0.2s ease';
-                }
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'scale(1)';
-            });
-        });
-        
-        buttons3DSetup = true;
-    }
     
     // راه‌اندازی اولیه
     const cfg = window.CONFIG || CONFIG;
@@ -893,16 +893,44 @@ class AssistiveTouch {
         if (!this.touchElement) {
             return; // اگر element وجود ندارد، init را متوقف کن
         }
-        this.setupEventListeners();
+        
+        // بررسی وجود touchButton
+        if (!this.touchButton) {
+            // تلاش مجدد برای پیدا کردن touchButton
+            this.touchButton = this.touchElement.querySelector('.touch-button');
+            if (!this.touchButton) {
+                const log = window.logger || { warn: console.warn };
+                log.warn('⚠️ touch-button پیدا نشد - صبر می‌کنیم...');
+                // تلاش مجدد بعد از تاخیر
+                setTimeout(() => {
+                    this.touchButton = this.touchElement.querySelector('.touch-button');
+                    if (this.touchButton) {
+                        this.setupEventListeners();
+                    }
+                }, 200);
+                // ادامه با سایر تنظیمات حتی اگر touchButton موجود نباشد
+            }
+        }
+        
+        if (this.touchButton) {
+            this.setupEventListeners();
+        }
         this.setupGlassMenu();
         this.loadPosition();
         this.ensureVisibility(); // اطمینان از نمایش
         
         // یک بار دیگر بعد از تاخیر برای اطمینان از نمایش در همه مرورگرها (مخصوص اپرا)
-        const cfg = window.CONFIG || CONFIG;
+        // طبق یادداشت مرجع: تاخیر 200ms برای اپرا
         setTimeout(() => {
             this.ensureVisibility();
-        }, cfg.UI.ANIMATION.FADE_DURATION);
+            // اگر touchButton هنوز موجود نیست، دوباره تلاش کن
+            if (!this.touchButton) {
+                this.touchButton = this.touchElement.querySelector('.touch-button');
+                if (this.touchButton) {
+                    this.setupEventListeners();
+                }
+            }
+        }, 200);
     }
     
     ensureVisibility() {
@@ -964,8 +992,20 @@ class AssistiveTouch {
     }
     
     setupEventListeners() {
+        // بررسی وجود touchButton
+        if (!this.touchButton) {
+            const log = window.logger || { warn: console.warn };
+            log.warn('⚠️ touchButton پیدا نشد - event listeners اضافه نشدند');
+            return;
+        }
+        
+        // حذف listeners قبلی (اگر وجود دارند) برای جلوگیری از duplicate
+        const newButton = this.touchButton.cloneNode(true);
+        this.touchButton.parentNode.replaceChild(newButton, this.touchButton);
+        this.touchButton = newButton;
+        
         // رویدادهای موس
-        this.touchButton.addEventListener('mousedown', this.handleMouseDown.bind(this));
+        this.touchButton.addEventListener('mousedown', this.handleMouseDown.bind(this), { passive: false });
         
         // رویدادهای تاچ
         this.touchButton.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
@@ -973,6 +1013,9 @@ class AssistiveTouch {
         // جلوگیری از رفتارهای پیش‌فرض
         this.touchButton.addEventListener('dragstart', (e) => e.preventDefault());
         this.touchButton.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        const log = window.logger || { info: console.log };
+        log.info('✅ Event listeners برای دکمه سیار اضافه شدند');
     }
     
     handleMouseDown(e) {
@@ -1120,8 +1163,22 @@ class AssistiveTouch {
         }
     }
     
+    /**
+     * Handler: تاپ/کلیک روی دکمه (بدون drag)
+     * 
+     * این متد زمانی فراخوانی می‌شود که:
+     * - کاربر روی دکمه کلیک/تاچ کرده است
+     * - اما drag نکرده است (hasMoved === false)
+     * 
+     * عملکرد:
+     * - منوی شیشه‌ای را باز می‌کند
+     * 
+     * @param {Event} e - event object
+     */
     handleTap(e) {
         e.stopPropagation();
+        const log = window.logger || { info: console.log };
+        log.info('🎮 handleTap فراخوانی شد - باز کردن منوی شیشه‌ای');
         this.openGlassMenu();
     }
     
@@ -1181,39 +1238,79 @@ class AssistiveTouch {
         }, cfg.UI.ANIMATION.TRANSITION_DURATION);
     }
     
+    /**
+     * راه‌اندازی منوی شیشه‌ای
+     * 
+     * این متد:
+     * 1. دکمه بستن منو را پیدا می‌کند
+     * 2. event listener برای بستن منو اضافه می‌کند
+     * 3. event listener برای کلیک روی overlay اضافه می‌کند
+     * 4. event listener برای آیتم‌های منو اضافه می‌کند
+     * 5. event listener برای Escape key اضافه می‌کند
+     * 
+     * وابستگی‌ها:
+     * - document.getElementById('closeGlassMenu'): دکمه بستن منو
+     * - this.glassMenu: المان منوی شیشه‌ای
+     * - document.querySelectorAll('.glass-menu-item'): آیتم‌های منو
+     */
     setupGlassMenu() {
         // بررسی وجود elements
         const closeGlassMenuBtn = document.getElementById('closeGlassMenu');
         if (!closeGlassMenuBtn) {
             const log = window.logger || { warn: console.warn };
-            log.warn('closeGlassMenu element not found - skipping setup');
+            log.warn('⚠️ closeGlassMenu element not found - skipping setup');
             return;
         }
         
+        // بررسی وجود glassMenu - اگر در constructor پیدا نشد، دوباره تلاش کن
         if (!this.glassMenu) {
-            const log = window.logger || { warn: console.warn };
-            log.warn('glassMenu element not found - skipping setup');
-            return;
+            this.glassMenu = document.getElementById('glassMenu');
+            if (!this.glassMenu) {
+                const log = window.logger || { warn: console.warn };
+                log.warn('⚠️ glassMenu element not found - skipping setup');
+                return;
+            }
         }
         
-        addEventListenerOnceUI(closeGlassMenuBtn, 'click', () => {
-            this.closeGlassMenu();
-        }, 'close-glass-menu-click');
+        // حذف event listeners قبلی با clone کردن menu برای جلوگیری از duplicate listeners
+        const newMenu = this.glassMenu.cloneNode(true);
+        this.glassMenu.parentNode.replaceChild(newMenu, this.glassMenu);
+        this.glassMenu = newMenu;
         
-        addEventListenerOnceUI(this.glassMenu, 'click', (e) => {
+        // دکمه بستن منو - پیدا کردن دوباره بعد از clone
+        const closeBtn = this.glassMenu.querySelector('#closeGlassMenu');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.closeGlassMenu();
+            });
+        }
+        
+        // کلیک روی backdrop
+        this.glassMenu.addEventListener('click', (e) => {
             if (e.target === this.glassMenu) {
                 this.closeGlassMenu();
             }
-        }, 'glass-menu-overlay-click');
-        
-        document.querySelectorAll('.glass-menu-item').forEach(item => {
-            addEventListenerOnceUI(item, 'click', (e) => {
-                const page = e.currentTarget.getAttribute('data-page');
-                this.navigateToPage(page);
-                this.closeGlassMenu();
-            }, `glass-menu-item-${item.getAttribute('data-page')}-click`);
         });
         
+        // استفاده از event delegation برای آیتم‌های منو - طبق یادداشت مرجع
+        const handleGlassMenuClick = (e) => {
+            const menuItem = e.target.closest('.glass-menu-item');
+            if (!menuItem) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const page = menuItem.getAttribute('data-page');
+            if (page) {
+                this.navigateToPage(page);
+                this.closeGlassMenu();
+            }
+        };
+        
+        // اضافه کردن listener با event delegation
+        this.glassMenu.addEventListener('click', handleGlassMenuClick);
+        
+        // بستن با Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.glassMenu && this.glassMenu.classList.contains('active')) {
                 this.closeGlassMenu();
@@ -1221,14 +1318,60 @@ class AssistiveTouch {
         });
     }
     
+    /**
+     * باز کردن منوی شیشه‌ای
+     * 
+     * این متد:
+     * 1. کلاس 'active' را به glassMenu اضافه می‌کند
+     * 2. overflow body را hidden می‌کند تا از اسکرول پس‌زمینه جلوگیری شود
+     * 
+     * وابستگی:
+     * - this.glassMenu: المان منوی شیشه‌ای (از document.getElementById('glassMenu'))
+     */
     openGlassMenu() {
+        if (!this.glassMenu) {
+            const log = window.logger || { warn: console.warn };
+            log.warn('⚠️ glassMenu element پیدا نشد - نمی‌توان منو را باز کرد');
+            // تلاش برای پیدا کردن دوباره
+            this.glassMenu = document.getElementById('glassMenu');
+            if (!this.glassMenu) {
+                return;
+            }
+        }
+        
         this.glassMenu.classList.add('active');
         document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول پس‌زمینه
+        
+        const log = window.logger || { info: console.log };
+        log.info('✅ منوی شیشه‌ای باز شد');
     }
     
+    /**
+     * بستن منوی شیشه‌ای
+     * 
+     * این متد:
+     * 1. کلاس 'active' را از glassMenu حذف می‌کند (برای مخفی کردن)
+     * 2. overflow body را به حالت عادی برمی‌گرداند
+     */
     closeGlassMenu() {
+        // بررسی وجود glassMenu
+        if (!this.glassMenu) {
+            this.glassMenu = document.getElementById('glassMenu');
+            if (!this.glassMenu) {
+                const log = window.logger || { error: console.error };
+                log.error('❌ glassMenu element not found in closeGlassMenu');
+                return;
+            }
+        }
+        
+        // حذف کلاس active برای مخفی کردن منو
         this.glassMenu.classList.remove('active');
-        document.body.style.overflow = ''; // بازگشت اسکرول
+        
+        // بازگشت اسکرول به حالت عادی
+        document.body.style.overflow = '';
+        
+        const log = window.logger || { info: console.log };
+        log.info('✅ منوی شیشه‌ای بسته شد');
     }
     
     navigateToPage(page) {
@@ -1364,10 +1507,7 @@ if (!window.hasAttribute || !window.hasAttribute('data-listener-window-resize'))
     window.addEventListener('resize', resizeHandler);
 }
 
-// Export AssistiveTouch class to window for React components
-if (typeof window !== 'undefined') {
-    window.AssistiveTouch = AssistiveTouch;
-}
+// Export AssistiveTouch class به window - در انتهای فایل انجام می‌شود
 
 // ==================== //
 // 🎮 دکمه سیار داخل کره‌های بزرگ
@@ -1397,7 +1537,7 @@ class GlobeAssistiveTouch {
         this.modal = document.getElementById(modalId);
         this.modalContent = this.modal?.querySelector('.globe-modal-content');
         
-        if (!this.touchElement || !this.glassMenu) {
+        if (!this.touchElement || !this.glassMenu || !this.modalContent) {
             const log = window.logger || { warn: console.warn }; log.warn(`⚠️ عناصر کره ${this.globeType} پیدا نشد`, {
                 touchElement: !!this.touchElement,
                 glassMenu: !!this.glassMenu,
@@ -1515,6 +1655,11 @@ class GlobeAssistiveTouch {
     }
     
     updatePosition(clientX, clientY) {
+        if (!this.modalContent) {
+            const log = window.logger || { warn: console.warn };
+            log.warn('⚠️ modalContent پیدا نشد - snap به لبه انجام نشد');
+            return;
+        }
         const contentRect = this.modalContent.getBoundingClientRect();
         const deltaX = clientX - this.startX;
         const deltaY = clientY - this.startY;
@@ -1576,6 +1721,11 @@ class GlobeAssistiveTouch {
         this.isDragging = false;
         this.touchElement.classList.remove('dragging');
         
+        if (!this.modalContent) {
+            const log = window.logger || { warn: console.warn };
+            log.warn('⚠️ modalContent پیدا نشد - snap به لبه انجام نشد');
+            return;
+        }
         const contentRect = this.modalContent.getBoundingClientRect();
         const rect = this.touchElement.getBoundingClientRect();
         
@@ -1636,14 +1786,32 @@ class GlobeAssistiveTouch {
             }
         });
         
-        // رویدادهای آیتم‌های منو
-        this.glassMenu.querySelectorAll('.globe-menu-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const action = e.currentTarget.getAttribute('data-action');
+        // رویدادهای آیتم‌های منو - با event delegation برای اطمینان از کارکرد
+        // استفاده از event delegation برای جلوگیری از مشکلات React re-render
+        const handleMenuClick = (e) => {
+            const menuItem = e.target.closest('.globe-menu-item');
+            if (!menuItem) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const action = menuItem.getAttribute('data-action');
+            const log = window.logger || { info: console.log };
+            log.info(`🎯 کلیک روی منوی کره ${this.globeType}:`, action);
+            
+            if (action) {
                 this.handleAction(action);
                 this.closeMenu();
-            });
-        });
+            }
+        };
+        
+        // حذف listener های قبلی با clone
+        const newMenu = this.glassMenu.cloneNode(true);
+        this.glassMenu.parentNode.replaceChild(newMenu, this.glassMenu);
+        this.glassMenu = newMenu;
+        
+        // اضافه کردن listener جدید با event delegation
+        this.glassMenu.addEventListener('click', handleMenuClick, { capture: true });
         
         // بستن با Escape
         document.addEventListener('keydown', (e) => {
@@ -1953,6 +2121,15 @@ function initGlobeAssistiveTouches() {
     financialGlobeAssistive = new GlobeAssistiveTouch('financial');
     resourcesGlobeAssistive = new GlobeAssistiveTouch('resources');
     const log = window.logger || { info: console.log }; log.info('✅ دکمه‌های سیار کره‌ها راه‌اندازی شدند');
+}
+
+// Export همه classes و functions به window برای React components
+// این export باید بعد از تعریف همه classes انجام شود
+if (typeof window !== 'undefined') {
+    window.AssistiveTouch = AssistiveTouch;
+    window.setup3DGlobeButtons = setup3DGlobeButtons;
+    window.GlobeAssistiveTouch = GlobeAssistiveTouch;
+    window.initGlobeAssistiveTouches = initGlobeAssistiveTouches;
 }
 
 // تنظیم سرعت چرخش کره بر اساس زوم

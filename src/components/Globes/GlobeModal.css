@@ -1,2 +1,222 @@
-/* استایل‌های GlobeModal از globe-styles.css استفاده می‌کنند */
+/* استایل‌های GlobeModal - شامل دکمه‌های سیار کره‌ها */
 
+/* 🎮 دکمه سیار کره‌ها */
+.globe-assistive-touch {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.globe-touch-button {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%, 
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.15) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.globe-touch-button:hover {
+    transform: scale(1.08);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.globe-touch-button:active {
+    transform: scale(0.95);
+}
+
+.globe-touch-icon {
+    font-size: 1.4em;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+/* حالت درگ */
+.globe-assistive-touch.dragging .globe-touch-button {
+    transform: scale(1.12);
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.5),
+        0 0 0 3px rgba(255, 255, 255, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* منوی شیشه‌ای کره */
+.globe-glass-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.globe-glass-menu.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.globe-menu-content {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.18) 0%, 
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.12) 100%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    padding: 24px;
+    min-width: 280px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.globe-glass-menu.active .globe-menu-content {
+    transform: scale(1) translateY(0);
+}
+
+.globe-menu-title {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.globe-menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.globe-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: right;
+    direction: rtl;
+    font-family: inherit;
+    border: none;
+}
+
+.globe-menu-item:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.1) 100%);
+    transform: translateX(-5px);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.globe-menu-item:active {
+    transform: scale(0.98) translateX(-3px);
+}
+
+.globe-menu-item .item-icon {
+    font-size: 1.3em;
+    width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.globe-menu-item .item-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+.globe-menu-item.exit-item {
+    margin-top: 10px;
+    background: linear-gradient(135deg, 
+        rgba(239, 68, 68, 0.2) 0%,
+        rgba(239, 68, 68, 0.1) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.globe-menu-item.exit-item:hover {
+    background: linear-gradient(135deg, 
+        rgba(239, 68, 68, 0.3) 0%,
+        rgba(239, 68, 68, 0.15) 100%);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .globe-assistive-touch {
+        top: 15px;
+        left: 15px;
+    }
+    
+    .globe-touch-button {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .globe-touch-icon {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .globe-assistive-touch {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .globe-touch-button {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .globe-touch-icon {
+        font-size: 1.1em;
+    }
+}

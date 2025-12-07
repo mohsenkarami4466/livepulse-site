@@ -1,18 +1,58 @@
-// ==================== //
-// 🏠 بخش خانه - کارت‌های قیمت
-// ==================== //
+/**
+ * ============================================
+ * 🏠 فایل script-cards.js - کارت‌های قیمت
+ * ============================================
+ * 
+ * این فایل شامل:
+ * - تولید کارت‌های قیمت برای صفحه خانه
+ * - مدیریت کلیک روی کارت‌ها
+ * - بررسی نیاز به لاگین
+ * - باز کردن مودال جزئیات قیمت
+ * - راه‌اندازی Highlights (دسته‌بندی‌ها)
+ * 
+ * وابستگی‌ها:
+ * - window.sampleData: داده‌های نمونه (از script-main.js)
+ * - window.logger: برای لاگ کردن
+ * - window.errorHandler: برای مدیریت خطاها
+ * 
+ * Export ها:
+ * - window.generateHomeCards: تابع تولید کارت‌های خانه
+ * - window.createPriceCard: تابع ایجاد یک کارت قیمت
+ * - window.checkLoginRequired: تابع بررسی نیاز به لاگین
+ * - window.openPriceDetail: تابع باز کردن مودال جزئیات
+ * - window.setupHighlightPanels: تابع راه‌اندازی Highlights
+ * 
+ * تاریخ ایجاد: 2025-12-06
+ * آخرین بروزرسانی: 2025-12-06
+ */
+
 // ==================== //
 // 🏠 بخش خانه - کارت‌های قیمت
 // ==================== //
 
-// Flag برای جلوگیری از فراخوانی چندباره
-let isGeneratingHomeCards = false;
-let lastGeneratedView = null;
+/**
+ * Flag برای جلوگیری از فراخوانی چندباره
+ * 
+ * این flag ها برای جلوگیری از تولید مجدد کارت‌ها استفاده می‌شوند.
+ */
+let isGeneratingHomeCards = false; // Flag برای جلوگیری از تولید همزمان کارت‌ها
+let lastGeneratedView = null; // آخرین view که کارت‌ها برای آن تولید شده‌اند
 
 /**
  * 🏠 تولید ۴ کارت اصلی صفحه خانه
+ * 
+ * این تابع:
+ * 1. بررسی می‌کند که آیا کارت‌ها قبلاً تولید شده‌اند
+ * 2. اگر تولید نشده‌اند، 4 کارت اصلی را تولید می‌کند
+ * 3. کارت‌ها را به container اضافه می‌کند
+ * 
+ * وابستگی‌ها:
+ * - document.getElementById('homeMainCards'): کانتینر کارت‌ها
+ * - window.sampleData: داده‌های نمونه
+ * 
+ * Export:
+ * - window.generateHomeCards: برای استفاده در React و vanilla JS
  */
-// Export to window for global access
 if (typeof window !== 'undefined') {
     window.generateHomeCards = generateHomeCards;
 }
@@ -391,6 +431,11 @@ function openPriceDetail(item) {
     log.info('🎯 مودال جدید فراخوانی شد برای:', item.name);
     
     const modalContent = document.getElementById('modalContent');
+    if (!modalContent) {
+        const log = window.logger || { error: console.error };
+        log.error('❌ modalContent element not found');
+        return;
+    }
     const changeClass = item.change >= 0 ? 'positive' : 'negative';
     
     modalContent.innerHTML = `
@@ -589,6 +634,7 @@ if (typeof window !== 'undefined') {
     window.createPriceCard = createPriceCard;
     window.checkLoginRequired = checkLoginRequired;
     window.openPriceDetail = openPriceDetail;
+    window.setupHighlightPanels = setupHighlightPanels;
 }
 
 // ==================== //

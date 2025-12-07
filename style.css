@@ -8296,11 +8296,13 @@ body.modal-open {
     border-top: 1px solid var(--glass-border);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
     z-index: 997; /* پایین‌تر از دکمه سیار (z-index: 9997) و مودال‌ها */
-    padding: clamp(8px, 1.2vw, 12px) clamp(0.5rem, 2vw, 1rem);
-    gap: clamp(4px, 1vw, 8px);
+    padding: clamp(6px, 1vw, 10px) clamp(0.5rem, 2vw, 1rem);
+    gap: clamp(2px, 0.8vw, 6px);
     transition: all 0.3s ease;
     pointer-events: auto;
     touch-action: auto;
+    height: auto;
+    min-height: 50px;
 }
 
 [data-theme="light"] .bottom-nav-bar {
@@ -8315,11 +8317,11 @@ body.modal-open {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(2px, 0.5vw, 4px);
-    padding: clamp(6px, 1vw, 10px) clamp(4px, 0.8vw, 8px);
+    gap: 0;
+    padding: clamp(8px, 1.2vw, 12px) clamp(6px, 1vw, 10px);
     background: transparent;
     border: none;
-    border-radius: clamp(10px, 1.5vw, 14px);
+    border-radius: clamp(12px, 1.8vw, 16px);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--text-secondary);
@@ -8390,14 +8392,7 @@ body.modal-open {
 }
 
 .nav-text {
-    font-size: clamp(0.65rem, 1vw, 0.75rem);
-    font-weight: 500;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-    line-height: 1.2;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
+    display: none; /* مخفی کردن متن - فقط آیکون نمایش داده می‌شود */
 }
 
 .nav-item.active .nav-text {

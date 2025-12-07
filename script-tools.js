@@ -34,7 +34,7 @@ function activateTool(toolId) {
     
     // 🆕 اگر صندوق شخصی انتخاب شد، دارایی‌ها رو آپدیت کن
     if (toolId === 'personalFund') {
-        updateAssetsDisplay();
+        updatePortfolioDisplay();
     }
 }
 
@@ -42,10 +42,170 @@ function activateTool(toolId) {
  * 📊 آپدیت نمایش مجموع دارایی‌ها
  */
 function updateAssetsDisplay() {
-    document.getElementById('totalAssets').textContent = '۰ ریال';
-    document.getElementById('goldAmount').textContent = '۰ گرم';
-    document.getElementById('usdAmount').textContent = '۰ دلار';
-    document.getElementById('btcAmount').textContent = '۰ BTC';
+    const totalAssets = document.getElementById('totalAssets');
+    const goldAmount = document.getElementById('goldAmount');
+    const usdAmount = document.getElementById('usdAmount');
+    const btcAmount = document.getElementById('btcAmount');
+    
+    if (totalAssets) totalAssets.textContent = '۰ ریال';
+    if (goldAmount) goldAmount.textContent = '۰ گرم';
+    if (usdAmount) usdAmount.textContent = '۰ دلار';
+    if (btcAmount) btcAmount.textContent = '۰ BTC';
+}
+
+/**
+ * ➕ افزودن دارایی به صندوق
+ */
+function addAssetToPortfolio() {
+    const marketType = document.getElementById('marketType')?.value;
+    const assetAmount = parseFloat(document.getElementById('assetAmount')?.value) || 0;
+    
+    if (!marketType || assetAmount <= 0) {
+        alert('⚠️ لطفا نوع بازار و مقدار را وارد کنید');
+        return;
+    }
+    
+    // دریافت دارایی‌های موجود از localStorage
+    let portfolio = JSON.parse(localStorage.getItem('userPortfolio') || '[]');
+    
+    // بررسی اینکه آیا این دارایی قبلاً اضافه شده
+    const existingIndex = portfolio.findIndex(item => item.marketType === marketType);
+    
+    if (existingIndex >= 0) {
+        // اگر موجود است، مقدار را به‌روزرسانی کن
+        portfolio[existingIndex].amount += assetAmount;
+    } else {
+        // اگر جدید است، اضافه کن
+        portfolio.push({
+            marketType,
+            amount: assetAmount,
+            addedAt: new Date().toISOString()
+        });
+    }
+    
+    // ذخیره در localStorage
+    localStorage.setItem('userPortfolio', JSON.stringify(portfolio));
+    
+    // به‌روزرسانی نمایش
+    updatePortfolioDisplay();
+    
+    // پاک کردن فرم
+    const form = document.getElementById('portfolioAssetForm');
+    if (form) form.reset();
+    
+    alert('✅ دارایی با موفقیت اضافه شد');
+}
+
+/**
+ * 📊 به‌روزرسانی نمایش صندوق
+ */
+function updatePortfolioDisplay() {
+    const portfolio = JSON.parse(localStorage.getItem('userPortfolio') || '[]');
+    const assetsGrid = document.getElementById('assetsGrid');
+    const totalPortfolioValue = document.getElementById('totalPortfolioValue');
+    
+    if (!assetsGrid) return;
+    
+    if (portfolio.length === 0) {
+        assetsGrid.innerHTML = `
+            <div class="empty-assets">
+                <span>📦</span>
+                <p>هنوز دارایی ثبت نکردی</p>
+                <small>از فرم پایین دارایی اضافه کن</small>
+            </div>
+        `;
+        if (totalPortfolioValue) totalPortfolioValue.textContent = '۰';
+        return;
+    }
+    
+    // نمایش دارایی‌ها
+    let totalValue = 0;
+    assetsGrid.innerHTML = portfolio.map((asset, index) => {
+        // محاسبه ارزش (نمونه)
+        const price = getAssetPrice(asset.marketType);
+        const value = asset.amount * price;
+        totalValue += value;
+        
+        return `
+            <div class="asset-item">
+                <div class="asset-info">
+                    <span class="asset-name">${getAssetName(asset.marketType)}</span>
+                    <span class="asset-amount">${asset.amount} ${getAssetUnit(asset.marketType)}</span>
+                </div>
+                <div class="asset-value">${formatPrice(value, 'IRR')}</div>
+                <button class="asset-remove" onclick="removeAssetFromPortfolio(${index})">🗑️</button>
+            </div>
+        `;
+    }).join('');
+    
+    if (totalPortfolioValue) {
+        totalPortfolioValue.textContent = formatPrice(totalValue, 'IRR').replace(' تومان', '');
+    }
+}
+
+/**
+ * 🗑️ حذف دارایی از صندوق
+ */
+function removeAssetFromPortfolio(index) {
+    let portfolio = JSON.parse(localStorage.getItem('userPortfolio') || '[]');
+    portfolio.splice(index, 1);
+    localStorage.setItem('userPortfolio', JSON.stringify(portfolio));
+    updatePortfolioDisplay();
+}
+
+/**
+ * 💰 دریافت قیمت دارایی
+ */
+function getAssetPrice(marketType) {
+    const cfg = window.CONFIG || CONFIG;
+    const prices = {
+        'BTC': 42000000,
+        'ETH': 2500000,
+        'USDT': 58000,
+        'GOLD18': cfg.PRICES?.GOLD?.BASE_PRICE_24 * 0.75 || 2000000,
+        'GOLD24': cfg.PRICES?.GOLD?.BASE_PRICE_24 || 2500000,
+        'COIN': cfg.PRICES?.GOLD?.BASE_PRICE_24 * 1.1 || 2750000,
+        'USD': 58000,
+        'EUR': 62000,
+        'GBP': 72000
+    };
+    return prices[marketType] || 0;
+}
+
+/**
+ * 📝 دریافت نام دارایی
+ */
+function getAssetName(marketType) {
+    const names = {
+        'BTC': 'بیت‌کوین',
+        'ETH': 'اتریوم',
+        'USDT': 'تتر',
+        'GOLD18': 'طلای ۱۸ عیار',
+        'GOLD24': 'طلای ۲۴ عیار',
+        'COIN': 'سکه امامی',
+        'USD': 'دلار آمریکا',
+        'EUR': 'یورو',
+        'GBP': 'پوند انگلیس'
+    };
+    return names[marketType] || marketType;
+}
+
+/**
+ * 📏 دریافت واحد دارایی
+ */
+function getAssetUnit(marketType) {
+    const units = {
+        'BTC': 'BTC',
+        'ETH': 'ETH',
+        'USDT': 'USDT',
+        'GOLD18': 'گرم',
+        'GOLD24': 'گرم',
+        'COIN': 'عدد',
+        'USD': 'دلار',
+        'EUR': 'یورو',
+        'GBP': 'پوند'
+    };
+    return units[marketType] || '';
 }
 
 /**
@@ -124,6 +284,103 @@ function analyzeDiamond() {
                 <small>📍 این تحلیل نمونه است. در نسخه نهایی از هوش مصنوعی استفاده می‌شود</small>
             </div>
         `;
+        
+        incrementUsage('tools');
+    }, 2000);
+}
+
+/**
+ * 🥈 محاسبه قیمت نقره
+ */
+function calculateSilver() {
+    if (!checkUsageLimit('tools')) return;
+    
+    const cfg = window.CONFIG || CONFIG;
+    const weight = parseFloat(document.getElementById('silverWeight')?.value) || 0;
+    const carat = parseInt(document.getElementById('silverCarat')?.value) || 999;
+    const wage = parseFloat(document.getElementById('silverWage')?.value) || cfg.TOOLS.SILVER?.DEFAULT_WAGE || 5;
+    
+    if (weight <= 0) {
+        const silverResult = document.getElementById('silverResult');
+        if (silverResult) {
+            silverResult.innerHTML = '<div class="error">⚠️ لطفا وزن را وارد کنید</div>';
+        }
+        return;
+    }
+    
+    // قیمت پایه نقره 999 (تومان به ازای هر گرم)
+    const basePrice999 = cfg.PRICES?.SILVER?.BASE_PRICE_999 || 50000;
+    const caratRatio = carat / 999;
+    const basePrice = basePrice999 * caratRatio * weight;
+    const wageAmount = basePrice * (wage / 100);
+    const finalPrice = basePrice + wageAmount;
+    
+    const silverResult = document.getElementById('silverResult');
+    if (silverResult) {
+        silverResult.innerHTML = `
+            <div class="success">
+                <h4>💰 نتیجه محاسبه:</h4>
+                <p>قیمت نقره ${carat} عیار: ${formatPrice(finalPrice, 'IRR')}</p>
+                <p>وزن: ${weight} گرم</p>
+                <p>اجرت: ${wage}%</p>
+                <small>🕒 قیمت لحظه‌ای: ${formatPrice(basePrice999, 'IRR')} برای نقره 999 عیار</small>
+            </div>
+        `;
+    }
+    
+    incrementUsage('tools');
+}
+
+/**
+ * 💠 آنالیز سنگ قیمتی از روی عکس
+ */
+function analyzeGem() {
+    if (!checkUsageLimit('tools')) return;
+    
+    const fileInput = document.getElementById('gemlImage');
+    
+    if (!fileInput || !fileInput.files.length) {
+        const gemlResult = document.getElementById('gemlResult');
+        if (gemlResult) {
+            gemlResult.innerHTML = '<div class="error">⚠️ لطفا عکس سنگ را انتخاب کنید</div>';
+        }
+        return;
+    }
+    
+    const gemlResult = document.getElementById('gemlResult');
+    if (gemlResult) {
+        gemlResult.innerHTML = `
+            <div class="loading">
+                🔍 در حال آنالیز تصویر...
+            </div>
+        `;
+    }
+    
+    // شبیه‌سازی پردازش تصویر
+    setTimeout(() => {
+        const results = {
+            type: 'یاقوت قرمز',
+            quality: 'عالی',
+            carat: 2.5,
+            color: 'قرمز عمیق',
+            clarity: 'VS1',
+            estimatedPrice: 120000000
+        };
+        
+        if (gemlResult) {
+            gemlResult.innerHTML = `
+                <div class="success">
+                    <h4>💠 نتیجه آنالیز سنگ:</h4>
+                    <p>نوع: ${results.type}</p>
+                    <p>کیفیت: ${results.quality}</p>
+                    <p>قیراط: ${results.carat}</p>
+                    <p>رنگ: ${results.color}</p>
+                    <p>شفافیت: ${results.clarity}</p>
+                    <p>💰 قیمت تخمینی: ${formatPrice(results.estimatedPrice, 'IRR')}</p>
+                    <small>📍 این تحلیل نمونه است. در نسخه نهایی از هوش مصنوعی استفاده می‌شود</small>
+                </div>
+            `;
+        }
         
         incrementUsage('tools');
     }, 2000);
@@ -463,6 +720,20 @@ function formatPrice(price, symbol) {
     } else {
         return '$' + new Intl.NumberFormat('en-US').format(price.toFixed(2));
     }
+}
+
+// Export توابع به window برای استفاده در React
+if (typeof window !== 'undefined') {
+    window.calculateGoldPrice = calculateGoldPrice;
+    window.calculateSilver = calculateSilver;
+    window.analyzeDiamond = analyzeDiamond;
+    window.analyzeGem = analyzeGem;
+    window.analyzeCoin = analyzeCoin;
+    window.convertCurrency = convertCurrency;
+    window.activateTool = activateTool;
+    window.addAssetToPortfolio = addAssetToPortfolio;
+    window.updatePortfolioDisplay = updatePortfolioDisplay;
+    window.removeAssetFromPortfolio = removeAssetFromPortfolio;
 }
 
 /**

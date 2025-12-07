@@ -13,6 +13,35 @@
   width: 100%;
 }
 
+/* رفع مشکل نمایش صفحات React */
+/* در React Router، صفحات به صورت خودکار نمایش داده می‌شوند */
+/* اما CSS اصلی `.view { display: none; }` را override می‌کنیم */
+.layout-main > .view {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+/* اطمینان از نمایش highlights در صفحات React */
+.layout-main > .view .highlights-section {
+  display: block !important;
+}
+
+/* اطمینان از نمایش main-content در صفحات React */
+.layout-main > .view .main-content {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* اطمینان از نمایش کارت‌ها */
+.layout-main > .view .main-cards-container {
+  display: grid !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 /* برای موبایل */
 @media (max-width: 768px) {
   .layout-main {
