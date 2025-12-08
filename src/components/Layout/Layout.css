@@ -21,7 +21,7 @@
   transform: translateY(0) !important;
 }
 
-/* اطمینان از نمایش highlights در صفحات React - فاصله‌های یکسان در تمام صفحات */
+/* اطمینان از نمایش highlights در صفحات React - فاصله‌های یکسان در تمام صفحات - بدون تغییر با تغییر صفحه */
 /* highlights باید فاصله‌شان برابر با فاصله کره و شاخص‌ها تا هدر باشد (8px) + کمی پایین‌تر */
 .layout-main > .view .highlights-section,
 .layout-main > .view .home-highlights,
@@ -32,34 +32,35 @@
 .layout-main > .view .globe-highlights {
   position: relative !important;
   margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 20px) !important; /* فاصله یکسان از بالا - 20px gap */
-  margin-left: 12px !important; /* فاصله یکسان از چپ */
-  margin-right: 12px !important; /* فاصله یکسان از راست */
+  margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
+  margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
   margin-bottom: 20px !important; /* فاصله یکسان از پایین */
-  width: calc(100% - 24px) !important; /* عرض با فاصله یکسان */
-  max-width: 100% !important;
+  width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
+  max-width: calc(100% - 24px) !important; /* max-width هم یکسان */
+  padding: 0 !important; /* بدون padding - همه padding ها صفر */
   padding-top: 0 !important;
   padding-bottom: 0 !important;
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: space-between !important; /* فاصله یکسان بین کارت‌ها */
-  align-items: center !important;
-  flex-wrap: nowrap !important; /* همه در یک ردیف - بدون wrap */
-  gap: 8px !important; /* فاصله یکسان بین هایلایت‌ها - 8px ثابت */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  display: block !important; /* container خودش flex است */
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 50 !important; /* پایین‌تر از شاخص‌ها و کره - تا shadow از زیر نتابد */
-  overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
-  -webkit-overflow-scrolling: touch !important;
+  overflow: visible !important; /* container خودش overflow-x را مدیریت می‌کند */
   filter: drop-shadow(none) !important; /* حذف هرگونه drop-shadow */
+  background: transparent !important;
+  box-sizing: border-box !important;
+  left: 0 !important; /* بدون offset */
+  right: 0 !important; /* بدون offset */
 }
 
-/* اطمینان از نمایش highlights-container - پر کردن کل عرض صفحه - یک ردیف - فاصله‌های یکسان */
+/* اطمینان از نمایش highlights-container - همیشه یک ردیف - فاصله‌های یکسان در تمام صفحات */
 .layout-main > .view .highlights-container {
-  display: flex !important;
+  display: flex !important; /* استفاده از flex برای یک ردیف */
   flex-direction: row !important;
   justify-content: space-between !important; /* فاصله یکسان بین کارت‌ها */
   align-items: stretch !important; /* ارتفاع یکسان */
-  flex-wrap: nowrap !important; /* همه در یک ردیف - بدون wrap */
+  flex-wrap: nowrap !important; /* همیشه یک ردیف - بدون wrap */
   gap: 8px !important; /* فاصله یکسان بین هایلایت‌ها - 8px ثابت در تمام صفحات */
   width: 100% !important;
   max-width: 100% !important;
@@ -67,6 +68,8 @@
   opacity: 1 !important;
   padding: 0 !important; /* بدون padding اضافی */
   margin: 0 !important; /* بدون margin اضافی */
+  overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
+  -webkit-overflow-scrolling: touch !important;
 }
 
 /* ============================================ */
@@ -203,7 +206,9 @@
   }
   
   .layout-main > .view .highlights-container {
+    flex-wrap: nowrap !important; /* همیشه یک ردیف - بدون wrap */
     gap: 8px !important; /* فاصله یکسان */
+    overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
   }
 }
 
@@ -234,7 +239,9 @@
   }
   
   .layout-main > .view .highlights-container {
+    flex-wrap: nowrap !important; /* همیشه یک ردیف - بدون wrap */
     gap: 8px !important; /* فاصله یکسان */
+    overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
   }
 }
 

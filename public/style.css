@@ -2416,7 +2416,8 @@ button, .btn, a {
 /* ==================== */
 
 /* 🔮 هایلایت‌ها - طراحی Liquid Glass */
-/* فاصله یکسان برای همه هایلایت‌ها - مثل صفحه آرامش و آموزش */
+/* ⚠️ استایل‌های اصلی در Layout.css تعریف شده‌اند - اینجا فقط override برای vanilla JS */
+/* فاصله یکسان برای همه هایلایت‌ها - مثل صفحه خانه - بدون تغییر با تغییر صفحه */
 .highlights-section,
 .home-highlights,
 .news-highlights,
@@ -2424,55 +2425,81 @@ button, .btn, a {
 .education-highlights,
 .relax-highlights,
 .globe-highlights {
-    z-index: 100;
-    background: transparent;
-    padding-top: clamp(120px, 16vw, 140px);
-    padding-bottom: 0;
-    margin-bottom: 0;
-    max-width: 1400px;
-    margin-left: calc(clamp(100px, 14vw, 180px) + 8px);
-    margin-right: 1rem;
-    width: calc(100% - clamp(100px, 14vw, 180px) - 8px - 1rem);
-    box-sizing: border-box;
-    /* padding-top با JavaScript بر اساس کره کوچک تنظیم می‌شود */
+    position: relative !important;
+    margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 20px) !important; /* فاصله یکسان از بالا - 20px gap */
+    margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
+    margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
+    margin-bottom: 20px !important; /* فاصله یکسان از پایین */
+    width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
+    max-width: calc(100% - 24px) !important; /* max-width هم یکسان */
+    padding: 0 !important; /* بدون padding - همه padding ها صفر */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 50 !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+    left: 0 !important; /* بدون offset */
+    right: 0 !important; /* بدون offset */
 }
 
-/* موقعیت هایلایت‌ها با JavaScript تنظیم می‌شود - padding-top حذف شد */
+/* ⚠️ استایل‌های اصلی highlight-circle در Layout.css تعریف شده‌اند */
+/* اینجا فقط override برای vanilla JS - یکسان با صفحه خانه */
+
+.highlights-container {
+    display: flex !important; /* استفاده از flex برای یک ردیف */
+    flex-direction: row !important;
+    justify-content: space-between !important; /* فاصله یکسان بین کارت‌ها */
+    align-items: stretch !important; /* ارتفاع یکسان */
+    flex-wrap: nowrap !important; /* همیشه یک ردیف - بدون wrap */
+    gap: 8px !important; /* فاصله یکسان بین هایلایت‌ها - 8px ثابت */
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
+    -webkit-overflow-scrolling: touch !important;
+}
 
 .highlight-circle {
-    /* اندازه به صورت خودکار توسط flex تنظیم می‌شود */
-    width: 100%;
-    height: auto;
-    min-width: 60px;
-    max-width: 75px;
-    border-radius: 50%;
-    background: var(--card-bg);
-    backdrop-filter: blur(30px) saturate(150%);
-    -webkit-backdrop-filter: blur(30px) saturate(150%);
-    border: 1px solid var(--card-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: clamp(0.6rem, 1.1vw, 0.75rem);
-    text-align: center;
-    padding: 6px;
-    box-shadow: 
-        0 4px 16px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-    will-change: transform;
-    transform-origin: center;
-    flex-shrink: 1;
-    margin: 0 calc(0.1vw);
-    box-sizing: border-box;
+    /* اندازه یکسان - مثل صفحه خانه - همیشه یک ردیف */
+    flex: 1 1 0 !important; /* پر کردن فضا به صورت مساوی - همه در یک ردیف */
+    min-width: 0 !important;
+    width: auto !important; /* عرض خودکار بر اساس محتوا */
+    max-width: none !important;
+    height: 50px !important; /* ارتفاع یکسان - 50px ثابت */
+    border-radius: 12px !important; /* گوشه‌های کمی گرد (قبلاً 50%) */
+    background: var(--glass-bg, rgba(15, 23, 42, 0.25)) !important; /* استفاده از متغیر تم */
+    backdrop-filter: blur(20px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    border: none !important; /* بدون قاب */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-weight: 600 !important;
+    font-family: 'Vazirmatn', 'Inter', 'SF Pro Display', -apple-system, sans-serif !important;
+    color: var(--text-primary, rgba(255, 255, 255, 0.9)) !important;
+    font-size: 0.875rem !important; /* فونت یکسان - 14px */
+    text-align: center !important;
+    padding: 12px 8px !important; /* padding یکسان - 12px بالا/پایین، 8px چپ/راست */
+    line-height: 1.4 !important;
+    word-break: keep-all !important;
+    white-space: nowrap !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    margin: 0 !important; /* بدون margin اضافی */
+    box-sizing: border-box !important;
 }
 
 @media (max-width: 1024px) {
+    /* تبلت - حفظ فاصله‌های یکسان مثل صفحه خانه - همیشه یک ردیف */
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -2480,27 +2507,29 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-left: calc(80px + 8px);
-        margin-right: 0.5rem;
-        width: calc(100% - 80px - 8px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + clamp(80px, 12vw, 140px) + 20px) !important;
+        margin-left: 12px !important; /* فاصله یکسان از چپ */
+        margin-right: 12px !important; /* فاصله یکسان از راست */
+        margin-bottom: 20px !important;
+        width: calc(100% - 24px) !important;
     }
     
-    .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.4vw)) / 7);
-        max-width: calc((100% - (6 * 0.4vw)) / 7);
-        width: calc((100% - (6 * 0.4vw)) / 7);
-        height: calc((100% - (6 * 0.4vw)) / 7);
-        min-width: 35px !important;
-        max-width: 50px !important;
-        min-height: 35px !important;
-        max-height: 50px !important;
-        margin: 0 calc(0.2vw);
-        font-size: clamp(0.38rem, 0.95vw, 0.5rem) !important;
-        padding: 3px !important;
+    .highlights-container {
+        flex-wrap: nowrap !important; /* همیشه یک ردیف - بدون wrap */
+        gap: 8px !important;
+        overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
+    }
+    
+    .highlight-circle {
+        height: 48px !important; /* ارتفاع یکسان - کمی کمتر در تبلت */
+        font-size: 0.8125rem !important; /* فونت یکسان - 13px */
+        padding: 10px 6px !important;
+        border-radius: 10px !important;
     }
 }
 
 @media (max-width: 768px) {
+    /* موبایل - حفظ فاصله‌های یکسان مثل صفحه خانه */
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -2508,27 +2537,29 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-left: calc(70px + 6px);
-        margin-right: 0.5rem;
-        width: calc(100% - 70px - 6px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + clamp(60px, 10vw, 100px) + 20px) !important;
+        margin-left: 12px !important; /* فاصله یکسان از چپ */
+        margin-right: 12px !important; /* فاصله یکسان از راست */
+        margin-bottom: 20px !important;
+        width: calc(100% - 24px) !important;
     }
     
-    .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.35vw)) / 7);
-        max-width: calc((100% - (6 * 0.35vw)) / 7);
-        width: calc((100% - (6 * 0.35vw)) / 7);
-        height: calc((100% - (6 * 0.35vw)) / 7);
-        min-width: 32px !important;
-        max-width: 45px !important;
-        min-height: 32px !important;
-        max-height: 45px !important;
-        margin: 0 calc(0.175vw);
-        font-size: clamp(0.36rem, 0.85vw, 0.46rem) !important;
-        padding: 2px !important;
+    .highlights-container {
+        flex-wrap: nowrap !important; /* همیشه یک ردیف - بدون wrap */
+        gap: 8px !important;
+        overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
+    }
+    
+    .highlight-circle {
+        height: 46px !important; /* ارتفاع یکسان - کمی کمتر در موبایل */
+        font-size: 0.75rem !important; /* فونت یکسان - 12px */
+        padding: 10px 6px !important;
+        border-radius: 8px !important;
     }
 }
 
 @media (max-width: 480px) {
+    /* موبایل کوچک - حفظ فاصله‌های یکسان مثل صفحه خانه */
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -2536,23 +2567,24 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-left: calc(65px + 4px);
-        margin-right: 0.5rem;
-        width: calc(100% - 65px - 4px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + clamp(50px, 7vw, 80px) + 20px) !important;
+        margin-left: 12px !important; /* فاصله یکسان از چپ */
+        margin-right: 12px !important; /* فاصله یکسان از راست */
+        margin-bottom: 20px !important;
+        width: calc(100% - 24px) !important;
     }
     
-    .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.3vw)) / 7);
-        max-width: calc((100% - (6 * 0.3vw)) / 7);
-        width: calc((100% - (6 * 0.3vw)) / 7);
-        height: calc((100% - (6 * 0.3vw)) / 7);
-        min-width: 28px !important;
-        max-width: 40px !important;
-        min-height: 28px !important;
-        max-height: 40px !important;
-        margin: 0 calc(0.15vw);
-        font-size: clamp(0.34rem, 0.75vw, 0.42rem) !important;
-        padding: 2px !important;
+    .highlights-container {
+        flex-wrap: nowrap !important; /* همیشه یک ردیف - بدون wrap */
+        gap: 6px !important; /* فاصله کمی کمتر در موبایل کوچک */
+        overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
+    }
+    
+    .highlight-circle {
+        height: 44px !important; /* ارتفاع یکسان - کمی کمتر در موبایل کوچک */
+        font-size: 0.6875rem !important; /* فونت یکسان - 11px */
+        padding: 8px 4px !important;
+        border-radius: 6px !important;
     }
 }
 
@@ -2789,12 +2821,22 @@ button, .btn, a {
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
     min-height: 100vh;
+    margin: 0 !important; /* بدون margin - هایلایت‌ها خودشان margin دارند */
+    padding: 0 !important; /* بدون padding - هایلایت‌ها خودشان padding دارند */
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .view.active-view {
     display: block;
     opacity: 1;
     transform: translateY(0);
+    margin: 0 !important; /* بدون margin - هایلایت‌ها خودشان margin دارند */
+    padding: 0 !important; /* بدون padding - هایلایت‌ها خودشان padding دارند */
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 /* اطمینان از اینکه هایلایت‌های هر صفحه فقط در همان صفحه نمایش داده شوند */
