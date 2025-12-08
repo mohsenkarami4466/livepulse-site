@@ -75,7 +75,7 @@
 .user-error-content {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 16px;
     padding: 24px;
     max-width: 400px;
@@ -191,20 +191,20 @@
 /* 🌙 پالت رنگی تم تاریک - مشکی و نارنجی */
 /* ⚠️ تم نارنجی (قابل برگشت) - برای برگشت: --accent-blue را به #fb923c برگردانید */
 [data-theme="dark"] {
-    --bg-primary: #000000; /* کاملاً مشکی (قبلاً: #0f172a) */
-    --bg-secondary: #0a0a0a; /* مشکی تیره (قبلاً: #1e293b) */
+    --bg-primary: #000000; /* کاملاً مشکی - زمینه */
+    --bg-secondary: #0a0a0a; /* مشکی تیره - زمینه */
     --text-primary: #f5f5f5; /* سفید روشن */
     --text-secondary: #a0a0a0; /* خاکستری روشن */
     --accent-blue: #fb923c; /* نارنجی روشن */
     --accent-green: #34d399;
     --accent-red: #f87171;
     --accent-teal: #2dd4bf;
-    --glass-bg: rgba(0, 0, 0, 0.7); /* شیشه‌ای مات مشکی (قبلاً: rgba(15, 23, 42, 0.85)) */
+    --glass-bg: rgba(18, 18, 18, 0.85); /* شیشه‌ای مات دودی تیره (قبلاً: rgba(0, 0, 0, 0.7)) - برای کنتراست */
     --glass-border: rgba(251, 146, 60, 0.2); /* border نارنجی ملایم (قبلاً: rgba(255, 255, 255, 0.1)) */
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     
-    /* رنگ‌های کارت در تم تاریک - مشکی و نارنجی */
-    --card-bg: rgba(0, 0, 0, 0.6); /* کارت مشکی مات (قبلاً: rgba(30, 41, 59, 0.9)) */
+    /* رنگ‌های کارت در تم تاریک - دودی تیره و نارنجی */
+    --card-bg: rgba(18, 18, 18, 0.75); /* کارت دودی تیره مات (قبلاً: rgba(0, 0, 0, 0.6)) - برای کنتراست */
     --card-border: rgba(251, 146, 60, 0.15); /* border نارنجی (قبلاً: rgba(255, 255, 255, 0.08)) */
     --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
     --card-text: #f5f5f5; /* سفید روشن */
@@ -291,7 +291,7 @@ button, .btn, a {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 16px;
     padding: 20px;
     box-shadow: var(--shadow);
@@ -302,7 +302,7 @@ button, .btn, a {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: none !important; /* بدون خط - فقط شیشه‌ای مات */
     position: fixed;
     top: 0;
     width: 100%;
@@ -322,7 +322,7 @@ button, .btn, a {
     z-index: 1000;
     background: var(--glass-bg);
     backdrop-filter: blur(15px);
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 .header-container {
@@ -369,7 +369,7 @@ button, .btn, a {
 .theme-toggle, 
 .login-btn {
     background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 8px;
     padding: clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 12px);
     color: var(--text-primary);
@@ -2159,11 +2159,11 @@ button, .btn, a {
     transform: translateY(0);
 }
 
-/* کارت‌های اصلی - هر دو تم - شیشه‌ای‌تر و کمتر مات */
+/* کارت‌های اصلی - هر دو تم - شیشه‌ای‌تر و کمتر مات - یکدست بدون gradient */
 #homeMainCards .price-card {
     min-height: 100px;
     padding: 16px;
-    background: var(--card-bg);
+    background: var(--card-bg) !important; /* یکدست - بدون gradient */
     backdrop-filter: blur(20px) saturate(150%) !important; /* کاهش blur برای شیشه‌ای‌تر شدن (قبلاً: blur(40px)) */
     -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
     border: 1px solid var(--card-border);
@@ -2172,6 +2172,7 @@ button, .btn, a {
     position: relative;
     overflow: hidden;
     box-shadow: var(--card-shadow);
+    background-image: none !important; /* حذف هرگونه gradient */
 }
 
 /* حذف نوار بالای کارت */
@@ -2179,24 +2180,16 @@ button, .btn, a {
     display: none;
 }
 
-/* افکت شاین */
+/* حذف افکت شاین - کارت‌ها یکدست شیشه‌ای مات */
 #homeMainCards .price-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-    pointer-events: none;
-    border-radius: 20px 20px 0 0;
+    display: none !important; /* حذف gradient - کارت‌ها یکدست */
 }
 
 #homeMainCards .price-card:hover {
     transform: translateY(-4px);
     box-shadow: 
         0 16px 48px rgba(0, 0, 0, 0.15),
-        0 0 0 1px var(--accent-blue);
+        /* حذف border نارنجی در hover */
 }
 
 #homeMainCards .card-header {
@@ -2258,33 +2251,35 @@ button, .btn, a {
     display: none;
 }
 
-/* تم روشن - کارت‌های اصلی - شیشه‌ای‌تر و کمتر مات */
+/* تم روشن - کارت‌های اصلی - شیشه‌ای‌تر و کمتر مات - یکدست بدون gradient */
 [data-theme="light"] #homeMainCards .price-card {
-    background: rgba(255, 255, 255, 0.6) !important; /* شفاف‌تر (قبلاً: 0.95) */
+    background: rgba(255, 255, 255, 0.6) !important; /* یکدست - بدون gradient */
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
     backdrop-filter: blur(20px) saturate(150%) !important; /* کاهش blur */
     -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    background-image: none !important; /* حذف هرگونه gradient */
 }
 
 [data-theme="light"] #homeMainCards .price-card:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--accent-blue);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1); /* حذف border نارنجی در hover */
 }
 
 [data-theme="light"] #homeMainCards .price-card::after {
-    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 100%);
+    display: none !important; /* حذف gradient - کارت‌ها یکدست */
 }
 
-/* تم تاریک - کارت‌های اصلی - شیشه‌ای‌تر و کمتر مات */
+/* تم تاریک - کارت‌های اصلی - شیشه‌ای‌تر و کمتر مات - یکدست بدون gradient */
 [data-theme="dark"] #homeMainCards .price-card {
-    background: rgba(0, 0, 0, 0.4) !important; /* شفاف‌تر و شیشه‌ای‌تر (قبلاً: linear-gradient با 0.9 و 0.95) */
-    border: 1px solid rgba(251, 146, 60, 0.15); /* border نارنجی ملایم */
+    background: rgba(18, 18, 18, 0.6) !important; /* دودی تیره - برای کنتراست */
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     backdrop-filter: blur(20px) saturate(150%) !important; /* کاهش blur */
     -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    background-image: none !important; /* حذف هرگونه gradient */
 }
 
 [data-theme="dark"] #homeMainCards .price-card::after {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+    display: none !important; /* حذف gradient - کارت‌ها یکدست */
 }
 
 /* ⏱️ تایم آخرین آپدیت */
@@ -2426,7 +2421,7 @@ button, .btn, a {
 .relax-highlights,
 .globe-highlights {
     position: relative !important;
-    margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 20px) !important; /* فاصله یکسان از بالا - 20px gap */
+    margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 24px) !important; /* فاصله یکسان از بالا - 24px gap (چند پیکسل پایین‌تر) */
     margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
     margin-bottom: 20px !important; /* فاصله یکسان از پایین */
@@ -2476,7 +2471,7 @@ button, .btn, a {
     background: var(--glass-bg, rgba(15, 23, 42, 0.25)) !important; /* استفاده از متغیر تم */
     backdrop-filter: blur(20px) saturate(150%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-    border: none !important; /* بدون قاب */
+    border: 1px solid var(--card-border, rgba(251, 146, 60, 0.15)) !important; /* خط نارنجی نازک */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -2491,7 +2486,10 @@ button, .btn, a {
     line-height: 1.4 !important;
     word-break: keep-all !important;
     white-space: nowrap !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 
+        0 0 6px rgba(234, 88, 12, 0.2), /* نور نئونی ملایم - نصف شدت (برای non-active) */
+        0 0 12px rgba(234, 88, 12, 0.1), /* نور نئونی ملایم - نصف شدت */
+        0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow پایه */
     position: relative !important;
     overflow: hidden !important;
     margin: 0 !important; /* بدون margin اضافی */
@@ -2507,7 +2505,7 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + clamp(80px, 12vw, 140px) + 20px) !important;
+        margin-top: calc(var(--header-height, 60px) + clamp(80px, 12vw, 140px) + 24px) !important; /* چند پیکسل پایین‌تر */
         margin-left: 12px !important; /* فاصله یکسان از چپ */
         margin-right: 12px !important; /* فاصله یکسان از راست */
         margin-bottom: 20px !important;
@@ -2537,7 +2535,7 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + clamp(60px, 10vw, 100px) + 20px) !important;
+        margin-top: calc(var(--header-height, 60px) + clamp(60px, 10vw, 100px) + 24px) !important; /* چند پیکسل پایین‌تر */
         margin-left: 12px !important; /* فاصله یکسان از چپ */
         margin-right: 12px !important; /* فاصله یکسان از راست */
         margin-bottom: 20px !important;
@@ -2567,7 +2565,7 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + clamp(50px, 7vw, 80px) + 20px) !important;
+        margin-top: calc(var(--header-height, 60px) + clamp(50px, 7vw, 80px) + 24px) !important; /* چند پیکسل پایین‌تر */
         margin-left: 12px !important; /* فاصله یکسان از چپ */
         margin-right: 12px !important; /* فاصله یکسان از راست */
         margin-bottom: 20px !important;
@@ -2718,15 +2716,7 @@ button, .btn, a {
 
 /* افکت شاین روی هایلایت */
 .highlight-circle::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
-    border-radius: 50% 50% 0 0;
-    pointer-events: none;
+    display: none !important; /* حذف gradient - هایلایت‌ها یکدست */
 }
 
 /* حالت فعال - فقط یکی */
@@ -2754,7 +2744,7 @@ button, .btn, a {
 }
 
 .highlight-circle.active::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%);
+    display: none !important; /* حذف gradient - هایلایت‌ها یکدست */
 }
 
 .highlight-circle:hover:not(.active) {
@@ -2771,16 +2761,20 @@ button, .btn, a {
     }
 }
 
-/* تم روشن - هایلایت‌ها */
+/* تم روشن - هایلایت‌ها - با نور نئونی ملایم */
 [data-theme="light"] .highlight-circle {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.6) !important; /* یکدست - مثل کارت‌های صفحه خانه */
+    border: 1px solid rgba(234, 88, 12, 0.12) !important; /* خط نارنجی نازک */
+    box-shadow: 
+        0 0 6px rgba(234, 88, 12, 0.15), /* نور نئونی ملایم - نصف شدت (برای non-active) */
+        0 0 12px rgba(234, 88, 12, 0.08), /* نور نئونی ملایم - نصف شدت */
+        0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow پایه */
     color: #1e293b;
+    background-image: none !important; /* حذف هرگونه gradient */
 }
 
 [data-theme="light"] .highlight-circle::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, transparent 100%);
+    display: none !important; /* حذف gradient - هایلایت‌ها یکدست */
 }
 
 [data-theme="light"] .highlight-circle.active {
@@ -2800,11 +2794,16 @@ button, .btn, a {
     box-shadow: 0 8px 24px rgba(234, 88, 12, 0.15);
 }
 
-/* تم تاریک - هایلایت‌ها */
+/* تم تاریک - هایلایت‌ها - با نور نئونی ملایم */
 [data-theme="dark"] .highlight-circle {
-    background: linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.95) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(18, 18, 18, 0.6) !important; /* دودی تیره - مثل کارت‌های صفحه خانه - برای کنتراست */
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
+    box-shadow: 
+        0 0 6px rgba(234, 88, 12, 0.2), /* نور نئونی ملایم - نصف شدت (برای non-active) */
+        0 0 12px rgba(234, 88, 12, 0.1), /* نور نئونی ملایم - نصف شدت */
+        0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow پایه */
     color: #e2e8f0;
+    background-image: none !important; /* حذف هرگونه gradient */
 }
 
 [data-theme="dark"] .highlight-circle.active {
@@ -2919,7 +2918,7 @@ button, .btn, a {
     background: var(--card-bg);
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid var(--card-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 16px;
     padding: 14px;
     position: relative;
@@ -2927,21 +2926,9 @@ button, .btn, a {
     box-shadow: var(--card-shadow);
 }
 
-/* افکت شاین */
+/* حذف افکت شاین - کارت‌ها یکدست شیشه‌ای مات */
 .price-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        transparent 100%
-    );
-    pointer-events: none;
-    border-radius: 16px 16px 0 0;
+    display: none !important; /* حذف gradient - کارت‌ها یکدست */
 }
 
 /* حذف نوار رنگی بالای کارت */
@@ -2953,7 +2940,7 @@ button, .btn, a {
     transform: translateY(-4px);
     box-shadow: 
         0 16px 48px rgba(0, 0, 0, 0.15),
-        0 0 0 1px var(--accent-blue);
+        /* حذف border نارنجی در hover */
 }
 
 /* رنگ متن کارت‌ها */
@@ -2975,7 +2962,7 @@ button, .btn, a {
 /* تم روشن - تنظیمات اضافی */
 [data-theme="light"] .price-card {
     background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     box-shadow: 
         0 4px 24px rgba(0, 0, 0, 0.06),
         0 1px 2px rgba(0, 0, 0, 0.04);
@@ -2984,15 +2971,11 @@ button, .btn, a {
 [data-theme="light"] .price-card:hover {
     box-shadow: 
         0 12px 40px rgba(0, 0, 0, 0.12),
-        0 0 0 1px var(--accent-blue);
+        /* حذف border نارنجی در hover */
 }
 
 [data-theme="light"] .price-card::after {
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.5) 0%,
-        transparent 100%
-    );
+    display: none !important; /* حذف gradient - کارت‌ها یکدست */
 }
 
 /* تم تاریک - تنظیمات اضافی */
@@ -3006,11 +2989,7 @@ button, .btn, a {
 }
 
 [data-theme="dark"] .price-card::after {
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.08) 0%,
-        transparent 100%
-    );
+    display: none !important; /* حذف gradient - کارت‌ها یکدست */
 }
 
 .card-header {
@@ -3126,7 +3105,7 @@ button, .btn, a {
 .input-group input, 
 .input-group select {
     padding: 12px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 8px;
     background: var(--glass-bg);
     color: var(--text-primary);
@@ -3151,7 +3130,7 @@ button, .btn, a {
     padding: 12px;
     background: var(--glass-bg);
     border-radius: 8px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     font-weight: 600;
     min-height: 46px;
     display: flex;
@@ -3232,7 +3211,7 @@ button, .btn, a {
     margin-bottom: 16px;
     background: var(--glass-bg);
     border-radius: 12px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 .ai-message {
@@ -3262,7 +3241,7 @@ button, .btn, a {
 .chat-input-container input {
     flex: 1;
     padding: 12px 16px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 8px;
     background: var(--glass-bg);
     color: var(--text-primary);
@@ -3362,7 +3341,7 @@ button, .btn, a {
     background: transparent;
     backdrop-filter: blur(15px);
     border-radius: 20px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 .news-header h2 {
@@ -3398,7 +3377,7 @@ button, .btn, a {
 
 .news-filter {
     padding: 12px 20px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 25px;
     background: var(--glass-bg);
     color: var(--text-primary);
@@ -3436,7 +3415,7 @@ button, .btn, a {
 .news-panel {
     padding: 16px;
     border-radius: 14px;
-    border: 1px solid var(--card-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     background: var(--card-bg);
     box-shadow: var(--card-shadow);
     font-size: 0.85rem;
@@ -3452,7 +3431,7 @@ button, .btn, a {
     background: var(--card-bg);
     backdrop-filter: blur(30px);
     border-radius: 16px;
-    border: 1px solid var(--card-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     padding: 16px;
     transition: all 0.3s ease;
     position: relative;
@@ -3668,7 +3647,7 @@ button, .btn, a {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     color: var(--text-primary);
@@ -3703,7 +3682,7 @@ button, .btn, a {
     background: var(--glass-bg);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 25px;
     padding: 8px 16px;
     cursor: pointer;
@@ -3773,7 +3752,7 @@ button, .btn, a {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     color: var(--text-primary);
@@ -4119,7 +4098,7 @@ button, .btn, a {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     border-radius: 20px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     position: relative;
@@ -4144,7 +4123,7 @@ button, .btn, a {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     padding: 20px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 .ad-banner-sidebar {
@@ -4212,7 +4191,7 @@ button, .btn, a {
 .chart-controls select,
 .chart-controls button {
     padding: 8px 12px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 8px;
     background: var(--glass-bg);
     color: var(--text-primary);
@@ -4234,7 +4213,7 @@ button, .btn, a {
     max-height: 50vh;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     position: relative;
     overflow: hidden;
 }
@@ -4254,7 +4233,7 @@ button, .btn, a {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 25px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 .analysis-header {
@@ -4280,7 +4259,7 @@ button, .btn, a {
     text-align: center;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid var(--glass-border);
+    border-top: none !important; /* بدون خط - فقط شیشه‌ای مات */
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
@@ -5042,7 +5021,7 @@ body, .glass-card, .glass-header {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     border-radius: 20px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     padding: 40px 30px;
     position: relative;
@@ -5068,7 +5047,7 @@ body, .glass-card, .glass-header {
 
 #loginForm input {
     padding: 16px 20px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
@@ -5130,7 +5109,7 @@ body, .glass-card, .glass-header {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 15px;
     padding: 25px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     transition: all 0.3s ease;
 }
 
@@ -5246,7 +5225,7 @@ body, .glass-card, .glass-header {
 .time-glass-card {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: var(--glass-shadow);
@@ -5272,7 +5251,7 @@ body, .glass-card, .glass-header {
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 0.75rem;
     color: var(--text-secondary);
     cursor: pointer;
@@ -5304,7 +5283,7 @@ body, .glass-card, .glass-header {
 .glass-year-btn {
     padding: 0.75rem 1rem;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 0.75rem;
     color: var(--text-secondary);
     cursor: pointer;
@@ -5366,7 +5345,7 @@ body, .glass-card, .glass-header {
 .map-glass-container {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 1.25rem;
     padding: 1.5rem;
     box-shadow: var(--glass-shadow);
@@ -5408,7 +5387,7 @@ body, .glass-card, .glass-header {
     height: 2.5rem;
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 0.625rem;
     color: var(--text-primary);
     cursor: pointer;
@@ -5430,7 +5409,7 @@ body, .glass-card, .glass-header {
     padding: 0.5rem 0.75rem;
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 0.5rem;
     color: var(--text-secondary);
     font-size: 0.8rem;
@@ -5448,7 +5427,7 @@ body, .glass-card, .glass-header {
 .comparison-glass-card {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 1.25rem;
     padding: 1.5rem;
     box-shadow: var(--glass-shadow);
@@ -5575,7 +5554,7 @@ body, .glass-card, .glass-header {
     border-radius: 0.75rem;
     padding: 1rem;
     margin-bottom: 1rem;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 .comparison-card-header {
@@ -5638,7 +5617,7 @@ body, .glass-card, .glass-header {
     position: absolute;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 0.8rem;
@@ -5674,7 +5653,7 @@ body, .glass-card, .glass-header {
 .message-content {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 1rem;
     padding: 2rem;
     text-align: center;
@@ -6092,6 +6071,7 @@ body, .glass-card, .glass-header {
 
 #tutorialView .card {
     background: var(--bg-secondary);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 12px;
     box-shadow: var(--shadow);
     padding: 1.5rem;
@@ -6104,7 +6084,7 @@ body, .glass-card, .glass-header {
 
 #edu-chatbot .chat-window {
     background: var(--bg-primary);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 8px;
     height: 200px;
     overflow-y: auto;
@@ -6121,7 +6101,7 @@ body, .glass-card, .glass-header {
     flex: 1;
     padding: 0.5rem;
     border-radius: 6px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 #edu-chatbot .chat-input button {
@@ -6158,7 +6138,7 @@ body, .glass-card, .glass-header {
 
 #edu-live .ai-explain {
     background: var(--bg-primary);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 8px;
     padding: 1rem;
 }
@@ -6227,7 +6207,7 @@ body, .glass-card, .glass-header {
 
 #relaxMusic .playlist li {
     padding: 0.5rem;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: none !important; /* بدون خط - فقط شیشه‌ای مات */
     cursor: pointer;
 }
 
@@ -6625,7 +6605,7 @@ body, .glass-card, .glass-header {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: none !important; /* بدون خط - فقط شیشه‌ای مات */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     max-width: 1400px;
     margin: 0 auto;
@@ -6962,7 +6942,7 @@ body, .glass-card, .glass-header {
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border-radius: 20px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
 }
@@ -7025,13 +7005,13 @@ body, .glass-card, .glass-header {
     display: flex;
     gap: 8px;
     padding: 12px;
-    border-top: 1px solid var(--glass-border);
+    border-top: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 .chat-input-area input {
     flex: 1;
     padding: 10px 14px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 20px;
     background: var(--bg-secondary);
     color: var(--text-primary);
@@ -7640,7 +7620,7 @@ body, .glass-card, .glass-header {
     background: var(--glass-bg);
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 20px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -7651,7 +7631,7 @@ body, .glass-card, .glass-header {
 .theme-toggle {
     background: var(--glass-bg);
     backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 25px;
     padding: 8px 16px;
     cursor: pointer;
@@ -7692,7 +7672,7 @@ body, .glass-card, .glass-header {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--glass-border);
+    border-top: none !important; /* بدون خط - فقط شیشه‌ای مات */
     padding: 1.2rem 1rem;
     margin-top: 2rem;
 }
@@ -7809,7 +7789,7 @@ body, .glass-card, .glass-header {
     width: 100%;
     height: 120px;
     padding: 15px;
-    border: 1px solid var(--glass-border);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
     border-radius: 12px;
     background: var(--bg-secondary);
     color: var(--text-primary);
@@ -8370,7 +8350,7 @@ body.modal-open {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--glass-border);
+    border-top: none !important; /* بدون خط - فقط شیشه‌ای مات */
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
     z-index: 997; /* پایین‌تر از دکمه سیار (z-index: 9997) و مودال‌ها */
     padding: clamp(8px, 1.2vw, 12px) clamp(0.5rem, 2vw, 1rem);
@@ -8420,7 +8400,7 @@ body.modal-open {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(234, 88, 12, 0.1);
+    background: transparent; /* حذف background نارنجی */
     opacity: 0;
     transition: opacity 0.3s ease;
     border-radius: inherit;
@@ -8428,7 +8408,7 @@ body.modal-open {
 }
 
 .nav-item:hover::before {
-    opacity: 1;
+    opacity: 0; /* حذف hover background نارنجی */
 }
 
 .nav-item:hover {
@@ -8437,8 +8417,8 @@ body.modal-open {
 }
 
 .nav-item.active {
-    color: var(--accent-blue);
-    background: rgba(234, 88, 12, 0.15);
+    color: var(--text-primary) !important; /* رنگ عادی - نه نارنجی */
+    background: transparent !important; /* بدون background نارنجی */
 }
 
 .nav-item:active {
@@ -8447,8 +8427,8 @@ body.modal-open {
 }
 
 .nav-item.active::before {
-    opacity: 1;
-    background: rgba(234, 88, 12, 0.2);
+    opacity: 0; /* حذف background نارنجی */
+    background: transparent;
 }
 
 .nav-icon {
@@ -8461,9 +8441,12 @@ body.modal-open {
     -webkit-user-select: none;
 }
 
-.nav-item:hover .nav-icon,
+.nav-item:hover .nav-icon {
+    transform: scale(1.1);
+}
+
 .nav-item.active .nav-icon {
-    transform: scale(1.15);
+    transform: scale(1.3) !important; /* فقط بزرگ‌تر شدن آیکون - بدون رنگ نارنجی */
 }
 
 .nav-text {
@@ -8497,6 +8480,10 @@ body.modal-open {
         font-size: clamp(1.1rem, 2.2vw, 1.3rem);
     }
     
+    .nav-item.active .nav-icon {
+        transform: scale(1.3) !important; /* بزرگ‌تر شدن آیکون در موبایل */
+    }
+    
     .nav-text {
         font-size: clamp(0.55rem, 1.1vw, 0.65rem);
     }
@@ -8510,6 +8497,10 @@ body.modal-open {
     
     .nav-icon {
         font-size: clamp(1.3rem, 2.2vw, 1.4rem);
+    }
+    
+    .nav-item.active .nav-icon {
+        transform: scale(1.3) !important; /* بزرگ‌تر شدن آیکون در تبلت */
     }
     
     .nav-text {
@@ -8528,6 +8519,10 @@ body.modal-open {
         max-width: 150px;
         padding: clamp(4px, 0.6vw, 6px) clamp(4px, 0.8vw, 8px);
         gap: clamp(2px, 0.4vw, 3px);
+    }
+    
+    .nav-item.active .nav-icon {
+        transform: scale(1.3) !important; /* بزرگ‌تر شدن آیکون در دسکتاپ */
     }
     
     .nav-icon {

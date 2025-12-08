@@ -31,7 +31,7 @@
 .layout-main > .view .relax-highlights,
 .layout-main > .view .globe-highlights {
   position: relative !important;
-  margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 20px) !important; /* فاصله یکسان از بالا - 20px gap */
+  margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 24px) !important; /* فاصله یکسان از بالا - 24px gap (چند پیکسل پایین‌تر) */
   margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
   margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
   margin-bottom: 20px !important; /* فاصله یکسان از پایین */
@@ -105,16 +105,20 @@
   white-space: nowrap !important; /* متن در یک خط */
   margin: 0 !important; /* بدون margin اضافی */
   
-  /* استایل شیشه‌ای - متناسب با تم - بدون قاب */
-  background: var(--glass-bg, rgba(15, 23, 42, 0.25)) !important; /* استفاده از متغیر تم */
+  /* استایل شیشه‌ای - متناسب با تم - بدون قاب - با نور نئونی ملایم برای non-active */
+  background: var(--glass-bg, rgba(18, 18, 18, 0.6)) !important; /* دودی تیره - برای کنتراست */
   backdrop-filter: blur(20px) saturate(150%) !important; /* blur بهبود یافته */
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-  border: none !important; /* بدون قاب */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow کمتر */
+  border: none !important; /* بدون خط - فقط شیشه‌ای مات */
+  box-shadow: 
+    0 0 6px rgba(234, 88, 12, 0.2), /* نور نئونی ملایم - نصف شدت (برای non-active) */
+    0 0 12px rgba(234, 88, 12, 0.1), /* نور نئونی ملایم - نصف شدت */
+    0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow پایه */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer !important;
   position: relative !important;
   overflow: hidden !important;
+  background-image: none !important; /* حذف هرگونه gradient */
 }
 
 /* حذف افکت شاین - کاربر نمی‌خواهد */
@@ -122,24 +126,29 @@
   display: none !important;
 }
 
-/* سایه نئونی برای حالت انتخاب شده - تم تاریک - تپش کمتر */
+/* حذف افکت gradient از ::before - هایلایت‌ها یکدست */
+.layout-main > .view .highlight-circle::before {
+  display: none !important;
+}
+
+/* سایه نئونی برای حالت انتخاب شده - تم تاریک - نور نئونی کامل */
 /* ⚠️ تم نارنجی (قابل برگشت) - برای برگشت: rgba(234, 88, 12, ...) را به rgba(59, 130, 246, ...) برگردانید */
 .layout-main > .view .highlight-circle.active {
   box-shadow: 
-    0 0 12px rgba(234, 88, 12, 0.4), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.4)) */
-    0 0 24px rgba(234, 88, 12, 0.2), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.2)) */
-    0 2px 8px rgba(0, 0, 0, 0.15) !important; /* کاهش glow - تپش کمتر */
-  background: rgba(15, 23, 42, 0.35) !important; /* کمی روشن‌تر وقتی active */
+    0 0 12px rgba(234, 88, 12, 0.4), /* نور نئونی کامل - نارنجی */
+    0 0 24px rgba(234, 88, 12, 0.2), /* نور نئونی کامل - نارنجی */
+    0 2px 8px rgba(0, 0, 0, 0.15) !important; /* shadow پایه */
+  background: rgba(18, 18, 18, 0.7) !important; /* دودی تیره - کمی روشن‌تر وقتی active */
   transform: scale(1.02) !important; /* تپش کمتر - از 1.05 به 1.02 */
   animation: none !important; /* حذف هرگونه animation */
 }
 
-/* سایه نئونی برای حالت انتخاب شده - تم روشن - تپش کمتر */
+/* سایه نئونی برای حالت انتخاب شده - تم روشن - نور نئونی کامل */
 [data-theme="light"] .layout-main > .view .highlight-circle.active {
   box-shadow: 
-    0 0 12px rgba(234, 88, 12, 0.3), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.3)) */
-    0 0 24px rgba(234, 88, 12, 0.15), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.15)) */
-    0 2px 8px rgba(0, 0, 0, 0.08) !important; /* کاهش glow - تپش کمتر */
+    0 0 12px rgba(234, 88, 12, 0.3), /* نور نئونی کامل - نارنجی */
+    0 0 24px rgba(234, 88, 12, 0.15), /* نور نئونی کامل - نارنجی */
+    0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow پایه */
   background: var(--glass-bg, rgba(255, 255, 255, 0.5)) !important; /* استفاده از متغیر تم */
   transform: scale(1.02) !important; /* تپش کمتر - از 1.05 به 1.02 */
   animation: none !important; /* حذف هرگونه animation */
@@ -149,7 +158,7 @@
 .layout-main > .view .highlight-circle:hover {
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
-  background: rgba(15, 23, 42, 0.3) !important; /* کمی روشن‌تر در hover */
+  background: rgba(18, 18, 18, 0.65) !important; /* دودی تیره - کمی روشن‌تر در hover */
 }
 
 /* اطمینان از نمایش main-content */
@@ -187,7 +196,7 @@
   .layout-main > .view .education-highlights,
   .layout-main > .view .relax-highlights,
   .layout-main > .view .globe-highlights {
-    margin-top: calc(var(--header-height, 60px) + clamp(80px, 12vw, 140px) + 20px) !important; /* فاصله یکسان - 20px */
+    margin-top: calc(var(--header-height, 60px) + clamp(80px, 12vw, 140px) + 24px) !important; /* فاصله یکسان - 24px (چند پیکسل پایین‌تر) */
     margin-left: 12px !important; /* فاصله یکسان */
     margin-right: 12px !important; /* فاصله یکسان */
     margin-bottom: 20px !important; /* فاصله یکسان */
@@ -220,7 +229,7 @@
   .layout-main > .view .education-highlights,
   .layout-main > .view .relax-highlights,
   .layout-main > .view .globe-highlights {
-    margin-top: calc(var(--header-height, 60px) + clamp(60px, 10vw, 100px) + 20px) !important; /* فاصله یکسان - 20px */
+    margin-top: calc(var(--header-height, 60px) + clamp(60px, 10vw, 100px) + 24px) !important; /* فاصله یکسان - 24px (چند پیکسل پایین‌تر) */
     margin-left: 12px !important; /* فاصله یکسان */
     margin-right: 12px !important; /* فاصله یکسان */
     margin-bottom: 20px !important; /* فاصله یکسان */
@@ -253,7 +262,7 @@
   .layout-main > .view .education-highlights,
   .layout-main > .view .relax-highlights,
   .layout-main > .view .globe-highlights {
-    margin-top: calc(var(--header-height, 60px) + clamp(50px, 7vw, 80px) + 20px) !important; /* فاصله یکسان - 20px */
+    margin-top: calc(var(--header-height, 60px) + clamp(50px, 7vw, 80px) + 24px) !important; /* فاصله یکسان - 24px (چند پیکسل پایین‌تر) */
     margin-left: 12px !important; /* فاصله یکسان */
     margin-right: 12px !important; /* فاصله یکسان */
     margin-bottom: 20px !important; /* فاصله یکسان */
@@ -311,13 +320,17 @@
   }
 }
 
-/* Light theme برای هایلایت‌های کارت - کمتر مات - بدون قاب */
+/* Light theme برای هایلایت‌های کارت - با نور نئونی ملایم */
 [data-theme="light"] .layout-main > .view .highlight-circle {
-  background: rgba(255, 255, 255, 0.35) !important; /* کمتر مات */
-  border: none !important; /* بدون قاب */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important; /* shadow کمتر */
-  backdrop-filter: blur(16px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  background: rgba(255, 255, 255, 0.6) !important; /* یکدست - مثل کارت‌های صفحه خانه */
+  border: 1px solid rgba(234, 88, 12, 0.12) !important; /* خط نارنجی نازک */
+  box-shadow: 
+    0 0 6px rgba(234, 88, 12, 0.15), /* نور نئونی ملایم - نصف شدت (برای non-active) */
+    0 0 12px rgba(234, 88, 12, 0.08), /* نور نئونی ملایم - نصف شدت */
+    0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow پایه */
+  backdrop-filter: blur(20px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  background-image: none !important; /* حذف هرگونه gradient */
 }
 
 [data-theme="light"] .layout-main > .view .highlight-circle:hover {

@@ -13,14 +13,14 @@
   visibility: visible !important;
   opacity: 1 !important;
   
-  /* Glassmorphism Effect */
-  background: rgba(15, 23, 42, 0.5) !important; /* مات */
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  /* Glassmorphism Effect - یکدست مثل کارت‌های صفحه خانه */
+  background: rgba(18, 18, 18, 0.6) !important; /* دودی تیره - مثل کارت‌های صفحه خانه (تم تاریک) - برای کنتراست */
+  backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت‌های صفحه خانه */
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
   border-radius: 20px !important; /* گوشه‌های گرد */
   border: none !important; /* بدون قاب */
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important; /* فقط inset shadow - بدون shadow از زیر */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow ساده مثل کارت‌ها */
+  background-image: none !important; /* حذف هرگونه gradient */
   
   /* اجازه تنظیم داینامیک از JS */
   transition: top 0.2s ease, left 0.2s ease, right 0.2s ease, height 0.2s ease !important;
@@ -286,12 +286,13 @@ body:has(.indicators-glass-card) .indicators-unified-container:not(.indicators-g
   }
 }
 
-/* Light theme support */
+/* Light theme support - یکدست مثل کارت‌های صفحه خانه */
 [data-theme="light"] .indicators-glass-card {
-  background: rgba(255, 255, 255, 0.7) !important;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.6) !important; /* یکدست - مثل کارت‌های صفحه خانه */
+  backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت‌های صفحه خانه */
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important; /* shadow ساده مثل کارت‌ها */
+  background-image: none !important; /* حذف هرگونه gradient */
 }
 
 [data-theme="light"] .indicators-glass-card .indicator-item,
