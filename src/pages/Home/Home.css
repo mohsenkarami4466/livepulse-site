@@ -18,14 +18,64 @@
   visibility: visible !important;
 }
 
+/* استایل‌های کارت‌ها در CardContainer.css تعریف شده‌اند */
+/* این فایل فقط برای override های خاص Home page است */
+
 .main-cards-container {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
-  gap: 1rem !important;
-  padding: 1rem !important;
+  gap: 16px !important;
+  padding: 16px !important;
   width: 100% !important;
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+/* هایلایت "خانه" - 4 کارت در یک ردیف */
+.main-cards-container.home-category {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+/* بقیه هایلایت‌ها - 5 کارت در هر ردیف (2 ردیف 5 تایی) */
+.main-cards-container.other-category {
+  grid-template-columns: repeat(5, 1fr) !important;
+}
+
+/* ریسپانسیو - حفظ تناسب در تبلت */
+@media (max-width: 1024px) {
+  .main-cards-container.home-category {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+  
+  .main-cards-container.other-category {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+}
+
+/* موبایل */
+@media (max-width: 768px) {
+  .main-cards-container.home-category,
+  .main-cards-container.other-category {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 10px !important;
+  }
+}
+
+/* موبایل کوچک */
+@media (max-width: 480px) {
+  .main-cards-container.home-category,
+  .main-cards-container.other-category {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 8px !important;
+  }
 }
 
 .price-card {

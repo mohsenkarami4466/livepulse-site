@@ -1,9 +1,316 @@
-/* استایل‌های Indicators از style.css استفاده می‌کنند */
-/* این فایل فقط برای override های خاص React است */
-
-.indicators-unified-container {
-  display: block !important;
+/* کارت شیشه‌ای برای شاخص‌ها */
+.indicators-glass-card {
+  position: fixed !important;
+  top: calc(var(--header-height, 60px) + 8px) !important; /* همردیف با کره کوچک */
+  left: calc(clamp(100px, 14vw, 180px) + 24px) !important; /* فاصله از کره کوچک */
+  right: 8px !important; /* فاصله از راست (برابر با فاصله کره از چپ) */
+  height: clamp(100px, 14vw, 180px) !important; /* همان ارتفاع کره کوچک */
+  max-height: clamp(100px, 14vw, 180px) !important; /* محدود کردن ارتفاع */
+  z-index: 998 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* Glassmorphism Effect */
+  background: rgba(15, 23, 42, 0.5) !important; /* مات */
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border-radius: 20px !important; /* گوشه‌های گرد */
+  border: none !important; /* بدون قاب */
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important; /* فقط inset shadow - بدون shadow از زیر */
+  
+  /* اجازه تنظیم داینامیک از JS */
+  transition: top 0.2s ease, left 0.2s ease, right 0.2s ease, height 0.2s ease !important;
 }
 
+/* Container داخلی برای شاخص‌ها - Override کامل استایل‌های قدیمی */
+.indicators-glass-card .indicators-unified-container {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  display: grid !important; /* استفاده از grid برای چیدمان بهتر */
+  grid-template-columns: repeat(6, 1fr) !important; /* 6 ستون */
+  grid-template-rows: repeat(2, 1fr) !important; /* 2 ردیف */
+  gap: clamp(2px, 0.5vw, 6px) !important; /* کاهش gap برای موبایل */
+  padding: clamp(4px, 0.8vw, 10px) !important; /* کاهش padding برای موبایل */
+  overflow: hidden !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  z-index: auto !important;
+  box-sizing: border-box !important;
+}
 
+/* غیرفعال کردن استایل‌های قدیمی کارت در React mode */
+body:has(.indicators-glass-card) .indicators-unified-container:not(.indicators-glass-card *) {
+  display: none !important; /* مخفی کردن کارت قدیمی */
+}
+
+/* حذف indicators-row - شاخص‌ها مستقیماً در grid قرار دارند */
+
+/* استایل شاخص‌ها - مستقیماً روی کارت شیشه‌ای */
+.indicators-glass-card .indicator-item,
+.indicators-glass-card .pair-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: clamp(2px, 0.4vw, 4px) !important;
+  padding: 0 !important; /* حذف padding */
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important; /* visible برای نمایش کامل */
+  white-space: normal !important;
+  text-overflow: clip !important;
+  box-sizing: border-box !important;
+  border-radius: 0 !important; /* حذف border-radius */
+  background: transparent !important; /* حذف background */
+  border: none !important; /* حذف border */
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+.indicators-glass-card .indicator-item:hover,
+.indicators-glass-card .pair-item:hover {
+  background: transparent !important; /* بدون background در hover */
+  transform: scale(1.05) !important;
+  opacity: 0.9 !important;
+}
+
+/* آیکون شاخص */
+.indicators-glass-card .indicator-item .indicator-icon {
+  font-size: clamp(0.7rem, 1.5vw, 1rem) !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+  margin-bottom: clamp(1px, 0.2vw, 2px) !important;
+}
+
+/* نام شاخص - فونت فارسی */
+.indicators-glass-card .indicator-item .indicator-name,
+.indicators-glass-card .pair-item .pair-name {
+  font-family: 'Vazirmatn', 'Inter', sans-serif !important;
+  font-size: clamp(0.5rem, 1vw, 0.65rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  flex-shrink: 0 !important;
+  min-width: auto !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  margin-bottom: clamp(1px, 0.2vw, 2px) !important;
+}
+
+/* مقدار شاخص - فونت لاتین برای اعداد */
+.indicators-glass-card .indicator-item .indicator-value,
+.indicators-glass-card .pair-item .pair-value {
+  font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-size: clamp(0.55rem, 1.1vw, 0.7rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: rgba(255, 255, 255, 1) !important;
+  flex-shrink: 0 !important;
+  min-width: auto !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* تغییرات شاخص - مستقیماً روی کارت */
+.indicators-glass-card .indicator-item .indicator-change,
+.indicators-glass-card .pair-item .pair-change {
+  font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-size: clamp(0.45rem, 0.9vw, 0.6rem) !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+  white-space: normal !important;
+  padding: 0 !important; /* حذف padding */
+  border-radius: 0 !important; /* حذف border-radius */
+  background: transparent !important; /* حذف background */
+  border: none !important; /* حذف border */
+}
+
+/* رنگ‌بندی تغییرات - فقط رنگ متن */
+.indicators-glass-card .indicator-item.up .indicator-change,
+.indicators-glass-card .pair-item.up .pair-change {
+  color: #00ff88 !important;
+  background: transparent !important; /* بدون background */
+}
+
+.indicators-glass-card .indicator-item.down .indicator-change,
+.indicators-glass-card .pair-item.down .pair-change {
+  color: #ff4466 !important;
+  background: transparent !important; /* بدون background */
+}
+
+/* Responsive - Desktop Large (1400px+) */
+@media (min-width: 1400px) {
+  .indicators-glass-card {
+    left: calc(180px + 24px) !important;
+    right: 8px !important;
+    height: 180px !important;
+    max-height: 180px !important;
+  }
+  
+  .indicators-glass-card .indicators-unified-container {
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+}
+
+/* Responsive - Desktop (1024px - 1399px) */
+@media (max-width: 1399px) and (min-width: 1024px) {
+  .indicators-glass-card {
+    left: calc(clamp(120px, 12vw, 160px) + 20px) !important;
+    right: 8px !important;
+    height: clamp(120px, 12vw, 160px) !important;
+    max-height: clamp(120px, 12vw, 160px) !important;
+  }
+  
+  .indicators-glass-card .indicators-unified-container {
+    gap: clamp(4px, 0.7vw, 6px) !important;
+    padding: clamp(6px, 1vw, 10px) !important;
+  }
+}
+
+/* Responsive - Tablet (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .indicators-glass-card {
+    left: calc(clamp(80px, 10vw, 120px) + 16px) !important;
+    right: 6px !important;
+    height: clamp(80px, 10vw, 120px) !important;
+    max-height: clamp(80px, 10vw, 120px) !important;
+    border-radius: 16px !important;
+  }
+  
+  .indicators-glass-card .indicators-unified-container {
+    grid-template-columns: repeat(6, 1fr) !important;
+    grid-template-rows: repeat(2, 1fr) !important;
+    gap: clamp(3px, 0.6vw, 5px) !important;
+    padding: clamp(4px, 0.8vw, 8px) !important;
+  }
+  
+  .indicators-glass-card .indicator-item,
+  .indicators-glass-card .pair-item {
+    gap: clamp(1px, 0.3vw, 3px) !important;
+    padding: clamp(3px, 0.6vw, 6px) clamp(1px, 0.3vw, 3px) !important;
+  }
+}
+
+/* Responsive - Mobile Large (480px - 767px) */
+@media (max-width: 767px) and (min-width: 480px) {
+  .indicators-glass-card {
+    left: calc(clamp(60px, 8vw, 100px) + 10px) !important; /* کاهش فاصله */
+    right: 4px !important;
+    height: clamp(60px, 8vw, 100px) !important;
+    max-height: clamp(60px, 8vw, 100px) !important;
+    border-radius: 12px !important;
+  }
+  
+  .indicators-glass-card .indicators-unified-container {
+    grid-template-columns: repeat(6, 1fr) !important;
+    grid-template-rows: repeat(2, 1fr) !important;
+    gap: 2px !important; /* gap کمتر */
+    padding: 3px !important; /* padding کمتر */
+  }
+  
+  .indicators-glass-card .indicator-item,
+  .indicators-glass-card .pair-item {
+    gap: 1px !important;
+    padding: 0 !important; /* بدون padding */
+    border-radius: 0 !important; /* بدون border-radius */
+    background: transparent !important; /* بدون background */
+  }
+}
+
+/* Responsive - Mobile Small (320px - 479px) */
+@media (max-width: 479px) {
+  .indicators-glass-card {
+    left: calc(clamp(50px, 7vw, 80px) + 6px) !important; /* کاهش فاصله بیشتر */
+    right: 4px !important;
+    height: clamp(50px, 7vw, 80px) !important;
+    max-height: clamp(50px, 7vw, 80px) !important;
+    border-radius: 10px !important;
+  }
+  
+  .indicators-glass-card .indicators-unified-container {
+    grid-template-columns: repeat(6, 1fr) !important;
+    grid-template-rows: repeat(2, 1fr) !important;
+    gap: 1px !important; /* gap خیلی کم */
+    padding: 2px !important; /* padding خیلی کم */
+  }
+  
+  .indicators-glass-card .indicator-item,
+  .indicators-glass-card .pair-item {
+    gap: 0 !important;
+    padding: 0 !important; /* بدون padding */
+    border-radius: 0 !important; /* بدون border-radius */
+    background: transparent !important; /* بدون background */
+  }
+  
+  .indicators-glass-card .indicator-item .indicator-icon {
+    font-size: clamp(0.5rem, 1vw, 0.7rem) !important;
+  }
+  
+  .indicators-glass-card .indicator-item .indicator-name,
+  .indicators-glass-card .pair-item .pair-name {
+    font-size: clamp(0.4rem, 0.8vw, 0.5rem) !important;
+  }
+  
+  .indicators-glass-card .indicator-item .indicator-value,
+  .indicators-glass-card .pair-item .pair-value {
+    font-size: clamp(0.45rem, 0.9vw, 0.55rem) !important;
+  }
+  
+  .indicators-glass-card .indicator-item .indicator-change,
+  .indicators-glass-card .pair-item .pair-change {
+    font-size: clamp(0.35rem, 0.7vw, 0.45rem) !important;
+  }
+}
+
+/* Light theme support */
+[data-theme="light"] .indicators-glass-card {
+  background: rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+[data-theme="light"] .indicators-glass-card .indicator-item,
+[data-theme="light"] .indicators-glass-card .pair-item {
+  background: transparent !important; /* بدون background در light theme */
+}
+
+[data-theme="light"] .indicators-glass-card .indicator-item:hover,
+[data-theme="light"] .indicators-glass-card .pair-item:hover {
+  background: transparent !important; /* بدون background در hover */
+  opacity: 0.8 !important;
+}
+
+[data-theme="light"] .indicators-glass-card .indicator-item .indicator-name,
+[data-theme="light"] .indicators-glass-card .pair-item .pair-name {
+  color: rgba(15, 23, 42, 0.9) !important;
+}
+
+[data-theme="light"] .indicators-glass-card .indicator-item .indicator-value,
+[data-theme="light"] .indicators-glass-card .pair-item .pair-value {
+  color: rgba(15, 23, 42, 1) !important;
+}

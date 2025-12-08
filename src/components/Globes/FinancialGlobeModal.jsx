@@ -70,8 +70,9 @@ function FinancialGlobeModal({ isOpen, onClose }) {
                 setTimeout(() => {
                   const assistive = document.getElementById('financialGlobeAssistive')
                   const glassMenu = document.getElementById('financialGlobeMenu')
+                  const modalContent = document.querySelector('#financialGlobeModal .globe-modal-content')
                   
-                  if (assistive && glassMenu && typeof window.GlobeAssistiveTouch !== 'undefined') {
+                  if (assistive && glassMenu && modalContent && typeof window.GlobeAssistiveTouch !== 'undefined') {
                     // حذف instance قبلی اگر وجود داشت
                     if (window.financialGlobeAssistive) {
                       try {
@@ -97,9 +98,21 @@ function FinancialGlobeModal({ isOpen, onClose }) {
                       
                       // اطمینان از setup شدن menu listeners
                       setTimeout(() => {
-                        if (window.financialGlobeAssistive && typeof window.financialGlobeAssistive.setupMenuListeners === 'function') {
-                          window.financialGlobeAssistive.setupMenuListeners()
-                          log.info('✅ Menu listeners برای کره مالی setup شدند')
+                        if (window.financialGlobeAssistive) {
+                          if (typeof window.financialGlobeAssistive.setupMenuListeners === 'function') {
+                            window.financialGlobeAssistive.setupMenuListeners()
+                            log.info('✅ Menu listeners برای کره مالی setup شدند')
+                          }
+                          
+                          // اطمینان از snapToEdge - اگر موقعیت ذخیره شده وجود ندارد، snap به لبه انجام شود
+                          if (typeof window.financialGlobeAssistive.snapToEdge === 'function') {
+                            setTimeout(() => {
+                              if (window.financialGlobeAssistive && typeof window.financialGlobeAssistive.snapToEdge === 'function') {
+                                window.financialGlobeAssistive.snapToEdge()
+                                log.info('✅ دکمه سیار کره مالی به لبه snap شد')
+                              }
+                            }, 300)
+                          }
                         }
                       }, 200)
                     } catch (error) {
@@ -108,8 +121,25 @@ function FinancialGlobeModal({ isOpen, onClose }) {
                   } else {
                     log.warn('⚠️ المان‌های دکمه سیار کره مالی پیدا نشدند', {
                       assistive: !!assistive,
-                      glassMenu: !!glassMenu
+                      glassMenu: !!glassMenu,
+                      modalContent: !!modalContent,
+                      GlobeAssistiveTouch: typeof window.GlobeAssistiveTouch
                     })
+                    // Retry بعد از تاخیر بیشتر
+                    setTimeout(() => {
+                      const retryAssistive = document.getElementById('financialGlobeAssistive')
+                      const retryGlassMenu = document.getElementById('financialGlobeMenu')
+                      const retryModalContent = document.querySelector('#financialGlobeModal .globe-modal-content')
+                      
+                      if (retryAssistive && retryGlassMenu && retryModalContent && typeof window.GlobeAssistiveTouch !== 'undefined') {
+                        try {
+                          window.financialGlobeAssistive = new window.GlobeAssistiveTouch('financialGlobeAssistive', 'financialGlobeMenu', 'financial')
+                          log.info('✅ دکمه سیار کره مالی راه‌اندازی شد (retry)')
+                        } catch (error) {
+                          log.error('❌ خطا در راه‌اندازی دکمه سیار کره مالی (retry):', error)
+                        }
+                      }
+                    }, 2000)
                   }
                 }, 1000) // افزایش delay برای اطمینان از لود شدن کامل کره
               } catch (error) {
@@ -141,7 +171,7 @@ function FinancialGlobeModal({ isOpen, onClose }) {
         }
       }}
     >
-      <div className="globe-modal-content">
+      <div className="globe-modal-content" id="financialGlobeModalContent">
         <div 
           id="financialGlobeContainer" 
           ref={containerRef}

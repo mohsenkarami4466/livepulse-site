@@ -1535,16 +1535,33 @@ class GlobeAssistiveTouch {
             modalId = 'naturalResourcesGlobeModal';
         }
         this.modal = document.getElementById(modalId);
-        this.modalContent = this.modal?.querySelector('.globe-modal-content');
+        
+        // تلاش برای پیدا کردن modalContent - اول با ID، سپس با querySelector
+        const modalContentId = `${this.globeType}GlobeModalContent`;
+        this.modalContent = document.getElementById(modalContentId) || this.modal?.querySelector('.globe-modal-content');
         
         if (!this.touchElement || !this.glassMenu || !this.modalContent) {
             const log = window.logger || { warn: console.warn }; log.warn(`⚠️ عناصر کره ${this.globeType} پیدا نشد`, {
                 touchElement: !!this.touchElement,
                 glassMenu: !!this.glassMenu,
+                modalContent: !!this.modalContent,
+                modalContentId,
+                modalId,
                 assistiveId,
                 menuId,
                 globeType
             });
+            // اگر modalContent پیدا نشد، retry بعد از تاخیر
+            if (!this.modalContent && this.modal) {
+                setTimeout(() => {
+                    this.modalContent = document.getElementById(modalContentId) || this.modal?.querySelector('.globe-modal-content');
+                    if (this.modalContent && this.touchElement && this.glassMenu) {
+                        const log = window.logger || { info: console.log };
+                        log.info(`✅ modalContent برای کره ${this.globeType} پیدا شد (retry) - ادامه initialization`);
+                        this.init();
+                    }
+                }, 500);
+            }
             return;
         }
         
@@ -1568,6 +1585,32 @@ class GlobeAssistiveTouch {
     }
     
     init() {
+        // ابتدا اطمینان از اینکه modalContent پیدا شده است
+        if (!this.modalContent) {
+            // تلاش مجدد برای پیدا کردن modalContent
+            const modalId = this.globeType === 'natural-resources' ? 'naturalResourcesGlobeModal' : `${this.globeType}GlobeModal`;
+            this.modal = document.getElementById(modalId);
+            if (this.modal) {
+                this.modalContent = this.modal.querySelector('.globe-modal-content');
+                const log = window.logger || { info: console.log, warn: console.warn };
+                if (this.modalContent) {
+                    log.info(`✅ modalContent برای کره ${this.globeType} پیدا شد (retry)`);
+                } else {
+                    log.warn(`⚠️ modalContent برای کره ${this.globeType} پیدا نشد - modal: ${modalId}`);
+                }
+            } else {
+                const log = window.logger || { warn: console.warn };
+                log.warn(`⚠️ Modal برای کره ${this.globeType} پیدا نشد: ${modalId}`);
+            }
+        }
+        
+        // اگر modalContent پیدا نشد، نمی‌توانیم ادامه دهیم
+        if (!this.modalContent) {
+            const log = window.logger || { warn: console.warn };
+            log.warn(`⚠️ GlobeAssistiveTouch برای ${this.globeType} نمی‌تواند initialize شود - modalContent پیدا نشد`);
+            return;
+        }
+        
         this.setupEventListeners();
         this.setupMenuListeners();
         this.setInitialPosition();

@@ -147,7 +147,7 @@
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
-  background: var(--accent-blue, #3b82f6);
+  background: var(--accent-blue, #ea580c); /* تغییر به نارنجی (قبلاً: #3b82f6) */
   color: white;
   cursor: pointer;
   font-size: 1.2rem;
@@ -155,7 +155,7 @@
 }
 
 .chat-input-compact button:hover {
-  background: var(--accent-blue-dark, #2563eb);
+  background: var(--accent-blue-dark, #c2410c); /* تغییر به نارنجی تیره (قبلاً: #2563eb) */
 }
 
 /* Responsive */

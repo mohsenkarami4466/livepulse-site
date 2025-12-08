@@ -1,21 +1,19 @@
-/* استایل‌های Layout از style.css استفاده می‌کنند */
+/* استایل‌های Layout */
 
 .layout {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 .layout-main {
   flex: 1;
-  padding-top: 60px; /* برای header */
-  padding-bottom: 70px; /* برای bottom navigation */
   width: 100%;
+  margin-top: 0;
+  padding-top: 0;
 }
 
-/* رفع مشکل نمایش صفحات React */
-/* در React Router، صفحات به صورت خودکار نمایش داده می‌شوند */
-/* اما CSS اصلی `.view { display: none; }` را override می‌کنیم */
+/* اطمینان از نمایش view ها */
 .layout-main > .view {
   display: block !important;
   opacity: 1 !important;
@@ -23,29 +21,299 @@
   transform: translateY(0) !important;
 }
 
-/* اطمینان از نمایش highlights در صفحات React */
-.layout-main > .view .highlights-section {
-  display: block !important;
+/* اطمینان از نمایش highlights در صفحات React - فاصله‌های یکسان در تمام صفحات */
+/* highlights باید فاصله‌شان برابر با فاصله کره و شاخص‌ها تا هدر باشد (8px) + کمی پایین‌تر */
+.layout-main > .view .highlights-section,
+.layout-main > .view .home-highlights,
+.layout-main > .view .news-highlights,
+.layout-main > .view .tools-highlights,
+.layout-main > .view .education-highlights,
+.layout-main > .view .relax-highlights,
+.layout-main > .view .globe-highlights {
+  position: relative !important;
+  margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 20px) !important; /* فاصله یکسان از بالا - 20px gap */
+  margin-left: 12px !important; /* فاصله یکسان از چپ */
+  margin-right: 12px !important; /* فاصله یکسان از راست */
+  margin-bottom: 20px !important; /* فاصله یکسان از پایین */
+  width: calc(100% - 24px) !important; /* عرض با فاصله یکسان */
+  max-width: 100% !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important; /* فاصله یکسان بین کارت‌ها */
+  align-items: center !important;
+  flex-wrap: nowrap !important; /* همه در یک ردیف - بدون wrap */
+  gap: 8px !important; /* فاصله یکسان بین هایلایت‌ها - 8px ثابت */
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 50 !important; /* پایین‌تر از شاخص‌ها و کره - تا shadow از زیر نتابد */
+  overflow-x: auto !important; /* اسکرول افقی در صورت نیاز */
+  -webkit-overflow-scrolling: touch !important;
+  filter: drop-shadow(none) !important; /* حذف هرگونه drop-shadow */
 }
 
-/* اطمینان از نمایش main-content در صفحات React */
+/* اطمینان از نمایش highlights-container - پر کردن کل عرض صفحه - یک ردیف - فاصله‌های یکسان */
+.layout-main > .view .highlights-container {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important; /* فاصله یکسان بین کارت‌ها */
+  align-items: stretch !important; /* ارتفاع یکسان */
+  flex-wrap: nowrap !important; /* همه در یک ردیف - بدون wrap */
+  gap: 8px !important; /* فاصله یکسان بین هایلایت‌ها - 8px ثابت در تمام صفحات */
+  width: 100% !important;
+  max-width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  padding: 0 !important; /* بدون padding اضافی */
+  margin: 0 !important; /* بدون margin اضافی */
+}
+
+/* ============================================ */
+/* 🎴 استایل هایلایت‌ها - حالت کارت (قابل برگشت) */
+/* ============================================ */
+/* 
+ * حالت قبلی (دایره):
+ * - border-radius: 50%
+ * - width/height: clamp(70px, 8vw, 100px)
+ * - برای برگشت: border-radius را به 50% و width/height را به clamp(70px, 8vw, 100px) برگردانید
+ */
+
+/* اطمینان از نمایش highlight-circle - حالت کارت با گوشه‌های کمی گرد - اندازه و فاصله یکسان */
+.layout-main > .view .highlight-circle {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  flex: 1 1 0 !important; /* پر کردن فضا به صورت مساوی - هر 7 کارت کل عرض رو پر می‌کنه */
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 50px !important; /* ارتفاع یکسان - 50px ثابت در تمام صفحات */
+  border-radius: 12px !important; /* گوشه‌های کمی گرد (قبلاً 50%) */
+  font-size: 0.875rem !important; /* فونت یکسان - 14px */
+  font-weight: 600 !important;
+  font-family: 'Vazirmatn', 'Inter', 'SF Pro Display', -apple-system, sans-serif !important; /* فونت بهبود یافته */
+  padding: 12px 8px !important; /* padding یکسان - 12px بالا/پایین، 8px چپ/راست */
+  text-align: center !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1.4 !important; /* line-height بهبود یافته */
+  word-break: keep-all !important;
+  white-space: nowrap !important; /* متن در یک خط */
+  margin: 0 !important; /* بدون margin اضافی */
+  
+  /* استایل شیشه‌ای - متناسب با تم - بدون قاب */
+  background: var(--glass-bg, rgba(15, 23, 42, 0.25)) !important; /* استفاده از متغیر تم */
+  backdrop-filter: blur(20px) saturate(150%) !important; /* blur بهبود یافته */
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  border: none !important; /* بدون قاب */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow کمتر */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* حذف افکت شاین - کاربر نمی‌خواهد */
+.layout-main > .view .highlight-circle::after {
+  display: none !important;
+}
+
+/* سایه نئونی برای حالت انتخاب شده - تم تاریک - تپش کمتر */
+/* ⚠️ تم نارنجی (قابل برگشت) - برای برگشت: rgba(234, 88, 12, ...) را به rgba(59, 130, 246, ...) برگردانید */
+.layout-main > .view .highlight-circle.active {
+  box-shadow: 
+    0 0 12px rgba(234, 88, 12, 0.4), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.4)) */
+    0 0 24px rgba(234, 88, 12, 0.2), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.2)) */
+    0 2px 8px rgba(0, 0, 0, 0.15) !important; /* کاهش glow - تپش کمتر */
+  background: rgba(15, 23, 42, 0.35) !important; /* کمی روشن‌تر وقتی active */
+  transform: scale(1.02) !important; /* تپش کمتر - از 1.05 به 1.02 */
+  animation: none !important; /* حذف هرگونه animation */
+}
+
+/* سایه نئونی برای حالت انتخاب شده - تم روشن - تپش کمتر */
+[data-theme="light"] .layout-main > .view .highlight-circle.active {
+  box-shadow: 
+    0 0 12px rgba(234, 88, 12, 0.3), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.3)) */
+    0 0 24px rgba(234, 88, 12, 0.15), /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.15)) */
+    0 2px 8px rgba(0, 0, 0, 0.08) !important; /* کاهش glow - تپش کمتر */
+  background: var(--glass-bg, rgba(255, 255, 255, 0.5)) !important; /* استفاده از متغیر تم */
+  transform: scale(1.02) !important; /* تپش کمتر - از 1.05 به 1.02 */
+  animation: none !important; /* حذف هرگونه animation */
+}
+
+/* Hover effect - بدون تغییر زیاد */
+.layout-main > .view .highlight-circle:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  background: rgba(15, 23, 42, 0.3) !important; /* کمی روشن‌تر در hover */
+}
+
+/* اطمینان از نمایش main-content */
 .layout-main > .view .main-content {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
+  margin-top: 20px !important;
+  padding: 1rem !important;
 }
 
 /* اطمینان از نمایش کارت‌ها */
-.layout-main > .view .main-cards-container {
+.layout-main > .view .main-cards-container,
+.layout-main > .view .home-cards {
   display: grid !important;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* برای موبایل */
-@media (max-width: 768px) {
-  .layout-main {
-    padding-top: 50px;
-    padding-bottom: 60px;
+/* اطمینان از نمایش gold-map-section */
+.layout-main > .view .gold-map-section {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-top: 40px !important;
+  padding: 1rem !important;
+}
+
+/* Responsive highlights - حالت کارت - یک ردیف - فاصله‌های یکسان */
+@media (max-width: 1024px) {
+  .layout-main > .view .highlights-section,
+  .layout-main > .view .home-highlights,
+  .layout-main > .view .news-highlights,
+  .layout-main > .view .tools-highlights,
+  .layout-main > .view .education-highlights,
+  .layout-main > .view .relax-highlights,
+  .layout-main > .view .globe-highlights {
+    margin-top: calc(var(--header-height, 60px) + clamp(80px, 12vw, 140px) + 20px) !important; /* فاصله یکسان - 20px */
+    margin-left: 12px !important; /* فاصله یکسان */
+    margin-right: 12px !important; /* فاصله یکسان */
+    margin-bottom: 20px !important; /* فاصله یکسان */
+    gap: 8px !important; /* فاصله یکسان */
   }
+  
+  .layout-main > .view .highlight-circle {
+    height: 48px !important; /* ارتفاع یکسان - کمی کمتر در تبلت */
+    font-size: 0.8125rem !important; /* فونت یکسان - 13px */
+    padding: 10px 6px !important; /* padding یکسان */
+    border-radius: 10px !important;
+  }
+  
+  .layout-main > .view .highlight-circle.active {
+    transform: scale(1.015) !important; /* تپش کمتر در تبلت */
+  }
+  
+  .layout-main > .view .highlights-container {
+    gap: 8px !important; /* فاصله یکسان */
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-main > .view .highlights-section,
+  .layout-main > .view .home-highlights,
+  .layout-main > .view .news-highlights,
+  .layout-main > .view .tools-highlights,
+  .layout-main > .view .education-highlights,
+  .layout-main > .view .relax-highlights,
+  .layout-main > .view .globe-highlights {
+    margin-top: calc(var(--header-height, 60px) + clamp(60px, 10vw, 100px) + 20px) !important; /* فاصله یکسان - 20px */
+    margin-left: 12px !important; /* فاصله یکسان */
+    margin-right: 12px !important; /* فاصله یکسان */
+    margin-bottom: 20px !important; /* فاصله یکسان */
+    gap: 8px !important; /* فاصله یکسان */
+  }
+  
+  .layout-main > .view .highlight-circle {
+    height: 46px !important; /* ارتفاع یکسان - کمی کمتر در موبایل */
+    font-size: 0.75rem !important; /* فونت یکسان - 12px */
+    padding: 10px 6px !important; /* padding یکسان */
+    border-radius: 8px !important;
+  }
+  
+  .layout-main > .view .highlight-circle.active {
+    transform: scale(1.01) !important; /* تپش کمتر در موبایل */
+  }
+  
+  .layout-main > .view .highlights-container {
+    gap: 8px !important; /* فاصله یکسان */
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-main > .view .highlights-section,
+  .layout-main > .view .home-highlights,
+  .layout-main > .view .news-highlights,
+  .layout-main > .view .tools-highlights,
+  .layout-main > .view .education-highlights,
+  .layout-main > .view .relax-highlights,
+  .layout-main > .view .globe-highlights {
+    margin-top: calc(var(--header-height, 60px) + clamp(50px, 7vw, 80px) + 20px) !important; /* فاصله یکسان - 20px */
+    margin-left: 12px !important; /* فاصله یکسان */
+    margin-right: 12px !important; /* فاصله یکسان */
+    margin-bottom: 20px !important; /* فاصله یکسان */
+    gap: 6px !important; /* فاصله کمی کمتر در موبایل کوچک */
+  }
+  
+  .layout-main > .view .highlight-circle {
+    height: 44px !important; /* ارتفاع یکسان - کمی کمتر در موبایل کوچک */
+    font-size: 0.6875rem !important; /* فونت یکسان - 11px */
+    padding: 8px 4px !important; /* padding یکسان */
+    border-radius: 6px !important;
+    white-space: nowrap !important; /* یک خط در موبایل */
+  }
+  
+  .layout-main > .view .highlight-circle.active {
+    transform: scale(1.01) !important; /* تپش کمتر در موبایل کوچک */
+  }
+  
+  .layout-main > .view .highlights-container {
+    gap: 6px !important; /* فاصله یکسان */
+  }
+  
+  /* اسکرول افقی در موبایل */
+  .layout-main > .view .highlights-section,
+  .layout-main > .view .home-highlights,
+  .layout-main > .view .news-highlights,
+  .layout-main > .view .tools-highlights,
+  .layout-main > .view .education-highlights,
+  .layout-main > .view .relax-highlights,
+  .layout-main > .view .globe-highlights {
+    overflow-x: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+  }
+  
+  .layout-main > .view .highlights-section::-webkit-scrollbar,
+  .layout-main > .view .home-highlights::-webkit-scrollbar,
+  .layout-main > .view .news-highlights::-webkit-scrollbar,
+  .layout-main > .view .tools-highlights::-webkit-scrollbar,
+  .layout-main > .view .education-highlights::-webkit-scrollbar,
+  .layout-main > .view .relax-highlights::-webkit-scrollbar,
+  .layout-main > .view .globe-highlights::-webkit-scrollbar {
+    height: 4px !important;
+  }
+  
+  .layout-main > .view .highlights-section::-webkit-scrollbar-thumb,
+  .layout-main > .view .home-highlights::-webkit-scrollbar-thumb,
+  .layout-main > .view .news-highlights::-webkit-scrollbar-thumb,
+  .layout-main > .view .tools-highlights::-webkit-scrollbar-thumb,
+  .layout-main > .view .education-highlights::-webkit-scrollbar-thumb,
+  .layout-main > .view .relax-highlights::-webkit-scrollbar-thumb,
+  .layout-main > .view .globe-highlights::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 2px !important;
+  }
+}
+
+/* Light theme برای هایلایت‌های کارت - کمتر مات - بدون قاب */
+[data-theme="light"] .layout-main > .view .highlight-circle {
+  background: rgba(255, 255, 255, 0.35) !important; /* کمتر مات */
+  border: none !important; /* بدون قاب */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important; /* shadow کمتر */
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+}
+
+[data-theme="light"] .layout-main > .view .highlight-circle:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.4) !important; /* کمی روشن‌تر در hover */
 }

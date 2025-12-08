@@ -1,41 +1,62 @@
-/* استایل‌های CardContainer از style.css استفاده می‌کنند */
+/* استایل‌های CardContainer - تنظیم بر اساس category */
 
-/* اطمینان از نمایش container - استفاده از استایل اصلی */
+/* اطمینان از نمایش container */
 .main-cards-container {
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
-  gap: 14px !important;
+  gap: 16px !important;
   margin-bottom: 2rem !important;
-  padding: 0 10px !important;
+  padding: 16px !important;
   width: 100% !important;
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* ریسپانسیو کارت‌ها - مطابق با استایل اصلی */
-@media (max-width: 1400px) {
-  .main-cards-container {
+/* هایلایت "خانه" - 4 کارت در یک ردیف (دسکتاپ و تبلت) */
+.main-cards-container.home-category {
+  grid-template-columns: repeat(4, 1fr) !important; /* 4 کارت در یک ردیف */
+}
+
+/* بقیه هایلایت‌ها - 10 کارت در 2 ردیف 5 تایی (دسکتاپ و تبلت) */
+.main-cards-container.other-category {
+  grid-template-columns: repeat(5, 1fr) !important; /* 5 کارت در هر ردیف */
+}
+
+/* ریسپانسیو - حفظ تناسب در تبلت */
+@media (max-width: 1024px) {
+  /* هایلایت "خانه" - یک ردیف 4 تایی در تبلت */
+  .main-cards-container.home-category {
     grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+  
+  /* بقیه هایلایت‌ها - 2 ردیف 5 تایی در تبلت */
+  .main-cards-container.other-category {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 12px !important;
+    padding: 12px !important;
   }
 }
 
-@media (max-width: 1100px) {
-  .main-cards-container {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-}
-
+/* موبایل - 2 کارت در هر ردیف */
 @media (max-width: 768px) {
-  .main-cards-container {
+  .main-cards-container.home-category,
+  .main-cards-container.other-category {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
+    padding: 10px !important;
   }
 }
 
+/* موبایل کوچک - 2 کارت در هر ردیف */
 @media (max-width: 480px) {
-  .main-cards-container {
+  .main-cards-container.home-category,
+  .main-cards-container.other-category {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
-    padding: 0 8px !important;
+    padding: 8px !important;
   }
 }

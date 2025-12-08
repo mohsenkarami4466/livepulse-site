@@ -32,10 +32,49 @@ import './IndicatorsContainer.css'
  * - ردیف دوم: جفت ارزها (EUR/USD, USD/JPY, GBP/USD, USD/CHF, AUD/USD, USD/CAD)
  */
 function IndicatorsContainer() {
+  const containerRef = React.useRef(null);
+  
+  // محاسبه موقعیت و ارتفاع کارت بر اساس header و کره کوچک
+  React.useEffect(() => {
+    const updatePosition = () => {
+      const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
+      const headerHeight = header ? header.offsetHeight : 60;
+      const globeWrapper = document.getElementById('globeClockWrapper');
+      
+      if (globeWrapper && containerRef.current) {
+        const globeWidth = globeWrapper.offsetWidth;
+        const globeHeight = globeWrapper.offsetHeight;
+        const globeLeft = globeWrapper.offsetLeft || 8; // فاصله کره از چپ (8px)
+        const gap = 16; // فاصله ثابت بین کره و کارت
+        
+        // موقعیت کارت: همردیف با کره کوچک
+        // فاصله از کره = فاصله از راست
+        const cardLeft = globeLeft + globeWidth + gap;
+        const cardRight = globeLeft; // فاصله از راست = فاصله کره از چپ
+        
+        containerRef.current.style.top = `${headerHeight + 8}px`;
+        containerRef.current.style.left = `${cardLeft}px`;
+        containerRef.current.style.right = `${cardRight}px`;
+        containerRef.current.style.height = `${globeHeight}px`;
+        containerRef.current.style.maxHeight = `${globeHeight}px`; // محدود کردن ارتفاع
+      }
+    };
+    
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    
+    // بررسی بعد از render
+    setTimeout(updatePosition, 100);
+    setTimeout(updatePosition, 500);
+    setTimeout(updatePosition, 1000);
+    
+    return () => window.removeEventListener('resize', updatePosition);
+  }, []);
+
   return (
-    <div className="indicators-unified-container">
-      {/* ردیف اول - 6 شاخص */}
-      <div className="indicators-row">
+    <div className="indicators-glass-card" ref={containerRef}>
+      <div className="indicators-unified-container">
+        {/* ردیف اول - 6 شاخص */}
         <div className="indicator-item up">
           <span className="indicator-icon">🥇</span>
           <span className="indicator-name">طلا</span>
@@ -72,10 +111,8 @@ function IndicatorsContainer() {
           <span className="indicator-value" id="nasdaqIndicator">۱۵,۲۸۵</span>
           <span className="indicator-change">+۰.۹٪</span>
         </div>
-      </div>
-      
-      {/* ردیف دوم - 6 شاخص */}
-      <div className="indicators-row">
+        
+        {/* ردیف دوم - 6 شاخص */}
         <div className="pair-item up">
           <span className="pair-name">EUR/USD</span>
           <span className="pair-value">1.0856</span>

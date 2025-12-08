@@ -62,8 +62,9 @@ function ResourcesGlobeModal({ isOpen, onClose }) {
                 setTimeout(() => {
                   const assistive = document.getElementById('resourcesGlobeAssistive')
                   const glassMenu = document.getElementById('resourcesGlobeMenu')
+                  const modalContent = document.querySelector('#resourcesGlobeModal .globe-modal-content')
                   
-                  if (assistive && glassMenu && typeof window.GlobeAssistiveTouch !== 'undefined') {
+                  if (assistive && glassMenu && modalContent && typeof window.GlobeAssistiveTouch !== 'undefined') {
                     // حذف instance قبلی اگر وجود داشت
                     if (window.resourcesGlobeAssistive) {
                       try {
@@ -71,7 +72,12 @@ function ResourcesGlobeModal({ isOpen, onClose }) {
                         if (oldInstance.touchButton) {
                           const newBtn = oldInstance.touchButton.cloneNode(true)
                           oldInstance.touchButton.parentNode.replaceChild(newBtn, oldInstance.touchButton)
-            }
+                        }
+                        // حذف event listeners
+                        if (oldInstance.glassMenu) {
+                          const newMenu = oldInstance.glassMenu.cloneNode(true)
+                          oldInstance.glassMenu.parentNode.replaceChild(newMenu, oldInstance.glassMenu)
+                        }
                       } catch (e) {
                         log.warn('خطا در پاک کردن instance قبلی:', e)
                       }
@@ -81,16 +87,53 @@ function ResourcesGlobeModal({ isOpen, onClose }) {
                     try {
                       window.resourcesGlobeAssistive = new window.GlobeAssistiveTouch('resourcesGlobeAssistive', 'resourcesGlobeMenu', 'resources')
                       log.info('✅ دکمه سیار کره منابع راه‌اندازی شد')
+                      
+                      // اطمینان از setup شدن menu listeners
+                      setTimeout(() => {
+                        if (window.resourcesGlobeAssistive) {
+                          if (typeof window.resourcesGlobeAssistive.setupMenuListeners === 'function') {
+                            window.resourcesGlobeAssistive.setupMenuListeners()
+                            log.info('✅ Menu listeners برای کره منابع setup شدند')
+                          }
+                          
+                          // اطمینان از snapToEdge - اگر موقعیت ذخیره شده وجود ندارد، snap به لبه انجام شود
+                          if (typeof window.resourcesGlobeAssistive.snapToEdge === 'function') {
+                            setTimeout(() => {
+                              if (window.resourcesGlobeAssistive && typeof window.resourcesGlobeAssistive.snapToEdge === 'function') {
+                                window.resourcesGlobeAssistive.snapToEdge()
+                                log.info('✅ دکمه سیار کره منابع به لبه snap شد')
+                              }
+                            }, 300)
+                          }
+                        }
+                      }, 200)
                     } catch (error) {
                       log.error('❌ خطا در راه‌اندازی دکمه سیار کره منابع:', error)
                     }
                   } else {
                     log.warn('⚠️ المان‌های دکمه سیار کره منابع پیدا نشدند', {
                       assistive: !!assistive,
-                      glassMenu: !!glassMenu
+                      glassMenu: !!glassMenu,
+                      modalContent: !!modalContent,
+                      GlobeAssistiveTouch: typeof window.GlobeAssistiveTouch
                     })
+                    // Retry بعد از تاخیر بیشتر
+                    setTimeout(() => {
+                      const retryAssistive = document.getElementById('resourcesGlobeAssistive')
+                      const retryGlassMenu = document.getElementById('resourcesGlobeMenu')
+                      const retryModalContent = document.querySelector('#resourcesGlobeModal .globe-modal-content')
+                      
+                      if (retryAssistive && retryGlassMenu && retryModalContent && typeof window.GlobeAssistiveTouch !== 'undefined') {
+                        try {
+                          window.resourcesGlobeAssistive = new window.GlobeAssistiveTouch('resourcesGlobeAssistive', 'resourcesGlobeMenu', 'resources')
+                          log.info('✅ دکمه سیار کره منابع راه‌اندازی شد (retry)')
+                        } catch (error) {
+                          log.error('❌ خطا در راه‌اندازی دکمه سیار کره منابع (retry):', error)
+                        }
+                      }
+                    }, 2000)
                   }
-                }, 800)
+                }, 1000) // افزایش delay برای اطمینان از لود شدن کامل کره
               } catch (error) {
                 log.error('❌ خطا در ساخت کره منابع:', error)
           }
@@ -120,7 +163,7 @@ function ResourcesGlobeModal({ isOpen, onClose }) {
         }
       }}
     >
-      <div className="globe-modal-content">
+      <div className="globe-modal-content" id="resourcesGlobeModalContent">
         <div 
           id="resourcesGlobeContainer" 
           ref={containerRef}

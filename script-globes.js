@@ -165,6 +165,16 @@ function updateGlobePosition() {
     return;
   }
   
+  // بررسی اینکه آیا در React mode هستیم
+  // اگر globeWrapper دارای data-react-mode attribute باشد یا inline style top: 8px داشته باشد، skip کن
+  const inlineTop = globeWrapper.style.top;
+  const hasReactStyle = inlineTop === '8px' || inlineTop === '8px' || globeWrapper.getAttribute('data-react-mode') === 'true';
+  
+  if (hasReactStyle) {
+    // در React mode، موقعیت توسط React component مدیریت می‌شود
+    return;
+  }
+  
   // محاسبه ارتفاع شاخص‌ها
   const indicatorsHeight = indicatorsContainer.offsetHeight;
   const indicatorsTop = indicatorsContainer.offsetTop || 60; // fallback به 60px
@@ -506,8 +516,27 @@ function initGlobe() {
   // اگر قبلاً animate در حال اجرا است، آن را متوقف کن و دوباره شروع کن
   if (window.smallGlobeAnimationId) {
     cancelAnimationFrame(window.smallGlobeAnimationId);
+    window.smallGlobeAnimationId = null;
   }
-  animate();
+  
+  // شروع انیمیشن - باید بلافاصله بعد از ساخت globe انجام شود
+  // بررسی وجود globe, renderer, scene, camera
+  if (globe && renderer && scene && camera) {
+    // شروع انیمیشن بلافاصله
+    animate();
+    log.success('✅ انیمیشن کره کوچک شروع شد');
+  } else {
+    log.warn('⚠️ کره کوچک آماده نیست برای انیمیشن - تلاش مجدد...');
+    // Retry بعد از تاخیر کوتاه
+    setTimeout(() => {
+      if (globe && renderer && scene && camera) {
+        animate();
+        log.success('✅ انیمیشن کره کوچک شروع شد (retry)');
+      } else {
+        log.error('❌ کره کوچک آماده نیست برای انیمیشن بعد از retry');
+      }
+    }, 200);
+  }
 }
 
 /* نقاط بازار - چشمک‌زن */
@@ -683,10 +712,14 @@ function showLoginPrompt() {
 
 // Export functions to window for React integration
 if (typeof window !== 'undefined') {
+    window.initGlobe = initGlobe;
+    window.animate = animate;
     window.handleSmallGlobeClick = handleSmallGlobeClick;
     window.setupSmallGlobeClick = setupSmallGlobeClick;
     window.openFinancialGlobe = openFinancialGlobe;
     window.open3DGlobe = open3DGlobe;
+    window.updateSunAndMarkets = updateSunAndMarkets;
+    window.addMarketPoints = addMarketPoints;
 }
 
 // تنظیم کلیک روی کره کوچک در DOMContentLoaded انجام میشه

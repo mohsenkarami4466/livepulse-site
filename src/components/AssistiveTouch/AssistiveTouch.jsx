@@ -17,11 +17,6 @@
  * - ناوبری به صفحات از طریق منوی شیشه‌ای
  * - ذخیره موقعیت در localStorage
  * 
- * نکته مهم:
- * - این کامپوننت از vanilla JS class استفاده می‌کند
- * - باید منتظر بماند تا vanilla JS class لود شود
- * - از retry mechanism برای اطمینان از initialization استفاده می‌کند
- * 
  * تاریخ ایجاد: 2025-12-06
  * آخرین بروزرسانی: 2025-12-06
  */
@@ -29,56 +24,27 @@
 import React, { useEffect, useRef } from 'react'
 import './AssistiveTouch.css'
 
-/**
- * کامپوننت AssistiveTouch
- * 
- * این کامپوننت دکمه سیار و منوی شیشه‌ای را رندر می‌کند.
- * از vanilla JS class AssistiveTouch برای مدیریت عملکرد استفاده می‌کند.
- * 
- * State:
- * - initializedRef: برای جلوگیری از initialization چندباره
- */
 function AssistiveTouch() {
-  const initializedRef = useRef(false) // Flag برای جلوگیری از initialization چندباره
+  const initializedRef = useRef(false)
 
-  /**
-   * Effect: راه‌اندازی دکمه سیار
-   * 
-   * این effect:
-   * 1. منتظر می‌ماند تا vanilla JS class AssistiveTouch لود شود
-   * 2. منتظر می‌ماند تا DOM elements آماده شوند
-   * 3. یک instance از AssistiveTouch class ایجاد می‌کند
-   * 4. event listeners را اضافه می‌کند
-   * 
-   * Retry Mechanism:
-   * - اگر initialization موفق نشد، هر 100ms دوباره تلاش می‌کند
-   * - حداکثر 5 ثانیه تلاش می‌کند
-   */
   useEffect(() => {
-    // استفاده از کد موجود برای assistive touch
-    // کد vanilla JS در script-ui.js این را مدیریت می‌کند
-    
-    // اطمینان از اینکه فقط یک بار initialize شود
+    // جلوگیری از initialization چندباره
     if (initializedRef.current) {
       return
     }
 
-    const log = window.logger || { info: console.log, error: console.error }
+    const log = window.logger || { info: console.log, error: console.error, warn: console.warn }
     
-    // بررسی اینکه آیا AssistiveTouch class موجود است (از window)
-    // AssistiveTouch class در script-ui.js تعریف شده است
     const checkAndInitialize = () => {
       try {
-        // بررسی اینکه آیا element موجود است
+        // بررسی element
         const touchElement = document.getElementById('assistiveTouch')
         if (!touchElement) {
-          // اگر element موجود نیست، صبر کن
           return false
         }
 
-        // بررسی اینکه آیا AssistiveTouch class موجود است
+        // بررسی class
         if (typeof window.AssistiveTouch === 'undefined') {
-          // اگر class هنوز لود نشده، صبر کن
           return false
         }
 
@@ -89,53 +55,44 @@ function AssistiveTouch() {
           return true
         }
 
-        // بررسی وجود touchButton قبل از ایجاد instance
+        // بررسی وجود touchButton و glassMenu
         const touchButton = touchElement.querySelector('.touch-button')
-        if (!touchButton) {
-          log.warn('⚠️ touch-button پیدا نشد - صبر می‌کنیم...')
-          return false
-        }
-        
-        // بررسی وجود glassMenu
         const glassMenu = document.getElementById('glassMenu')
-        if (!glassMenu) {
-          log.warn('⚠️ glassMenu پیدا نشد - صبر می‌کنیم...')
+        
+        if (!touchButton || !glassMenu) {
           return false
         }
         
-        // حذف instance قبلی اگر وجود داشت
-        if (window.assistiveTouch) {
-          try {
-            // حذف event listeners قبلی
-            if (window.assistiveTouch.touchButton) {
-              const newBtn = window.assistiveTouch.touchButton.cloneNode(true)
-              window.assistiveTouch.touchButton.parentNode.replaceChild(newBtn, window.assistiveTouch.touchButton)
-            }
-            // حذف event listeners از glass menu
-            if (window.assistiveTouch.glassMenu) {
-              const newMenu = window.assistiveTouch.glassMenu.cloneNode(true)
-              window.assistiveTouch.glassMenu.parentNode.replaceChild(newMenu, window.assistiveTouch.glassMenu)
-            }
-          } catch (e) {
-            log.warn('⚠️ خطا در پاک کردن instance قبلی:', e)
-          }
-        }
-        
-        // ایجاد instance جدید
+        // ایجاد instance
         try {
           window.assistiveTouch = new window.AssistiveTouch()
           log.info('🎮 دکمه شناور راه‌اندازی شد')
-        } catch (error) {
-          log.error('❌ خطا در ایجاد instance دکمه شناور:', error)
-          return false
-        }
-        
-        // اطمینان از نمایش و کارکرد
-        if (window.assistiveTouch) {
+          
+          // Override navigateToPage برای React Router
+          if (window.assistiveTouch.navigateToPage) {
+            const originalNavigate = window.assistiveTouch.navigateToPage.bind(window.assistiveTouch)
+            window.assistiveTouch.navigateToPage = (page) => {
+              if (window.navigate && typeof window.navigate === 'function') {
+                const pageMap = {
+                  'home': '/',
+                  'tools': '/tools',
+                  'news': '/news',
+                  'globe': '/globe',
+                  'tutorial': '/tutorial',
+                  'relax': '/relax'
+                }
+                const path = pageMap[page] || '/'
+                window.navigate(path)
+                log.info(`🎮 Navigate to page via React Router: ${path}`)
+              } else {
+                originalNavigate(page)
+              }
+            }
+          }
+          
           // اطمینان از visibility
           if (typeof window.assistiveTouch.ensureVisibility === 'function') {
             window.assistiveTouch.ensureVisibility()
-            // یک بار دیگر بعد از تاخیر برای اطمینان
             setTimeout(() => {
               if (window.assistiveTouch && typeof window.assistiveTouch.ensureVisibility === 'function') {
                 window.assistiveTouch.ensureVisibility()
@@ -143,56 +100,47 @@ function AssistiveTouch() {
             }, 500)
           }
           
-          // بررسی و به‌روزرسانی touchButton reference و setup مجدد event listeners
-          // طبق یادداشت مرجع: باید بعد از initialization، setupGlassMenu فراخوانی شود
+          // snapToEdge اگر موقعیت ذخیره نشده
           setTimeout(() => {
-            const currentTouchButton = document.querySelector('#assistiveTouch .touch-button')
-            if (currentTouchButton && window.assistiveTouch) {
-              // اگر touchButton تغییر کرده یا null است، به‌روزرسانی کن
-              if (!window.assistiveTouch.touchButton || window.assistiveTouch.touchButton !== currentTouchButton) {
-                window.assistiveTouch.touchButton = currentTouchButton
-                // اگر setupEventListeners موجود است، دوباره فراخوانی کن
-                if (typeof window.assistiveTouch.setupEventListeners === 'function') {
-                  window.assistiveTouch.setupEventListeners()
-                  log.info('✅ Event listeners برای دکمه سیار اضافه شدند (retry)')
-                }
+            if (window.assistiveTouch && typeof window.assistiveTouch.snapToEdge === 'function') {
+              const savedPos = localStorage.getItem('assistiveTouchPos')
+              if (!savedPos) {
+                window.assistiveTouch.snapToEdge()
+                log.info('✅ دکمه سیار به لبه snap شد')
               }
             }
-            
-            // اطمینان از setup شدن glass menu - طبق یادداشت مرجع
-            if (window.assistiveTouch && typeof window.assistiveTouch.setupGlassMenu === 'function') {
-              window.assistiveTouch.setupGlassMenu()
-              log.info('✅ Glass menu برای دکمه سیار setup شد (retry)')
-            }
-          }, 500) // طبق یادداشت مرجع: تاخیر 200ms برای اپرا، ما 500ms می‌گذاریم
+          }, 800)
+          
+          initializedRef.current = true
+          return true
+        } catch (error) {
+          log.error('❌ خطا در ایجاد instance دکمه شناور:', error)
+          return false
         }
-        
-        initializedRef.current = true
-        return true
       } catch (error) {
-        log.error('❌ خطا در راه‌اندازی دکمه شناور:', error)
-        if (window.errorHandler) {
-          window.errorHandler.handleError(error, 'AssistiveTouch - React Component')
-        }
+        log.error('❌ خطا در checkAndInitialize:', error)
         return false
       }
     }
 
     // تلاش اولیه
-    if (!checkAndInitialize()) {
-      // اگر موفق نشد، با interval چک کن
-      const checkInterval = setInterval(() => {
-        if (checkAndInitialize()) {
+    const timer = setTimeout(() => {
+      if (!checkAndInitialize()) {
+        // Retry با interval
+        const checkInterval = setInterval(() => {
+          if (checkAndInitialize()) {
+            clearInterval(checkInterval)
+          }
+        }, 200)
+        
+        setTimeout(() => {
           clearInterval(checkInterval)
-        }
-      }, 100)
-      
-      // تایم‌اوت برای جلوگیری از infinite loop
-      setTimeout(() => {
-        clearInterval(checkInterval)
-      }, 5000)
-      
-      return () => clearInterval(checkInterval)
+        }, 10000)
+      }
+    }, 800)
+
+    return () => {
+      clearTimeout(timer)
     }
   }, [])
 
@@ -204,8 +152,6 @@ function AssistiveTouch() {
         </div>
       </div>
       
-      {/* منوی شیشه‌ای - این overlay برای نمایش منو استفاده می‌شود */}
-      {/* id="glassMenu" برای استفاده vanilla JS class AssistiveTouch */}
       <div className="glass-menu-overlay" id="glassMenu">
         <div className="glass-menu">
           <button className="glass-close-btn" id="closeGlassMenu">✕</button>
@@ -242,4 +188,3 @@ function AssistiveTouch() {
 }
 
 export default AssistiveTouch
-

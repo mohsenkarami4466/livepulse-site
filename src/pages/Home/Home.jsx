@@ -367,7 +367,7 @@ function Home() {
         {cards && cards.length > 0 ? (
           <CardContainer 
             items={cards} 
-            className="home-cards"
+            className={`home-cards ${currentCategory === 'home' ? 'home-category' : 'other-category'}`}
             onCardClick={handleCardClick}
           />
         ) : (
