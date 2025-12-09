@@ -5,3 +5,20 @@
 #toolsView.view.active-view {
   display: block !important;
 }
+
+/* تنظیم فاصله مطالب از هایلایت‌ها در دسکتاپ */
+@media (min-width: 1024px) {
+  .tools-content {
+    padding-top: 20px !important; /* فاصله از پایین هایلایت‌ها: 20px */
+    margin-top: 0 !important; /* بدون margin-top اضافی */
+  }
+  
+  .tool-section {
+    margin-top: 0 !important; /* همه tool-section ها در یک خط */
+  }
+  
+  .personal-fund-container {
+    padding-top: 0 !important; /* بدون padding-top اضافی */
+    margin-top: 0 !important; /* بدون margin-top اضافی */
+  }
+}

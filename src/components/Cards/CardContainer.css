@@ -12,11 +12,45 @@
   margin-right: auto !important;
   opacity: 1 !important;
   visibility: visible !important;
+  /* جلوگیری از layout shift - ارتفاع طبیعی */
+  min-height: auto !important; /* ارتفاع طبیعی بر اساس محتوا */
+  /* جلوگیری از layout shift - استفاده از content-visibility */
+  contain: layout style paint;
+  /* جلوگیری از reflow */
+  will-change: contents;
+  /* جلوگیری از animation */
+  animation: none !important;
+}
+
+/* جلوگیری از reflow در کارت‌ها - استفاده از CSS containment */
+.main-cards-container .price-card {
+  contain: layout style paint;
+  /* حذف کامل animation fadeInUp از style.css */
+  animation: none !important;
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  /* Smooth transition - فقط opacity */
+  transition: opacity 0.15s ease-in-out !important;
+  /* جلوگیری از jump - بدون translateY */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0) translateY(0) !important; /* بدون translateY */
+  -webkit-transform: translateZ(0) translateY(0) !important;
+  -moz-transform: translateZ(0) translateY(0) !important;
+  -ms-transform: translateZ(0) translateY(0) !important;
+  /* ارتفاع طبیعی */
+  min-height: 100px !important; /* مثل style.css اصلی */
+  /* اطمینان از موقعیت */
+  top: 0 !important;
+  left: 0 !important;
+  position: relative !important;
 }
 
 /* هایلایت "خانه" - 4 کارت در یک ردیف (دسکتاپ و تبلت) */
 .main-cards-container.home-category {
   grid-template-columns: repeat(4, 1fr) !important; /* 4 کارت در یک ردیف */
+  min-height: auto !important; /* ارتفاع طبیعی */
 }
 
 /* بقیه هایلایت‌ها - 10 کارت در 2 ردیف 5 تایی (دسکتاپ و تبلت) */
@@ -31,6 +65,7 @@
     grid-template-columns: repeat(4, 1fr) !important;
     gap: 12px !important;
     padding: 12px !important;
+    min-height: auto !important;
   }
   
   /* بقیه هایلایت‌ها - 2 ردیف 5 تایی در تبلت */
@@ -38,6 +73,14 @@
     grid-template-columns: repeat(5, 1fr) !important;
     gap: 12px !important;
     padding: 12px !important;
+  }
+  
+  .main-cards-container {
+    min-height: auto !important; /* ارتفاع طبیعی */
+  }
+  
+  .main-cards-container .price-card {
+    min-height: 90px !important; /* مثل style.css اصلی */
   }
 }
 
@@ -49,12 +92,72 @@
     gap: 10px !important;
     padding: 10px !important;
   }
+  
+  .main-cards-container {
+    min-height: auto !important; /* ارتفاع طبیعی */
+  }
+  
+  .main-cards-container .price-card {
+    min-height: 85px !important; /* مثل style.css اصلی */
+  }
 }
 
 /* موبایل کوچک - 2 کارت در هر ردیف */
 @media (max-width: 480px) {
   .main-cards-container.home-category,
   .main-cards-container.other-category {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 8px !important;
+  }
+  
+  .main-cards-container {
+    min-height: auto !important; /* ارتفاع طبیعی */
+  }
+  
+  .main-cards-container .price-card {
+    min-height: 80px !important; /* مثل style.css اصلی */
+  }
+}
+
+/* استایل برای صفحات جدید (اخبار، کره‌ها، آموزش، آرامش) - 10 کارت در 2 ردیف 5 تایی */
+.main-cards-container.news-cards,
+.main-cards-container.globe-cards,
+.main-cards-container.tutorial-cards,
+.main-cards-container.relax-cards {
+  grid-template-columns: repeat(5, 1fr) !important; /* 5 کارت در هر ردیف */
+}
+
+/* ریسپانسیو - تبلت */
+@media (max-width: 1024px) {
+  .main-cards-container.news-cards,
+  .main-cards-container.globe-cards,
+  .main-cards-container.tutorial-cards,
+  .main-cards-container.relax-cards {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+}
+
+/* ریسپانسیو - موبایل */
+@media (max-width: 768px) {
+  .main-cards-container.news-cards,
+  .main-cards-container.globe-cards,
+  .main-cards-container.tutorial-cards,
+  .main-cards-container.relax-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 10px !important;
+  }
+}
+
+/* ریسپانسیو - موبایل کوچک */
+@media (max-width: 480px) {
+  .main-cards-container.news-cards,
+  .main-cards-container.globe-cards,
+  .main-cards-container.tutorial-cards,
+  .main-cards-container.relax-cards {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
     padding: 8px !important;

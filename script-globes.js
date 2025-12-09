@@ -207,7 +207,7 @@ function updateGlobePosition() {
   updateHighlightsPosition();
 }
 
-/* تنظیم موقعیت هایلایت‌ها - یکسان کردن فاصله در همه صفحات */
+/* تنظیم موقعیت هایلایت‌ها - محاسبه بر اساس موقعیت کارت portfolio */
 function updateHighlightsPosition() {
   // پیدا کردن view فعال
   const activeView = document.querySelector('.view.active-view');
@@ -216,42 +216,88 @@ function updateHighlightsPosition() {
   // پیدا کردن همه هایلایت‌ها (فقط آنهایی که در view فعال هستند)
   const highlightsSections = activeView.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
   
-  // تابع کمکی برای clamp (مثل CSS clamp)
-  const clampValue = (min, vw, max) => {
-    const viewportWidth = window.innerWidth;
-    const vwValue = (viewportWidth * vw) / 100;
-    return Math.max(min, Math.min(max, vwValue));
-  };
+  // پیدا کردن المان‌های مورد نیاز برای محاسبه
+  const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
+  const headerHeight = header ? header.offsetHeight : 60;
+  const portfolioCard = document.querySelector('.portfolio-summary-card');
+  const indicatorsCard = document.querySelector('.indicators-glass-card');
+  const globeWrapper = document.getElementById('globeClockWrapper');
   
-  // محاسبه padding-top یکسان برای همه صفحات
-  // استفاده از همان مقادیر CSS برای یکسان بودن
-  const cfg = window.CONFIG || CONFIG;
-  const isMobile = window.innerWidth <= cfg.UI.MOBILE_BREAKPOINT;
-  let finalPadding;
+  const isMobile = window.innerWidth < 768;
+  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+  const isDesktop = window.innerWidth >= 1024;
   
-  if (window.innerWidth <= 320) {
-    finalPadding = clampValue(115, 12, 135);
-  } else if (window.innerWidth <= 390) {
-    finalPadding = clampValue(110, 12, 130);
-  } else if (window.innerWidth <= 480) {
-    finalPadding = clampValue(115, 13, 135);
-  } else if (window.innerWidth <= (window.CONFIG || CONFIG).UI.MOBILE_BREAKPOINT) {
-    finalPadding = clampValue(120, 14, 140);
-  } else if (window.innerWidth <= 1024) {
-    finalPadding = clampValue(125, 15, 145);
+  let marginTop;
+  
+  if (isDesktop) {
+    // در دسکتاپ: پایین کارت portfolio + 15px gap (10px بیشتر از قبل)
+    // محاسبه: headerHeight + 8 + clamp(50px, 6vw, 70px) + 12 + clamp(55px, 6.5vw, 70px) + 15
+    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 15px)`;
+  } else if (isTablet) {
+    // در تبلت: پایین کارت portfolio + 20px gap (15px بیشتر از قبل: 5px + 15px)
+    // اگر کارت portfolio پیدا شد، از موقعیت واقعی استفاده کن
+    if (portfolioCard) {
+      // استفاده از getBoundingClientRect برای محاسبه دقیق
+      const portfolioRect = portfolioCard.getBoundingClientRect();
+      const portfolioBottom = portfolioRect.bottom;
+      const viewportTop = activeView.getBoundingClientRect().top;
+      const scrollTop = activeView.scrollTop || 0;
+      
+      // margin-top = فاصله از بالای view تا پایین portfolio + 20px gap (15px بیشتر از قبل: 5px + 15px)
+      // باید scrollTop رو هم در نظر بگیریم
+      const calculatedMargin = portfolioBottom - viewportTop + scrollTop + 20;
+      marginTop = `${Math.max(calculatedMargin, 0)}px`;
+    } else {
+      // fallback: محاسبه بر اساس ارتفاع‌های CSS
+      // در تبلت: کره + جفت ارز (همردیف) + portfolio (زیر جفت ارز)
+      // محاسبه: headerHeight + 8 + max(globeHeight, indicatorsHeight) + gap + portfolioHeight + 20
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 20px)`;
+    }
+  } else if (isMobile) {
+    // در موبایل: محاسبه بر اساس موقعیت واقعی کارت portfolio
+    if (portfolioCard) {
+      const portfolioRect = portfolioCard.getBoundingClientRect();
+      const portfolioBottom = portfolioRect.bottom;
+      const viewportTop = activeView.getBoundingClientRect().top;
+      // margin-top = فاصله از بالای view تا پایین portfolio + 23px gap (15px بیشتر از قبل: 8px + 15px)
+      marginTop = `${portfolioBottom - viewportTop + 23}px`;
+    } else {
+      // fallback: محاسبه بر اساس ارتفاع‌های CSS
+      // headerHeight + 8 + clamp(60px, 8vw, 90px) + 8 + clamp(45px, 5.5vw, 60px) + 23
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 23px)`;
+    }
   } else {
-    finalPadding = clampValue(120, 16, 140);
+    // fallback برای سایر حالت‌ها
+    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 5px)`;
   }
   
   highlightsSections.forEach(section => {
     if (section) {
-      // تنظیم padding-top یکسان برای همه صفحات
-      section.style.setProperty('padding-top', `${finalPadding}px`, 'important');
+      // تنظیم margin-top بر اساس موقعیت کارت portfolio
+      // استفاده از setProperty با !important برای override کردن CSS های دیگر
+      section.style.setProperty('margin-top', marginTop, 'important');
+      section.style.setProperty('padding-top', '0', 'important'); // حذف padding-top
       section.style.setProperty('display', 'block', 'important');
       section.style.setProperty('visibility', 'visible', 'important');
       section.style.setProperty('opacity', '1', 'important');
+      
+      // لاگ برای دیباگ (در production حذف می‌شود)
+      if (window.DEBUG) {
+        console.log('Highlights position updated:', {
+          section: section.className,
+          marginTop: marginTop,
+          isMobile: isMobile,
+          isTablet: isTablet,
+          portfolioCard: portfolioCard ? 'found' : 'not found'
+        });
+      }
     }
   });
+}
+
+// در دسترس قرار دادن تابع برای استفاده در جاهای دیگر
+if (typeof window !== 'undefined') {
+  window.updateHighlightsPosition = updateHighlightsPosition;
 }
 
 /* ساخت ساعت UTC دور کره کوچک */

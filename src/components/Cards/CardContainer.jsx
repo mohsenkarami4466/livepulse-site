@@ -22,7 +22,7 @@
  * آخرین بروزرسانی: 2025-12-06
  */
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import PriceCard from './PriceCard'
 import './CardContainer.css'
 
@@ -34,7 +34,15 @@ import './CardContainer.css'
  * @param {Function} onCardClick - تابع handler برای کلیک روی کارت
  */
 function CardContainer({ items = [], className = '', onCardClick }) {
-  if (!items || items.length === 0) {
+  // استفاده از useMemo برای جلوگیری از re-render غیرضروری
+  const cards = useMemo(() => {
+    if (!items || items.length === 0) {
+      return []
+    }
+    return items
+  }, [items])
+
+  if (!cards || cards.length === 0) {
     return (
       <div className={`main-cards-container ${className}`} id="homeMainCards">
         <div className="loading-placeholder">
@@ -45,10 +53,16 @@ function CardContainer({ items = [], className = '', onCardClick }) {
   }
 
   return (
-    <div className={`main-cards-container ${className}`} id="homeMainCards" style={{ display: 'grid' }}>
-      {items.map((item, index) => (
+    <div 
+      className={`main-cards-container ${className}`} 
+      id="homeMainCards" 
+      style={{ 
+        display: 'grid'
+      }}
+    >
+      {cards.map((item, index) => (
         <PriceCard 
-          key={item.symbol || index} 
+          key={`${item.symbol || item.name || 'card'}-${index}-${item.isPlaceholder ? 'placeholder' : ''}-${item.isGlobeButton ? 'globe' : ''}`} 
           item={item} 
           onClick={onCardClick}
         />

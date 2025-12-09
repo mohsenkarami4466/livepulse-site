@@ -20,6 +20,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import CardContainer from '../../components/Cards/CardContainer'
 import './Relax.css'
 
 /**
@@ -64,51 +65,24 @@ function Relax() {
         if (firstCircle) {
           firstCircle.classList.add('active')
         }
-        const firstPanel = document.querySelector('.relax-panel[data-relax-panel="adhd"]')
-        if (firstPanel) {
-          firstPanel.classList.add('active')
-        }
       }, 100)
     }
   }, [])
 
   /**
-   * Effect: راه‌اندازی Highlights و دکمه‌های 3D - فقط یک بار
-   * 
-   * این effect:
-   * 1. Highlights را با vanilla JS راه‌اندازی می‌کند (فقط یک بار)
-   * 2. دکمه‌های 3D را راه‌اندازی می‌کند (اگر پنل 3D فعال باشد)
+   * تولید 10 کارت placeholder برای هر دسته‌بندی
+   * استفاده از useMemo برای جلوگیری از re-render غیرضروری
    */
-  useEffect(() => {
-    // راه‌اندازی highlight panels برای هماهنگی با vanilla JS - فقط یک بار
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        try {
-          // استفاده از تابع موجود در script-ui.js
-          // این تابع event listener ها را برای Highlights اضافه می‌کند
-          // فقط یک بار فراخوانی می‌شود تا از duplicate listener ها جلوگیری شود
-          if (typeof window.setupHighlightPanels === 'function') {
-            window.setupHighlightPanels('.highlight-circle[data-relax]', 'data-relax', '.relax-panel', 'data-relax-panel')
-          }
-        } catch (error) {
-          const log = window.logger || { error: console.error }
-          log.error('❌ خطا در راه‌اندازی highlight panels:', error)
-        }
-      }, 100)
-    }
-  }, []) // فقط یک بار هنگام mount
-  
-  /**
-   * Effect: راه‌اندازی دکمه‌های 3D - فقط وقتی پنل 3D فعال می‌شود
-   */
-  useEffect(() => {
-    if (activeCategory === '3d' && typeof window !== 'undefined') {
-      setTimeout(() => {
-        if (typeof window.setup3DGlobeButtons === 'function') {
-          window.setup3DGlobeButtons()
-        }
-      }, 300)
-    }
+  const cards = React.useMemo(() => {
+    return Array.from({ length: 10 }, (_, index) => ({
+      name: `محتوا ${index + 1}`,
+      symbol: `${activeCategory}-${index + 1}`,
+      price: 0,
+      change: 0,
+      chart: 'up',
+      isPlaceholder: true,
+      placeholderText: 'در حال توسعه'
+    }))
   }, [activeCategory])
 
   /**
@@ -139,25 +113,6 @@ function Relax() {
         }
       })
       
-      // فعال کردن panel - با تاخیر بیشتر برای اطمینان از render شدن
-        setTimeout(() => {
-          const panels = document.querySelectorAll('.relax-panel[data-relax-panel]')
-          panels.forEach(panel => {
-            const panelCategory = panel.getAttribute('data-relax-panel')
-            if (panelCategory === categoryId) {
-              panel.classList.add('active')
-            } else {
-              panel.classList.remove('active')
-            }
-          })
-        }, 100)
-      
-      // اگر پنل 3D فعال شد، دکمه‌های 3D را راه‌اندازی کن
-      if (categoryId === '3d' && typeof window.setup3DGlobeButtons === 'function') {
-        setTimeout(() => {
-          window.setup3DGlobeButtons()
-        }, 300)
-      }
     }
     }, 50)
   }
@@ -180,43 +135,13 @@ function Relax() {
         </div>
       </section>
 
-      {/* Relax Container */}
-      <div className="relax-container">
-        <div className="relax-highlight-panels">
-          <article className={`relax-panel ${activeCategory === 'adhd' ? 'active' : ''}`} data-relax-panel="adhd">
-            <h4>روتین نظم‌دهی ADHD</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`relax-panel ${activeCategory === 'music' ? 'active' : ''}`} data-relax-panel="music">
-            <h4>پلی‌لیست موزیک آرام</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`relax-panel ${activeCategory === 'game' ? 'active' : ''}`} data-relax-panel="game">
-            <h4>مینى گیم‌های ذهنی</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`relax-panel ${activeCategory === '3d' ? 'active' : ''}`} data-relax-panel="3d">
-            <h4>🌍 تجربه سه‌بعدی جهان</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-            {/* دکمه‌های 3D Globe در اینجا قرار می‌گیرند */}
-            <div className="3d-globe-buttons-container">
-              {/* دکمه‌ها توسط vanilla JS اضافه می‌شوند */}
-            </div>
-          </article>
-          <article className={`relax-panel ${activeCategory === 'meditation' ? 'active' : ''}`} data-relax-panel="meditation">
-            <h4>مدیتیشن</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`relax-panel ${activeCategory === 'breathing' ? 'active' : ''}`} data-relax-panel="breathing">
-            <h4>تنفس</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`relax-panel ${activeCategory === 'psychology' ? 'active' : ''}`} data-relax-panel="psychology">
-            <h4>روانشناسی معامله‌گری</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-        </div>
-      </div>
+      {/* Relax Cards Container */}
+      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+        <CardContainer 
+          items={cards} 
+          className={`relax-cards`}
+        />
+      </main>
     </div>
   )
 }

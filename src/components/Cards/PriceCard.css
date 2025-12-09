@@ -1,8 +1,104 @@
 /* استایل‌های PriceCard از style.css استفاده می‌کنند */
 
-/* اطمینان از نمایش کارت */
+/* اطمینان از نمایش کارت - Override کامل animation fadeInUp */
 .price-card {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
+  /* جلوگیری از layout shift - ارتفاع طبیعی */
+  min-height: 100px !important; /* ارتفاع طبیعی مثل style.css اصلی */
+  height: auto !important;
+  /* جلوگیری از layout shift */
+  contain: layout style paint;
+  /* جلوگیری از jump - حذف کامل animation fadeInUp از style.css */
+  animation: none !important; /* حذف fadeInUp animation */
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  /* جلوگیری از jump - بدون translateY */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0) translateY(0) !important; /* بدون translateY برای جلوگیری از پرش */
+  -webkit-transform: translateZ(0) translateY(0) !important;
+  -moz-transform: translateZ(0) translateY(0) !important;
+  -ms-transform: translateZ(0) translateY(0) !important;
+  /* Smooth transition - فقط برای opacity */
+  transition: opacity 0.15s ease-in-out !important;
+  will-change: opacity;
+  /* جلوگیری از reflow */
+  position: relative !important;
+  /* اطمینان از اینکه کارت در جای خودش قرار بگیره */
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* استایل کارت placeholder */
+.price-card.placeholder-card {
+  cursor: pointer;
+  transition: opacity 0.15s ease-in-out !important;
+  animation: none !important; /* حذف fadeInUp */
+  min-height: 100px !important; /* ارتفاع طبیعی */
+}
+
+.price-card.placeholder-card:hover {
+  transform: translateY(-2px) translateZ(0) !important; /* فقط در hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.price-card.placeholder-card .placeholder-text {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+  padding: 1rem 0;
+}
+
+/* استایل کارت دکمه کره 3D */
+.price-card.globe-button-card {
+  cursor: pointer;
+  transition: opacity 0.15s ease-in-out !important;
+  animation: none !important; /* حذف fadeInUp */
+  min-height: 100px !important; /* ارتفاع طبیعی */
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+}
+
+.price-card.globe-button-card:hover {
+  transform: translateY(-2px) translateZ(0) !important; /* فقط در hover */
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+}
+
+.price-card.globe-button-card .globe-button-text {
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.price-card.globe-button-card .globe-button-icon {
+  text-align: center;
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+
+/* Responsive - تبلت */
+@media (max-width: 1024px) {
+  .price-card {
+    min-height: 90px !important; /* مثل style.css اصلی */
+  }
+}
+
+/* Responsive - موبایل */
+@media (max-width: 768px) {
+  .price-card {
+    min-height: 85px !important; /* مثل style.css اصلی */
+  }
+}
+
+/* Responsive - موبایل کوچک */
+@media (max-width: 480px) {
+  .price-card {
+    min-height: 80px !important; /* مثل style.css اصلی */
+  }
 }

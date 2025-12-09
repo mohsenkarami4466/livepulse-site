@@ -19,6 +19,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import CardContainer from '../../components/Cards/CardContainer'
 import './Tutorial.css'
 
 /**
@@ -62,39 +63,25 @@ function Tutorial() {
         if (firstCircle) {
           firstCircle.classList.add('active')
         }
-        const firstPanel = document.querySelector('.tutorial-panel[data-tutorial-panel="basics"]')
-        if (firstPanel) {
-          firstPanel.classList.add('active')
-        }
       }, 100)
     }
   }, [])
 
   /**
-   * Effect: راه‌اندازی Highlights
-   * 
-   * این effect:
-   * 1. منتظر می‌ماند تا DOM render شود
-   * 2. تابع setupHighlightPanels از vanilla JS را فراخوانی می‌کند
-   * 3. Highlights را با پنل‌های آموزشی هماهنگ می‌کند
+   * تولید 10 کارت placeholder برای هر دسته‌بندی
+   * استفاده از useMemo برای جلوگیری از re-render غیرضروری
    */
-  useEffect(() => {
-    // راه‌اندازی highlight panels برای هماهنگی با vanilla JS
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        try {
-          // استفاده از تابع موجود در script-ui.js
-          // این تابع event listener ها را برای Highlights اضافه می‌کند
-          if (typeof window.setupHighlightPanels === 'function') {
-            window.setupHighlightPanels('.highlight-circle[data-edu]', 'data-edu', '.edu-panel', 'data-edu-panel')
-          }
-        } catch (error) {
-          const log = window.logger || { error: console.error }
-          log.error('❌ خطا در راه‌اندازی highlight panels:', error)
-        }
-      }, 100)
-    }
-  }, [])
+  const cards = React.useMemo(() => {
+    return Array.from({ length: 10 }, (_, index) => ({
+      name: `محتوا ${index + 1}`,
+      symbol: `${activeCategory}-${index + 1}`,
+      price: 0,
+      change: 0,
+      chart: 'up',
+      isPlaceholder: true,
+      placeholderText: 'در حال توسعه'
+    }))
+  }, [activeCategory])
 
   /**
    * Handler: کلیک روی دسته‌بندی
@@ -121,15 +108,6 @@ function Tutorial() {
         }
       })
       
-      // فعال کردن panel
-      const panels = document.querySelectorAll('.edu-panel')
-      panels.forEach(panel => {
-        if (panel.getAttribute('data-edu-panel') === categoryId) {
-          panel.classList.add('active')
-        } else {
-          panel.classList.remove('active')
-        }
-      })
     }
   }
 
@@ -151,39 +129,13 @@ function Tutorial() {
         </div>
       </section>
 
-      {/* Tutorial Container */}
-      <div className="tutorial-container">
-        <div className="edu-highlight-panels">
-          <article className={`edu-panel ${activeCategory === 'basics' ? 'active' : ''}`} data-edu-panel="basics">
-            <h4>مبانی بازارهای مالی</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`edu-panel ${activeCategory === 'technical' ? 'active' : ''}`} data-edu-panel="technical">
-            <h4>تحلیل تکنیکال</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`edu-panel ${activeCategory === 'fundamental' ? 'active' : ''}`} data-edu-panel="fundamental">
-            <h4>تحلیل فاندامنتال</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`edu-panel ${activeCategory === 'crypto' ? 'active' : ''}`} data-edu-panel="crypto">
-            <h4>آموزش کریپتو</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`edu-panel ${activeCategory === 'forex' ? 'active' : ''}`} data-edu-panel="forex">
-            <h4>دوره فارکس</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`edu-panel ${activeCategory === 'risk' ? 'active' : ''}`} data-edu-panel="risk">
-            <h4>مدیریت ریسک</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-          <article className={`edu-panel ${activeCategory === 'strategy' ? 'active' : ''}`} data-edu-panel="strategy">
-            <h4>استراتژی معاملاتی</h4>
-            <p className="panel-placeholder">در حال توسعه</p>
-          </article>
-        </div>
-      </div>
+      {/* Tutorial Cards Container */}
+      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+        <CardContainer 
+          items={cards} 
+          className={`tutorial-cards`}
+        />
+      </main>
     </div>
   )
 }

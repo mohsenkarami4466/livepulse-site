@@ -1,0 +1,305 @@
+/* کارت مجموع دارایی‌ها - Glassmorphism مثل کارت جفت ارزها */
+.portfolio-summary-card {
+  position: fixed !important;
+  z-index: 997 !important; /* زیر جفت ارزها (998) و کره (999) */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* Glassmorphism Effect - یکدست مثل کارت جفت ارزها */
+  background: rgba(18, 18, 18, 0.6) !important; /* دودی تیره - مثل کارت جفت ارزها (تم تاریک) */
+  backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  border-radius: 20px !important; /* گوشه‌های گرد مثل کارت جفت ارزها */
+  border: none !important; /* بدون قاب */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important; /* shadow ساده مثل کارت جفت ارزها */
+  background-image: none !important; /* حذف هرگونه gradient */
+  
+  /* اندازه و padding - شبیه کارت جفت ارزها */
+  min-width: 200px !important;
+  max-width: none !important; /* در دسکتاپ از JS تنظیم می‌شود */
+  padding: clamp(10px, 1.2vw, 14px) !important; /* padding بیشتر برای فاصله */
+  height: clamp(55px, 6.5vw, 70px) !important; /* ارتفاع کاملاً ثابت */
+  min-height: clamp(55px, 6.5vw, 70px) !important; /* ارتفاع ثابت */
+  max-height: clamp(55px, 6.5vw, 70px) !important; /* ارتفاع ثابت */
+  
+  /* اجازه تنظیم داینامیک از JS */
+  transition: top 0.2s ease, left 0.2s ease, right 0.2s ease, opacity 0.3s ease !important;
+}
+
+/* محتوای کارت */
+.portfolio-summary-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* هدر کارت - یک خط با عنوان + عدد + چرخدنده + چشم */
+.portfolio-header {
+  display: flex;
+  flex-direction: row; /* یک خط */
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(8px, 1vw, 14px); /* فاصله بین عناصر */
+  width: 100%;
+  height: 100%; /* ارتفاع کامل کارت */
+  flex-shrink: 0;
+}
+
+/* Container برای دکمه‌های چرخدنده و چشم */
+.portfolio-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(6px, 0.8vw, 10px); /* فاصله بین چرخدنده و چشم */
+}
+
+/* عنوان */
+.portfolio-title {
+  font-family: 'Vazirmatn', 'Inter', sans-serif !important;
+  font-size: clamp(0.65rem, 1vw, 0.75rem) !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.4 !important; /* line-height بیشتر برای هماهنگی */
+  flex-shrink: 0;
+}
+
+/* دکمه تنظیمات (چرخدنده) */
+.portfolio-settings-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+}
+
+.portfolio-settings-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: scale(1.1) rotate(90deg) !important; /* چرخش چرخدنده در hover */
+}
+
+.portfolio-settings-btn:active {
+  transform: scale(0.95) rotate(90deg) !important;
+}
+
+/* آیکون چرخدنده */
+.settings-icon {
+  font-size: clamp(1rem, 1.5vw, 1.2rem) !important;
+  line-height: 1 !important;
+  display: block !important;
+  transition: transform 0.3s ease !important;
+}
+
+/* دکمه toggle (چشم) */
+.portfolio-toggle-btn {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+}
+
+.portfolio-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: scale(1.1) !important;
+}
+
+.portfolio-toggle-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* آیکون چشم */
+.eye-icon {
+  font-size: clamp(1rem, 1.5vw, 1.2rem) !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+
+/* wrapper برای عدد - در یک خط با عنوان و آیکون */
+.portfolio-value-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1; /* فضای باقیمانده را پر می‌کند */
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+  min-width: 0; /* برای text overflow */
+}
+
+/* حالت نمایش عدد */
+.portfolio-value-wrapper.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* حالت پنهان عدد - اما فضا حفظ می‌شود */
+.portfolio-value-wrapper.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important; /* عرض صفر می‌شود اما فضا در flex حفظ می‌شود */
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.portfolio-value {
+  font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  font-size: clamp(0.7rem, 1.2vw, 0.9rem) !important;
+  font-weight: 700 !important;
+  color: rgba(255, 255, 255, 1) !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.4 !important; /* line-height بیشتر برای هماهنگی */
+  white-space: nowrap; /* در یک خط */
+}
+
+/* Light theme support */
+[data-theme="light"] .portfolio-summary-card {
+  background: rgba(255, 255, 255, 0.6) !important; /* یکدست - مثل کارت‌های صفحه خانه */
+  backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت‌های صفحه خانه */
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important; /* shadow ساده مثل کارت‌ها */
+  background-image: none !important; /* حذف هرگونه gradient */
+}
+
+[data-theme="light"] .portfolio-title {
+  color: rgba(15, 23, 42, 0.9) !important;
+}
+
+[data-theme="light"] .portfolio-value {
+  color: rgba(15, 23, 42, 1) !important;
+}
+
+[data-theme="light"] .portfolio-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .portfolio-settings-btn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Responsive - Desktop Large (1400px+) */
+@media (min-width: 1400px) {
+  .portfolio-summary-card {
+    min-width: auto !important; /* عرض از JS تنظیم می‌شود */
+    max-width: none !important; /* عرض از JS تنظیم می‌شود */
+    padding: 14px !important;
+    height: 70px !important; /* ارتفاع کاملاً ثابت */
+    min-height: 70px !important;
+    max-height: 70px !important;
+  }
+}
+
+/* Responsive - Desktop (1024px - 1399px) */
+@media (max-width: 1399px) and (min-width: 1024px) {
+  .portfolio-summary-card {
+    min-width: auto !important; /* عرض از JS تنظیم می‌شود */
+    max-width: none !important; /* عرض از JS تنظیم می‌شود */
+    padding: clamp(10px, 1.1vw, 12px) !important;
+    height: clamp(55px, 6vw, 65px) !important; /* ارتفاع کاملاً ثابت */
+    min-height: clamp(55px, 6vw, 65px) !important;
+    max-height: clamp(55px, 6vw, 65px) !important;
+  }
+}
+
+/* Responsive - Tablet (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .portfolio-summary-card {
+    /* موقعیت و عرض از JS تنظیم می‌شود - برابر با کارت جفت ارزها */
+    min-width: auto !important;
+    max-width: none !important;
+    padding: clamp(10px, 1.2vw, 12px) !important;
+    border-radius: 16px !important;
+    height: clamp(40px, 4vw, 60px) !important; /* ارتفاع مناسب */
+    min-height: clamp(40px, 4vw, 60px) !important;
+    max-height: clamp(40px, 4vw, 60px) !important;
+  }
+  
+  .portfolio-title {
+    font-size: clamp(0.65rem, 1vw, 0.75rem) !important;
+  }
+  
+  .portfolio-value {
+    font-size: clamp(0.75rem, 1.2vw, 0.9rem) !important;
+  }
+  
+  .portfolio-toggle-btn {
+    min-width: 30px !important;
+    min-height: 30px !important;
+  }
+  
+  .eye-icon {
+    font-size: clamp(1rem, 1.3vw, 1.1rem) !important;
+  }
+}
+
+/* Responsive - Mobile Large (480px - 767px) */
+@media (max-width: 767px) and (min-width: 480px) {
+  .portfolio-summary-card {
+    /* موقعیت از JS تنظیم می‌شود - 5px از سمت راست کره */
+    min-width: auto !important;
+    max-width: none !important;
+    padding: clamp(8px, 1vw, 10px) !important;
+    border-radius: 12px !important;
+    height: clamp(45px, 5.5vw, 60px) !important; /* ارتفاع مناسب */
+    min-height: clamp(45px, 5.5vw, 60px) !important;
+    max-height: clamp(45px, 5.5vw, 60px) !important;
+  }
+  
+  .portfolio-title {
+    font-size: clamp(0.6rem, 0.9vw, 0.7rem) !important;
+  }
+  
+  .portfolio-value {
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem) !important;
+  }
+}
+
+/* Responsive - Mobile Small (320px - 479px) */
+@media (max-width: 479px) {
+  .portfolio-summary-card {
+    /* موقعیت از JS تنظیم می‌شود - 5px از سمت راست کره */
+    min-width: auto !important;
+    max-width: none !important;
+    padding: clamp(6px, 0.8vw, 8px) !important;
+    border-radius: 10px !important;
+    height: clamp(40px, 5vw, 55px) !important; /* ارتفاع مناسب */
+    min-height: clamp(40px, 5vw, 55px) !important;
+    max-height: clamp(40px, 5vw, 55px) !important;
+  }
+  
+  .portfolio-title {
+    font-size: clamp(0.55rem, 0.8vw, 0.65rem) !important;
+  }
+  
+  .portfolio-value {
+    font-size: clamp(0.65rem, 1vw, 0.8rem) !important;
+  }
+  
+  .portfolio-toggle-btn {
+    min-width: 28px !important;
+    min-height: 28px !important;
+  }
+  
+  .eye-icon {
+    font-size: clamp(0.9rem, 1.2vw, 1rem) !important;
+  }
+}
+

@@ -64,11 +64,80 @@ function PriceCard({ item, onClick }) {
     }
   }
 
+  // اگر دکمه کره 3D است
+  if (item.isGlobeButton) {
+    const globeIcon = item.globeId === 'resources' ? '🌍' : 
+                     item.globeId === 'weather' ? '🌤️' :
+                     item.globeId === 'military' ? '⚔️' :
+                     item.globeId === 'universities' ? '🎓' :
+                     item.globeId === 'historical' ? '🏛️' :
+                     item.globeId === 'earthquake' ? '🌋' :
+                     item.globeId === 'natural-resources' ? '🌿' : '🌐'
+    
+    return (
+      <div 
+        className={`price-card glass-card globe-button-card`}
+        data-symbol={item.symbol}
+        onClick={handleClick}
+        style={{ 
+          cursor: 'pointer',
+          position: 'relative',
+          top: 0,
+          left: 0,
+          transform: 'translateZ(0) translateY(0)',
+          animation: 'none'
+        }}
+      >
+        <div className="card-header">
+          <h3>{globeIcon} {item.name}</h3>
+        </div>
+        <div className="card-content">
+          <p className="globe-button-text">باز کردن کره 3D</p>
+          <div className="globe-button-icon">🌐</div>
+        </div>
+      </div>
+    )
+  }
+
+  // اگر placeholder است، نمایش ساده
+  if (item.isPlaceholder) {
+    return (
+      <div 
+        className={`price-card glass-card placeholder-card`}
+        data-symbol={item.symbol}
+        onClick={handleClick}
+        style={{
+          position: 'relative',
+          top: 0,
+          left: 0,
+          transform: 'translateZ(0) translateY(0)',
+          animation: 'none'
+        }}
+      >
+        <div className="card-header">
+          <h3>{item.placeholderText || 'در حال توسعه'}</h3>
+        </div>
+        <div className="card-content">
+          <p className="placeholder-text">{item.placeholderText || 'در حال توسعه'}</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div 
       className={`price-card glass-card`}
       data-symbol={item.symbol}
       onClick={handleClick}
+      style={{
+        // جلوگیری از پرش - موقعیت ثابت
+        position: 'relative',
+        top: 0,
+        left: 0,
+        transform: 'translateZ(0) translateY(0)',
+        // حذف animation
+        animation: 'none'
+      }}
     >
       <div className="card-header">
         <h3>{item.name}</h3>

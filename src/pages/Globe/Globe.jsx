@@ -22,6 +22,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import CardContainer from '../../components/Cards/CardContainer'
 import './Globe.css'
 
 /**
@@ -72,53 +73,47 @@ function Globe() {
           firstCircle.classList.add('active')
         }
         
-        // فعال کردن panel اول
-        const firstPanel = document.querySelector('.globe-panel[data-globe-panel="resources"]')
-        if (firstPanel) {
-          firstPanel.classList.add('active')
-        }
       }, 100)
     }
   }, []) // فقط یک بار هنگام mount
 
   /**
-   * Effect: راه‌اندازی Highlights و نقشه‌های 2D
-   * 
-   * این effect:
-   * 1. Highlights را با vanilla JS راه‌اندازی می‌کند
-   * 2. نقشه‌های 2D را راه‌اندازی می‌کند
-   * 3. event listener ها برای دکمه‌های کره‌ها را تنظیم می‌کند
+   * تولید 10 کارت برای هر دسته‌بندی کره
+   * کارت اول: دکمه باز کردن کره 3D
+   * کارت‌های 2-10: placeholder
+   * استفاده از useMemo برای جلوگیری از re-render غیرضروری
    */
-  useEffect(() => {
-    // راه‌اندازی highlight panels برای هماهنگی با vanilla JS
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        try {
-          // استفاده از تابع موجود در script-ui.js
-          // این تابع event listener ها را برای Highlights اضافه می‌کند
-          if (typeof window.setupHighlightPanels === 'function') {
-            window.setupHighlightPanels('.highlight-circle[data-globe]', 'data-globe', '.globe-panel', 'data-globe-panel')
-          }
-          
-          /**
-           * راه‌اندازی نقشه‌های 2D
-           * 
-           * این تابع نقشه‌های 2D را در هر پنل راه‌اندازی می‌کند.
-           * از D3.js برای رندر کردن نقشه‌ها استفاده می‌کند.
-           */
-          if (typeof window.setupGlobe2DMaps === 'function') {
-            window.setupGlobe2DMaps()
-          }
-          
-          // راه‌اندازی event listeners برای دکمه‌های کره‌ها
-          // این در script-ui.js انجام می‌شود با event delegation
-        } catch (error) {
-          const log = window.logger || { error: console.error }
-          log.error('❌ خطا در راه‌اندازی Globe page:', error)
-        }
-      }, 100)
+  const cards = React.useMemo(() => {
+    const cards = []
+    
+    // کارت اول: دکمه باز کردن کره 3D
+    const firstCardAction = activeGlobe === 'resources' ? 'open-resources' : `open-${activeGlobe}`
+    cards.push({
+      name: globeCategories.find(c => c.id === activeGlobe)?.name || 'کره',
+      symbol: `${activeGlobe}-globe`,
+      price: 0,
+      change: 0,
+      chart: 'up',
+      isGlobeButton: true,
+      globeAction: firstCardAction,
+      globeId: activeGlobe
+    })
+    
+    // کارت‌های 2-10: placeholder
+    for (let i = 2; i <= 10; i++) {
+      cards.push({
+        name: `محتوا ${i - 1}`,
+        symbol: `${activeGlobe}-${i}`,
+        price: 0,
+        change: 0,
+        chart: 'up',
+        isPlaceholder: true,
+        placeholderText: 'در حال توسعه'
+      })
     }
-  }, [])
+    
+    return cards
+  }, [activeGlobe])
 
   /**
    * Handler: کلیک روی دسته‌بندی کره
@@ -145,57 +140,40 @@ function Globe() {
         }
       })
       
-      // فعال کردن panel
-      const panels = document.querySelectorAll('.globe-panel')
-      panels.forEach(panel => {
-        if (panel.getAttribute('data-globe-panel') === globeId) {
-          panel.classList.add('active')
-        } else {
-          panel.classList.remove('active')
-        }
-      })
     }
   }
 
   /**
-   * Handler: کلیک روی دکمه باز کردن کره 3D
-   * 
-   * این تابع:
-   * 1. action را به globeType تبدیل می‌کند
-   * 2. تابع open3DGlobe از vanilla JS را فراخوانی می‌کند
-   * 3. کره 3D مربوطه را باز می‌کند
-   * 
-   * @param {string} action - شناسه action (open-resources, open-weather, ...)
+   * Handler: کلیک روی کارت کره
    */
-  const handleGlobeAction = (action) => {
-    // هماهنگی با vanilla JS برای باز کردن کره‌ها
-    if (typeof window !== 'undefined') {
-      // کره منابع و مالی از توابع جداگانه استفاده می‌کنند
-      if (action === 'open-resources') {
-        // باز کردن کره منابع با openResourcesGlobe
-        if (typeof window.openResourcesGlobe === 'function') {
-          window.openResourcesGlobe()
-        } else {
-          const log = window.logger || { error: console.error }
-          log.error('❌ تابع openResourcesGlobe پیدا نشد!')
+  const handleCardClick = (item) => {
+    if (item.isGlobeButton && item.globeAction) {
+      // باز کردن کره 3D
+      const action = item.globeAction
+      
+      if (typeof window !== 'undefined') {
+        // کره منابع از تابع جداگانه استفاده می‌کند
+        if (action === 'open-resources') {
+          if (typeof window.openResourcesGlobe === 'function') {
+            window.openResourcesGlobe()
+          }
+          return
         }
-        return
-      }
-      
-      // سایر کره‌ها از open3DGlobe استفاده می‌کنند
-      const actionToType = {
-        'open-weather': 'weather',
-        'open-military': 'military',
-        'open-universities': 'universities',
-        'open-historical': 'historical',
-        'open-earthquake': 'earthquake',
-        'open-natural-resources': 'natural-resources'
-      }
-      
-      const globeType = actionToType[action]
-      if (globeType && typeof window.open3DGlobe === 'function') {
-        // باز کردن کره 3D مربوطه
-        window.open3DGlobe(globeType)
+        
+        // سایر کره‌ها از open3DGlobe استفاده می‌کنند
+        const actionToType = {
+          'open-weather': 'weather',
+          'open-military': 'military',
+          'open-universities': 'universities',
+          'open-historical': 'historical',
+          'open-earthquake': 'earthquake',
+          'open-natural-resources': 'natural-resources'
+        }
+        
+        const globeType = actionToType[action]
+        if (globeType && typeof window.open3DGlobe === 'function') {
+          window.open3DGlobe(globeType)
+        }
       }
     }
   }
@@ -218,186 +196,14 @@ function Globe() {
         </div>
       </section>
 
-      {/* Globe Container */}
-      <div className="globe-container-view">
-        <div className="globe-highlight-panels">
-          {/* Resources Globe Panel */}
-          <article className={`globe-panel ${activeGlobe === 'resources' ? 'active' : ''}`} data-globe-panel="resources">
-            <h4>🌍 کره منابع کشورها</h4>
-            <p className="panel-description">نمایش اطلاعات منابع طبیعی کشورهای جهان شامل طلا، نفت، گاز و سایر منابع</p>
-            <button 
-              className="globe-open-btn" 
-              data-globe-action="open-resources"
-              onClick={() => handleGlobeAction('open-resources')}
-            >
-              <span className="btn-icon">🌐</span>
-              <span className="btn-text">باز کردن کره منابع</span>
-            </button>
-            {/* نقشه 2D برای این هایلایت */}
-            <div className="globe-panel-2d-map" data-globe-type="resources">
-              <div className="map-2d-controls">
-                <button className="map-fullscreen-btn" data-map-id="resources-map" title="تمام صفحه">
-                  <span>⛶</span>
-                </button>
-                <button className="map-to-3d-btn" data-globe-type="resources" title="باز کردن کره 3D">
-                  <span>🌐</span>
-                </button>
-              </div>
-              <div id="resourcesMap2D" className="globe-2d-map-container"></div>
-            </div>
-          </article>
-
-          {/* Weather Globe Panel */}
-          <article className={`globe-panel ${activeGlobe === 'weather' ? 'active' : ''}`} data-globe-panel="weather">
-            <h4>🌤️ کره آب و هوا</h4>
-            <p className="panel-description">نمایش اطلاعات آب و هوای شهرهای مختلف جهان</p>
-            <button 
-              className="globe-open-btn" 
-              data-globe-action="open-weather"
-              onClick={() => handleGlobeAction('open-weather')}
-            >
-              <span className="btn-icon">🌤️</span>
-              <span className="btn-text">باز کردن کره آب و هوا</span>
-            </button>
-            <div className="globe-panel-2d-map" data-globe-type="weather">
-              <div className="map-2d-controls">
-                <button className="map-fullscreen-btn" data-map-id="weather-map" title="تمام صفحه">
-                  <span>⛶</span>
-                </button>
-                <button className="map-to-3d-btn" data-globe-type="weather" title="باز کردن کره 3D">
-                  <span>🌐</span>
-                </button>
-              </div>
-              <div id="weatherMap2D" className="globe-2d-map-container"></div>
-            </div>
-          </article>
-
-          {/* Military Globe Panel */}
-          <article className={`globe-panel ${activeGlobe === 'military' ? 'active' : ''}`} data-globe-panel="military">
-            <h4>⚔️ کره نظامی و جنگ‌ها</h4>
-            <p className="panel-description">نمایش اطلاعات نظامی و مناطق جنگی جهان</p>
-            <button 
-              className="globe-open-btn" 
-              data-globe-action="open-military"
-              onClick={() => handleGlobeAction('open-military')}
-            >
-              <span className="btn-icon">⚔️</span>
-              <span className="btn-text">باز کردن کره نظامی</span>
-            </button>
-            <div className="globe-panel-2d-map" data-globe-type="military">
-              <div className="map-2d-controls">
-                <button className="map-fullscreen-btn" data-map-id="military-map" title="تمام صفحه">
-                  <span>⛶</span>
-                </button>
-                <button className="map-to-3d-btn" data-globe-type="military" title="باز کردن کره 3D">
-                  <span>🌐</span>
-                </button>
-              </div>
-              <div id="militaryMap2D" className="globe-2d-map-container"></div>
-            </div>
-          </article>
-
-          {/* Universities Globe Panel */}
-          <article className={`globe-panel ${activeGlobe === 'universities' ? 'active' : ''}`} data-globe-panel="universities">
-            <h4>🎓 کره دانشگاه‌ها</h4>
-            <p className="panel-description">نمایش موقعیت دانشگاه‌های معتبر جهان</p>
-            <button 
-              className="globe-open-btn" 
-              data-globe-action="open-universities"
-              onClick={() => handleGlobeAction('open-universities')}
-            >
-              <span className="btn-icon">🎓</span>
-              <span className="btn-text">باز کردن کره دانشگاه‌ها</span>
-            </button>
-            <div className="globe-panel-2d-map" data-globe-type="universities">
-              <div className="map-2d-controls">
-                <button className="map-fullscreen-btn" data-map-id="universities-map" title="تمام صفحه">
-                  <span>⛶</span>
-                </button>
-                <button className="map-to-3d-btn" data-globe-type="universities" title="باز کردن کره 3D">
-                  <span>🌐</span>
-                </button>
-              </div>
-              <div id="universitiesMap2D" className="globe-2d-map-container"></div>
-            </div>
-          </article>
-
-          {/* Historical Globe Panel */}
-          <article className={`globe-panel ${activeGlobe === 'historical' ? 'active' : ''}`} data-globe-panel="historical">
-            <h4>🏛️ کره مکان‌های تاریخی</h4>
-            <p className="panel-description">نمایش مکان‌های تاریخی و میراث فرهنگی جهان</p>
-            <button 
-              className="globe-open-btn" 
-              data-globe-action="open-historical"
-              onClick={() => handleGlobeAction('open-historical')}
-            >
-              <span className="btn-icon">🏛️</span>
-              <span className="btn-text">باز کردن کره تاریخی</span>
-            </button>
-            <div className="globe-panel-2d-map" data-globe-type="historical">
-              <div className="map-2d-controls">
-                <button className="map-fullscreen-btn" data-map-id="historical-map" title="تمام صفحه">
-                  <span>⛶</span>
-                </button>
-                <button className="map-to-3d-btn" data-globe-type="historical" title="باز کردن کره 3D">
-                  <span>🌐</span>
-                </button>
-              </div>
-              <div id="historicalMap2D" className="globe-2d-map-container"></div>
-            </div>
-          </article>
-
-          {/* Earthquake Globe Panel */}
-          <article className={`globe-panel ${activeGlobe === 'earthquake' ? 'active' : ''}`} data-globe-panel="earthquake">
-            <h4>🌋 کره زلزله‌های دنیا</h4>
-            <p className="panel-description">نمایش اطلاعات زلزله‌های ثبت شده در جهان</p>
-            <button 
-              className="globe-open-btn" 
-              data-globe-action="open-earthquake"
-              onClick={() => handleGlobeAction('open-earthquake')}
-            >
-              <span className="btn-icon">🌋</span>
-              <span className="btn-text">باز کردن کره زلزله</span>
-            </button>
-            <div className="globe-panel-2d-map" data-globe-type="earthquake">
-              <div className="map-2d-controls">
-                <button className="map-fullscreen-btn" data-map-id="earthquake-map" title="تمام صفحه">
-                  <span>⛶</span>
-                </button>
-                <button className="map-to-3d-btn" data-globe-type="earthquake" title="باز کردن کره 3D">
-                  <span>🌐</span>
-                </button>
-              </div>
-              <div id="earthquakeMap2D" className="globe-2d-map-container"></div>
-            </div>
-          </article>
-
-          {/* Natural Resources Globe Panel */}
-          <article className={`globe-panel ${activeGlobe === 'natural-resources' ? 'active' : ''}`} data-globe-panel="natural-resources">
-            <h4>🌿 کره منابع طبیعی</h4>
-            <p className="panel-description">نمایش منابع طبیعی و معادن جهان</p>
-            <button 
-              className="globe-open-btn" 
-              data-globe-action="open-natural-resources"
-              onClick={() => handleGlobeAction('open-natural-resources')}
-            >
-              <span className="btn-icon">🌿</span>
-              <span className="btn-text">باز کردن کره منابع طبیعی</span>
-            </button>
-            <div className="globe-panel-2d-map" data-globe-type="natural-resources">
-              <div className="map-2d-controls">
-                <button className="map-fullscreen-btn" data-map-id="natural-resources-map" title="تمام صفحه">
-                  <span>⛶</span>
-                </button>
-                <button className="map-to-3d-btn" data-globe-type="natural-resources" title="باز کردن کره 3D">
-                  <span>🌐</span>
-                </button>
-              </div>
-              <div id="naturalResourcesMap2D" className="globe-2d-map-container"></div>
-            </div>
-          </article>
-        </div>
-      </div>
+      {/* Globe Cards Container */}
+      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+        <CardContainer 
+          items={cards} 
+          className={`globe-cards`}
+          onCardClick={handleCardClick}
+        />
+      </main>
     </div>
   )
 }

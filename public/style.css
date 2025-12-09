@@ -329,7 +329,7 @@ button, .btn, a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: clamp(0.6rem, 1.2vw, 0.75rem) clamp(1rem, 2.5vw, 1.5rem);
+    padding: clamp(0.5rem, 1vw, 0.65rem) clamp(1rem, 2.5vw, 1.5rem); /* کاهش padding عمودی برای ارتفاع کمتر */
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -2421,10 +2421,11 @@ button, .btn, a {
 .relax-highlights,
 .globe-highlights {
     position: relative !important;
-    margin-top: calc(var(--header-height, 60px) + clamp(100px, 14vw, 180px) + 24px) !important; /* فاصله یکسان از بالا - 24px gap (چند پیکسل پایین‌تر) */
+    /* margin-top در دسکتاپ: پایین کارت portfolio + 15px gap (10px بیشتر) */
+    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 15px) !important;
     margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
-    margin-bottom: 20px !important; /* فاصله یکسان از پایین */
+    margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
     width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
     max-width: calc(100% - 24px) !important; /* max-width هم یکسان */
     padding: 0 !important; /* بدون padding - همه padding ها صفر */
@@ -2440,6 +2441,34 @@ button, .btn, a {
     box-sizing: border-box !important;
     left: 0 !important; /* بدون offset */
     right: 0 !important; /* بدون offset */
+}
+
+/* Media Query برای دسکتاپ - اطمینان از margin-bottom: 20px */
+@media (min-width: 1024px) {
+  .highlights-section,
+  .home-highlights,
+  .news-highlights,
+  .tools-highlights,
+  .education-highlights,
+  .relax-highlights,
+  .globe-highlights {
+    margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
+  }
+  
+  /* تنظیم فاصله مطالب Tools از هایلایت‌ها */
+  .tools-content {
+    padding-top: 20px !important; /* فاصله از پایین هایلایت‌ها: 20px */
+    margin-top: 0 !important; /* بدون margin-top اضافی */
+  }
+  
+  .tool-section {
+    margin-top: 0 !important; /* همه tool-section ها در یک خط */
+  }
+  
+  .personal-fund-container {
+    padding-top: 0 !important; /* بدون padding-top اضافی */
+    margin-top: 0 !important; /* بدون margin-top اضافی */
+  }
 }
 
 /* ⚠️ استایل‌های اصلی highlight-circle در Layout.css تعریف شده‌اند */
@@ -2497,7 +2526,7 @@ button, .btn, a {
 }
 
 @media (max-width: 1024px) {
-    /* تبلت - حفظ فاصله‌های یکسان مثل صفحه خانه - همیشه یک ردیف */
+    /* تبلت - محاسبه بر اساس پایین کارت portfolio + 3px gap */
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -2505,9 +2534,10 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + clamp(80px, 12vw, 140px) + 24px) !important; /* چند پیکسل پایین‌تر */
-        margin-left: 12px !important; /* فاصله یکسان از چپ */
-        margin-right: 12px !important; /* فاصله یکسان از راست */
+        /* margin-top از JavaScript تنظیم می‌شود - اینجا فقط fallback */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 20px) !important; /* 20px gap - 15px بیشتر از قبل */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
         margin-bottom: 20px !important;
         width: calc(100% - 24px) !important;
     }
@@ -2527,7 +2557,7 @@ button, .btn, a {
 }
 
 @media (max-width: 768px) {
-    /* موبایل - حفظ فاصله‌های یکسان مثل صفحه خانه */
+    /* موبایل - محاسبه بر اساس پایین کارت portfolio + 8px gap */
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -2535,9 +2565,10 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + clamp(60px, 10vw, 100px) + 24px) !important; /* چند پیکسل پایین‌تر */
-        margin-left: 12px !important; /* فاصله یکسان از چپ */
-        margin-right: 12px !important; /* فاصله یکسان از راست */
+        /* margin-top از JavaScript تنظیم می‌شود - اینجا فقط fallback */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 23px) !important; /* 23px gap - 15px بیشتر از قبل */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
         margin-bottom: 20px !important;
         width: calc(100% - 24px) !important;
     }
@@ -2557,7 +2588,7 @@ button, .btn, a {
 }
 
 @media (max-width: 480px) {
-    /* موبایل کوچک - حفظ فاصله‌های یکسان مثل صفحه خانه */
+    /* موبایل کوچک - محاسبه بر اساس پایین کارت portfolio + 8px gap */
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -2565,9 +2596,10 @@ button, .btn, a {
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + clamp(50px, 7vw, 80px) + 24px) !important; /* چند پیکسل پایین‌تر */
-        margin-left: 12px !important; /* فاصله یکسان از چپ */
-        margin-right: 12px !important; /* فاصله یکسان از راست */
+        /* margin-top از JavaScript تنظیم می‌شود - اینجا فقط fallback */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 23px) !important; /* 23px gap - 15px بیشتر از قبل */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
         margin-bottom: 20px !important;
         width: calc(100% - 24px) !important;
     }
@@ -3067,7 +3099,7 @@ button, .btn, a {
 /* این استایل‌ها duplicate هستند و در بالا تعریف شده‌اند - حذف می‌شوند */
 
 .tools-content {
-    padding: 100px 2rem 2rem;
+    padding: 20px 2rem 2rem !important; /* فاصله از پایین هایلایت‌ها: 20px در دسکتاپ */
     max-width: 600px;
     margin: 0 auto;
 }
@@ -4480,13 +4512,14 @@ button, .btn, a {
   }
   
   .main-content,
-  .tools-content,
   .ai-chat-section,
   .analysis-section,
   .slider-section,
   .feedback-section {
     padding: 1.5rem 1rem;
   }
+  
+  /* tools-content در media query دسکتاپ جداگانه تنظیم می‌شود */
   
   .modal-overlay {
       position: fixed;

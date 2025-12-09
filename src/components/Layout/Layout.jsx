@@ -31,6 +31,7 @@ import Header from '../Header/Header'
 import BottomNavigation from '../BottomNavigation/BottomNavigation'
 import GlobeClock from '../Globes/GlobeClock'
 import IndicatorsContainer from '../Indicators/IndicatorsContainer'
+import PortfolioSummary from '../Portfolio/PortfolioSummary'
 import FinancialGlobeModal from '../Globes/FinancialGlobeModal'
 import ResourcesGlobeModal from '../Globes/ResourcesGlobeModal'
 import Globe3DModal from '../Globes/Globe3DModal'
@@ -170,8 +171,11 @@ function Layout({ children }) {
       {/* هدر اصلی */}
       <Header />
       
-      {/* شاخص‌های لحظه‌ای - نمایش داده می‌شود در همه صفحات */}
+      {/* شاخص‌های لحظه‌ای (جفت ارزها) - نمایش داده می‌شود در همه صفحات */}
       <IndicatorsContainer />
+      
+      {/* کارت مجموع دارایی‌ها - فقط برای کاربران با اشتراک */}
+      <PortfolioSummary />
       
       {/* کره کوچک ساعت بازار - نمایش داده می‌شود در همه صفحات */}
       <GlobeClock />

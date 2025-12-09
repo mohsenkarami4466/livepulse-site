@@ -89,9 +89,6 @@ const mainItems = [
 function Home() {
   // Hook های React
   const { currentCategory, setCategory, incrementModals } = useApp() // دسترسی به Context
-  
-  // State های محلی
-  const [cards, setCards] = useState(mainItems) // کارت‌های نمایش داده شده
   const [isFinancialGlobeOpen, setIsFinancialGlobeOpen] = useState(false) // وضعیت مودال کره مالی
   const [isResourcesGlobeOpen, setIsResourcesGlobeOpen] = useState(false) // وضعیت مودال کره منابع
   const [selectedPriceItem, setSelectedPriceItem] = useState(null) // آیتم قیمت انتخاب شده
@@ -140,20 +137,20 @@ function Home() {
   }, []) // فقط یک بار هنگام mount
 
   /**
-   * Effect: فیلتر کردن کارت‌ها بر اساس دسته‌بندی
-   * 
-   * این effect:
-   * 1. currentCategory را با window.appState هماهنگ می‌کند
-   * 2. کارت‌ها را از window.sampleData فیلتر می‌کند
-   * 3. اگر داده‌ای موجود نباشد، از mainItems استفاده می‌کند
-   * 4. حداکثر 10 کارت نمایش می‌دهد
+   * Effect: هماهنگی با appState
    */
   useEffect(() => {
     // هماهنگی با appState
     if (typeof window !== 'undefined' && window.appState) {
       window.appState.currentCategory = currentCategory
     }
-    
+  }, [currentCategory])
+
+  /**
+   * تولید کارت‌ها بر اساس دسته‌بندی
+   * استفاده از useMemo برای جلوگیری از re-render غیرضروری
+   */
+  const cards = React.useMemo(() => {
     // دریافت داده‌ها بر اساس category
     let categoryCards = mainItems // پیش‌فرض - همیشه mainItems را نمایش بده
     
@@ -177,7 +174,7 @@ function Home() {
       categoryCards = mainItems
     }
     
-    setCards(categoryCards)
+    return categoryCards
   }, [currentCategory])
 
   /**

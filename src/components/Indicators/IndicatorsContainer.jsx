@@ -3,19 +3,18 @@
  * 📊 کامپوننت IndicatorsContainer - IndicatorsContainer.jsx
  * ============================================
  * 
- * این کامپوننت شاخص‌های لحظه‌ای را نمایش می‌دهد.
- * شامل: طلا، دلار، یورو، بیت‌کوین، نفت، نزدک (ردیف اول)
- * و جفت ارزها: EUR/USD, USD/JPY, GBP/USD, USD/CHF, AUD/USD, USD/CAD (ردیف دوم)
+ * این کامپوننت جفت ارزهای لحظه‌ای را نمایش می‌دهد.
+ * شامل: EUR/USD, USD/JPY, GBP/USD, USD/CHF, AUD/USD, USD/CAD
  * 
  * وابستگی‌ها:
  * - هیچ وابستگی خاصی ندارد (static data)
  * 
  * عملکرد:
- * - نمایش شاخص‌های مالی در دو ردیف
+ * - نمایش 6 جفت ارز در یک ردیف (دسکتاپ) یا 2-3 ردیف (موبایل/تبلت)
  * - نمایش تغییرات (up/down) با رنگ‌بندی
- * - نمایش آیکون و نام هر شاخص
+ * - Responsive: در موبایل/تبلت به 2-3 ردیف تبدیل می‌شود
  * 
- * نکته: این شاخص‌ها در همه صفحات نمایش داده می‌شوند.
+ * نکته: این جفت ارزها در همه صفحات نمایش داده می‌شوند.
  * 
  * تاریخ ایجاد: 2025-12-06
  * آخرین بروزرسانی: 2025-12-06
@@ -27,9 +26,9 @@ import './IndicatorsContainer.css'
 /**
  * کامپوننت IndicatorsContainer
  * 
- * این کامپوننت شاخص‌های لحظه‌ای را در دو ردیف نمایش می‌دهد:
- * - ردیف اول: شاخص‌های اصلی (طلا، دلار، یورو، بیت‌کوین، نفت، نزدک)
- * - ردیف دوم: جفت ارزها (EUR/USD, USD/JPY, GBP/USD, USD/CHF, AUD/USD, USD/CAD)
+ * این کامپوننت 6 جفت ارز را نمایش می‌دهد:
+ * - دسکتاپ: یک ردیف 6 تایی
+ * - تبلت/موبایل: 2-3 ردیف (responsive)
  */
 function IndicatorsContainer() {
   const containerRef = React.useRef(null);
@@ -40,23 +39,94 @@ function IndicatorsContainer() {
       const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
       const headerHeight = header ? header.offsetHeight : 60;
       const globeWrapper = document.getElementById('globeClockWrapper');
+      const isMobile = window.innerWidth < 768;
+      const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
       
       if (globeWrapper && containerRef.current) {
         const globeWidth = globeWrapper.offsetWidth;
         const globeHeight = globeWrapper.offsetHeight;
-        const globeLeft = globeWrapper.offsetLeft || 8; // فاصله کره از چپ (8px)
-        const gap = 16; // فاصله ثابت بین کره و کارت
+        const globeLeft = globeWrapper.offsetLeft || 8;
+        const globeTop = globeWrapper.offsetTop || headerHeight + 8;
+        const globeRight = globeLeft + globeWidth;
         
-        // موقعیت کارت: همردیف با کره کوچک
-        // فاصله از کره = فاصله از راست
-        const cardLeft = globeLeft + globeWidth + gap;
-        const cardRight = globeLeft; // فاصله از راست = فاصله کره از چپ
+        // در موبایل: کارت کنار کره (همردیف از بالا) - 5px فاصله از سمت راست کره
+        if (isMobile) {
+          const gapFromGlobe = 5; // 5 پیکسل از سمت راست کره
+          const gapFromRight = 8; // فاصله از سمت راست نمایشگر
+          const cardLeft = globeRight + gapFromGlobe;
+          const cardRight = gapFromRight;
+          
+          containerRef.current.style.top = `${globeTop}px`; // همردیف با کره از بالا
+          containerRef.current.style.left = `${cardLeft}px`;
+          containerRef.current.style.right = `${cardRight}px`;
+          containerRef.current.style.width = 'auto';
+          containerRef.current.style.maxWidth = 'none';
+        } else if (isTablet) {
+          // در تبلت: کارت کنار کره (همردیف از بالا) - سمت راست کره
+          const gapFromGlobe = 10; // 10 پیکسل از سمت راست کره
+          const gapFromRight = 8; // فاصله از سمت راست نمایشگر
+          const cardLeft = globeRight + gapFromGlobe;
+          const cardRight = gapFromRight;
+          
+          containerRef.current.style.top = `${globeTop}px`; // همردیف با کره از بالا
+          containerRef.current.style.left = `${cardLeft}px`;
+          containerRef.current.style.right = `${cardRight}px`;
+          containerRef.current.style.width = 'auto';
+          containerRef.current.style.maxWidth = 'none';
+          
+          // بررسی اینکه آیا 6 ستون در یک ردیف جا می‌شه یا نه
+          const container = containerRef.current.querySelector('.indicators-unified-container');
+          if (container) {
+            // ابتدا یک ردیف 6 تایی رو امتحان می‌کنیم
+            container.style.gridTemplateColumns = 'repeat(6, 1fr)';
+            container.style.gridTemplateRows = '1fr';
+            
+            // بررسی بعد از render
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                const containerRect = container.getBoundingClientRect();
+                const firstItem = container.querySelector('.pair-item');
+                if (firstItem) {
+                  const firstItemRect = firstItem.getBoundingClientRect();
+                  const itemWidth = firstItemRect.width;
+                  const containerWidth = containerRect.width;
+                  const gap = parseFloat(getComputedStyle(container).gap) || 4;
+                  const padding = parseFloat(getComputedStyle(container).paddingLeft) || 6;
+                  
+                  // محاسبه: آیا 6 آیتم با gap ها جا می‌شه؟
+                  const totalWidthNeeded = (itemWidth * 6) + (gap * 5) + (padding * 2);
+                  
+                  if (totalWidthNeeded > containerWidth || itemWidth < 50) {
+                    // جا نمی‌شه - 2 ردیف 3 تایی
+                    container.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                    container.style.gridTemplateRows = 'repeat(2, 1fr)';
+                  } else {
+                    // جا می‌شه - یک ردیف 6 تایی
+                    container.style.gridTemplateColumns = 'repeat(6, 1fr)';
+                    container.style.gridTemplateRows = '1fr';
+                  }
+                }
+              });
+            });
+          }
+        } else {
+          // در دسکتاپ: کارت کنار کره (همردیف)
+          const gap = 16;
+          const cardLeft = globeLeft + globeWidth + gap;
+          const cardRight = globeLeft;
+          
+          containerRef.current.style.top = `${headerHeight + 8}px`;
+          containerRef.current.style.left = `${cardLeft}px`;
+          containerRef.current.style.right = `${cardRight}px`;
+          containerRef.current.style.width = 'auto';
+          containerRef.current.style.maxWidth = 'none';
+        }
         
-        containerRef.current.style.top = `${headerHeight + 8}px`;
-        containerRef.current.style.left = `${cardLeft}px`;
-        containerRef.current.style.right = `${cardRight}px`;
-        containerRef.current.style.height = `${globeHeight}px`;
-        containerRef.current.style.maxHeight = `${globeHeight}px`; // محدود کردن ارتفاع
+        // ارتفاع بر اساس محتوا
+        containerRef.current.style.height = 'auto';
+        if (!isMobile && !isTablet) {
+          containerRef.current.style.minHeight = `${globeHeight}px`;
+        }
       }
     };
     
@@ -74,45 +144,7 @@ function IndicatorsContainer() {
   return (
     <div className="indicators-glass-card" ref={containerRef}>
       <div className="indicators-unified-container">
-        {/* ردیف اول - 6 شاخص */}
-        <div className="indicator-item up">
-          <span className="indicator-icon">🥇</span>
-          <span className="indicator-name">طلا</span>
-          <span className="indicator-value" id="goldIndicator">۲,۸۵۰,۰۰۰</span>
-          <span className="indicator-change">+۰.۵%</span>
-        </div>
-        <div className="indicator-item up">
-          <span className="indicator-icon">💵</span>
-          <span className="indicator-name">دلار</span>
-          <span className="indicator-value" id="usdIndicator">۵۸,۰۰۰</span>
-          <span className="indicator-change">+۰.۳%</span>
-        </div>
-        <div className="indicator-item down">
-          <span className="indicator-icon">💶</span>
-          <span className="indicator-name">یورو</span>
-          <span className="indicator-value" id="eurIndicator">۶۲,۰۰۰</span>
-          <span className="indicator-change">-۰.۲%</span>
-        </div>
-        <div className="indicator-item up">
-          <span className="indicator-icon">₿</span>
-          <span className="indicator-name">بیت‌کوین</span>
-          <span className="indicator-value" id="btcIndicator">$۴۵,۲۳۰</span>
-          <span className="indicator-change">+۲.۵%</span>
-        </div>
-        <div className="indicator-item down">
-          <span className="indicator-icon">🛢️</span>
-          <span className="indicator-name">نفت</span>
-          <span className="indicator-value" id="oilIndicator">$۸۲.۵</span>
-          <span className="indicator-change">-۱.۲%</span>
-        </div>
-        <div className="indicator-item up">
-          <span className="indicator-icon">📈</span>
-          <span className="indicator-name">نزدک</span>
-          <span className="indicator-value" id="nasdaqIndicator">۱۵,۲۸۵</span>
-          <span className="indicator-change">+۰.۹٪</span>
-        </div>
-        
-        {/* ردیف دوم - 6 شاخص */}
+        {/* فقط 6 جفت ارز */}
         <div className="pair-item up">
           <span className="pair-name">EUR/USD</span>
           <span className="pair-value">1.0856</span>

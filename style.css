@@ -2393,15 +2393,15 @@ body {
 .globe-highlights {
     z-index: 100;
     background: transparent;
-    padding-top: clamp(120px, 16vw, 140px);
+    padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
     padding-bottom: 0;
-    margin-bottom: 0;
+    margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
     max-width: 1400px;
     margin-left: calc(clamp(100px, 14vw, 180px) + 8px);
     margin-right: 1rem;
     width: calc(100% - clamp(100px, 14vw, 180px) - 8px - 1rem);
     box-sizing: border-box;
-    /* padding-top با JavaScript بر اساس کره کوچک تنظیم می‌شود */
+    /* margin-top با JavaScript بر اساس کارت portfolio تنظیم می‌شود */
 }
 
 /* موقعیت هایلایت‌ها با JavaScript تنظیم می‌شود - padding-top حذف شد */
@@ -3013,7 +3013,7 @@ body {
 /* این استایل‌ها duplicate هستند و در بالا تعریف شده‌اند - حذف می‌شوند */
 
 .tools-content {
-    padding: 100px 2rem 2rem;
+    padding: 20px 2rem 2rem !important; /* فاصله از پایین هایلایت‌ها: 20px در دسکتاپ */
     max-width: 600px;
     margin: 0 auto;
 }
