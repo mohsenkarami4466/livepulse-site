@@ -7166,6 +7166,121 @@ body, .glass-card, .glass-header {
     flex-wrap: wrap;
 }
 
+/* دکمه تمام صفحه نقشه */
+.map-fullscreen-toggle {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(18px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+    border: none !important;
+    border-radius: 0.625rem !important;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-primary, #ffffff) !important;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+}
+
+.map-fullscreen-toggle:hover {
+    background: var(--accent-blue, #ea580c) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+[data-theme="light"] .map-fullscreen-toggle {
+    background: rgba(255, 255, 255, 0.8) !important;
+    color: var(--text-primary, #1a1a1a) !important;
+}
+
+[data-theme="light"] .map-fullscreen-toggle:hover {
+    background: var(--accent-blue, #ea580c) !important;
+    color: #ffffff !important;
+}
+
+/* حالت تمام صفحه نقشه */
+.gold-map-section.map-fullscreen-active {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    background: var(--glass-bg, rgba(18, 18, 18, 0.95)) !important;
+    backdrop-filter: blur(20px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.gold-map-section.map-fullscreen-active .gold-map-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.gold-map-section.map-fullscreen-active .map-header-bar {
+    position: relative;
+    z-index: 10000;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(20px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+}
+
+.gold-map-section.map-fullscreen-active .map-content-row {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.gold-map-section.map-fullscreen-active .map-visual-area {
+    flex: 1;
+    min-height: 0;
+}
+
+.gold-map-section.map-fullscreen-active .gold-map-visual {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.gold-map-section.map-fullscreen-active #goldMapGlass {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.gold-map-section.map-fullscreen-active svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* موبایل - دکمه تمام صفحه */
+@media (max-width: 768px) {
+    .map-fullscreen-toggle {
+        min-width: 36px;
+        height: 36px;
+        padding: 6px 10px;
+        font-size: 1rem;
+    }
+}
+
+/* تبلت */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .map-fullscreen-toggle {
+        min-width: 38px;
+        height: 38px;
+        padding: 7px 11px;
+        font-size: 1.05rem;
+    }
+}
+
 .filter-select, .year-select {
     padding: 8px 14px;
     padding-right: 32px !important; /* فضا برای arrow */

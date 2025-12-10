@@ -402,6 +402,14 @@ function Home() {
               >
                 {showRanking ? 'بستن رتبه‌بندی' : 'نمایش رتبه‌بندی'}
               </button>
+              <button
+                type="button"
+                className="map-fullscreen-toggle"
+                id="mapFullscreenToggle"
+                title="تمام صفحه"
+              >
+                <span className="fullscreen-icon">⛶</span>
+              </button>
             </div>
           </div>
           <div className="map-content-row">

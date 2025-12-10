@@ -13,6 +13,7 @@ class WorldGoldMapGlass {
         this.completeData = null;
         this.globeType = null; // null = نقشه اصلی، 'resources'/'weather'/'military' = نقشه در هایلایت
         this.containerId = containerId || 'goldMapGlass'; // ID container برای نقشه
+        this.isFullscreen = false; // وضعیت تمام صفحه
 
         this.init();
     }
@@ -34,6 +35,7 @@ class WorldGoldMapGlass {
             // اطمینان از اینکه event listener ها بعد از render شدن DOM اضافه شوند
             setTimeout(() => {
                 this.setupCompareEvents();
+                this.setupFullscreenEvents();
             }, 500);
         } catch (error) {
             const log = window.logger || { error: console.error };
@@ -74,6 +76,99 @@ class WorldGoldMapGlass {
                     comparePanel.classList.add('hidden');
                 }
             });
+        }
+    }
+    
+    setupFullscreenEvents() {
+        const fullscreenToggle = document.getElementById('mapFullscreenToggle');
+        if (!fullscreenToggle) return;
+        
+        // حذف event listener های قبلی
+        const newToggle = fullscreenToggle.cloneNode(true);
+        fullscreenToggle.parentNode.replaceChild(newToggle, fullscreenToggle);
+        
+        newToggle.addEventListener('click', () => {
+            this.toggleFullscreen();
+        });
+        
+        // گوش دادن به تغییرات fullscreen
+        document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('MSFullscreenChange', () => this.handleFullscreenChange());
+    }
+    
+    toggleFullscreen() {
+        const mapContainer = document.getElementById('goldMapSection');
+        if (!mapContainer) return;
+        
+        const isFullscreen = !!(document.fullscreenElement || 
+                               document.webkitFullscreenElement || 
+                               document.mozFullScreenElement || 
+                               document.msFullscreenElement);
+        
+        if (!isFullscreen) {
+            // ورود به حالت تمام صفحه
+            if (mapContainer.requestFullscreen) {
+                mapContainer.requestFullscreen().catch(err => {
+                    const log = window.logger || { warn: console.warn };
+                    log.warn('خطا در ورود به حالت تمام صفحه:', err);
+                });
+            } else if (mapContainer.webkitRequestFullscreen) {
+                mapContainer.webkitRequestFullscreen();
+            } else if (mapContainer.mozRequestFullScreen) {
+                mapContainer.mozRequestFullScreen();
+            } else if (mapContainer.msRequestFullscreen) {
+                mapContainer.msRequestFullscreen();
+            }
+        } else {
+            // خروج از حالت تمام صفحه
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(err => {
+                    const log = window.logger || { warn: console.warn };
+                    log.warn('خطا در خروج از حالت تمام صفحه:', err);
+                });
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+    
+    handleFullscreenChange() {
+        const isFullscreen = !!(document.fullscreenElement || 
+                               document.webkitFullscreenElement || 
+                               document.mozFullScreenElement || 
+                               document.msFullscreenElement);
+        
+        this.isFullscreen = isFullscreen;
+        const mapContainer = document.getElementById('goldMapSection');
+        const fullscreenToggle = document.getElementById('mapFullscreenToggle');
+        const fullscreenIcon = fullscreenToggle?.querySelector('.fullscreen-icon');
+        
+        if (mapContainer) {
+            if (isFullscreen) {
+                mapContainer.classList.add('map-fullscreen-active');
+            } else {
+                mapContainer.classList.remove('map-fullscreen-active');
+            }
+        }
+        
+        if (fullscreenIcon) {
+            fullscreenIcon.textContent = isFullscreen ? '⛶' : '⛶';
+            if (fullscreenToggle) {
+                fullscreenToggle.title = isFullscreen ? 'خروج از تمام صفحه' : 'تمام صفحه';
+            }
+        }
+        
+        // به‌روزرسانی اندازه نقشه
+        if (this.svg) {
+            setTimeout(() => {
+                this.createMap();
+            }, 100);
         }
     }
 

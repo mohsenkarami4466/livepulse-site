@@ -141,6 +141,30 @@ function updatePortfolioDisplay() {
     if (totalPortfolioValue) {
         totalPortfolioValue.textContent = formatPrice(totalValue, 'IRR').replace(' تومان', '');
     }
+    
+    // به‌روزرسانی کارت مجموع دارایی‌ها در header
+    if (typeof window !== 'undefined' && window.updatePortfolioSummaryValue) {
+        const formattedValue = formatPrice(totalValue, 'IRR');
+        
+        // محاسبه تغییر نسبت به گذشته
+        const previousValue = parseFloat(localStorage.getItem('portfolio-previous-value') || '0');
+        let change = { value: 0, percent: 0, isUp: true };
+        
+        if (previousValue > 0) {
+            const changeValue = totalValue - previousValue;
+            const changePercent = ((changeValue / previousValue) * 100).toFixed(2);
+            change = {
+                value: changeValue,
+                percent: Math.abs(changePercent),
+                isUp: changeValue >= 0
+            };
+        } else {
+            // ذخیره مقدار فعلی برای دفعه بعد
+            localStorage.setItem('portfolio-previous-value', totalValue.toString());
+        }
+        
+        window.updatePortfolioSummaryValue(formattedValue, change);
+    }
 }
 
 /**
