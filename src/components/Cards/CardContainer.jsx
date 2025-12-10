@@ -36,7 +36,7 @@ import './CardContainer.css'
 function CardContainer({ items = [], className = '', onCardClick }) {
   // استفاده از useMemo برای جلوگیری از re-render غیرضروری
   const cards = useMemo(() => {
-    if (!items || items.length === 0) {
+  if (!items || items.length === 0) {
       return []
     }
     return items

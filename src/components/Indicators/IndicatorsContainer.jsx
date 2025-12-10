@@ -112,12 +112,12 @@ function IndicatorsContainer() {
         } else {
           // در دسکتاپ: کارت کنار کره (همردیف)
           const gap = 16;
-          const cardLeft = globeLeft + globeWidth + gap;
+        const cardLeft = globeLeft + globeWidth + gap;
           const cardRight = globeLeft;
-          
-          containerRef.current.style.top = `${headerHeight + 8}px`;
-          containerRef.current.style.left = `${cardLeft}px`;
-          containerRef.current.style.right = `${cardRight}px`;
+        
+        containerRef.current.style.top = `${headerHeight + 8}px`;
+        containerRef.current.style.left = `${cardLeft}px`;
+        containerRef.current.style.right = `${cardRight}px`;
           containerRef.current.style.width = 'auto';
           containerRef.current.style.maxWidth = 'none';
         }

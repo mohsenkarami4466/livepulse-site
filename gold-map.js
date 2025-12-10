@@ -1,6 +1,6 @@
 // gold-map-glass.js - نسخه کامل با 60 کشور
 class WorldGoldMapGlass {
-    constructor() {
+    constructor(containerId) {
         this.currentYear = '2024';
         this.currentFilter = 'reserves';
         this.selectedCountries = [];
@@ -11,6 +11,8 @@ class WorldGoldMapGlass {
         this.countryNameToCode = {};
         this.countryInfoByCode = {};
         this.completeData = null;
+        this.globeType = null; // null = نقشه اصلی، 'resources'/'weather'/'military' = نقشه در هایلایت
+        this.containerId = containerId || 'goldMapGlass'; // ID container برای نقشه
 
         this.init();
     }
@@ -28,6 +30,11 @@ class WorldGoldMapGlass {
             
             // تشخیص تغییر تم
             this.setupThemeObserver();
+            
+            // اطمینان از اینکه event listener ها بعد از render شدن DOM اضافه شوند
+            setTimeout(() => {
+                this.setupCompareEvents();
+            }, 500);
         } catch (error) {
             const log = window.logger || { error: console.error };
             log.error('خطا در بارگذاری نقشه:', error);
@@ -35,6 +42,38 @@ class WorldGoldMapGlass {
                 window.errorHandler.handleError(error, 'WorldGoldMapGlass.init');
             }
             this.showError('خطا در بارگذاری نقشه. لطفاً صفحه را رفرش کنید.');
+        }
+    }
+    
+    setupCompareEvents() {
+        // دکمه مقایسه
+        const compareToggle = document.getElementById('compareToggle');
+        if (compareToggle) {
+            // حذف event listener های قبلی
+            const newToggle = compareToggle.cloneNode(true);
+            compareToggle.parentNode.replaceChild(newToggle, compareToggle);
+            
+            newToggle.addEventListener('click', () => {
+                const comparePanel = document.getElementById('comparePanel');
+                if (comparePanel) {
+                    comparePanel.classList.toggle('hidden');
+                }
+            });
+        }
+        
+        // دکمه بستن مقایسه
+        const closeCompare = document.getElementById('closeCompare');
+        if (closeCompare) {
+            // حذف event listener های قبلی
+            const newClose = closeCompare.cloneNode(true);
+            closeCompare.parentNode.replaceChild(newClose, closeCompare);
+            
+            newClose.addEventListener('click', () => {
+                const comparePanel = document.getElementById('comparePanel');
+                if (comparePanel) {
+                    comparePanel.classList.add('hidden');
+                }
+            });
         }
     }
 
@@ -62,7 +101,8 @@ class WorldGoldMapGlass {
     }
 
     handleTouchStart(e) {
-        if (e.target.closest('#goldMapGlass') && e.touches.length > 1) {
+        const container = document.getElementById(this.containerId);
+        if (container && e.target.closest(`#${this.containerId}`) && e.touches.length > 1) {
             e.preventDefault();
         }
     }
@@ -199,7 +239,7 @@ class WorldGoldMapGlass {
         // پاکسازی قبلی
         container.innerHTML = '';
 
-        this.svg = d3.select('#goldMapGlass')
+        this.svg = d3.select(`#${this.containerId}`)
             .append('svg')
             .attr('width', '100%')
             .attr('height', '100%')
@@ -226,6 +266,7 @@ class WorldGoldMapGlass {
         this.g = this.svg.append('g');
         this.drawCountries();
         this.createTooltip();
+        this.createLegend(); // ایجاد راهنمای رنگ
         this.updateWaterColor();
     }
 
@@ -296,16 +337,21 @@ class WorldGoldMapGlass {
             .append('div')
             .attr('class', 'gold-map-tooltip')
             .style('position', 'absolute')
-            .style('background', 'var(--glass-bg)')
-            .style('backdrop-filter', 'blur(10px)')
-            .style('border', '1px solid var(--glass-border)')
-            .style('border-radius', '8px')
-            .style('padding', '8px 12px')
-            .style('font-size', '0.8rem')
+            .style('background', 'var(--glass-bg, rgba(18, 18, 18, 0.95))')
+            .style('backdrop-filter', 'var(--glass-blur, blur(20px) saturate(150%))')
+            .style('-webkit-backdrop-filter', 'var(--glass-blur, blur(20px) saturate(150%))')
+            .style('border', '1px solid var(--glass-border, rgba(251, 146, 60, 0.2))')
+            .style('border-radius', '0.875rem')
+            .style('padding', '1rem')
+            .style('box-shadow', 'var(--glass-shadow, 0 10px 30px rgba(0, 0, 0, 0.3))')
+            .style('color', 'var(--text-primary, #ffffff)')
+            .style('z-index', '10000')
             .style('pointer-events', 'none')
             .style('opacity', 0)
-            .style('z-index', 1000)
-            .style('color', 'var(--text-primary)');
+            .style('max-width', this.isMobile ? '220px' : '240px') // کوچکتر برای دسکتاپ
+            .style('font-size', this.isMobile ? '0.7rem' : '0.75rem')
+            .style('line-height', '1.4')
+            .style('padding', this.isMobile ? '0.65rem' : '0.75rem');
     }
 
     drawCountries() {
@@ -320,13 +366,17 @@ class WorldGoldMapGlass {
             .attr('class', 'country')
             .attr('d', this.path)
             .attr('fill', d => this.getCountryColor(d))
-            .attr('stroke', 'var(--glass-border)')
-            .attr('stroke-width', 0.5)
+            .attr('stroke', 'transparent')
+            .attr('stroke-width', 0)
             .style('cursor', 'pointer')
-            .style('transition', 'fill 0.3s ease')
+            .style('transition', 'fill 0.3s ease, opacity 0.2s ease, filter 0.2s ease')
             .on('click', (event, d) => this.handleCountryClick(event, d))
             .on('mouseover', (event, d) => this.handleCountryHover(event, d))
-            .on('mouseout', (event, d) => this.handleCountryMouseOut(event, d));
+            .on('mouseout', (event, d) => this.handleCountryMouseOut(event, d))
+            .on('touchstart', (event, d) => {
+                event.preventDefault();
+                this.handleCountryTouch(event, d);
+            });
     }
 
     bindEvents() {
@@ -376,6 +426,7 @@ class WorldGoldMapGlass {
         if (zoomInBtn) zoomInBtn.addEventListener('click', () => this.zoomIn());
         if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => this.zoomOut());
         
+        // دکمه مقایسه و بستن - در setupCompareEvents اضافه می‌شوند
         
         // ریسایز
         let resizeTimer;
@@ -410,6 +461,7 @@ class WorldGoldMapGlass {
         this.updateTopCountries();
         this.updateCountryComparison();
         this.updateSelectionCount();
+        this.updateLegend(); // به‌روزرسانی legend با تغییر فیلتر
     }
 
     updateFilterBadge() {
@@ -425,48 +477,55 @@ class WorldGoldMapGlass {
     }
 
     updateTopCountries() {
-        const currentData = this.getCompleteData()[this.currentYear];
-        if (!currentData) return;
+        // استفاده از requestAnimationFrame برای بهبود عملکرد
+        requestAnimationFrame(() => {
+            const currentData = this.getCompleteData()[this.currentYear];
+            if (!currentData) return;
 
-        const sorted = Object.values(currentData)
-            .sort((a, b) => {
-                const valA = a[this.currentFilter];
-                const valB = b[this.currentFilter];
+            const sorted = Object.values(currentData)
+                .sort((a, b) => {
+                    const valA = a[this.currentFilter] || 0;
+                    const valB = b[this.currentFilter] || 0;
+                    
+                    if (this.currentFilter.includes('Rank')) {
+                        return valA - valB;
+                    }
+                    return valB - valA;
+                })
+                .slice(0, 20); // نمایش 20 کشور برتر
+
+            const html = sorted.map((country, index) => {
+                const value = country[this.currentFilter] ? this.formatValue(country[this.currentFilter], this.currentFilter) : 'N/A';
+                let medalClass = 'other';
+                let medalText = (index + 1).toString();
                 
-                if (this.currentFilter.includes('Rank')) {
-                    return valA - valB;
-                }
-                return valB - valA;
-            })
-            .slice(0, 20); // نمایش 20 کشور برتر
+                if (index === 0) { medalClass = 'gold'; medalText = '🥇'; }
+                else if (index === 1) { medalClass = 'silver'; medalText = '🥈'; }
+                else if (index === 2) { medalClass = 'bronze'; medalText = '🥉'; }
 
-        const html = sorted.map((country, index) => {
-            const value = this.formatValue(country[this.currentFilter], this.currentFilter);
-            let medalClass = 'other';
-            let medalText = (index + 1).toString();
-            
-            if (index === 0) { medalClass = 'gold'; medalText = '🥇'; }
-            else if (index === 1) { medalClass = 'silver'; medalText = '🥈'; }
-            else if (index === 2) { medalClass = 'bronze'; medalText = '🥉'; }
-
-            return `
-                <div class="country-rank-item" onclick="worldGoldMapGlass.selectCountryFromList('${country.code}')">
-                    <div class="rank-medal ${medalClass}">${medalText}</div>
-                    <div class="country-info">
-                        <div class="country-name">${country.name}</div>
+                return `
+                    <div class="country-rank-item" onclick="window.worldGoldMapGlass && window.worldGoldMapGlass.selectCountryFromList('${country.code}')">
+                        <div class="rank-medal ${medalClass}">${medalText}</div>
+                        <div class="country-info">
+                            <div class="country-name">${country.name}</div>
+                        </div>
+                        <div class="country-value">${value}</div>
                     </div>
-                    <div class="country-value">${value}</div>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
 
-        const list = document.getElementById('topCountriesList');
-        if (list) list.innerHTML = html;
+            const list = document.getElementById('topCountriesList');
+            if (list) list.innerHTML = html;
+        });
     }
 
     updateCountryComparison() {
         const container = document.getElementById('countryComparison');
-        if (!container) return;
+        if (!container) {
+            // اگر container پیدا نشد، کمی صبر کن و دوباره تلاش کن
+            setTimeout(() => this.updateCountryComparison(), 100);
+            return;
+        }
 
         if (this.selectedCountries.length === 0) {
             container.innerHTML = `
@@ -479,34 +538,66 @@ class WorldGoldMapGlass {
             return;
         }
 
-        const cardsHtml = this.selectedCountries.map(country => `
-            <div class="country-comparison-card">
-                <div class="comparison-card-header">
-                    <h4>${country.name}</h4>
-                    <button class="remove-btn" onclick="worldGoldMapGlass.removeCountry('${country.code}')">
-                        ✕
-                    </button>
+        // دریافت داده‌های به‌روز از سال و فیلتر فعلی
+        const currentData = this.getCompleteData()[this.currentYear];
+        
+        const cardsHtml = this.selectedCountries.map(country => {
+            // دریافت داده‌های به‌روز کشور
+            const countryData = currentData?.[country.code] || country.data;
+            
+            const reserves = countryData.reserves ? this.formatValue(countryData.reserves, 'reserves') : 'N/A';
+            const production = countryData.production ? this.formatValue(countryData.production, 'production') : 'N/A';
+            const gdp = countryData.gdp ? this.formatValue(countryData.gdp, 'gdp') : 'N/A';
+            const oil = countryData.oil ? this.formatValue(countryData.oil, 'oil') : 'N/A';
+            const gas = countryData.gas ? this.formatValue(countryData.gas, 'gas') : 'N/A';
+            const population = countryData.population ? this.formatValue(countryData.population, 'population') : 'N/A';
+            const economicRank = countryData.economicRank || 'N/A';
+            
+            return `
+                <div class="country-comparison-card">
+                    <div class="comparison-card-header">
+                        <h4>${countryData.name || country.name}</h4>
+                        <button class="remove-btn" onclick="window.worldGoldMapGlass && window.worldGoldMapGlass.removeCountry('${country.code}')">
+                            ✕
+                        </button>
+                    </div>
+                    <div class="comparison-stats">
+                        <div class="stat-row">
+                            <span>💰 ذخایر طلا:</span>
+                            <strong>${reserves} تن</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>⛏️ برداشت طلا:</span>
+                            <strong>${production} تن</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>🛢️ تولید نفت:</span>
+                            <strong>${oil} هزار بشکه</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>🔥 تولید گاز:</span>
+                            <strong>${gas} میلیارد متر مکعب</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>📈 تولید ناخالص:</span>
+                            <strong>${gdp} میلیون دلار</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>👥 جمعیت:</span>
+                            <strong>${population} نفر</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>🏆 رتبه اقتصادی:</span>
+                            <strong>${economicRank}</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>📅 سال:</span>
+                            <strong>${this.currentYear}</strong>
+                        </div>
+                    </div>
                 </div>
-                <div class="comparison-stats">
-                    <div class="stat-row">
-                        <span>💰 ذخایر طلا:</span>
-                        <strong>${country.data.reserves} تن</strong>
-                    </div>
-                    <div class="stat-row">
-                        <span>⛏️ برداشت طلا:</span>
-                        <strong>${country.data.production} تن</strong>
-                    </div>
-                    <div class="stat-row">
-                        <span>📈 تولید ناخالص:</span>
-                        <strong>${this.formatValue(country.data.gdp, 'gdp')}</strong>
-                    </div>
-                    <div class="stat-row">
-                        <span>🏆 رتبه اقتصادی:</span>
-                        <strong>${country.data.economicRank}</strong>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         container.innerHTML = cardsHtml;
         this.updateSelectionCount();
@@ -547,10 +638,119 @@ class WorldGoldMapGlass {
                 .interpolator(t => d3.interpolateRgb('#1f2937', '#fb923c')(t)),
             gas: d3.scaleSequential()
                 .domain([0, 1000000])
-                .interpolator(t => d3.interpolateRgb('#0f172a', '#a78bfa')(t))
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#a78bfa')(t)),
+            population: d3.scaleSequential()
+                .domain([0, 1500000000])
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#ea580c')(t))
         };
 
         return scales[this.currentFilter] ? scales[this.currentFilter](value) : 'rgba(100, 116, 139, 0.5)';
+    }
+    
+    // ایجاد راهنمای رنگ (Legend)
+    createLegend() {
+        // حذف legend قبلی اگر وجود دارد
+        d3.select('.map-color-legend').remove();
+        
+        const container = document.getElementById('goldMapGlass');
+        if (!container) return;
+        
+        const parentContainer = container.parentElement;
+        if (!parentContainer) return;
+        
+        // ایجاد container برای legend
+        this.legendContainer = d3.select(parentContainer)
+            .append('div')
+            .attr('class', 'map-color-legend')
+            .style('position', 'absolute')
+            .style('bottom', '20px')
+            .style('left', '20px')
+            .style('z-index', '1000');
+        
+        this.updateLegend();
+    }
+    
+    // به‌روزرسانی راهنمای رنگ بر اساس فیلتر فعلی
+    updateLegend() {
+        if (!this.legendContainer) return;
+        
+        const filterInfo = this.getFilterInfo(this.currentFilter);
+        const scale = this.getColorScale(this.currentFilter);
+        
+        if (!scale || !filterInfo) return;
+        
+        // محاسبه مقادیر برای نمایش
+        const minValue = filterInfo.domain[0];
+        const maxValue = filterInfo.domain[1];
+        const midValue = (minValue + maxValue) / 2;
+        
+        const formatMin = this.formatValue(minValue, this.currentFilter);
+        const formatMid = this.formatValue(midValue, this.currentFilter);
+        const formatMax = this.formatValue(maxValue, this.currentFilter);
+        
+        // ایجاد gradient برای نمایش رنگ‌ها
+        // رنگ تیره = کمترین مقدار
+        // رنگ روشن = بیشترین مقدار
+        const minColor = scale(minValue);
+        const maxColor = scale(maxValue);
+        
+        // gradient از چپ به راست (کم به زیاد)
+        // اعداد: کم در راست، زیاد در چپ (RTL)
+        this.legendContainer.html(`
+            <div class="legend-header">
+                <strong>${filterInfo.label}</strong>
+            </div>
+            <div class="legend-gradient-container">
+                <div class="legend-gradient-bar" style="background: linear-gradient(to right, ${minColor}, ${maxColor});"></div>
+            </div>
+            <div class="legend-values">
+                <span class="legend-max">${formatMax}</span>
+                <span class="legend-mid">${formatMid}</span>
+                <span class="legend-min">${formatMin}</span>
+            </div>
+        `);
+    }
+    
+    // اطلاعات فیلترها
+    getFilterInfo(filter) {
+        const filters = {
+            reserves: { label: '💰 ذخایر طلا', domain: [0, 10000], unit: 'تن' },
+            production: { label: '⛏️ برداشت طلا', domain: [0, 400], unit: 'تن' },
+            gdp: { label: '📈 تولید ناخالص', domain: [0, 30000000], unit: 'میلیون دلار' },
+            economicRank: { label: '🏆 رتبه اقتصادی', domain: [200, 1], unit: '' },
+            oil: { label: '🛢️ تولید نفت', domain: [0, 15000], unit: 'هزار بشکه' },
+            gas: { label: '🔥 تولید گاز', domain: [0, 1000000], unit: 'میلیارد متر مکعب' },
+            population: { label: '👥 جمعیت', domain: [0, 1500000000], unit: 'نفر' }
+        };
+        return filters[filter];
+    }
+    
+    // دریافت scale رنگ برای فیلتر
+    getColorScale(filter) {
+        const scales = {
+            reserves: d3.scaleSequential()
+                .domain([0, 10000])
+                .interpolator(t => d3.interpolateRgb('#2b1055', '#ffd166')(t)),
+            production: d3.scaleSequential()
+                .domain([0, 400])
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#34d399')(t)),
+            gdp: d3.scaleSequential()
+                .domain([0, 30000000])
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#60a5fa')(t)),
+            economicRank: d3.scaleSequential()
+                .domain([200, 1])
+                .interpolator(t => d3.interpolateRgb('#4c0519', '#f472b6')(t)),
+            oil: d3.scaleSequential()
+                .domain([0, 15000])
+                .interpolator(t => d3.interpolateRgb('#1f2937', '#fb923c')(t)),
+            gas: d3.scaleSequential()
+                .domain([0, 1000000])
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#a78bfa')(t)),
+            population: d3.scaleSequential()
+                .domain([0, 1500000000])
+                .interpolator(t => d3.interpolateRgb('#0f172a', '#ea580c')(t))
+        };
+        return scales[filter];
     }
 
     getCountryData(country) {
@@ -570,13 +770,18 @@ class WorldGoldMapGlass {
         const existingIndex = this.selectedCountries.findIndex(c => c.code === code);
 
         if (existingIndex > -1) {
+            // حذف کشور از انتخاب
             this.selectedCountries.splice(existingIndex, 1);
             d3.select(event.target).classed('selected', false);
         } else {
+            // اضافه کردن کشور به انتخاب
             if (this.selectedCountries.length >= 2) {
+                // حذف اولین کشور انتخاب شده
                 const removed = this.selectedCountries.shift();
+                // حذف کلاس selected از همه کشورها
                 this.g.selectAll('path.country').classed('selected', false);
             }
+            // اضافه کردن کشور جدید
             this.selectedCountries.push({
                 code: code,
                 name: data.name,
@@ -585,20 +790,25 @@ class WorldGoldMapGlass {
             d3.select(event.target).classed('selected', true);
         }
 
+        // به‌روزرسانی مقایسه با داده‌های به‌روز
         this.updateCountryComparison();
         
-        // انتخاب کشور در کره منابع (اگر باز باشد)
-        if (typeof window.selectCountry === 'function') {
+        // انتخاب کشور در کره منابع (فقط اگر کره 3D قبلاً باز باشد)
+        // این کد فقط برای نقشه‌های 2D در هایلایت‌های کره‌ها است، نه برای نقشه اصلی
+        if (this.globeType && typeof window.selectCountry === 'function') {
             const log = window.logger || { info: console.log };
             log.info('🌍 انتخاب کشور در کره منابع:', code);
-            window.selectCountry(code);
             
-            // اگر کره منابع باز نیست، باز کردن آن
-            const resourcesModal = document.getElementById('resourcesGlobeModal');
-            if (resourcesModal && !resourcesModal.classList.contains('active')) {
-                // باز کردن کره منابع
-                if (typeof window.openResourcesGlobe === 'function') {
-                    window.openResourcesGlobe();
+            // بررسی اینکه آیا کره 3D مربوطه باز است یا نه
+            const modalId = this.globeType === 'resources' ? 'resourcesGlobeModal' : 
+                           this.globeType === 'weather' ? 'weatherGlobeModal' :
+                           this.globeType === 'military' ? 'militaryGlobeModal' : null;
+            
+            if (modalId) {
+                const modal = document.getElementById(modalId);
+                // فقط اگر کره 3D قبلاً باز باشد، کشور را انتخاب کن
+                if (modal && modal.classList.contains('active')) {
+                    window.selectCountry(code);
                 }
             }
         }
@@ -606,9 +816,10 @@ class WorldGoldMapGlass {
 
     handleCountryHover(event, d) {
         const data = this.getCountryData(d);
+        // تغییر opacity برای hover (بدون stroke)
         d3.select(event.target)
-            .attr('stroke', 'var(--accent-blue)')
-            .attr('stroke-width', 1.5);
+            .style('opacity', 0.8)
+            .style('filter', 'brightness(1.2)');
 
         if (data) {
             this.showTooltip(event, this.createTooltipContent(data));
@@ -617,29 +828,120 @@ class WorldGoldMapGlass {
 
     handleCountryMouseOut(event, d) {
         d3.select(event.target)
-            .attr('stroke', 'var(--glass-border)')
-            .attr('stroke-width', 0.5);
+            .style('opacity', 1)
+            .style('filter', 'brightness(1)');
         this.hideTooltip();
+    }
+    
+    handleCountryTouch(event, d) {
+        const data = this.getCountryData(d);
+        if (data) {
+            // برای موبایل/تبلت: نمایش tooltip با کلیک
+            const touch = event.touches[0] || event.changedTouches[0];
+            const syntheticEvent = {
+                pageX: touch.pageX,
+                pageY: touch.pageY,
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            };
+            this.showTooltip(syntheticEvent, this.createTooltipContent(data));
+            
+            // بستن tooltip با کلیک مجدد یا بعد از 5 ثانیه
+            setTimeout(() => {
+                this.hideTooltip();
+            }, 5000);
+        }
     }
 
     createTooltipContent(data) {
-        const value = data[this.currentFilter];
-        const formatted = this.formatValue(value, this.currentFilter);
-        const label = this.getFilterLabel(this.currentFilter);
+        // نمایش تمام اطلاعات در tooltip
+        const reserves = data.reserves ? this.formatValue(data.reserves, 'reserves') : 'N/A';
+        const production = data.production ? this.formatValue(data.production, 'production') : 'N/A';
+        const gdp = data.gdp ? this.formatValue(data.gdp, 'gdp') : 'N/A';
+        const oil = data.oil ? this.formatValue(data.oil, 'oil') : 'N/A';
+        const gas = data.gas ? this.formatValue(data.gas, 'gas') : 'N/A';
+        const population = data.population ? this.formatValue(data.population, 'population') : 'N/A';
+        const economicRank = data.economicRank || 'N/A';
         
         return `
-            <strong>${data.name}</strong><br/>
-            ${label}: ${formatted}<br/>
-            سال: ${this.currentYear}
+            <div class="country-tooltip-content">
+                <strong>${data.name}</strong>
+                <div class="tooltip-stats">
+                    <div class="tooltip-stat-row">
+                        <span>💰 ذخایر طلا:</span>
+                        <strong>${reserves} تن</strong>
+                    </div>
+                    <div class="tooltip-stat-row">
+                        <span>⛏️ برداشت طلا:</span>
+                        <strong>${production} تن</strong>
+                    </div>
+                    <div class="tooltip-stat-row">
+                        <span>🛢️ تولید نفت:</span>
+                        <strong>${oil} هزار بشکه</strong>
+                    </div>
+                    <div class="tooltip-stat-row">
+                        <span>🔥 تولید گاز:</span>
+                        <strong>${gas} میلیارد متر مکعب</strong>
+                    </div>
+                    <div class="tooltip-stat-row">
+                        <span>📈 تولید ناخالص:</span>
+                        <strong>${gdp} میلیون دلار</strong>
+                    </div>
+                    <div class="tooltip-stat-row">
+                        <span>👥 جمعیت:</span>
+                        <strong>${population} نفر</strong>
+                    </div>
+                    <div class="tooltip-stat-row">
+                        <span>🏆 رتبه اقتصادی:</span>
+                        <strong>${economicRank}</strong>
+                    </div>
+                    <div class="tooltip-year">سال: ${this.currentYear}</div>
+                </div>
+            </div>
         `;
     }
 
     showTooltip(event, content) {
-        this.tooltip
+        const tooltip = this.tooltip
             .html(content)
-            .style('opacity', 1)
-            .style('left', (event.pageX + 10) + 'px')
-            .style('top', (event.pageY - 10) + 'px');
+            .style('opacity', 1);
+        
+        // محاسبه موقعیت tooltip برای جلوگیری از خروج از صفحه
+        const isMobile = window.innerWidth <= 768;
+        const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+        
+        // اندازه tooltip بر اساس نوع دستگاه
+        const tooltipWidth = isMobile ? 220 : isTablet ? 240 : 240; // کوچکتر برای دسکتاپ
+        const tooltipHeight = isMobile ? 320 : isTablet ? 340 : 340; // کوچکتر برای دسکتاپ
+        const padding = 10;
+        
+        let left = event.pageX + padding;
+        let top = event.pageY - padding;
+        
+        // بررسی خروج از سمت راست
+        if (left + tooltipWidth > window.innerWidth) {
+            left = event.pageX - tooltipWidth - padding;
+        }
+        
+        // بررسی خروج از پایین
+        if (top + tooltipHeight > window.innerHeight) {
+            top = event.pageY - tooltipHeight - padding;
+        }
+        
+        // بررسی خروج از بالا
+        if (top < 0) {
+            top = padding;
+        }
+        
+        // بررسی خروج از چپ
+        if (left < 0) {
+            left = padding;
+        }
+        
+        tooltip
+            .style('left', left + 'px')
+            .style('top', top + 'px')
+            .style('max-width', tooltipWidth + 'px');
     }
 
     hideTooltip() {
@@ -668,7 +970,8 @@ class WorldGoldMapGlass {
             gdp: 'تولید ناخالص',
             economicRank: 'رتبه اقتصادی',
             oil: 'تولید نفت',
-            gas: 'تولید گاز'
+            gas: 'تولید گاز',
+            population: 'جمعیت'
         };
         return labels[filter] || filter;
     }
@@ -677,6 +980,7 @@ class WorldGoldMapGlass {
         if (filter === 'gdp') return (value / 1000000).toFixed(1) + 'T';
         if (filter === 'oil') return (value / 1000).toFixed(1) + 'K';
         if (filter === 'gas') return (value / 1000000).toFixed(1) + 'B';
+        if (filter === 'population') return (value / 1000000).toFixed(2) + 'M';
         return Number(value).toLocaleString('en-US');
     }
 
@@ -1088,6 +1392,8 @@ class WorldGoldMapGlass {
     buildCompleteData() {
         const baseData2024 = this.generateBaseData2024();
         this.ensureCountryCoverage(baseData2024);
+        // اضافه کردن جمعیت به کشورها
+        this.addPopulationToCountries(baseData2024);
 
         const dataset = { "2024": baseData2024 };
         ['2023', '2022', '2021', '2020'].forEach((year, index) => {
@@ -1105,6 +1411,10 @@ class WorldGoldMapGlass {
             country.gdp = Math.max(0, Math.round(country.gdp * (1 - yearOffset * 0.04)));
             country.oil = Math.max(0, Math.round(country.oil * (1 - yearOffset * 0.01)));
             country.gas = Math.max(0, Math.round(country.gas * (1 - yearOffset * 0.01)));
+            // جمعیت با نرخ رشد سالانه 1.2% کاهش می‌یابد (برای سال‌های گذشته)
+            if (country.population) {
+                country.population = Math.max(0, Math.round(country.population * (1 - yearOffset * 0.012)));
+            }
             result[code] = country;
         });
         return result;
@@ -1370,8 +1680,35 @@ class WorldGoldMapGlass {
             gdp: 0,
             economicRank: 999,
             oil: 0,
-            gas: 0
+            gas: 0,
+            population: 0
         };
+    }
+    
+    // تابع برای اضافه کردن جمعیت به کشورها (داده‌های تقریبی)
+    addPopulationToCountries(baseData) {
+        // داده‌های جمعیت تقریبی برای کشورهای اصلی (به میلیون)
+        const populationData = {
+            "USA": 339, "CHN": 1400, "JPN": 125, "DEU": 84, "IND": 1400, "GBR": 68, "FRA": 68,
+            "ITA": 59, "CAN": 38, "RUS": 144, "BRA": 215, "AUS": 26, "KOR": 52, "ESP": 47,
+            "MEX": 128, "IDN": 275, "SAU": 36, "NLD": 17, "TUR": 85, "CHE": 9, "POL": 38,
+            "SWE": 10, "BEL": 12, "IRN": 88, "THA": 70, "NGA": 220, "ARG": 46, "NOR": 5,
+            "ISR": 9, "ARE": 10, "ZAF": 60, "HKG": 7, "SGP": 6, "MYS": 33, "PHL": 115,
+            "COL": 52, "PAK": 240, "CHL": 19, "BGD": 170, "EGY": 110, "FIN": 6, "VNM": 98,
+            "CZE": 11, "ROU": 19, "PRT": 10, "PER": 34, "NZL": 5, "GRC": 11, "IRQ": 44,
+            "DZA": 45, "QAT": 3, "KAZ": 19, "HUN": 10, "UKR": 44, "KWT": 4, "MAR": 37,
+            "AGO": 34, "ECU": 18, "SVK": 5, "AZE": 10, "TKM": 6, "UZB": 35, "OMN": 5,
+            "GHA": 32, "LBY": 7, "VEN": 28, "SDN": 48, "TZA": 63, "MMR": 54
+        };
+        
+        // اضافه کردن جمعیت به کشورها
+        Object.keys(baseData).forEach(code => {
+            if (!baseData[code].population) {
+                baseData[code].population = populationData[code] ? populationData[code] * 1000000 : 0;
+            }
+        });
+        
+        return baseData;
     }
 }
 

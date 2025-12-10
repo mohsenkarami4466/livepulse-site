@@ -93,6 +93,7 @@ function Home() {
   const [isResourcesGlobeOpen, setIsResourcesGlobeOpen] = useState(false) // وضعیت مودال کره منابع
   const [selectedPriceItem, setSelectedPriceItem] = useState(null) // آیتم قیمت انتخاب شده
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false) // وضعیت مودال قیمت
+  const [showRanking, setShowRanking] = useState(false) // کنترل نمایش رتبه‌بندی نقشه
 
   /**
    * Effect: تنظیم هایلایت خانه به صورت پیش‌فرض و گوش دادن به تغییرات category
@@ -387,12 +388,20 @@ function Home() {
                 <option value="gdp">📈 تولید ناخالص</option>
                 <option value="oil">🛢️ تولید نفت</option>
                 <option value="gas">🔥 تولید گاز</option>
+                <option value="population">👥 جمعیت</option>
               </select>
               <select className="year-select" id="yearFilter">
                 <option value="2024">۲۰۲۴</option>
                 <option value="2023">۲۰۲۳</option>
                 <option value="2022">۲۰۲۲</option>
               </select>
+              <button
+                type="button"
+                className="ranking-toggle-btn"
+                onClick={() => setShowRanking(prev => !prev)}
+              >
+                {showRanking ? 'بستن رتبه‌بندی' : 'نمایش رتبه‌بندی'}
+              </button>
             </div>
           </div>
           <div className="map-content-row">
@@ -409,16 +418,18 @@ function Home() {
             </div>
             
             {/* رتبه‌بندی و مقایسه */}
-            <div className="ranking-sidebar">
-              <div className="ranking-header">
-                <span>🏆 برترین‌ها</span>
-                <span className="filter-badge" id="currentFilterBadge">ذخایر طلا</span>
+            {showRanking && (
+              <div className="ranking-sidebar">
+                <div className="ranking-header">
+                  <span>🏆 برترین‌ها</span>
+                  <span className="filter-badge" id="currentFilterBadge">ذخایر طلا</span>
+                </div>
+                <div className="ranking-list" id="topCountriesList">
+                  {/* لیست کشورها توسط gold-map.js پر می‌شود */}
+                </div>
+                <button className="compare-toggle" id="compareToggle">📊 مقایسه</button>
               </div>
-              <div className="ranking-list" id="topCountriesList">
-                {/* لیست کشورها توسط gold-map.js پر می‌شود */}
-              </div>
-              <button className="compare-toggle" id="compareToggle">📊 مقایسه</button>
-            </div>
+            )}
           </div>
           
           {/* پنل مقایسه (پنهان) */}

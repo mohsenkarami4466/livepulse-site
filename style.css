@@ -7040,18 +7040,19 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
 }
 
 .gold-map-container {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    background: var(--glass-bg, rgba(18, 18, 18, 0.6)) !important; /* مثل کارت‌های ۱۰ تایی */
+    backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت‌های ۱۰ تایی */
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    border-radius: 1.25rem !important;
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات مثل کارت‌های ۱۰ تایی */
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--glass-shadow, 0 2px 8px rgba(0, 0, 0, 0.08)) !important; /* مثل کارت‌های ۱۰ تایی */
 }
 
 [data-theme="light"] .gold-map-container {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
-    border: 1px solid rgba(218, 165, 32, 0.3);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    background: var(--glass-bg, rgba(255, 255, 255, 0.95)) !important; /* مثل کارت‌های ۱۰ تایی */
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
+    box-shadow: var(--glass-shadow, 0 4px 24px rgba(0, 0, 0, 0.06)) !important; /* مثل کارت‌های ۱۰ تایی */
 }
 
 .map-header-bar {
@@ -7059,8 +7060,11 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
     justify-content: space-between;
     align-items: center;
     padding: 14px 20px;
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
-    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    background: transparent !important; /* بدون background جداگانه */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important; /* بدون خط - حذف border-bottom */
+    border-bottom: none !important; /* حذف خط پایین */
     flex-wrap: wrap;
     gap: 12px;
 }
@@ -7068,14 +7072,14 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
 .map-header-bar h3 {
     font-size: 1.1rem;
     margin: 0;
-    color: #ffd700;
+    color: var(--text-primary, #ffffff);
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 [data-theme="light"] .map-header-bar h3 {
-    color: #b8860b;
+    color: var(--text-primary, #1a1a1a);
 }
 
 .map-controls-inline {
@@ -7085,29 +7089,182 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
     flex-wrap: wrap;
 }
 
+.ranking-toggle-btn {
+    padding: 8px 14px !important; /* دقیقاً مثل فیلترها */
+    background: rgba(255, 255, 255, 0.05) !important; /* دقیقاً مثل فیلترها */
+    color: var(--text-primary, #ffffff) !important;
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
+    border-radius: 0.75rem !important; /* دقیقاً مثل فیلترها */
+    font-weight: 600 !important; /* مثل فیلترها */
+    cursor: pointer;
+    transition: all 0.3s ease; /* دقیقاً مثل فیلترها */
+    backdrop-filter: blur(18px) saturate(150%) !important; /* دقیقاً مثل فیلترها */
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important; /* دقیقاً مثل فیلترها */
+    font-size: 0.8rem !important; /* دقیقاً مثل فیلترها */
+    font-family: inherit !important; /* دقیقاً مثل فیلترها */
+    white-space: nowrap;
+    min-width: 140px !important; /* مثل فیلترها */
+}
+
+.ranking-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important; /* دقیقاً مثل فیلترها */
+    color: var(--text-primary, #ffffff) !important;
+    transform: translateY(-1px); /* دقیقاً مثل فیلترها */
+    border: none !important;
+}
+
+.ranking-toggle-btn:active {
+    transform: translateY(0);
+}
+
+[data-theme="light"] .ranking-toggle-btn {
+    background: rgba(255, 255, 255, 0.8) !important; /* دقیقاً مثل فیلترها */
+    color: var(--text-primary, #1a1a1a) !important;
+    border: none !important;
+}
+
 .filter-select, .year-select {
     padding: 8px 14px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.3);
-    color: #ffd700;
+    padding-right: 32px !important; /* فضا برای arrow */
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
+    border-radius: 0.75rem !important;
+    background: rgba(255, 255, 255, 0.05) !important; /* مثل کارت‌های ۱۰ تایی */
+    backdrop-filter: blur(18px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+    color: var(--text-primary, #ffffff) !important;
     font-size: 0.8rem;
     cursor: pointer;
     font-family: inherit;
     min-width: 140px;
+    transition: all 0.3s ease;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    position: relative;
+}
+
+/* Arrow برای select */
+.filter-select::after,
+.year-select::after {
+    content: '▼';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-primary, #ffffff);
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+/* استایل dropdown box - برای مرورگرهایی که پشتیبانی می‌کنند */
+.filter-select:focus,
+.year-select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.filter-select:hover, .year-select:hover {
+    background: rgba(255, 255, 255, 0.1) !important; /* مثل کارت‌های ۱۰ تایی */
+    border: none !important;
+    transform: translateY(-1px);
 }
 
 [data-theme="light"] .filter-select,
 [data-theme="light"] .year-select {
-    background: rgba(255, 255, 255, 0.8);
-    color: #b8860b;
-    border-color: rgba(184, 134, 11, 0.3);
+    background: rgba(255, 255, 255, 0.8) !important;
+    color: var(--text-primary, #1a1a1a) !important;
+    border: none !important; /* بدون خط */
+}
+
+/* استایل option های select - شیشه‌ای مات */
+.filter-select option,
+.year-select option {
+    background: rgba(18, 18, 18, 0.98) !important;
+    background-color: rgba(18, 18, 18, 0.98) !important;
+    color: var(--text-primary, #ffffff) !important;
+    padding: 10px 12px !important;
+    border: none !important;
+    font-size: 0.85rem;
+}
+
+.filter-select option:hover,
+.year-select option:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.filter-select option:checked,
+.year-select option:checked,
+.filter-select option:focus,
+.year-select option:focus {
+    background: rgba(234, 88, 12, 0.3) !important;
+    background-color: rgba(234, 88, 12, 0.3) !important;
+    color: #ffffff !important;
+}
+
+[data-theme="light"] .filter-select option,
+[data-theme="light"] .year-select option {
+    background: rgba(255, 255, 255, 0.98) !important;
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    color: var(--text-primary, #1a1a1a) !important;
+}
+
+[data-theme="light"] .filter-select option:hover,
+[data-theme="light"] .year-select option:hover {
+    background: rgba(234, 88, 12, 0.1) !important;
+    background-color: rgba(234, 88, 12, 0.1) !important;
+}
+
+[data-theme="light"] .filter-select option:checked,
+[data-theme="light"] .year-select option:checked,
+[data-theme="light"] .filter-select option:focus,
+[data-theme="light"] .year-select option:focus {
+    background: rgba(234, 88, 12, 0.2) !important;
+    background-color: rgba(234, 88, 12, 0.2) !important;
+    color: #1a1a1a !important;
+}
+
+/* استایل dropdown box برای مرورگرهای مختلف */
+.filter-select,
+.year-select {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.filter-select:focus,
+.year-select:focus {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="light"] .filter-select,
+[data-theme="light"] .year-select {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+[data-theme="light"] .filter-select:focus,
+[data-theme="light"] .year-select:focus {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* استایل dropdown arrow برای select */
+.filter-select::-ms-expand,
+.year-select::-ms-expand {
+    display: none;
 }
 
 @media (max-width: 640px) {
     .filter-select,
     .year-select {
         flex: 1;
+        min-width: 100px !important;
+        font-size: 0.75rem !important;
+        padding: 6px 10px !important;
+    }
+    
+    .ranking-toggle-btn {
+        min-width: 100px !important;
+        font-size: 0.75rem !important;
+        padding: 6px 10px !important;
     }
 }
 
@@ -7143,15 +7300,18 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
 .map-visual-area {
     flex: 1;
     position: relative;
-    border-radius: 14px;
+    border-radius: 0.875rem !important;
     overflow: hidden;
-    background: linear-gradient(180deg, #0a0a1a, #1a1a3e);
+    background: var(--bg-secondary, rgba(15, 23, 42, 0.3)) !important; /* شیشه‌ای مات */
+    backdrop-filter: blur(10px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(150%) !important;
     min-height: 400px;
-    border: 1px solid rgba(255, 215, 0, 0.1);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
 }
 
 [data-theme="light"] .map-visual-area {
-    background: linear-gradient(180deg, #e8f4f8, #d4e8f0);
+    background: var(--bg-secondary, rgba(250, 250, 250, 0.3)) !important; /* شیشه‌ای مات */
+    border: none !important; /* بدون خط */
 }
 
 .gold-map-visual {
@@ -7172,34 +7332,42 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
 .map-zoom-btns button {
     width: 34px;
     height: 34px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #ffd700;
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
+    border-radius: 0.625rem !important;
+    background: rgba(255, 255, 255, 0.05) !important; /* مثل کارت‌های ۱۰ تایی */
+    backdrop-filter: blur(18px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+    color: var(--text-primary, #ffffff) !important;
     cursor: pointer;
     font-size: 1.1rem;
-    backdrop-filter: blur(10px);
     transition: all 0.2s ease;
 }
 
 .map-zoom-btns button:hover {
-    background: #ffd700;
-    color: #1a1a2e;
+    background: var(--accent-blue, #ea580c) !important;
+    color: #ffffff !important;
+    transform: scale(1.05);
+    border: none !important;
 }
 
 .ranking-sidebar {
     width: 210px;
     display: flex;
     flex-direction: column;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 14px;
+    background: var(--glass-bg, rgba(18, 18, 18, 0.6)) !important; /* مثل کارت‌های ۱۰ تایی */
+    backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت‌های ۱۰ تایی */
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    border-radius: 0.875rem !important;
     padding: 12px;
-    border: 1px solid rgba(255, 215, 0, 0.1);
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات مثل کارت‌های ۱۰ تایی */
     gap: 10px;
+    box-shadow: var(--glass-shadow, 0 2px 8px rgba(0, 0, 0, 0.08)) !important; /* مثل کارت‌های ۱۰ تایی */
 }
 
 [data-theme="light"] .ranking-sidebar {
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--glass-bg, rgba(255, 255, 255, 0.95)) !important; /* مثل کارت‌های ۱۰ تایی */
+    border: none !important; /* بدون خط */
+    box-shadow: var(--glass-shadow, 0 4px 24px rgba(0, 0, 0, 0.06)) !important; /* مثل کارت‌های ۱۰ تایی */
 }
 
 @media (max-width: 1024px) {
@@ -7217,19 +7385,19 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
     margin-bottom: 12px;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #ffd700;
+    color: var(--text-primary, #ffffff) !important;
 }
 
 [data-theme="light"] .ranking-header {
-    color: #b8860b;
+    color: var(--text-primary, #1a1a1a) !important;
 }
 
 .filter-badge {
     font-size: 0.65rem;
     padding: 4px 10px;
-    background: linear-gradient(135deg, #ffd700, #ff8c00);
-    color: #1a1a2e;
-    border-radius: 12px;
+    background: var(--accent-gradient, linear-gradient(135deg, #ea580c, #fb923c)) !important;
+    color: #ffffff !important;
+    border-radius: 0.75rem !important;
     font-weight: 600;
 }
 
@@ -7250,28 +7418,38 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
 .compare-toggle {
     margin-top: 12px;
     padding: 10px;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05) !important; /* مثل کارت‌های ۱۰ تایی */
+    backdrop-filter: blur(18px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+    border: none !important; /* بدون خط - فقط شیشه‌ای مات */
+    border-radius: 0.625rem !important;
     cursor: pointer;
     font-size: 0.85rem;
-    color: #ffd700;
+    color: var(--text-primary, #ffffff) !important;
     font-weight: 600;
     transition: all 0.3s ease;
 }
 
 .compare-toggle:hover {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 140, 0, 0.3));
+    background: var(--accent-blue, #ea580c) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    border: none !important;
 }
 
 [data-theme="light"] .compare-toggle {
-    color: #b8860b;
+    background: rgba(255, 255, 255, 0.8) !important;
+    color: var(--text-primary, #1a1a1a) !important;
+    border: none !important;
 }
 
 .compare-panel {
     padding: 16px;
-    border-top: 1px solid rgba(255, 215, 0, 0.15);
-    background: rgba(0, 0, 0, 0.1);
+    border: none !important; /* بدون خط - حذف border-top */
+    border-top: none !important;
+    background: transparent !important; /* بدون background جداگانه */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 .compare-panel.hidden {
@@ -7288,31 +7466,48 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
 .compare-header h4 {
     margin: 0;
     font-size: 0.95rem;
-    color: #ffd700;
+    color: var(--text-primary, #ffffff) !important;
 }
 
 [data-theme="light"] .compare-header h4 {
-    color: #b8860b;
+    color: var(--text-primary, #1a1a1a) !important;
 }
 
 .close-compare {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
+    background: rgba(255, 255, 255, 0.05) !important; /* مثل کارت‌های ۱۰ تایی */
+    backdrop-filter: blur(10px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(150%) !important;
+    border: none !important; /* بدون خط */
     font-size: 1.2rem;
     cursor: pointer;
-    color: #ffd700;
+    color: var(--text-primary, #ffffff) !important;
     width: 28px;
     height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-compare:hover {
+    background: var(--accent-red, #dc2626) !important;
+    color: #ffffff !important;
+    transform: scale(1.1);
+}
+
+[data-theme="light"] .close-compare {
+    color: var(--text-primary, #1a1a1a) !important;
 }
 
 .compare-hint {
-    color: rgba(255, 215, 0, 0.6);
+    color: var(--text-secondary, #a0a0a0) !important;
     font-size: 0.8rem;
     text-align: center;
+}
+
+[data-theme="light"] .compare-hint {
+    color: var(--text-secondary, #4a4a4a) !important;
 }
 
 /* موبایل */

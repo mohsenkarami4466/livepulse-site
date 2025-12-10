@@ -247,7 +247,7 @@ function updateHighlightsPosition() {
       // باید scrollTop رو هم در نظر بگیریم
       const calculatedMargin = portfolioBottom - viewportTop + scrollTop + 20;
       marginTop = `${Math.max(calculatedMargin, 0)}px`;
-    } else {
+  } else {
       // fallback: محاسبه بر اساس ارتفاع‌های CSS
       // در تبلت: کره + جفت ارز (همردیف) + portfolio (زیر جفت ارز)
       // محاسبه: headerHeight + 8 + max(globeHeight, indicatorsHeight) + gap + portfolioHeight + 20
@@ -1972,7 +1972,7 @@ function buildSimpleGlobe(containerId, type) {
         
         // پیدا کردن کشور بر اساس مختصات - روش پیشرفته با فاصله از مرکز
         const findCountryByLatLng = (lat, lng) => {
-            if (typeof countriesData === 'undefined') return null;
+            if (typeof countriesData === 'undefined' || !countriesData) return null;
             
             // استفاده از مختصات پایتخت‌ها و محاسبه نزدیک‌ترین کشور
             // این روش دقیق‌تر از bounding box است
@@ -1992,7 +1992,7 @@ function buildSimpleGlobe(containerId, type) {
             };
             
             // اول از countriesData استفاده کن (دقیق‌تر)
-            if (countriesData) {
+            if (typeof countriesData !== 'undefined' && countriesData) {
                 for (const [code, data] of Object.entries(countriesData)) {
                     if (data.capital && data.capital.coords) {
                         const [capLat, capLng] = data.capital.coords;
@@ -5258,7 +5258,7 @@ function createAllConflicts(earth) {
     const conflictsGroup = new THREE.Group();
     conflictsGroup.name = 'conflicts';
     
-    if (!countriesData) return conflictsGroup;
+    if (typeof countriesData === 'undefined' || !countriesData) return conflictsGroup;
     
     // بررسی همه کشورها برای جنگ‌ها
     Object.entries(countriesData).forEach(([countryCode, countryData]) => {
@@ -5330,6 +5330,8 @@ function showAirForceOnGlobe() {
         militaryMarkersGroup.name = 'militaryMarkers';
         window.resourcesGlobeObjects.earth.scene.add(militaryMarkersGroup);
     }
+    
+    if (typeof countriesData === 'undefined' || !countriesData) return;
     
     Object.entries(countriesData).forEach(([code, data]) => {
         if (data.military && data.military.airForce) {
@@ -5535,7 +5537,7 @@ function hideMilitaryMarkers() {
 // پر کردن لیست کشورها
 function populateCountryList() {
     const listContainer = document.getElementById('countryList');
-    if (!listContainer || typeof countriesData === 'undefined') return;
+    if (!listContainer || typeof countriesData === 'undefined' || !countriesData) return;
     
     listContainer.innerHTML = '';
     
@@ -5551,6 +5553,9 @@ function populateCountryList() {
         };
         return flags[code] || '🏳️';
     };
+    
+    // بررسی وجود countriesData
+    if (typeof countriesData === 'undefined' || !countriesData) return;
     
     // مرتب‌سازی بر اساس GDP
     const sortedCountries = Object.entries(countriesData)
@@ -5627,6 +5632,14 @@ function selectCountry(code) {
     const log = window.logger || { info: console.log }; log.info('🏳️ انتخاب کشور:', code);
     
     resourcesGlobeData.selectedCountry = code;
+    
+    // بررسی وجود countriesData
+    if (typeof countriesData === 'undefined' || !countriesData) {
+        const log = window.logger || { warn: console.warn };
+        log.warn('⚠️ countriesData تعریف نشده است');
+        return;
+    }
+    
     let countryData = countriesData[code];
     
     // اگر کشور در countriesData نیست، داده پیش‌فرض ایجاد کن

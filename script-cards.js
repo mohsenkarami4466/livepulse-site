@@ -432,8 +432,9 @@ function openPriceDetail(item) {
     
     const modalContent = document.getElementById('modalContent');
     if (!modalContent) {
-        const log = window.logger || { error: console.error };
-        log.error('❌ modalContent element not found');
+        const log = window.logger || { warn: console.warn };
+        log.warn('⚠️ modalContent element not found - ممکن است در React component باشد');
+        // اگر modalContent وجود ندارد، از PriceModal در React استفاده می‌شود
         return;
     }
     const changeClass = item.change >= 0 ? 'positive' : 'negative';

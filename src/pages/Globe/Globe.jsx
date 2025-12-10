@@ -151,28 +151,28 @@ function Globe() {
       // باز کردن کره 3D
       const action = item.globeAction
       
-      if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
         // کره منابع از تابع جداگانه استفاده می‌کند
-        if (action === 'open-resources') {
-          if (typeof window.openResourcesGlobe === 'function') {
-            window.openResourcesGlobe()
-          }
-          return
+      if (action === 'open-resources') {
+        if (typeof window.openResourcesGlobe === 'function') {
+          window.openResourcesGlobe()
         }
-        
-        // سایر کره‌ها از open3DGlobe استفاده می‌کنند
-        const actionToType = {
-          'open-weather': 'weather',
-          'open-military': 'military',
-          'open-universities': 'universities',
-          'open-historical': 'historical',
-          'open-earthquake': 'earthquake',
-          'open-natural-resources': 'natural-resources'
-        }
-        
-        const globeType = actionToType[action]
-        if (globeType && typeof window.open3DGlobe === 'function') {
-          window.open3DGlobe(globeType)
+        return
+      }
+      
+      // سایر کره‌ها از open3DGlobe استفاده می‌کنند
+      const actionToType = {
+        'open-weather': 'weather',
+        'open-military': 'military',
+        'open-universities': 'universities',
+        'open-historical': 'historical',
+        'open-earthquake': 'earthquake',
+        'open-natural-resources': 'natural-resources'
+      }
+      
+      const globeType = actionToType[action]
+      if (globeType && typeof window.open3DGlobe === 'function') {
+        window.open3DGlobe(globeType)
         }
       }
     }
