@@ -52,10 +52,10 @@ function Header() {
    * این برای CSS theme switching استفاده می‌شود.
    */
   // Theme handling is centralized in AppContext; no direct DOM writes here
-  const handleThemeToggle = () => {
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
-  }
+      const handleThemeToggle = () => {
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light'
+        setTheme(newTheme)
+      }
 
   /**
    * Effect: تنظیم event listener برای دکمه تمام صفحه

@@ -209,33 +209,33 @@ function Layout({ children }) {
       
       {/* مودال‌های کره‌های بزرگ - همیشه render می‌شوند اما hidden هستند تا vanilla JS بتواند آن‌ها را پیدا کند */}
         {isFinancialGlobeOpen && (
-          <FinancialGlobeModal 
-            isOpen={isFinancialGlobeOpen} 
-            onClose={() => setIsFinancialGlobeOpen(false)} 
-          />
+        <FinancialGlobeModal 
+          isOpen={isFinancialGlobeOpen} 
+          onClose={() => setIsFinancialGlobeOpen(false)} 
+        />
         )}
         {isResourcesGlobeOpen && (
-          <ResourcesGlobeModal 
-            isOpen={isResourcesGlobeOpen} 
-            onClose={() => setIsResourcesGlobeOpen(false)} 
-          />
+        <ResourcesGlobeModal 
+          isOpen={isResourcesGlobeOpen} 
+          onClose={() => setIsResourcesGlobeOpen(false)} 
+        />
         )}
       
       {/* مودال‌های کره‌های 3D - همیشه render می‌شوند اما hidden هستند */}
       {open3DGlobeType && (
-        <Globe3DModal 
+      <Globe3DModal 
           type={open3DGlobeType} 
           isOpen={Boolean(open3DGlobeType)} 
-          onClose={() => setOpen3DGlobeType(null)} 
-        />
+        onClose={() => setOpen3DGlobeType(null)} 
+      />
       )}
       
       {/* Market Hours Modal (gcModal) - باز می‌شود با کلیک روی کره کوچک */}
       {isMarketHoursModalOpen && (
-        <MarketHoursModal
-          isOpen={isMarketHoursModalOpen}
-          onClose={() => setIsMarketHoursModalOpen(false)}
-        />
+      <MarketHoursModal
+        isOpen={isMarketHoursModalOpen}
+        onClose={() => setIsMarketHoursModalOpen(false)}
+      />
       )}
       
       {/* Footer - نمایش داده می‌شود در همه صفحات */}

@@ -115,7 +115,7 @@ function Home() {
     }
     
     addEventListener(events.categoryChanged, handleCategoryChange)
-
+    
     // هماهنگی با vanilla JS: فعال کردن هایلایت خانه و غیرفعال کردن بقیه
     if (typeof window !== 'undefined') {
       setTimeout(() => {
