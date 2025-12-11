@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - صفحه پیدا نشد</title>
+    <script>
+        // Redirect to base path for React Router
+        const path = window.location.pathname;
+        const base = '/livepulse-site';
+        if (path.startsWith(base)) {
+            window.location.replace(base + '/');
+        } else {
+            window.location.replace('/livepulse-site/');
+        }
+    </script>
+</head>
+<body>
+    <p>در حال انتقال...</p>
+</body>
+</html>
+

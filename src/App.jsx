@@ -72,6 +72,7 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter
+      basename="/livepulse-site"
       future={{
         v7_startTransition: true,
         v7_relativeSplatPath: true
