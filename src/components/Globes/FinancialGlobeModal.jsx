@@ -43,7 +43,21 @@ function FinancialGlobeModal({ isOpen, onClose }) {
 
   useEffect(() => {
     if (isOpen && containerRef.current) {
-      const log = window.logger || { info: console.log, error: console.error }
+      const log = window.logger || { info: console.log, error: console.error, warn: console.warn }
+      
+      // بررسی وجود container
+      const container = document.getElementById('financialGlobeContainer')
+      if (!container) {
+        log.error('❌ Container کره مالی پیدا نشد!')
+        return
+      }
+      
+      // بررسی وجود THREE.js
+      if (typeof THREE === 'undefined') {
+        log.error('❌ THREE.js لود نشده است!')
+        container.innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">Three.js لود نشده است!</p>'
+        return
+      }
       
       // استفاده از buildSimpleGlobe برای ساخت کره 3D
       // این تابع در script-globes.js تعریف شده است
@@ -55,6 +69,9 @@ function FinancialGlobeModal({ isOpen, onClose }) {
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               try {
+                // پاک کردن container قبل از ساخت کره جدید
+                container.innerHTML = ''
+                
                 window.buildSimpleGlobe('financialGlobeContainer', 'financial')
                 log.info('✅ کره مالی ساخته شد')
                 

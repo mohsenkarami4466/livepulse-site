@@ -33,25 +33,28 @@ function AppContent() {
   const location = useLocation()
 
   useEffect(() => {
-    // اسکرول به بالای صفحه روی mount
+    // اسکرول به بالای صفحه روی mount و route change
     window.scrollTo(0, 0)
     
     // فعال کردن هایلایت خانه فقط زمانی که در مسیر خانه هستیم
-    if (location.pathname === '/') {
-    setTimeout(() => {
-      const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
-      if (homeCircle) {
-        homeCircle.classList.add('active')
-      }
-      
-      // غیرفعال کردن بقیه highlights
-      const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
-      otherCircles.forEach(circle => {
-        circle.classList.remove('active')
+    if (location.pathname === '/' || location.pathname === '/livepulse-site/') {
+      // استفاده از requestAnimationFrame برای بهینه‌سازی
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
+          if (homeCircle) {
+            homeCircle.classList.add('active')
+          }
+          
+          // غیرفعال کردن بقیه highlights
+          const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
+          otherCircles.forEach(circle => {
+            circle.classList.remove('active')
+          })
+        })
       })
-    }, 100)
     }
-  }, []) // فقط یک بار هنگام mount
+  }, [location.pathname]) // اجرا با هر تغییر مسیر
 
   return (
     <Layout>

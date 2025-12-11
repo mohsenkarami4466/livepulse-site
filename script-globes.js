@@ -498,7 +498,8 @@ function initGlobe() {
     const texturePaths = (typeof EARTH_TEXTURE_PATHS !== 'undefined' && EARTH_TEXTURE_PATHS.day) 
       ? EARTH_TEXTURE_PATHS.day 
       : [
-          // اول از فایل‌های محلی استفاده کن
+          // اول از فایل‌های محلی با base path استفاده کن
+          '/livepulse-site/earth-day.jpg',
           './earth-day.jpg', 
           'earth-day.jpg', 
           '/earth-day.jpg',
@@ -788,6 +789,7 @@ if (gcCloseBtn) {
 // تکسچر زمین - با fallback به CDN (فقط روز)
 const EARTH_TEXTURE_PATHS = {
     day: [
+        '/livepulse-site/earth-day.jpg',
         './earth-day.jpg',
         'earth-day.jpg',
         '/earth-day.jpg',
@@ -1524,7 +1526,8 @@ function buildSimpleGlobe(containerId, type) {
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const texturePaths = [
-            // اول از فایل‌های محلی استفاده کن
+            // اول از فایل‌های محلی با base path استفاده کن
+            '/livepulse-site/earth-day.jpg',
             './earth-day.jpg',
             'earth-day.jpg',
             '/earth-day.jpg',
