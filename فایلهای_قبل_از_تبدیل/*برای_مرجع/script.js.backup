@@ -3265,7 +3265,7 @@ window.saveMarketNotification = function(marketName, btn) {
         startMarketNotificationChecker();
         
         btn.textContent = '✅ اعلان فعال شد!';
-        btn.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.5), rgba(34, 197, 94, 0.3))';
+        btn.style.background = 'var(--card-bg), rgba(34, 197, 94, 0.3))';
         setTimeout(() => {
             btn.textContent = '💾 ذخیره و فعال‌سازی اعلان';
             btn.style.background = '';
@@ -3278,7 +3278,7 @@ window.saveMarketNotification = function(marketName, btn) {
         localStorage.setItem('marketNotifications', JSON.stringify(settings));
         
         btn.textContent = '❌ اعلان غیرفعال شد';
-        btn.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2))';
+        btn.style.background = 'var(--card-bg), rgba(239, 68, 68, 0.2))';
         setTimeout(() => {
             btn.textContent = '💾 ذخیره و فعال‌سازی اعلان';
             btn.style.background = '';
@@ -8221,7 +8221,7 @@ function showTimezoneSettings() {
                 </div>
                 
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="saveTimezoneSettings()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    <button onclick="saveTimezoneSettings()" style="flex: 1; padding: 12px; background: var(--card-bg); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                         💾 ذخیره
                     </button>
                     <button onclick="this.closest('.modal-overlay').remove()" style="flex: 1; padding: 12px; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer;">
@@ -8326,7 +8326,7 @@ function showMarketFilter() {
                 <div class="modal-body">
                     <p>برای استفاده از فیلتر بازارها، لطفاً ابتدا کره مالی را باز کنید.</p>
                     <button onclick="this.closest('.modal-overlay').remove(); if(typeof openFinancialGlobe === 'function') openFinancialGlobe();" 
-                            style="width: 100%; padding: 12px; margin-top: 15px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            style="width: 100%; padding: 12px; margin-top: 15px; background: var(--card-bg); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                         🌍 باز کردن کره مالی
                     </button>
                 </div>
@@ -8972,8 +8972,8 @@ function loadModalAdBanner(symbol) {
     const adBanner = document.getElementById('modalAdBanner');
     
     const banners = [
-        '<div class="ad-real" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">🎯 تبلیغات ویژه</div>',
-        '<div class="ad-real" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">💎 پیشنهاد اختصاصی</div>'
+        '<div class="ad-real" style="background: var(--card-bg); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">🎯 تبلیغات ویژه</div>',
+        '<div class="ad-real" style="background: var(--card-bg); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">💎 پیشنهاد اختصاصی</div>'
     ];
     
     const randomBanner = banners[Math.floor(Math.random() * banners.length)];

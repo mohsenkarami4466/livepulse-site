@@ -25,6 +25,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../contexts/AppContext'
 import LoginModal from '../Modals/LoginModal'
+import { getLogger } from '../../utils/dom-bridge'
 import './Header.css'
 
 /**
@@ -45,33 +46,16 @@ function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false) // وضعیت مودال ورود
 
   /**
-   * Effect: اعمال theme به body
+   * Effect: اعمال theme به body و html
    * 
-   * هر بار که theme تغییر کند، attribute data-theme در body به‌روزرسانی می‌شود.
+   * هر بار که theme تغییر کند، attribute data-theme در body و html به‌روزرسانی می‌شود.
    * این برای CSS theme switching استفاده می‌شود.
    */
-  useEffect(() => {
-    document.body.setAttribute('data-theme', currentTheme)
-  }, [currentTheme])
-
-  /**
-   * Effect: تنظیم event listener برای دکمه تغییر تم
-   * 
-   * دکمه themeToggle را پیدا می‌کند و event listener اضافه می‌کند.
-   * با کلیک روی دکمه، theme بین light و dark تغییر می‌کند.
-   */
-  useEffect(() => {
-    const themeToggle = document.getElementById('themeToggle')
-    if (themeToggle) {
-      const handleThemeToggle = () => {
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light'
-        setTheme(newTheme)
-      }
-
-      themeToggle.addEventListener('click', handleThemeToggle)
-      return () => themeToggle.removeEventListener('click', handleThemeToggle)
-    }
-  }, [currentTheme, setTheme])
+  // Theme handling is centralized in AppContext; no direct DOM writes here
+  const handleThemeToggle = () => {
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+  }
 
   /**
    * Effect: تنظیم event listener برای دکمه تمام صفحه
@@ -85,7 +69,8 @@ function Header() {
       const handleFullscreenToggle = () => {
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen().catch(err => {
-            console.error('خطا در ورود به حالت تمام صفحه:', err)
+            const log = getLogger()
+            log.error('خطا در ورود به حالت تمام صفحه:', err)
           })
         } else {
           document.exitFullscreen()
@@ -171,7 +156,7 @@ function Header() {
         <div className="control-menu">
           {/* دکمه‌های کنترلی: تغییر تم و تمام صفحه */}
           <div className="theme-toggle-center">
-            <button className="theme-toggle" id="themeToggle">
+            <button className="theme-toggle" id="themeToggle" onClick={handleThemeToggle}>
               <span className="theme-icon">🌙</span>
             </button>
             <button className="fullscreen-toggle" id="fullscreenToggle" title="تمام صفحه">

@@ -27,6 +27,7 @@
 
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { addEventListener, removeEventListener, events, getLogger, ensureReactOnWindow } from '../../utils/dom-bridge'
 import Header from '../Header/Header'
 import BottomNavigation from '../BottomNavigation/BottomNavigation'
 import GlobeClock from '../Globes/GlobeClock'
@@ -35,7 +36,7 @@ import PortfolioSummary from '../Portfolio/PortfolioSummary'
 import FinancialGlobeModal from '../Globes/FinancialGlobeModal'
 import ResourcesGlobeModal from '../Globes/ResourcesGlobeModal'
 import Globe3DModal from '../Globes/Globe3DModal'
-import AssistiveTouch from '../AssistiveTouch/AssistiveTouch'
+import FloatingDock from '../FloatingDock/FloatingDock'
 import Footer from '../Footer/Footer'
 import MarketHoursModal from '../Modals/MarketHoursModal'
 import GlobalSections from '../Shared/GlobalSections'
@@ -68,6 +69,14 @@ function Layout({ children }) {
   
   // State برای Market Hours Modal (gcModal)
   const [isMarketHoursModalOpen, setIsMarketHoursModalOpen] = React.useState(false)
+  const dockMenuItems = React.useMemo(() => ([
+    { id: 'home', label: 'خانه', icon: '🏠', onClick: () => navigate('/') },
+    { id: 'news', label: 'اخبار', icon: '📰', onClick: () => navigate('/news') },
+    { id: 'globe', label: 'کره‌ها', icon: '🌍', onClick: () => navigate('/globe') },
+    { id: 'tutorial', label: 'آموزش', icon: '📚', onClick: () => navigate('/tutorial') },
+    { id: 'relax', label: 'آرامش', icon: '🧘', onClick: () => navigate('/relax') },
+    { id: 'tools', label: 'ابزارها', icon: '🛠️', onClick: () => navigate('/tools') }
+  ]), [navigate])
 
   /**
    * Effect: هماهنگی با vanilla JS
@@ -92,28 +101,28 @@ function Layout({ children }) {
     if (typeof window !== 'undefined') {
       // تنظیم window.navigate - باید قبل از لود شدن vanilla JS باشد
       window.navigate = (path) => {
-        console.log('🔍 window.navigate called with path:', path)
+        const log = getLogger()
+        log.debug('🔍 window.navigate called with path:', path)
         navigate(path)
       }
       
       // اطمینان از اینکه window.React موجود است (برای تشخیص React Router)
-      if (!window.React) {
-        window.React = React
-      }
+      ensureReactOnWindow(React)
       
       // گوش دادن به event های باز شدن Globe Modals از vanilla JS
-      window.addEventListener('financialGlobeOpen', handleFinancialGlobeOpen)
-      window.addEventListener('resourcesGlobeOpen', handleResourcesGlobeOpen)
-      window.addEventListener('marketHoursOpen', handleMarketHoursOpen)
+      addEventListener(events.financialGlobeOpen, handleFinancialGlobeOpen)
+      addEventListener(events.resourcesGlobeOpen, handleResourcesGlobeOpen)
+      addEventListener(events.marketHoursOpen, handleMarketHoursOpen)
       
       // Override توابع vanilla JS برای استفاده از React state
       // این برای سازگاری با script-globes.js است
+      const log = getLogger()
       window.openFinancialGlobe = () => {
-        console.log('🔍 window.openFinancialGlobe called - opening via React')
+        log.debug('🔍 window.openFinancialGlobe called - opening via React')
         // بررسی checkLoginRequired اگر موجود باشد
         if (typeof window.checkLoginRequired === 'function') {
           if (!window.checkLoginRequired()) {
-            console.warn('⚠️ کاربر لاگین نیست - کره مالی باز نشد')
+            log.warn('⚠️ کاربر لاگین نیست - کره مالی باز نشد')
             return
           }
         }
@@ -123,7 +132,7 @@ function Layout({ children }) {
       }
       
       window.openResourcesGlobe = () => {
-        console.log('🔍 window.openResourcesGlobe called - opening via React')
+        log.debug('🔍 window.openResourcesGlobe called - opening via React')
         setIsResourcesGlobeOpen(true)
         // Dispatch event هم برای backward compatibility
         window.dispatchEvent(new Event('resourcesGlobeOpen'))
@@ -135,20 +144,20 @@ function Layout({ children }) {
       
       // Override open3DGlobe برای استفاده از React state
       window.open3DGlobe = (type) => {
-        console.log(`🔍 window.open3DGlobe called with type: ${type}`)
+        log.debug(`🔍 window.open3DGlobe called with type: ${type}`)
         setOpen3DGlobeType(type)
       }
       
-      console.log('✅ window.navigate تنظیم شد')
+      log.debug('✅ window.navigate تنظیم شد')
     }
     
     // Cleanup: پاک کردن event listener ها و window.navigate هنگام unmount
     return () => {
       if (typeof window !== 'undefined') {
         delete window.navigate
-        window.removeEventListener('financialGlobeOpen', handleFinancialGlobeOpen)
-        window.removeEventListener('resourcesGlobeOpen', handleResourcesGlobeOpen)
-        window.removeEventListener('marketHoursOpen', handleMarketHoursOpen)
+        removeEventListener(events.financialGlobeOpen, handleFinancialGlobeOpen)
+        removeEventListener(events.resourcesGlobeOpen, handleResourcesGlobeOpen)
+        removeEventListener(events.marketHoursOpen, handleMarketHoursOpen)
         delete window.openMarketHoursModal
       }
     }
@@ -192,55 +201,42 @@ function Layout({ children }) {
       <GlobalSections />
       
       {/* دکمه سیار - نمایش داده می‌شود در همه صفحات */}
-      <AssistiveTouch />
+      <FloatingDock
+        mode="page"
+        storageKey="floatingDockPos-page"
+        menuItems={dockMenuItems}
+      />
       
       {/* مودال‌های کره‌های بزرگ - همیشه render می‌شوند اما hidden هستند تا vanilla JS بتواند آن‌ها را پیدا کند */}
-        <FinancialGlobeModal 
-          isOpen={isFinancialGlobeOpen} 
-          onClose={() => setIsFinancialGlobeOpen(false)} 
-        />
-        <ResourcesGlobeModal 
-          isOpen={isResourcesGlobeOpen} 
-          onClose={() => setIsResourcesGlobeOpen(false)} 
-        />
+        {isFinancialGlobeOpen && (
+          <FinancialGlobeModal 
+            isOpen={isFinancialGlobeOpen} 
+            onClose={() => setIsFinancialGlobeOpen(false)} 
+          />
+        )}
+        {isResourcesGlobeOpen && (
+          <ResourcesGlobeModal 
+            isOpen={isResourcesGlobeOpen} 
+            onClose={() => setIsResourcesGlobeOpen(false)} 
+          />
+        )}
       
       {/* مودال‌های کره‌های 3D - همیشه render می‌شوند اما hidden هستند */}
-      <Globe3DModal 
-        type="weather" 
-        isOpen={open3DGlobeType === 'weather'} 
-        onClose={() => setOpen3DGlobeType(null)} 
-      />
-      <Globe3DModal 
-        type="military" 
-        isOpen={open3DGlobeType === 'military'} 
-        onClose={() => setOpen3DGlobeType(null)} 
-      />
-      <Globe3DModal 
-        type="universities" 
-        isOpen={open3DGlobeType === 'universities'} 
-        onClose={() => setOpen3DGlobeType(null)} 
-      />
-      <Globe3DModal 
-        type="historical" 
-        isOpen={open3DGlobeType === 'historical'} 
-        onClose={() => setOpen3DGlobeType(null)} 
-      />
-      <Globe3DModal 
-        type="earthquake" 
-        isOpen={open3DGlobeType === 'earthquake'} 
-        onClose={() => setOpen3DGlobeType(null)} 
-      />
-      <Globe3DModal 
-        type="natural-resources" 
-        isOpen={open3DGlobeType === 'natural-resources'} 
-        onClose={() => setOpen3DGlobeType(null)} 
-      />
+      {open3DGlobeType && (
+        <Globe3DModal 
+          type={open3DGlobeType} 
+          isOpen={Boolean(open3DGlobeType)} 
+          onClose={() => setOpen3DGlobeType(null)} 
+        />
+      )}
       
       {/* Market Hours Modal (gcModal) - باز می‌شود با کلیک روی کره کوچک */}
-      <MarketHoursModal
-        isOpen={isMarketHoursModalOpen}
-        onClose={() => setIsMarketHoursModalOpen(false)}
-      />
+      {isMarketHoursModalOpen && (
+        <MarketHoursModal
+          isOpen={isMarketHoursModalOpen}
+          onClose={() => setIsMarketHoursModalOpen(false)}
+        />
+      )}
       
       {/* Footer - نمایش داده می‌شود در همه صفحات */}
       <Footer />

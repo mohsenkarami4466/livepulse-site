@@ -27,6 +27,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useApp } from '../../contexts/AppContext'
+import { addEventListener, removeEventListener, events } from '../../utils/dom-bridge'
 import CardContainer from '../../components/Cards/CardContainer'
 import FinancialGlobeModal from '../../components/Globes/FinancialGlobeModal'
 import ResourcesGlobeModal from '../../components/Globes/ResourcesGlobeModal'
@@ -113,28 +114,27 @@ function Home() {
       setCategory(newCategory)
     }
     
-    window.addEventListener('categoryChanged', handleCategoryChange)
-    
-    return () => {
-      window.removeEventListener('categoryChanged', handleCategoryChange)
-    }
-    
-    // هماهنگی با vanilla JS
+    addEventListener(events.categoryChanged, handleCategoryChange)
+
+    // هماهنگی با vanilla JS: فعال کردن هایلایت خانه و غیرفعال کردن بقیه
     if (typeof window !== 'undefined') {
       setTimeout(() => {
-        // فعال کردن highlight circle خانه
         const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
         if (homeCircle) {
           homeCircle.classList.add('active')
         }
         
-        // غیرفعال کردن بقیه highlights
         const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
         otherCircles.forEach(circle => {
           circle.classList.remove('active')
         })
       }, 100)
     }
+    
+    return () => {
+      removeEventListener(events.categoryChanged, handleCategoryChange)
+    }
+    
   }, []) // فقط یک بار هنگام mount
 
   /**

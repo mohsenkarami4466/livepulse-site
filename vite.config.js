@@ -16,7 +16,9 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: true
+    strictPort: true, // اگر پورت اشغال باشد، خطا بدهد به جای استفاده از پورت دیگر
+    open: true,
+    host: true // دسترسی از شبکه محلی
   },
   build: {
     outDir: 'dist',

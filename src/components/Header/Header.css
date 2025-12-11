@@ -1,13 +1,79 @@
-/* استایل‌های header از style.css استفاده می‌کنند */
-/* این فایل فقط برای override های خاص React است */
+/* استایل‌های header (تفکیک شده از style.css) */
 
-/* کاهش ارتفاع هدر در تمام حالت‌ها */
+.glass-header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: block;
+  background: var(--glass-bg) !important; /* تنها لایه پس‌زمینه */
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: none;
+  box-shadow: var(--shadow);
+  border-radius: 0; /* بدون حاشیه گرد در لبه‌های صفحه */
+  padding: 0; /* جلوگیری از فاصله اضافی */
+}
+
+.header-container {
+  width: 100%;
+  max-width: none; /* تمام عرض */
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: clamp(0.65rem, 1vw, 0.85rem) clamp(1.1rem, 2.5vw, 1.6rem);
+  background: transparent; /* پس‌زمینه روی glass-header است */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.control-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* کاهش ارتفاع هدر در تمام حالت‌ها (همراه با اندازه پایه) */
 .glass-header {
   min-height: auto !important;
   height: auto !important;
 }
 
 .header-container {
-  padding: clamp(0.5rem, 1vw, 0.65rem) clamp(1rem, 2.5vw, 1.5rem) !important; /* کاهش padding عمودی */
+  padding: clamp(0.65rem, 1vw, 0.85rem) clamp(1.1rem, 2.5vw, 1.6rem) !important;
 }
 

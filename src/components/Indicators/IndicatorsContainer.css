@@ -309,12 +309,12 @@ body:has(.indicators-glass-card) .indicators-unified-container:not(.indicators-g
   }
 }
 
-/* Light theme support - یکدست مثل کارت‌های صفحه خانه */
+/* Light theme support - یکدست مثل کارت جفت ارزها */
 [data-theme="light"] .indicators-glass-card {
-  background: rgba(255, 255, 255, 0.6) !important; /* یکدست - مثل کارت‌های صفحه خانه */
-  backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت‌های صفحه خانه */
+  background: rgba(255, 255, 255, 0.75) !important; /* همان رنگ کارت جفت ارزها در تم روشن */
+  backdrop-filter: blur(20px) saturate(150%) !important; /* همان blur کارت جفت ارزها */
   -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important; /* shadow ساده مثل کارت‌ها */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important; /* همان shadow کارت جفت ارزها */
   background-image: none !important; /* حذف هرگونه gradient */
 }
 

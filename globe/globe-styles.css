@@ -227,15 +227,15 @@ body.globe-modal-open {
 }
 
 .legend-color.gold {
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  background: var(--card-bg);
 }
 
 .legend-color.oil {
-  background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+  background: var(--card-bg);
 }
 
 .legend-color.gas {
-  background: linear-gradient(135deg, #a855f7, #6366f1);
+  background: var(--card-bg);
 }
 
 /* ==================== */
@@ -253,7 +253,7 @@ body.globe-modal-open {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--card-bg);
   border: none;
   color: white;
   font-size: 1.5rem;
@@ -442,7 +442,7 @@ body.globe-modal-open {
     padding: 12px;
     border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: var(--card-bg);
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -468,7 +468,7 @@ body.globe-modal-open {
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: var(--card-bg);
     border: none;
     border-radius: 30px;
     color: white;
@@ -490,10 +490,7 @@ body.globe-modal-open {
     left: 20px;
     width: 320px;
     max-height: 400px;
-    background: linear-gradient(135deg, 
-      rgba(20, 30, 50, 0.92) 0%, 
-      rgba(35, 55, 80, 0.88) 50%,
-      rgba(20, 30, 50, 0.92) 100%);
+    background: var(--card-bg);
     backdrop-filter: blur(30px) saturate(180%);
     -webkit-backdrop-filter: blur(30px) saturate(180%);
     border-radius: 20px;
@@ -663,10 +660,7 @@ body.globe-modal-open {
   left: 15px;
   width: 300px;
   max-height: calc(100vh - 150px);
-  background: linear-gradient(135deg, 
-    rgba(20, 30, 48, 0.85) 0%, 
-    rgba(36, 59, 85, 0.8) 50%,
-    rgba(20, 30, 48, 0.85) 100%);
+  background: var(--card-bg);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
   border-radius: 20px;
@@ -780,10 +774,7 @@ body.globe-modal-open {
   right: 15px;
   width: 360px;
   max-height: calc(100vh - 150px);
-  background: linear-gradient(145deg, 
-    rgba(15, 25, 45, 0.9) 0%, 
-    rgba(30, 45, 70, 0.85) 50%,
-    rgba(15, 25, 45, 0.9) 100%);
+  background: var(--card-bg);
   backdrop-filter: blur(30px) saturate(200%);
   -webkit-backdrop-filter: blur(30px) saturate(200%);
   border-radius: 24px;
@@ -806,7 +797,7 @@ body.globe-modal-open {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: linear-gradient(135deg, rgba(74, 158, 255, 0.2), rgba(139, 92, 246, 0.2));
+  background: var(--card-bg);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -929,11 +920,11 @@ body.globe-modal-open {
   transition: width 0.5s ease;
 }
 
-.resource-bar .fill.gold { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-.resource-bar .fill.oil { background: linear-gradient(90deg, #1f2937, #374151); }
-.resource-bar .fill.gas { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
-.resource-bar .fill.iron { background: linear-gradient(90deg, #6b7280, #9ca3af); }
-.resource-bar .fill.copper { background: linear-gradient(90deg, #b45309, #d97706); }
+.resource-bar .fill.gold { background: var(--card-bg); }
+.resource-bar .fill.oil { background: var(--card-bg); }
+.resource-bar .fill.gas { background: var(--card-bg); }
+.resource-bar .fill.iron { background: var(--card-bg); }
+.resource-bar .fill.copper { background: var(--card-bg); }
 
 /* شرکای تجاری */
 .trade-partners {
@@ -977,9 +968,7 @@ body.globe-modal-open {
   bottom: 70px;
   left: 15px;
   right: 15px;
-  background: linear-gradient(180deg, 
-    rgba(20, 35, 55, 0.92) 0%, 
-    rgba(10, 20, 35, 0.95) 100%);
+  background: var(--card-bg);
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
   border-radius: 20px;
@@ -1089,9 +1078,7 @@ body.globe-modal-open {
   position: absolute;
   bottom: 70px;
   right: 15px;
-  background: linear-gradient(135deg, 
-    rgba(25, 35, 55, 0.9) 0%, 
-    rgba(15, 25, 40, 0.92) 100%);
+  background: var(--card-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 16px;
@@ -1143,7 +1130,7 @@ body.globe-modal-open {
 .risk-indicator .meter {
   flex: 1;
   height: 8px;
-  background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+  background: var(--card-bg);
   border-radius: 4px;
   position: relative;
 }

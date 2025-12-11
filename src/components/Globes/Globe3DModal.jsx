@@ -8,7 +8,6 @@
  * 
  * وابستگی‌ها:
  * - window.buildSimpleGlobe: تابع ساخت کره 3D (از script-globes.js)
- * - window.GlobeAssistiveTouch: کلاس دکمه سیار کره‌ها (از script-ui.js)
  * 
  * Props:
  * - type: نوع کره (weather, military, universities, historical, earthquake, natural-resources)
@@ -24,8 +23,9 @@
  * آخرین بروزرسانی: 2025-12-06
  */
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useMemo } from 'react'
 import './GlobeModal.css'
+import FloatingDock from '../FloatingDock/FloatingDock'
 
 /**
  * Map کردن type به modalId و containerId
@@ -84,83 +84,29 @@ const typeToIds = {
  * 
  * Effects:
  * - راه‌اندازی کره 3D با buildSimpleGlobe
- * - راه‌اندازی دکمه سیار کره با GlobeAssistiveTouch
  */
-function Globe3DModal({ type, isOpen, onClose }) {
+function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
   const modalRef = useRef(null)
   const containerRef = useRef(null)
   
   const ids = typeToIds[type]
   if (!ids) {
-    console.error(`❌ نوع کره نامعتبر: ${type}`)
+    const log = window.logger || { error: console.error }
+    log.error(`❌ نوع کره نامعتبر: ${type}`)
     return null
   }
 
   useEffect(() => {
     if (isOpen && containerRef.current) {
       const log = window.logger || { info: console.log, error: console.error }
-      
-      // استفاده از buildSimpleGlobe برای ساخت کره 3D
       if (typeof window !== 'undefined' && typeof window.buildSimpleGlobe === 'function') {
         log.info(`🌍 در حال ساخت کره ${type}...`)
-        
-        // تاخیر برای اطمینان از نمایش modal
         setTimeout(() => {
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               try {
                 window.buildSimpleGlobe(ids.containerId, type)
                 log.info(`✅ کره ${type} ساخته شد`)
-                
-                // راه‌اندازی دکمه سیار کره - با تاخیر بیشتر برای اطمینان از لود شدن کره
-                setTimeout(() => {
-                  // تبدیل نام assistive برای کره‌های خاص
-                  let assistiveId = ids.assistiveId
-                  let menuId = ids.menuId
-                  
-                  const assistive = document.getElementById(assistiveId)
-                  const glassMenu = document.getElementById(menuId)
-                  
-                  if (assistive && glassMenu && typeof window.GlobeAssistiveTouch !== 'undefined') {
-                    const instanceName = `${type}GlobeAssistive`
-                    // حذف instance قبلی اگر وجود داشت
-                    if (window[instanceName]) {
-                      try {
-                        // پاک کردن event listeners قبلی
-                        const oldInstance = window[instanceName]
-                        if (oldInstance.touchButton) {
-                          const newBtn = oldInstance.touchButton.cloneNode(true)
-                          oldInstance.touchButton.parentNode.replaceChild(newBtn, oldInstance.touchButton)
-                        }
-                      } catch (e) {
-                        log.warn('خطا در پاک کردن instance قبلی:', e)
-                      }
-                    }
-                    
-                    // ایجاد instance جدید
-                    try {
-                      window[instanceName] = new window.GlobeAssistiveTouch(assistiveId, menuId, type)
-                      log.info(`✅ دکمه سیار کره ${type} راه‌اندازی شد`)
-                      
-                      // اطمینان از setup شدن menu listeners
-                      setTimeout(() => {
-                        if (window[instanceName] && typeof window[instanceName].setupMenuListeners === 'function') {
-                          window[instanceName].setupMenuListeners()
-                          log.info(`✅ Menu listeners برای کره ${type} setup شدند`)
-                        }
-                      }, 200)
-                    } catch (error) {
-                      log.error(`❌ خطا در راه‌اندازی دکمه سیار کره ${type}:`, error)
-                    }
-                  } else {
-                    log.warn(`⚠️ المان‌های دکمه سیار کره ${type} پیدا نشدند`, {
-                      assistive: !!assistive,
-                      glassMenu: !!glassMenu,
-                      assistiveId,
-                      menuId
-                    })
-                  }
-                }, 800)
               } catch (error) {
                 log.error(`❌ خطا در ساخت کره ${type}:`, error)
               }
@@ -172,6 +118,16 @@ function Globe3DModal({ type, isOpen, onClose }) {
       }
     }
   }, [isOpen, type, ids])
+
+  const dockMenuItems = useMemo(() => {
+    return [
+      { id: 'close', label: 'بستن', icon: '✕', onClick: onClose },
+      { id: 'reset', label: 'ریست دید', icon: '⟲', onClick: actions.resetView },
+      { id: 'rotation', label: 'چرخش', icon: '🔄', onClick: actions.toggleRotation },
+      { id: 'filters', label: 'فیلترها', icon: '🧭', onClick: actions.toggleFilters },
+      { id: 'country', label: 'کشورها', icon: '🌐', onClick: actions.openCountryPanel }
+    ].filter(item => typeof item.onClick === 'function')
+  }, [actions, onClose])
 
   // همیشه render می‌شود اما hidden است تا vanilla JS بتواند آن را پیدا کند
   return (
@@ -196,38 +152,13 @@ function Globe3DModal({ type, isOpen, onClose }) {
           ref={containerRef}
           className="globe-container"
         ></div>
-        
-        {/* 🎮 دکمه سیار کره */}
-        <div className="globe-assistive-touch" id={ids.assistiveId}>
-          <button className="globe-touch-button">
-            <span className="globe-touch-icon">⚙️</span>
-          </button>
-        </div>
-        
-        {/* منوی شیشه‌ای کره */}
-        <div className="globe-glass-menu" id={ids.menuId}>
-          <div className="globe-menu-content">
-            <h4 className="globe-menu-title">{ids.title}</h4>
-            <div className="globe-menu-items">
-              <button className="globe-menu-item" data-action="resetView">
-                <span className="item-icon">🔄</span>
-                <span className="item-text">بازیابی دید</span>
-              </button>
-              <button className="globe-menu-item" data-action="toggleRotation">
-                <span className="item-icon">🌐</span>
-                <span className="item-text">چرخش زمین</span>
-              </button>
-              <button className="globe-menu-item" data-action="resetAll">
-                <span className="item-icon">♻️</span>
-                <span className="item-text">ریست کامل</span>
-              </button>
-              <button className="globe-menu-item exit-item" data-action="exit">
-                <span className="item-icon">🚪</span>
-                <span className="item-text">خروج</span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <FloatingDock
+          mode="globe"
+          storageKey={`floatingDockPos-${type}`}
+          menuItems={dockMenuItems}
+          containerRef={modalRef}
+          icon="⚙️"
+        />
       </div>
     </div>
   )

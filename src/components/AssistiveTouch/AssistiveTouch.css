@@ -33,13 +33,9 @@
     border-radius: 50%;
     /* Fallback background برای مرورگرهایی که backdrop-filter را پشتیبانی نمی‌کنند */
     background: rgba(255, 255, 255, 0.15);
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.1) 100%);
+    background: var(--card-bg);
     /* backdrop-filter با prefix های مختلف برای سازگاری بیشتر */
     -webkit-backdrop-filter: blur(20px);
-    -moz-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     box-shadow: 
@@ -87,10 +83,7 @@
 /* ==================== */
 
 [data-theme="light"] .touch-button {
-    background: linear-gradient(135deg, 
-        rgba(0, 0, 0, 0.1) 0%, 
-        rgba(0, 0, 0, 0.05) 50%,
-        rgba(0, 0, 0, 0.08) 100%);
+    background: var(--card-bg);
     border: 1.5px solid rgba(0, 0, 0, 0.2);
     box-shadow: 
         0 10px 30px rgba(0, 0, 0, 0.15),

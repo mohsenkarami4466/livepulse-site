@@ -796,7 +796,7 @@ class WorldGoldMapGlass {
                 <strong>${filterInfo.label}</strong>
             </div>
             <div class="legend-gradient-container">
-                <div class="legend-gradient-bar" style="background: linear-gradient(to right, ${minColor}, ${maxColor});"></div>
+                <div class="legend-gradient-bar" style="background: var(--card-bg);"></div>
             </div>
             <div class="legend-values">
                 <span class="legend-max">${formatMax}</span>

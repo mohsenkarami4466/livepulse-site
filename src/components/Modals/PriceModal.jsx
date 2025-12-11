@@ -17,14 +17,15 @@
  * - نمایش نام و نماد قیمت
  * - نمایش قیمت فعلی
  * - نمایش تغییرات 24 ساعته
- * - نمایش نمودار قیمت (TODO: پیاده‌سازی)
+ * - نمایش نمودار قیمت (پیاده‌سازی شده)
  * 
  * تاریخ ایجاد: 2025-12-06
  * آخرین بروزرسانی: 2025-12-06
  */
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import Modal from './Modal'
+import { generateMiniChartSVG } from '../../utils/card-helpers'
 import './PriceModal.css'
 
 /**
@@ -65,8 +66,16 @@ function PriceModal({ isOpen, onClose, item }) {
               <span className="change-label">تغییر 24 ساعته</span>
             </div>
             <div className="price-chart">
-              {/* TODO: Add chart component */}
-              <p>نمودار قیمت در اینجا نمایش داده می‌شود</p>
+              <div 
+                className="price-chart-svg"
+                dangerouslySetInnerHTML={{ 
+                  __html: generateMiniChartSVG(item.symbol || 'PRICE', item.change >= 0) 
+                }}
+              />
+              <div className="chart-info">
+                <span className="chart-label">نمودار 24 ساعته</span>
+                <span className="chart-timeframe">آخرین به‌روزرسانی: {new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
             </div>
           </div>
         </div>

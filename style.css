@@ -1,373 +1,8 @@
 /* ==================== */
-/* 🛡️ استایل‌های Error Handler */
+/* 🕒 کره کوچک ساعت بازار */
 /* ==================== */
-.error-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    max-width: 400px;
-    z-index: 10000;
-    animation: slideInRight 0.3s ease-out;
-}
-
-.error-notification-content {
-    background: var(--accent-red);
-    color: white;
-    padding: 16px 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    backdrop-filter: blur(10px);
-}
-
-.error-icon {
-    font-size: 24px;
-    flex-shrink: 0;
-}
-
-.error-text {
-    flex: 1;
-}
-
-.error-text strong {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 1rem;
-}
-
-.error-text p {
-    margin: 0;
-    font-size: 0.875rem;
-    opacity: 0.9;
-}
-
-.error-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-}
-
-.error-close:hover {
-    opacity: 1;
-}
-
-.user-error-message {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10001;
-    animation: fadeInScale 0.3s ease-out;
-}
-
-.user-error-content {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    padding: 24px;
-    max-width: 400px;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-}
-
-.user-error-icon {
-    font-size: 32px;
-    flex-shrink: 0;
-}
-
-.user-error-text {
-    flex: 1;
-}
-
-.user-error-text strong {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1.125rem;
-    color: var(--text-primary);
-}
-
-.user-error-text p {
-    margin: 0;
-    font-size: 0.9375rem;
-    color: var(--text-secondary);
-}
-
-.user-error-close {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.user-error-close:hover {
-    opacity: 1;
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeInScale {
-    from {
-        transform: translate(-50%, -50%) scale(0.9);
-        opacity: 0;
-    }
-    to {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-    }
-}
-
-/* ==================== */
-/* 🎯 استایل‌های اصلی با پالت جدید */
-/* ==================== */
-
-/* 🖋️ فونت و تایپوگرافی - باید در ابتدای فایل باشد */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
-
-/* 🎨 پالت رنگی تم روشن - بهینه شده */
-/* ⚠️ تم نارنجی (قابل برگشت) - برای برگشت: --accent-blue را به #2563eb برگردانید */
-[data-theme="light"] {
-    --bg-primary: #f1f5f9;
-    --bg-secondary: #ffffff;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --accent-blue: #ea580c; /* تغییر به نارنجی (قبلاً: #2563eb) */
-    --accent-green: #059669;
-    --accent-red: #dc2626;
-    --accent-teal: #0d9488;
-    --glass-bg: rgba(255, 255, 255, 0.9);
-    --glass-border: rgba(0, 0, 0, 0.1);
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    
-    /* رنگ‌های کارت در تم روشن */
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --card-border: rgba(0, 0, 0, 0.08);
-    --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-    --card-text: #0f172a;
-    --card-text-secondary: #475569;
-    
-    /* Tool Highlight Colors */
-    --gold-color: #eab308;
-    --diamond-color: #06b6d4;
-    --silver-color: #94a3b8;
-    --pearl-color: #f8fafc;
-    --gem-color: #92400e;
-    --currency-color: #ea580c; /* تغییر به نارنجی (قبلاً: #2563eb) */
-}
-
-/* 🌙 پالت رنگی تم تاریک */
-/* ⚠️ تم نارنجی (قابل برگشت) - برای برگشت: --accent-blue را به #60a5fa برگردانید */
-[data-theme="dark"] {
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --text-primary: #e2e8f0;
-    --text-secondary: #94a3b8;
-    --accent-blue: #fb923c; /* تغییر به نارنجی روشن (قبلاً: #60a5fa) */
-    --accent-green: #34d399;
-    --accent-red: #f87171;
-    --accent-teal: #2dd4bf;
-    --glass-bg: rgba(15, 23, 42, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    
-    /* رنگ‌های کارت در تم تاریک */
-    --card-bg: rgba(30, 41, 59, 0.9);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-    --card-text: #e2e8f0;
-    --card-text-secondary: #94a3b8;
-    
-    /* Tool Highlight Colors - Dark Mode */
-    --gold-color: #FFC400;
-    --diamond-color: #99E6FF;
-    --silver-color: #A0A0A0;
-    --pearl-color: #E8E8E8;
-    --gem-color: #6B3410;
-    --currency-color: #fb923c; /* تغییر به نارنجی روشن (قبلاً: #60A5FA) */
-}
-
-/* 🔄 ریست استایل‌های پیش‌فرض */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-/* 🆕 این دو خط رو اضافه کن */
-html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-body {
-    font-family: 'Vazirmatn', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    min-height: 100vh;
-    transition: all 0.3s ease;
-    line-height: 1.7;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* فونت اعداد - لاتین */
-.price, .current-price, .price-large, .price-change, .update-text {
-    font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
-    font-variant-numeric: tabular-nums;
-}
-
-/* ==================== */
-/* 🎨 استایل شیشه‌ای مات با پالت جدید */
-/* ==================== */
-
-.glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-}
-
-.glass-header {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
-
-/* ==================== */
-/* 🔝 هدر و ناوبری */
-/* ==================== */
-
-.glass-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background: var(--glass-bg);
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: clamp(0.6rem, 1.2vw, 0.75rem) clamp(1rem, 2.5vw, 1.5rem);
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.logo-section {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-}
-
-.logo {
-    width: clamp(32px, 4vw, 36px);
-    height: clamp(32px, 4vw, 36px);
-    background: var(--accent-blue);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: white;
-    font-size: clamp(0.9rem, 1.2vw, 1rem);
-}
-
-.site-name {
-    font-size: clamp(1.1rem, 1.5vw, 1.2rem);
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.control-menu {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.theme-toggle, 
-.login-btn {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    padding: clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 12px);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    font-size: clamp(0.8rem, 1.1vw, 0.9rem);
-}
-
-.theme-toggle:hover, 
-.login-btn:hover {
-    background: var(--accent-blue);
-    color: white;
-    transform: translateY(-1px);
-}
-
-
-/* ==================== */
-/* 🕒 استایل‌های ساعت بازار - نسخه حرفه‌ای */
-/* ==================== */
-
-/* ========== Globe Clock با ساعت UTC ========== */
 .globe-clock-wrapper {
   position: fixed;
-  top: auto; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
-  bottom: auto;
-  left: 8px;
   z-index: 998; /* پایین‌تر از شاخص‌ها (z-index: 999) */
   width: clamp(100px, 14vw, 180px);
   height: clamp(100px, 14vw, 180px);
@@ -2158,7 +1793,7 @@ body {
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    background: none;
     pointer-events: none;
     border-radius: 20px 20px 0 0;
 }
@@ -2231,7 +1866,7 @@ body {
 
 /* تم روشن - کارت‌های اصلی */
 [data-theme="light"] #homeMainCards .price-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--card-bg);
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
@@ -2241,17 +1876,17 @@ body {
 }
 
 [data-theme="light"] #homeMainCards .price-card::after {
-    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 100%);
+    background: none;
 }
 
 /* تم تاریک - کارت‌های اصلی */
 [data-theme="dark"] #homeMainCards .price-card {
-    background: linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.95) 100%);
+    background: var(--card-bg);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] #homeMainCards .price-card::after {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+    background: none;
 }
 
 /* ⏱️ تایم آخرین آپدیت */
@@ -2395,6 +2030,7 @@ body {
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
     padding-bottom: 0;
+    margin-top: -20px !important; /* 20px بالاتر مطابق درخواست */
     margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
     max-width: 1400px;
     margin-left: calc(clamp(100px, 14vw, 180px) + 8px);
@@ -2659,15 +2295,15 @@ body {
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+    background: none;
     border-radius: 50% 50% 0 0;
     pointer-events: none;
 }
 
 /* حالت فعال - فقط یکی */
 .highlight-circle.active {
-    background: linear-gradient(135deg, var(--accent-blue) 0%, #c2410c 100%); /* تغییر به نارنجی (قبلاً: #2563eb) */
-    color: white;
+    background: var(--card-bg); /* بدون گرادیان */
+    color: var(--text-primary);
     transform: scale(1.05);
     border-color: transparent;
         box-shadow: 
@@ -2689,7 +2325,7 @@ body {
 }
 
 .highlight-circle.active::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%);
+    background: none;
 }
 
 .highlight-circle:hover:not(.active) {
@@ -2708,18 +2344,18 @@ body {
 
 /* تم روشن - هایلایت‌ها */
 [data-theme="light"] .highlight-circle {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--card-bg);
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     color: #1e293b;
 }
 
 [data-theme="light"] .highlight-circle::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, transparent 100%);
+    background: none;
 }
 
 [data-theme="light"] .highlight-circle.active {
-    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); /* تغییر به نارنجی (قبلاً: #3b82f6 0%, #2563eb) */
+    background: var(--card-bg); /* بدون گرادیان */
     color: #ffffff !important;
     border-color: transparent;
     box-shadow: 0 8px 24px rgba(234, 88, 12, 0.35); /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.35)) */
@@ -2737,7 +2373,7 @@ body {
 
 /* تم تاریک - هایلایت‌ها */
 [data-theme="dark"] .highlight-circle {
-    background: linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.95) 100%);
+    background: var(--card-bg);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #e2e8f0;
 }
@@ -2860,11 +2496,7 @@ body {
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        transparent 100%
-    );
+    background: none;
     pointer-events: none;
     border-radius: 16px 16px 0 0;
 }
@@ -2899,7 +2531,7 @@ body {
 
 /* تم روشن - تنظیمات اضافی */
 [data-theme="light"] .price-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--card-bg);
     border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 
         0 4px 24px rgba(0, 0, 0, 0.06),
@@ -2913,29 +2545,17 @@ body {
 }
 
 [data-theme="light"] .price-card::after {
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.5) 0%,
-        transparent 100%
-    );
+    background: none;
 }
 
 /* تم تاریک - تنظیمات اضافی */
 [data-theme="dark"] .price-card {
-    background: linear-gradient(
-        135deg,
-        rgba(30, 41, 59, 0.9) 0%,
-        rgba(15, 23, 42, 0.95) 100%
-    );
+    background: var(--card-bg);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .price-card::after {
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.08) 0%,
-        transparent 100%
-    );
+    background: none;
 }
 
 .card-header {
@@ -5738,7 +5358,6 @@ body, .glass-card, .glass-header {
         rgba(255, 255, 255, 0.1) 100%);
     /* backdrop-filter با prefix های مختلف برای سازگاری بیشتر */
     -webkit-backdrop-filter: blur(20px);
-    -moz-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     box-shadow: 
@@ -6450,8 +6069,20 @@ body, .glass-card, .glass-header {
 /* ==================== */
 
 /* بدنه و پس‌زمینه */
+/* تم تاریک - زمینه اصلی تیره‌تر از کارت‌ها */
+[data-theme="dark"] body {
+    background: #050505; /* تیره‌تر از rgba(18, 18, 18, 0.6) */
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(10, 10, 10, 0.3) 0%, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(12, 12, 12, 0.2) 0%, transparent 50%);
+}
+
+/* تم روشن - زمینه اصلی تیره‌تر از کارت‌ها */
 [data-theme="light"] body {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    background: #e8eef5; /* تیره‌تر از rgba(255, 255, 255, 0.75) */
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(240, 244, 248, 0.5) 0%, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(232, 238, 245, 0.3) 0%, transparent 50%);
 }
 
 /* هدر */
@@ -7246,10 +6877,12 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
     background-color: rgba(255, 255, 255, 0.9) !important;
 }
 
-/* استایل dropdown arrow برای select */
-.filter-select::-ms-expand,
-.year-select::-ms-expand {
-    display: none;
+/* استایل dropdown arrow برای select - حذف -ms-expand (دیگر پشتیبانی نمی‌شود) */
+.filter-select,
+.year-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 @media (max-width: 640px) {
@@ -7769,13 +7402,11 @@ body:not(:has(.indicators-glass-card)) .indicators-unified-container,
 
 .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: none; /* بدون خط دور */
     border-radius: 20px;
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow);
 }
 
 /* تم سوییچ بهتر */

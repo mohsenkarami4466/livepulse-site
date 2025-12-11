@@ -108,21 +108,37 @@ export function AppProvider({ children }) {
     }
   })
 
-  // مقداردهی اولیه از localStorage
+  // مقداردهی اولیه از localStorage و اعمال تم به body
   useEffect(() => {
     try {
       const savedState = localStorage.getItem('livepulseState')
+      let initialTheme = 'light' // تم پیش‌فرض: light (مطابق با index.html)
+      
       if (savedState) {
         const parsed = JSON.parse(savedState)
+        if (parsed.currentTheme) {
+          initialTheme = parsed.currentTheme
+        }
         setState(prev => ({ ...prev, ...parsed }))
       } else {
-        // اگر state ذخیره شده‌ای وجود ندارد، تم پیش‌فرض را dark قرار بده
-        setState(prev => ({ ...prev, currentTheme: 'dark' }))
+        // اگر state ذخیره شده‌ای وجود ندارد، تم پیش‌فرض را light قرار بده
+        setState(prev => ({ ...prev, currentTheme: initialTheme }))
+      }
+      
+      // اعمال تم به body بلافاصله
+      if (typeof document !== 'undefined') {
+        document.body.setAttribute('data-theme', initialTheme)
+        document.documentElement.setAttribute('data-theme', initialTheme)
       }
     } catch (error) {
-      console.error('Error loading state from localStorage:', error)
-      // در صورت خطا، تم پیش‌فرض را dark قرار بده
-      setState(prev => ({ ...prev, currentTheme: 'dark' }))
+      const log = window.logger || { error: console.error }
+      log.error('Error loading state from localStorage:', error)
+      // در صورت خطا، تم پیش‌فرض را light قرار بده
+      setState(prev => ({ ...prev, currentTheme: 'light' }))
+      if (typeof document !== 'undefined') {
+        document.body.setAttribute('data-theme', 'light')
+        document.documentElement.setAttribute('data-theme', 'light')
+      }
     }
   }, [])
 
@@ -131,9 +147,18 @@ export function AppProvider({ children }) {
     try {
       localStorage.setItem('livepulseState', JSON.stringify(state))
     } catch (error) {
-      console.error('Error saving state to localStorage:', error)
+      const log = window.logger || { error: console.error }
+      log.error('Error saving state to localStorage:', error)
     }
   }, [state])
+
+  // اعمال تم به body هر بار که theme تغییر کند
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.setAttribute('data-theme', state.currentTheme)
+      document.documentElement.setAttribute('data-theme', state.currentTheme)
+    }
+  }, [state.currentTheme])
 
   // هماهنگی با window.appState برای backward compatibility
   useEffect(() => {

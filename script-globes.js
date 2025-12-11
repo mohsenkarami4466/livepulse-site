@@ -2812,10 +2812,12 @@ window.saveMarketNotification = function(marketName, btn) {
         startMarketNotificationChecker();
         
         btn.textContent = '✅ اعلان فعال شد!';
-        btn.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.5), rgba(34, 197, 94, 0.3))';
+        btn.style.background = 'var(--card-bg)';
+        btn.style.color = 'var(--text-primary)';
         setTimeout(() => {
             btn.textContent = '💾 ذخیره و فعال‌سازی اعلان';
             btn.style.background = '';
+            btn.style.color = '';
         }, 2000);
     } else {
         // غیرفعال کردن اعلان
@@ -2825,10 +2827,12 @@ window.saveMarketNotification = function(marketName, btn) {
         localStorage.setItem('marketNotifications', JSON.stringify(settings));
         
         btn.textContent = '❌ اعلان غیرفعال شد';
-        btn.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2))';
+        btn.style.background = 'var(--card-bg)';
+        btn.style.color = 'var(--text-primary)';
         setTimeout(() => {
             btn.textContent = '💾 ذخیره و فعال‌سازی اعلان';
             btn.style.background = '';
+            btn.style.color = '';
         }, 2000);
     }
 };
@@ -7861,7 +7865,7 @@ function showTimezoneSettings() {
                 </div>
                 
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="saveTimezoneSettings()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    <button onclick="saveTimezoneSettings()" style="flex: 1; padding: 12px; background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer; font-weight: 600;">
                         💾 ذخیره
                     </button>
                     <button onclick="this.closest('.modal-overlay').remove()" style="flex: 1; padding: 12px; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer;">
@@ -7966,7 +7970,7 @@ function showMarketFilter() {
                 <div class="modal-body">
                     <p>برای استفاده از فیلتر بازارها، لطفاً ابتدا کره مالی را باز کنید.</p>
                     <button onclick="this.closest('.modal-overlay').remove(); if(typeof openFinancialGlobe === 'function') openFinancialGlobe();" 
-                            style="width: 100%; padding: 12px; margin-top: 15px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            style="width: 100%; padding: 12px; margin-top: 15px; background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer; font-weight: 600;">
                         🌍 باز کردن کره مالی
                     </button>
                 </div>

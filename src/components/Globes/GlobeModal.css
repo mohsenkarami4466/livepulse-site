@@ -16,10 +16,7 @@
     width: 55px;
     height: 55px;
     border-radius: 50%;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%, 
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0.15) 100%);
+    background: var(--card-bg);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border: 1.5px solid rgba(255, 255, 255, 0.3);
@@ -88,10 +85,7 @@
 }
 
 .globe-menu-content {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.18) 0%, 
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0.12) 100%);
+    background: var(--card-bg);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border-radius: 24px;
@@ -135,9 +129,7 @@
     align-items: center;
     gap: 14px;
     padding: 14px 18px;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.05) 100%);
+    background: var(--card-bg);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 14px;
     color: #fff;
@@ -151,9 +143,7 @@
 }
 
 .globe-menu-item:hover {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.1) 100%);
+    background: var(--card-bg);
     transform: translateX(-5px);
     border-color: rgba(255, 255, 255, 0.25);
 }
@@ -176,16 +166,12 @@
 
 .globe-menu-item.exit-item {
     margin-top: 10px;
-    background: linear-gradient(135deg, 
-        rgba(239, 68, 68, 0.2) 0%,
-        rgba(239, 68, 68, 0.1) 100%);
+    background: var(--card-bg);
     border-color: rgba(239, 68, 68, 0.3);
 }
 
 .globe-menu-item.exit-item:hover {
-    background: linear-gradient(135deg, 
-        rgba(239, 68, 68, 0.3) 0%,
-        rgba(239, 68, 68, 0.15) 100%);
+    background: var(--card-bg);
 }
 
 /* Responsive */

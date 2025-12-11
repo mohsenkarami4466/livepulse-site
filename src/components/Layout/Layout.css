@@ -61,7 +61,7 @@
   opacity: 1 !important;
   z-index: 50 !important; /* پایین‌تر از شاخص‌ها و کره - تا shadow از زیر نتابد */
   overflow: visible !important; /* container خودش overflow-x را مدیریت می‌کند */
-  filter: drop-shadow(none) !important; /* حذف هرگونه drop-shadow */
+  /* filter: drop-shadow(none) حذف شد - syntax نامعتبر */
   background: transparent !important;
   box-sizing: border-box !important;
   left: 0 !important; /* بدون offset */

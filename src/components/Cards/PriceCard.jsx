@@ -44,7 +44,8 @@ function PriceCard({ item, onClick }) {
     try {
       return generateMiniChartSVG(item.symbol, isUp)
     } catch (error) {
-      console.error('Error generating chart:', error)
+      const log = window.logger || { error: console.error }
+      log.error('Error generating chart:', error)
       return ''
     }
   }, [item.symbol, isUp])

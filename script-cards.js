@@ -504,8 +504,8 @@ function loadModalAdBanner(symbol) {
     const adBanner = document.getElementById('modalAdBanner');
     
     const banners = [
-        '<div class="ad-real" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">🎯 تبلیغات ویژه</div>',
-        '<div class="ad-real" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">💎 پیشنهاد اختصاصی</div>'
+        '<div class="ad-real" style="background: var(--card-bg); color: var(--text-primary); padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">🎯 تبلیغات ویژه</div>',
+        '<div class="ad-real" style="background: var(--card-bg); color: var(--text-primary); padding: 30px; border-radius: 10px; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold;">💎 پیشنهاد اختصاصی</div>'
     ];
     
     const randomBanner = banners[Math.floor(Math.random() * banners.length)];

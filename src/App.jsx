@@ -33,28 +33,24 @@ function AppContent() {
   const location = useLocation()
 
   useEffect(() => {
-    // با هر بار رفرش، به صفحه اول برو و هایلایت خانه را فعال کن
-    if (location.pathname !== '/') {
-      // اگر در صفحه دیگری هستیم، به صفحه اول برو
-      navigate('/', { replace: true })
-    }
-    
-    // اسکرول به بالای صفحه
+    // اسکرول به بالای صفحه روی mount
     window.scrollTo(0, 0)
-    
-    // فعال کردن هایلایت خانه
-    setTimeout(() => {
-      const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
-      if (homeCircle) {
-        homeCircle.classList.add('active')
-      }
-      
-      // غیرفعال کردن بقیه highlights
-      const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
-      otherCircles.forEach(circle => {
-        circle.classList.remove('active')
-      })
-    }, 100)
+
+    // فعال کردن هایلایت خانه فقط زمانی که در مسیر خانه هستیم
+    if (location.pathname === '/') {
+      setTimeout(() => {
+        const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
+        if (homeCircle) {
+          homeCircle.classList.add('active')
+        }
+        
+        // غیرفعال کردن بقیه highlights
+        const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
+        otherCircles.forEach(circle => {
+          circle.classList.remove('active')
+        })
+      }, 100)
+    }
   }, []) // فقط یک بار هنگام mount
 
   return (
@@ -75,7 +71,12 @@ function AppContent() {
  */
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <AppProvider>
         <div className="App">
           <AppContent />
