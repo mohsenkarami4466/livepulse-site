@@ -80,7 +80,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# dist  # برای GitHub Pages باید commit شود
 
 # Gatsby files
 .cache/
