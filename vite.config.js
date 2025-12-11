@@ -4,7 +4,48 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Plugin برای transform کردن مسیرهای static در index.html
+    {
+      name: 'transform-static-paths',
+      transformIndexHtml(html, ctx) {
+        const base = '/livepulse-site/'
+        // تبدیل مسیرهای نسبی به absolute با base path (هم src و هم href)
+        let transformed = html.replace(
+          /(src|href)="\.\/([^"]+)"/g,
+          (match, attr, path) => {
+            // اگر path با http یا https شروع می‌شود، تغییر نده
+            if (path.startsWith('http://') || path.startsWith('https://')) {
+              return match
+            }
+            return `${attr}="${base}${path}"`
+          }
+        )
+        // اضافه کردن لینک‌های CSS که ممکن است حذف شده باشند
+        const cssLinks = [
+          '<link rel="stylesheet" href="/livepulse-site/styles/variables.css?v=2.8">',
+          '<link rel="stylesheet" href="/livepulse-site/styles/error-handler.css?v=2.8">',
+          '<link rel="stylesheet" href="/livepulse-site/style.css?v=2.8">',
+          '<link rel="stylesheet" href="/livepulse-site/globe/globe-styles.css?v=2.8">',
+          '<link rel="stylesheet" href="/livepulse-site/styles/themes-complete.css?v=2.8">',
+          '<link rel="stylesheet" href="/livepulse-site/styles/theme-optimization.css?v=2.8">'
+        ]
+        // اگر لینک‌های CSS وجود ندارند، آنها را اضافه کن
+        if (!transformed.includes('variables.css')) {
+          const titleMatch = transformed.match(/<title>.*?<\/title>/)
+          if (titleMatch) {
+            transformed = transformed.replace(
+              titleMatch[0],
+              titleMatch[0] + '\n    ' + cssLinks.join('\n    ')
+            )
+          }
+        }
+        return transformed
+      }
+    }
+  ],
+  base: '/livepulse-site/', // برای GitHub Pages
   root: '.',
   resolve: {
     alias: {
