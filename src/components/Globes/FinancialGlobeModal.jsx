@@ -195,6 +195,45 @@ function FinancialGlobeModal({ isOpen, onClose }) {
           className="globe-container"
         ></div>
         
+        {/* پنل انتخاب بازار */}
+        <div className="globe-panel market-select-panel" id="marketSelectPanel">
+          <div className="globe-panel-header">
+            <h4>🌍 بازارهای جهانی</h4>
+            <button 
+              className="globe-panel-close" 
+              onClick={() => {
+                const panel = document.getElementById('marketSelectPanel')
+                if (panel) {
+                  panel.classList.remove('active')
+                  panel.classList.remove('visible')
+                }
+              }}
+            >
+              ×
+            </button>
+          </div>
+          <div className="globe-panel-body">
+            <input 
+              type="text" 
+              className="globe-panel-search" 
+              placeholder="🔍 جستجوی بازار..." 
+              id="marketSearchInput"
+            />
+            <div className="market-select-list" id="marketSelectList">
+              {/* لیست بازارها با JS پر می‌شود */}
+            </div>
+          </div>
+        </div>
+        
+        {/* دکمه انتخاب بازار */}
+        <button 
+          className="globe-fab-btn" 
+          id="marketSelectorBtn"
+          title="انتخاب بازار"
+        >
+          📍
+        </button>
+        
         {/* 🎮 دکمه سیار کره مالی */}
         <div className="globe-assistive-touch" id="financialGlobeAssistive">
           <button className="globe-touch-button">

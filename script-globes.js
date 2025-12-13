@@ -5241,6 +5241,8 @@ window.openResourcesGlobe = openResourcesGlobe;
 window.open3DGlobe = open3DGlobe;
 window.closeGlobeModal = closeGlobeModal;
 window.resetGlobeView = resetGlobeView;
+window.populateMarketList = populateMarketList;
+window.setupMarketSelector = setupMarketSelector;
 
 // ==================== //
 // 🌍 کره منابع - اطلاعات کشورها
