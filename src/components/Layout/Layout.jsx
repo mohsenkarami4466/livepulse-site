@@ -208,18 +208,14 @@ function Layout({ children }) {
       />
       
       {/* مودال‌های کره‌های بزرگ - همیشه render می‌شوند اما hidden هستند تا vanilla JS بتواند آن‌ها را پیدا کند */}
-        {isFinancialGlobeOpen && (
         <FinancialGlobeModal 
           isOpen={isFinancialGlobeOpen} 
           onClose={() => setIsFinancialGlobeOpen(false)} 
         />
-        )}
-        {isResourcesGlobeOpen && (
         <ResourcesGlobeModal 
           isOpen={isResourcesGlobeOpen} 
           onClose={() => setIsResourcesGlobeOpen(false)} 
         />
-        )}
       
       {/* مودال‌های کره‌های 3D - همیشه render می‌شوند اما hidden هستند */}
       {open3DGlobeType && (

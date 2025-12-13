@@ -188,8 +188,7 @@ class FinancialGlobe {
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const loader = new THREE.TextureLoader();
         const texturePaths = [
-            // اول از فایل‌های محلی با base path استفاده کن
-            '/livepulse-site/earth-day.jpg',
+            // اول از فایل‌های محلی استفاده کن
             './earth-day.jpg',
             'earth-day.jpg',
             '/earth-day.jpg',

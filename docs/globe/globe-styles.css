@@ -1,5 +1,4 @@
 /* استایل‌های مخصوص کره‌های 3D - Fullscreen */
-/* کره‌های 3D همیشه تیره هستند - مستقل از تم */
 .globe-modal {
   position: fixed;
   z-index: 100000;
@@ -7,16 +6,9 @@
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: #000510 !important; /* همیشه تیره - مستقل از تم */
+  background: #000510;
   overflow: hidden;
   display: none;
-}
-
-/* Override برای تم روشن - کره‌ها همیشه تیره */
-[data-theme="light"] .globe-modal,
-[data-theme="light"] .globe-modal-content,
-[data-theme="light"] .globe-container {
-  background: #000510 !important;
 }
 
 .globe-modal.active {
@@ -32,7 +24,7 @@ body.globe-modal-open {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #000510 !important; /* همیشه تیره - مستقل از تم */
+  background: #000510;
 }
 
 .globe-container {
@@ -41,7 +33,7 @@ body.globe-modal-open {
   position: absolute;
   top: 0;
   left: 0;
-  background: #000510 !important; /* همیشه تیره - مستقل از تم */
+  background: #000510;
 }
 
 .globe-container canvas {
