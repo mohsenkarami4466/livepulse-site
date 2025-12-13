@@ -828,7 +828,10 @@ function animate() {
 
 // متغیر برای جلوگیری از کلیک‌های مکرر
 // Variable to prevent multiple clicks
-let globeOpening = false;
+// توجه: globeOpening در globe-modals.js تعریف شده است
+// Note: globeOpening is defined in globe-modals.js
+// استفاده از window.globeOpening که در globe-modals.js export شده
+// Use window.globeOpening which is exported from globe-modals.js
 
 /**
  * تابع handler کلیک روی کره کوچک
@@ -883,12 +886,16 @@ function handleSmallGlobeClick(e) {
     
     // جلوگیری از کلیک‌های مکرر
     // Prevent multiple clicks
-    if (globeOpening) {
+    // استفاده از window.globeOpening از globe-modals.js
+    // Use window.globeOpening from globe-modals.js
+    if (window.globeOpening) {
         log.info('⏳ کره در حال باز شدن است...');
         return;
     }
     
-    globeOpening = true;
+    if (window.globeOpening !== undefined) {
+        window.globeOpening = true;
+    }
     log.info('🚀 در حال باز کردن کره بزرگ...');
     
     // باز کردن کره مالی (کره بزرگ 3D با تمام ساعت‌های بازار)
@@ -904,7 +911,11 @@ function handleSmallGlobeClick(e) {
     // بعد از 1 ثانیه دوباره فعال کن
     // Re-enable after 1 second
     setTimeout(() => {
-        globeOpening = false;
+        // استفاده از window.globeOpening از globe-modals.js
+        // Use window.globeOpening from globe-modals.js
+        if (window.globeOpening !== undefined) {
+            window.globeOpening = false;
+        }
     }, 1000);
 }
 

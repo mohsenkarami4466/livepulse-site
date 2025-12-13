@@ -886,16 +886,16 @@ function handleSmallGlobeClick(e) {
     
     // جلوگیری از کلیک‌های مکرر
     // Prevent multiple clicks
-    if (globeOpening) {
+    // استفاده از window.globeOpening از globe-modals.js
+    // Use window.globeOpening from globe-modals.js
+    if (window.globeOpening) {
         log.info('⏳ کره در حال باز شدن است...');
         return;
     }
     
-        // استفاده از window.globeOpening از globe-modals.js
-        // Use window.globeOpening from globe-modals.js
-        if (window.globeOpening !== undefined) {
-            window.globeOpening = true;
-        }
+    if (window.globeOpening !== undefined) {
+        window.globeOpening = true;
+    }
     log.info('🚀 در حال باز کردن کره بزرگ...');
     
     // باز کردن کره مالی (کره بزرگ 3D با تمام ساعت‌های بازار)
