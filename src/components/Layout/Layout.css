@@ -168,6 +168,16 @@
   animation: none !important; /* حذف هرگونه animation */
 }
 
+/* اصلاح رنگ نوشته دکمه‌های انتخاب شده در تم روشن */
+[data-theme="light"] .layout-main > .view .highlight-circle.active {
+  color: var(--text-primary, #1a1a1a) !important; /* رنگ تیره برای خوانایی در تم روشن */
+}
+
+[data-theme="light"] .layout-main > .view .highlight-circle.active span {
+  color: var(--text-primary, #1a1a1a) !important; /* رنگ تیره برای متن داخل span */
+  font-weight: 600 !important; /* وزن بیشتر برای خوانایی */
+}
+
 /* Hover effect - بدون تغییر زیاد */
 .layout-main > .view .highlight-circle:hover {
   transform: translateY(-1px) !important;
