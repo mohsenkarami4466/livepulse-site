@@ -2835,7 +2835,7 @@ function resetGlobeView(type) {
         return;
     }
     
-    const globeScene = simpleGlobeScenes[type];
+    const globeScene = window.simpleGlobeScenes && window.simpleGlobeScenes[type];
     if (!globeScene) return;
     
     // برگرداندن دوربین به موقعیت ایران
