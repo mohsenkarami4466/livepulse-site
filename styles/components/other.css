@@ -1,0 +1,853 @@
+/**
+ * ============================================
+ * 🎨 Other Components Styles
+ * ============================================
+ * 
+ * این فایل شامل تمام استایل‌های مربوط به سایر کامپوننت‌ها است.
+ * This file contains all styles related to other components.
+ * 
+ * شامل / Includes:
+ * - دکمه‌ها
+ * - منوها
+ * - دکمه شناور
+ * - نوار ناوبری پایین
+ * - استایل‌های تم روشن
+ * - و سایر کامپوننت‌ها
+ * 
+ * ============================================
+ */
+
+/* 🎯 دکمه‌ها */
+.calculate-btn, 
+.analyze-btn, 
+.convert-btn,
+.subscription-btn,
+.subscribe-btn {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.calculate-btn:hover, 
+.analyze-btn:hover, 
+.convert-btn:hover,
+.subscription-btn:hover,
+.subscribe-btn:hover {
+    background: var(--accent-teal);
+    transform: translateY(-1px);
+}
+
+/* ✅ نتیجه‌ها */
+.result-box, .analysis-result {
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--glass-bg);
+  border-radius: 15px;
+  border: 1px solid var(--glass-border);
+}
+
+.result-box.success, .analysis-result.success {
+  border-left: 5px solid var(--success-green);
+}
+
+.result-box.error, .analysis-result.error {
+  border-left: 5px solid var(--error-red);
+}
+
+.loading {
+  text-align: center;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+/* ==================== */
+/* 💬 بخش چت هوش مصنوعی */
+/* ==================== */
+
+.ai-chat-section {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.chat-container {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: var(--glass-bg);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.ai-message {
+    background: var(--accent-blue);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    max-width: 80%;
+}
+
+.user-message {
+    background: var(--accent-teal);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    max-width: 80%;
+    margin-left: auto;
+}
+
+.chat-input-container {
+    display: flex;
+    gap: 12px;
+}
+
+.chat-input-container input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: var(--glass-bg);
+    color: var(--text-primary);
+}
+
+.usage-counter {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* ==================== */
+/* 🎮 دکمه شناور حرفه‌ای */
+/* ==================== */
+
+.assistive-touch {
+    position: fixed;
+    bottom: 25px;
+    left: 20px;
+    z-index: 9997;
+    cursor: pointer;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    touch-action: none; /* جلوگیری از scroll و zoom در موبایل */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* بهبود سازگاری با مرورگرهای مختلف */
+    will-change: transform, left, top;
+    transform: translateZ(0); /* Force hardware acceleration */
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+}
+
+.touch-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    /* Fallback background برای مرورگرهایی که backdrop-filter را پشتیبانی نمی‌کنند */
+    background: rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0.1) 100%);
+    /* backdrop-filter با prefix های مختلف برای سازگاری بیشتر */
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: none;
+    /* بهبود rendering در مرورگرهای مختلف */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+}
+
+.touch-button:active {
+    transform: scale(0.92);
+}
+
+.touch-icon {
+    font-size: 1.3em;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+/* حالت درگ شدن */
+.assistive-touch.dragging .touch-button {
+    transform: scale(1.1);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ==================== */
+/* 🎯 استایل برای تم روشن */
+/* ==================== */
+
+[data-theme="light"] .touch-button {
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.1) 0%, 
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.08) 100%);
+    border: 1.5px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .touch-icon {
+    color: #333;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme="light"] .assistive-touch.dragging .touch-button {
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.2),
+        0 0 0 2px rgba(0, 0, 0, 0.15),
+        inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* 🎯 منوی شیشه‌ای برای تم روشن */
+/* ==================== */
+
+[data-theme="light"] .glass-menu-overlay {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .glass-menu {
+    background: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(25px);
+}
+
+[data-theme="light"] .glass-close-btn {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #333;
+}
+
+[data-theme="light"] .glass-menu-item {
+    background: rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #333;
+}
+
+[data-theme="light"] .glass-menu-item:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+/* ==================== */
+/* 📱 کارت‌های خانه - Mobile First */
+/* ==================== */
+
+/* Mobile-first override removed - using main rules above */
+
+/* 🔐 مودال نیاز به لاگین */
+.login-prompt-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.login-prompt-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.login-prompt-content {
+    background: linear-gradient(
+        135deg,
+        rgba(30, 41, 59, 0.95) 0%,
+        rgba(15, 23, 42, 0.98) 100%
+    );
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+}
+
+.login-prompt-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.login-prompt-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    color: #fff;
+}
+
+.login-prompt-content p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.login-prompt-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-login-prompt {
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #ea580c, #c2410c); /* تغییر به نارنجی (قبلاً: #3b82f6, #2563eb) */
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-login-prompt:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(234, 88, 12, 0.4); /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.4)) */
+}
+
+.btn-close-prompt {
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-close-prompt:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* ==================== */
+/* 🌍 استایل دکمه‌های 3D در صفحه آرامش */
+/* ==================== */
+.globe-3d-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.globe-3d-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 0.5rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.globe-3d-btn:hover,
+.globe-3d-btn:active,
+.globe-3d-btn:focus {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    outline: none;
+}
+
+.globe-3d-btn[data-globe="weather"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.globe-3d-btn[data-globe="military"] {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.globe-3d-btn[data-globe="universities"] {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.globe-3d-btn[data-globe="historical"] {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.globe-3d-btn[data-globe="earthquake"] {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.globe-3d-btn[data-globe="natural-resources"] {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.globe-btn-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+    line-height: 1;
+}
+
+.globe-btn-text {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* ریسپانسیو برای موبایل */
+@media (max-width: 768px) {
+    .globe-3d-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .globe-3d-btn {
+        padding: 0.6rem 0.4rem;
+        min-height: 60px;
+        font-size: 0.75rem;
+    }
+    
+    .globe-btn-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .globe-btn-text {
+        font-size: 0.7rem;
+    }
+}
+
+/* ریسپانسیو برای تبلت */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .globe-3d-buttons {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.65rem;
+    }
+    
+    .globe-3d-btn {
+        padding: 0.7rem 0.45rem;
+        min-height: 80px;
+    }
+}
+
+/* دکمه رفرش کره */
+.refresh-globe-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.refresh-globe-btn:hover {
+    background: rgba(234, 88, 12, 0.8); /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.8)) */
+    transform: scale(1.1) rotate(180deg);
+    border-color: rgba(234, 88, 12, 0.5); /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.5)) */
+}
+
+@media (max-width: 768px) {
+    .refresh-globe-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        top: 15px;
+        left: 15px;
+    }
+}
+
+/* ==================== */
+/* 📱 نوار ناوبری پایین (Bottom Navigation Bar) */
+/* ==================== */
+
+.bottom-nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 997; /* پایین‌تر از دکمه سیار (z-index: 9997) و مودال‌ها */
+    padding: clamp(6px, 1vw, 10px) clamp(0.5rem, 2vw, 1rem);
+    gap: clamp(2px, 0.8vw, 6px);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    touch-action: auto;
+    height: auto;
+    min-height: 50px;
+}
+
+[data-theme="light"] .bottom-nav-bar {
+    background: rgba(255, 255, 255, 0.85);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: clamp(8px, 1.2vw, 12px) clamp(6px, 1vw, 10px);
+    background: transparent;
+    border: none;
+    border-radius: clamp(12px, 1.8vw, 16px);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-secondary);
+    position: relative;
+    min-width: 0;
+    overflow: visible;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; /* بهبود عملکرد touch در موبایل */
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: auto;
+    z-index: 1;
+    /* جلوگیری از تداخل با دکمه سیار */
+    isolation: isolate;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(234, 88, 12, 0.1); /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.1)) */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.nav-item:hover::before {
+    opacity: 1;
+}
+
+.nav-item:hover {
+    color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.nav-item.active {
+    color: var(--accent-blue);
+    background: rgba(234, 88, 12, 0.15); /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.15)) */
+}
+
+.nav-item:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+.nav-item.active::before {
+    opacity: 1;
+    background: rgba(234, 88, 12, 0.2); /* تغییر به نارنجی (قبلاً: rgba(59, 130, 246, 0.2)) */
+}
+
+.nav-icon {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1;
+    transition: transform 0.3s ease;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.nav-item:hover .nav-icon,
+.nav-item.active .nav-icon {
+    transform: scale(1.15);
+}
+
+.nav-text {
+    display: none; /* مخفی کردن متن - فقط آیکون نمایش داده می‌شود */
+}
+
+.nav-item.active .nav-text {
+    font-weight: 600;
+}
+
+/* ریسپانسیو برای موبایل - فقط آیکون */
+@media (max-width: 480px) {
+    .bottom-nav-bar {
+        padding: clamp(8px, 1.5vw, 10px) clamp(0.3rem, 1.5vw, 0.5rem);
+        gap: clamp(2px, 0.8vw, 4px);
+    }
+    
+    .nav-item {
+        padding: clamp(6px, 1.2vw, 8px) clamp(2px, 0.6vw, 4px);
+        gap: 2px;
+    }
+    
+    .nav-icon {
+        font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+    }
+    
+    .nav-text {
+        font-size: clamp(0.55rem, 1.1vw, 0.65rem);
+    }
+}
+
+/* ریسپانسیو برای تبلت */
+@media (min-width: 481px) and (max-width: 1024px) {
+    .bottom-nav-bar {
+        padding: clamp(10px, 1.5vw, 12px) clamp(0.5rem, 2vw, 1rem);
+    }
+    
+    .nav-icon {
+        font-size: clamp(1.3rem, 2.2vw, 1.4rem);
+    }
+    
+    .nav-text {
+        font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+    }
+}
+
+/* ریسپانسیو برای دسکتاپ - کوچکتر و کم ارتفاع‌تر */
+@media (min-width: 1025px) {
+    .bottom-nav-bar {
+        padding: clamp(6px, 0.8vw, 8px) clamp(1rem, 2vw, 2rem);
+        max-width: 1200px;
+    }
+    
+    .nav-item {
+        max-width: 150px;
+        padding: clamp(4px, 0.6vw, 6px) clamp(4px, 0.8vw, 8px);
+        gap: clamp(2px, 0.4vw, 3px);
+    }
+    
+    .nav-icon {
+        font-size: clamp(1.1rem, 1.3vw, 1.2rem);
+    }
+    
+    .nav-text {
+        font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+    }
+}
+
+/* اضافه کردن padding-bottom به body برای جلوگیری از پوشیده شدن محتوا */
+body {
+    padding-bottom: clamp(70px, 10vw, 85px);
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-bottom: clamp(60px, 9vw, 75px);
+    }
+}
+
+@media (min-width: 1025px) {
+    body {
+        padding-bottom: clamp(55px, 7vw, 65px);
+    }
+/* ==================== */
+/* 🎯 استایل برای تم روشن */
+/* ==================== */
+
+[data-theme="light"] .touch-button {
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.1) 0%, 
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.08) 100%);
+    border: 1.5px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .touch-icon {
+    color: #333;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme="light"] .assistive-touch.dragging .touch-button {
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.2),
+        0 0 0 2px rgba(0, 0, 0, 0.15),
+        inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ==================== */
+/* 🪟 منوی شیشه‌ای */
+/* ==================== */
+
+.glass-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glass-menu-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.glass-menu {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    min-width: 280px;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.glass-menu-overlay.active .glass-menu {
+    transform: scale(1);
+}
+
+.glass-close-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+}
+
+.glass-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.glass-menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.glass-menu-item {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    font-family: inherit;
+    font-size: 1em;
+    border: none;
+}
+
+.glass-menu-item:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateX(5px);
+}
+
+.glass-icon {
+    font-size: 1.3em;
+}
+
+.glass-text {
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
