@@ -1742,21 +1742,26 @@ function loadNaturalResourcesData(scene) {
     }
 }
 
-// در دسترس قرار دادن توابع در scope global
-window.openFinancialGlobe = openFinancialGlobe;
-window.openResourcesGlobe = openResourcesGlobe;
-window.open3DGlobe = open3DGlobe;
-window.closeGlobeModal = closeGlobeModal;
-window.resetGlobeView = resetGlobeView;
-window.populateMarketList = populateMarketList;
-window.setupMarketSelector = setupMarketSelector;
-
-// ==================== //
-
 // ============================================
 // Export توابع و داده‌ها به window
 // Export functions and data to window
 // ============================================
+// 
+// توجه: توابع openFinancialGlobe, openResourcesGlobe, open3DGlobe, closeGlobeModal, resetGlobeView
+// در globe-modals.js تعریف شده‌اند و در آنجا export می‌شوند.
+// 
+// توجه: توابع populateMarketList, setupMarketSelector
+// در globe-markets.js تعریف شده‌اند و در آنجا export می‌شوند.
+// 
+// این فایل فقط توابع مربوط به کره‌های 3D را export می‌کند.
+// 
+// Note: Functions openFinancialGlobe, openResourcesGlobe, open3DGlobe, closeGlobeModal, resetGlobeView
+// are defined in globe-modals.js and exported there.
+// 
+// Note: Functions populateMarketList, setupMarketSelector
+// are defined in globe-markets.js and exported there.
+// 
+// This file only exports functions related to 3D globes.
 
 window.load3DGlobeData = load3DGlobeData;
 window.setupEarthquakeFilters = setupEarthquakeFilters;

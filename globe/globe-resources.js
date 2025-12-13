@@ -2450,97 +2450,24 @@ window.zoomToLocation = function(lat, lng) {
 
 // راه‌اندازی پنل‌های کره بزرگ
 function setupGlobePanels() {
-    populateMarketList();
-    setupMarketSelector();
+    // استفاده از توابع از window (تعریف شده در globe-markets.js)
+    // Use functions from window (defined in globe-markets.js)
+    if (typeof window.populateMarketList === 'function') {
+        window.populateMarketList();
+    }
+    if (typeof window.setupMarketSelector === 'function') {
+        window.setupMarketSelector();
+    }
     setupGlobeFabMenus();
 }
 
-// پر کردن لیست بازارها در پنل انتخاب
-function populateMarketList() {
-    const listContainer = document.getElementById('marketSelectList');
-    if (!listContainer || typeof marketData === 'undefined') return;
-    
-    listContainer.innerHTML = '';
-    
-    marketData.forEach((market, index) => {
-        const statusColor = getMarketStatusColor(market);
-        let statusClass = 'closed';
-        if (statusColor === 0x22c55e) statusClass = 'open';
-        else if (statusColor === 0xfbbf24) statusClass = 'opening';
-        else if (statusColor === 0xf97316) statusClass = 'closing';
-        
-        const item = document.createElement('div');
-        item.className = 'market-select-item';
-        item.innerHTML = `
-            <span class="market-name">${market.name}</span>
-            <span class="market-status-dot ${statusClass}"></span>
-        `;
-        item.addEventListener('click', () => {
-            selectMarketFromList(market, index);
-        });
-        listContainer.appendChild(item);
-    });
-}
-
-// انتخاب بازار از لیست
-function selectMarketFromList(market, index) {
-    const log = window.logger || { info: console.log }; log.info('📍 انتخاب بازار:', market.name);
-    
-    // بستن پنل لیست بازارها (هر دو کلاس)
-    const panel = document.getElementById('marketSelectPanel');
-    if (panel) {
-        panel.classList.remove('visible');
-        panel.classList.remove('active');
-    }
-    
-    // دسترسی به scene کره مالی
-    const globeScene = simpleGlobeScenes['financial'];
-    if (!globeScene) return;
-    
-    // توقف چرخش اتوماتیک
-    if (globeScene.stopRotate) globeScene.stopRotate();
-    
-    // زوم به بازار
-    zoomToMarker(market, globeScene.camera, globeScene.controls, globeScene.earth);
-    
-    // نمایش popup بازار با استایل جدید
-    const container = document.getElementById('financialGlobeContainer');
-    if (container) {
-        showMarketPopup(market, container);
-    }
-}
-
-// راه‌اندازی دکمه انتخاب بازار
-function setupMarketSelector() {
-    const btn = document.getElementById('marketSelectorBtn');
-    const panel = document.getElementById('marketSelectPanel');
-    const searchInput = document.getElementById('marketSearchInput');
-    
-    if (btn && panel) {
-        btn.addEventListener('click', () => {
-            panel.classList.toggle('visible');
-            populateMarketList(); // آپدیت وضعیت‌ها
-        });
-    }
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const items = document.querySelectorAll('.market-select-item');
-            items.forEach(item => {
-                const name = item.querySelector('.market-name').textContent.toLowerCase();
-                item.style.display = name.includes(query) ? 'flex' : 'none';
-            });
-        });
-    }
-    
-    // بستن پنل با کلیک خارج
-    document.addEventListener('click', (e) => {
-        if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
-            panel.classList.remove('visible');
-        }
-    });
-}
+// توجه: توابع populateMarketList, selectMarketFromList, setupMarketSelector
+// در globe-markets.js تعریف شده‌اند و در آنجا export می‌شوند.
+// این توابع duplicate حذف شده‌اند.
+// 
+// Note: Functions populateMarketList, selectMarketFromList, setupMarketSelector
+// are defined in globe-markets.js and exported there.
+// These duplicate functions have been removed.
 
 // راه‌اندازی منوهای fab کره‌ها
 function setupGlobeFabMenus() {
