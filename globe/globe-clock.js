@@ -302,9 +302,9 @@ function updateHighlightsPosition() {
   let marginTop;
   
   if (isDesktop) {
-    // در دسکتاپ: پایین کارت portfolio + 15px gap
-    // Desktop: below portfolio card + 15px gap
-    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 15px)`;
+    // در دسکتاپ: پایین کارت portfolio + 20px gap
+    // Desktop: below portfolio card + 20px gap
+    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
   } else if (isTablet) {
     // در تبلت: پایین کارت portfolio + 20px gap
     // Tablet: below portfolio card + 20px gap
@@ -325,14 +325,14 @@ function updateHighlightsPosition() {
       const portfolioRect = portfolioCard.getBoundingClientRect();
       const portfolioBottom = portfolioRect.bottom;
       const viewportTop = activeView.getBoundingClientRect().top;
-      marginTop = `${portfolioBottom - viewportTop + 23}px`;
+      marginTop = `${portfolioBottom - viewportTop + 20}px`;
     } else {
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 23px)`;
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 20px)`;
     }
   } else {
     // fallback برای سایر حالت‌ها
     // fallback for other cases
-    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 5px)`;
+    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
   }
   
   highlightsSections.forEach(section => {
