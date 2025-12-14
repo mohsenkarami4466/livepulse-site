@@ -280,22 +280,21 @@
 
 /* 🔮 هایلایت‌ها - طراحی Liquid Glass */
 /* فاصله یکسان برای همه هایلایت‌ها - مثل صفحه آرامش و آموزش */
-/* برای React components - استفاده از selector دقیق‌تر */
-.layout-main > .view .highlights-section,
-.layout-main > .view .home-highlights,
-.layout-main > .view .news-highlights,
-.layout-main > .view .tools-highlights,
-.layout-main > .view .education-highlights,
-.layout-main > .view .relax-highlights,
-.layout-main > .view .globe-highlights,
-/* برای vanilla JS - fallback */
+/* برای React components و vanilla JS - استفاده از selector ساده‌تر */
 .highlights-section,
 .home-highlights,
 .news-highlights,
 .tools-highlights,
 .education-highlights,
 .relax-highlights,
-.globe-highlights {
+.globe-highlights,
+.layout-main .highlights-section,
+.layout-main .home-highlights,
+.layout-main .news-highlights,
+.layout-main .tools-highlights,
+.layout-main .education-highlights,
+.layout-main .relax-highlights,
+.layout-main .globe-highlights {
     z-index: 100;
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
