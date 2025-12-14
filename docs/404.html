@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LivePulse.ir - قیمت لحظه‌ای ارز، طلا و رمزارز</title>
+    <!-- استایل‌های اصلی - تقسیم شده -->
+    <link rel="stylesheet" href="./styles/variables.css?v=2.8">
+    <link rel="stylesheet" href="./styles/error-handler.css?v=2.8">
+    <!-- Components Styles - تقسیم شده -->
+    <link rel="stylesheet" href="./styles/components/globe.css?v=2.8">
+    <link rel="stylesheet" href="./styles/components/cards.css?v=2.8">
+    <link rel="stylesheet" href="./styles/components/sections.css?v=2.8">
+    <link rel="stylesheet" href="./styles/components/modals.css?v=2.8">
+    <link rel="stylesheet" href="./styles/components/other.css?v=2.8">
+    <link rel="stylesheet" href="./styles/responsive.css?v=2.8">
+    <link rel="stylesheet" href="./globe/globe-styles.css?v=2.8">
+    <link rel="stylesheet" href="./styles/themes-complete.css?v=2.8"> <!-- تم‌های کامل و تفکیک شده -->
+    <link rel="stylesheet" href="./styles/theme-optimization.css?v=2.8"> <!-- Theme optimization -->
+    
+    <!-- کتابخانه‌های اصلی (برای استفاده در React components) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+    
+    <!-- کتابخانه‌های Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    
+    <!-- html2canvas برای تولید عکس -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- Utilities - باید قبل از React app لود شوند -->
+    <script src="./utils/logger.js"></script>
+    <script src="./utils/error-handler.js"></script>
+    <script src="./utils/performance.js"></script>
+    <script src="./utils/globe-helpers.js"></script>
+    <script src="./utils/state-manager.js"></script>
+    <script src="./config.js"></script>
+    
+    <!-- Main Scripts - برای integration با React -->
+    <script src="./script-main.js"></script>
+    <script src="./script-views.js"></script>
+    <script src="./script-cards.js"></script>
+    
+    <!-- Globe Scripts - تقسیم شده به فایل‌های کوچک‌تر -->
+    <!-- Globe Helpers - توابع کمکی -->
+    <script src="./globe/globe-helpers.js"></script>
+    <!-- Globe Clock - کره کوچک و ساعت بازار -->
+    <script src="./globe/globe-clock.js"></script>
+    <!-- Globe Markets - توابع بازار -->
+    <script src="./globe/globe-markets.js"></script>
+    <!-- Globe Modals - توابع مودال -->
+    <script src="./globe/globe-modals.js"></script>
+    <!-- Globe Simple - ساخت کره ساده -->
+    <script src="./globe/globe-simple.js"></script>
+    <!-- Globe Resources - توابع کره منابع -->
+    <script src="./globe/globe-resources.js"></script>
+    <!-- Globe 3D - توابع کره‌های 3D -->
+    <script src="./globe/globe-3d.js"></script>
+    
+    <script src="./script-ui.js"></script>
+    <script src="./script-tools.js"></script>
+    <script src="./data/countries-data.js"></script>
+    <script src="./gold-map.js"></script>
+    <script src="./data/geo-borders.js"></script>
+    <script src="./script-init.js"></script>
+</head>
+<body data-theme="light" style="margin: 0; padding: 0;">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
+
