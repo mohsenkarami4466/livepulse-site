@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LivePulse.ir - قیمت لحظه‌ای ارز، طلا و رمزارز</title>
     <!-- استایل‌های اصلی - تقسیم شده -->
-    <link rel="stylesheet" href="./styles/variables.css?v=2.8">
-    <link rel="stylesheet" href="./styles/error-handler.css?v=2.8">
+    <!-- استایل‌های اصلی - تقسیم شده -->
+    <link rel="stylesheet" href="/livepulse-site/styles/variables.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/styles/error-handler.css?v=2.8">
     <!-- Components Styles - تقسیم شده -->
-    <link rel="stylesheet" href="./styles/components/globe.css?v=2.8">
-    <link rel="stylesheet" href="./styles/components/cards.css?v=2.8">
-    <link rel="stylesheet" href="./styles/components/sections.css?v=2.8">
-    <link rel="stylesheet" href="./styles/components/modals.css?v=2.8">
-    <link rel="stylesheet" href="./styles/components/other.css?v=2.8">
-    <link rel="stylesheet" href="./styles/responsive.css?v=2.8">
-    <link rel="stylesheet" href="./globe/globe-styles.css?v=2.8">
-    <link rel="stylesheet" href="./styles/themes-complete.css?v=2.8"> <!-- تم‌های کامل و تفکیک شده -->
-    <link rel="stylesheet" href="./styles/theme-optimization.css?v=2.8"> <!-- Theme optimization -->
+    <link rel="stylesheet" href="/livepulse-site/styles/components/globe.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/styles/components/cards.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/styles/components/sections.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/styles/components/modals.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/styles/components/other.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/styles/responsive.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/globe/globe-styles.css?v=2.8">
+    <link rel="stylesheet" href="/livepulse-site/styles/themes-complete.css?v=2.8"> <!-- تم‌های کامل و تفکیک شده -->
+    <link rel="stylesheet" href="/livepulse-site/styles/theme-optimization.css?v=2.8"> <!-- Theme optimization -->
     
     <!-- کتابخانه‌های اصلی (برای استفاده در React components) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -34,40 +35,40 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <!-- Utilities - باید قبل از React app لود شوند -->
-    <script src="./utils/logger.js"></script>
-    <script src="./utils/error-handler.js"></script>
-    <script src="./utils/performance.js"></script>
-    <script src="./utils/globe-helpers.js"></script>
-    <script src="./utils/state-manager.js"></script>
-    <script src="./config.js"></script>
+    <script src="/livepulse-site/utils/logger.js"></script>
+    <script src="/livepulse-site/utils/error-handler.js"></script>
+    <script src="/livepulse-site/utils/performance.js"></script>
+    <script src="/livepulse-site/utils/globe-helpers.js"></script>
+    <script src="/livepulse-site/utils/state-manager.js"></script>
+    <script src="/livepulse-site/config.js"></script>
     
     <!-- Main Scripts - برای integration با React -->
-    <script src="./script-main.js"></script>
-    <script src="./script-views.js"></script>
-    <script src="./script-cards.js"></script>
+    <script src="/livepulse-site/script-main.js"></script>
+    <script src="/livepulse-site/script-views.js"></script>
+    <script src="/livepulse-site/script-cards.js"></script>
     
     <!-- Globe Scripts - تقسیم شده به فایل‌های کوچک‌تر -->
     <!-- Globe Helpers - توابع کمکی -->
-    <script src="./globe/globe-helpers.js"></script>
+    <script src="/livepulse-site/globe/globe-helpers.js"></script>
     <!-- Globe Clock - کره کوچک و ساعت بازار -->
-    <script src="./globe/globe-clock.js"></script>
+    <script src="/livepulse-site/globe/globe-clock.js"></script>
     <!-- Globe Markets - توابع بازار -->
-    <script src="./globe/globe-markets.js"></script>
+    <script src="/livepulse-site/globe/globe-markets.js"></script>
     <!-- Globe Modals - توابع مودال -->
-    <script src="./globe/globe-modals.js"></script>
+    <script src="/livepulse-site/globe/globe-modals.js"></script>
     <!-- Globe Simple - ساخت کره ساده -->
-    <script src="./globe/globe-simple.js"></script>
+    <script src="/livepulse-site/globe/globe-simple.js"></script>
     <!-- Globe Resources - توابع کره منابع -->
-    <script src="./globe/globe-resources.js"></script>
+    <script src="/livepulse-site/globe/globe-resources.js"></script>
     <!-- Globe 3D - توابع کره‌های 3D -->
-    <script src="./globe/globe-3d.js"></script>
+    <script src="/livepulse-site/globe/globe-3d.js"></script>
     
-    <script src="./script-ui.js"></script>
-    <script src="./script-tools.js"></script>
-    <script src="./data/countries-data.js"></script>
-    <script src="./gold-map.js"></script>
-    <script src="./data/geo-borders.js"></script>
-    <script src="./script-init.js"></script>
+    <script src="/livepulse-site/script-ui.js"></script>
+    <script src="/livepulse-site/script-tools.js"></script>
+    <script src="/livepulse-site/data/countries-data.js"></script>
+    <script src="/livepulse-site/gold-map.js"></script>
+    <script src="/livepulse-site/data/geo-borders.js"></script>
+    <script src="/livepulse-site/script-init.js"></script>
 </head>
 <body data-theme="light" style="margin: 0; padding: 0;">
     <div id="root"></div>
