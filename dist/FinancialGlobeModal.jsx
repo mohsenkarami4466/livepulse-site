@@ -42,19 +42,15 @@ function FinancialGlobeModal({ isOpen, onClose }) {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    if (!isOpen) return
-    
-    const log = window.logger || { info: console.log, error: console.error, warn: console.warn, debug: console.log }
-    
-    log.info('🌍 FinancialGlobeModal useEffect - isOpen:', isOpen)
-    
-    // تابع جداگانه برای ساخت کره
-    const buildGlobe = (container, log) => {
-    try {
-      log.info('🌍 شروع ساخت کره مالی...')
-      log.debug('Container:', container ? 'پیدا شد' : 'پیدا نشد')
-      log.debug('buildSimpleGlobe:', typeof window.buildSimpleGlobe)
-      log.debug('THREE:', typeof THREE)
+    if (isOpen && containerRef.current) {
+      const log = window.logger || { info: console.log, error: console.error, warn: console.warn }
+      
+      // بررسی وجود container
+      const container = document.getElementById('financialGlobeContainer')
+      if (!container) {
+        log.error('❌ Container کره مالی پیدا نشد!')
+        return
+      }
       
       // بررسی وجود THREE.js
       if (typeof THREE === 'undefined') {
@@ -63,33 +59,62 @@ function FinancialGlobeModal({ isOpen, onClose }) {
         return
       }
       
-      // بررسی وجود buildSimpleGlobe
-      if (typeof window.buildSimpleGlobe !== 'function') {
-        log.error('❌ window.buildSimpleGlobe یافت نشد!')
-        container.innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">خطا در لود کره. لطفاً صفحه را رفرش کنید.</p>'
-        return
-      }
-      
-      // پاک کردن container قبل از ساخت کره جدید
-      container.innerHTML = ''
-      
-      log.info('🌍 در حال ساخت کره با buildSimpleGlobe...')
-      const result = window.buildSimpleGlobe('financialGlobeContainer', 'financial')
-      log.debug('نتیجه buildSimpleGlobe:', result)
-      log.info('✅ کره مالی ساخته شد')
+      // استفاده از buildSimpleGlobe برای ساخت کره 3D
+      // این تابع در globe-simple.js تعریف شده است
+      if (typeof window !== 'undefined' && typeof window.buildSimpleGlobe === 'function') {
+        log.info('🌍 در حال ساخت کره مالی...')
+        log.debug('Container:', container ? 'پیدا شد' : 'پیدا نشد')
+        log.debug('buildSimpleGlobe:', typeof window.buildSimpleGlobe)
+        log.debug('THREE:', typeof THREE)
+        
+        // تاخیر برای اطمینان از نمایش modal
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              try {
+                // بررسی container
+                const containerEl = document.getElementById('financialGlobeContainer')
+                if (!containerEl) {
+                  log.error('❌ Container financialGlobeContainer پیدا نشد!')
+                  return
+                }
                 
-      // راه‌اندازی پنل‌ها و دکمه انتخاب بازار
-      setTimeout(() => {
-        if (typeof window.populateMarketList === 'function') {
-          window.populateMarketList()
-        }
-        if (typeof window.setupMarketSelector === 'function') {
-          window.setupMarketSelector()
-        }
-      }, 300)
-      
-      // راه‌اندازی دکمه سیار کره مالی - با تاخیر بیشتر برای اطمینان از لود شدن کره
-      setTimeout(() => {
+                log.debug('Container element:', containerEl)
+                
+                // پاک کردن container قبل از ساخت کره جدید
+                // Clear container before building new globe
+                containerEl.innerHTML = ''
+                
+                // بررسی وجود buildSimpleGlobe
+                // Check if buildSimpleGlobe exists
+                if (typeof window.buildSimpleGlobe !== 'function') {
+                  log.error('❌ window.buildSimpleGlobe یافت نشد!')
+                  containerEl.innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">خطا در لود کره. لطفاً صفحه را رفرش کنید.</p>'
+                  return
+                }
+                
+                // بررسی THREE.js
+                if (typeof THREE === 'undefined') {
+                  log.error('❌ THREE.js لود نشده است!')
+                  containerEl.innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">Three.js لود نشده است!</p>'
+                  return
+                }
+                
+                log.info('🌍 در حال ساخت کره با buildSimpleGlobe...')
+                const result = window.buildSimpleGlobe('financialGlobeContainer', 'financial')
+                log.debug('نتیجه buildSimpleGlobe:', result)
+                log.info('✅ کره مالی ساخته شد')
+                
+                // راه‌اندازی پنل‌ها و دکمه انتخاب بازار
+                if (typeof window.populateMarketList === 'function') {
+                  window.populateMarketList()
+                }
+                if (typeof window.setupMarketSelector === 'function') {
+                  window.setupMarketSelector()
+                }
+                
+                // راه‌اندازی دکمه سیار کره مالی - با تاخیر بیشتر برای اطمینان از لود شدن کره
+                setTimeout(() => {
                   const assistive = document.getElementById('financialGlobeAssistive')
                   const glassMenu = document.getElementById('financialGlobeMenu')
                   const modalContent = document.querySelector('#financialGlobeModal .globe-modal-content')
@@ -164,45 +189,15 @@ function FinancialGlobeModal({ isOpen, onClose }) {
                     }, 2000)
                   }
                 }, 1000) // افزایش delay برای اطمینان از لود شدن کامل کره
-    } catch (error) {
-      log.error('❌ خطا در ساخت کره مالی:', error)
-      if (container) {
-        container.innerHTML = '<p style="color: #ff6b6b; padding: 20px; text-align: center;">خطا در ساخت کره. لطفاً صفحه را رفرش کنید.</p>'
-      }
-    }
-  }
-    
-    // تاخیر برای اطمینان از render شدن DOM
-    const timeoutId = setTimeout(() => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          try {
-            // بررسی وجود container - بدون وابستگی به containerRef
-            const container = document.getElementById('financialGlobeContainer')
-            if (!container) {
-              log.error('❌ Container financialGlobeContainer پیدا نشد!')
-              // Retry بعد از تاخیر بیشتر
-              setTimeout(() => {
-                const retryContainer = document.getElementById('financialGlobeContainer')
-                if (!retryContainer) {
-                  log.error('❌ Container financialGlobeContainer بعد از retry هم پیدا نشد!')
-                  return
-                }
-                buildGlobe(retryContainer, log)
-              }, 500)
-              return
-            }
-            
-            buildGlobe(container, log)
-          } catch (error) {
-            log.error('❌ خطا در useEffect FinancialGlobeModal:', error)
+              } catch (error) {
+                log.error('❌ خطا در ساخت کره مالی:', error)
           }
-        })
-      })
-    }, 200) // افزایش delay برای اطمینان از render شدن DOM
-    
-    return () => {
-      clearTimeout(timeoutId)
+            })
+          })
+        }, 100)
+      } else {
+        log.error('❌ تابع buildSimpleGlobe یافت نشد!')
+      }
     }
   }, [isOpen])
 

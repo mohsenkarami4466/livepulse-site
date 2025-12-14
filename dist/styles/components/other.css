@@ -1,137 +1,13 @@
 /**
  * ============================================
- * 🎨 Other Components Styles
+ * 🎨 Other - Other Components Styles
  * ============================================
  * 
- * این فایل شامل تمام استایل‌های مربوط به سایر کامپوننت‌ها است.
- * This file contains all styles related to other components.
- * 
- * شامل / Includes:
- * - دکمه‌ها
- * - منوها
- * - دکمه شناور
- * - نوار ناوبری پایین
- * - استایل‌های تم روشن
- * - و سایر کامپوننت‌ها
+ * این فایل شامل استایل‌های مربوط به Other - Other Components Styles است.
+ * This file contains styles related to Other - Other Components Styles.
  * 
  * ============================================
  */
-
-/* 🎯 دکمه‌ها */
-.calculate-btn, 
-.analyze-btn, 
-.convert-btn,
-.subscription-btn,
-.subscribe-btn {
-    background: var(--accent-blue);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.calculate-btn:hover, 
-.analyze-btn:hover, 
-.convert-btn:hover,
-.subscription-btn:hover,
-.subscribe-btn:hover {
-    background: var(--accent-teal);
-    transform: translateY(-1px);
-}
-
-/* ✅ نتیجه‌ها */
-.result-box, .analysis-result {
-  margin-top: 20px;
-  padding: 20px;
-  background: var(--glass-bg);
-  border-radius: 15px;
-  border: 1px solid var(--glass-border);
-}
-
-.result-box.success, .analysis-result.success {
-  border-left: 5px solid var(--success-green);
-}
-
-.result-box.error, .analysis-result.error {
-  border-left: 5px solid var(--error-red);
-}
-
-.loading {
-  text-align: center;
-  color: var(--accent-gold);
-  font-weight: 600;
-}
-
-/* ==================== */
-/* 💬 بخش چت هوش مصنوعی */
-/* ==================== */
-
-.ai-chat-section {
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.chat-container {
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-}
-
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    margin-bottom: 16px;
-    background: var(--glass-bg);
-    border-radius: 12px;
-    border: 1px solid var(--glass-border);
-}
-
-.ai-message {
-    background: var(--accent-blue);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    max-width: 80%;
-}
-
-.user-message {
-    background: var(--accent-teal);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    max-width: 80%;
-    margin-left: auto;
-}
-
-.chat-input-container {
-    display: flex;
-    gap: 12px;
-}
-
-.chat-input-container input {
-    flex: 1;
-    padding: 12px 16px;
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    background: var(--glass-bg);
-    color: var(--text-primary);
-}
-
-.usage-counter {
-    text-align: center;
-    margin-top: 8px;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
 
 /* ==================== */
 /* 🎮 دکمه شناور حرفه‌ای */
@@ -243,6 +119,110 @@
         inset 0 2px 0 rgba(255, 255, 255, 0.8);
 }
 
+/* ==================== */
+/* 🪟 منوی شیشه‌ای */
+/* ==================== */
+
+.glass-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.glass-menu-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.glass-menu {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    min-width: 280px;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.glass-menu-overlay.active .glass-menu {
+    transform: scale(1);
+}
+
+.glass-close-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+}
+
+.glass-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.glass-menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.glass-menu-item {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    font-family: inherit;
+    font-size: 1em;
+    border: none;
+}
+
+.glass-menu-item:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateX(5px);
+}
+
+.glass-icon {
+    font-size: 1.3em;
+}
+
+.glass-text {
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
+/* ==================== */
 /* 🎯 منوی شیشه‌ای برای تم روشن */
 /* ==================== */
 
@@ -270,6 +250,257 @@
 
 [data-theme="light"] .glass-menu-item:hover {
     background: rgba(0, 0, 0, 0.12);
+}
+
+/* ==================== */
+/* 📱 ریسپانسیو */
+/* ==================== */
+
+@media (max-width: 768px) {
+    .assistive-touch {
+        /* حذف bottom و left از CSS - اجازه می‌دهیم JS کنترل کند */
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        touch-action: none !important; /* جلوگیری از رفتار پیش‌فرض touch */
+        pointer-events: auto !important;
+        z-index: 9997 !important;
+        /* حذف right و bottom برای اجازه کنترل کامل توسط JS */
+        right: auto !important;
+        bottom: auto !important;
+        /* بهبود سازگاری با اپرا و سایر مرورگرها */
+        -webkit-transform: translateZ(0) !important;
+        -moz-transform: translateZ(0) !important;
+        -ms-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        /* اطمینان از نمایش در همه مرورگرها */
+        min-width: 55px !important;
+        min-height: 55px !important;
+    }
+    
+    .touch-button {
+        width: 55px;
+        height: 55px;
+        touch-action: none !important; /* جلوگیری از رفتار پیش‌فرض touch */
+        pointer-events: auto !important;
+        /* بهبود rendering در اپرا */
+        -webkit-transform: translateZ(0) !important;
+        -moz-transform: translateZ(0) !important;
+        -ms-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+    
+    .glass-menu {
+        min-width: 250px;
+        margin: 20px;
+    }
+    
+    .glass-menu-item {
+        padding: 12px 18px;
+    }
+}
+
+/* ==================== */
+/* 📚 بخش آموزش (AI) */
+/* ==================== */
+
+#tutorialView {
+    display: none; /* مثل بقیه viewها، پیش‌فرض مخفی */
+    padding: 0 2rem 2rem;
+}
+
+#tutorialView.active-view {
+    display: block; /* وقتی فعال شد نمایش داده شود */
+}
+
+#tutorialView .panel-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#tutorialView .panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+#tutorialView .card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+#tutorialView .card:hover {
+    transform: translateY(-4px);
+}
+
+#edu-chatbot .chat-window {
+    background: var(--bg-primary);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    height: 200px;
+    overflow-y: auto;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+#edu-chatbot .chat-input {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#edu-chatbot .chat-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+}
+
+#edu-chatbot .chat-input button {
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#edu-quiz .quiz-body {
+    min-height: 120px;
+    margin-bottom: 1rem;
+}
+
+#edu-quiz .quiz-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+#edu-quiz button {
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#edu-live .live-data {
+    margin-bottom: 1rem;
+}
+
+#edu-live .ai-explain {
+    background: var(--bg-primary);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* ==================== */
+/* 🧘‍♂️ بخش آرامش (AI) */
+/* ==================== */
+
+#relaxView {
+    display: none;
+    padding: 0 2rem 2rem;
+}
+
+#relaxView.active-view {
+    display: block;
+}
+
+#relaxView .panel-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#relaxView .panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+#relaxView .card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+#relaxView .card:hover {
+    transform: translateY(-4px);
+}
+
+#moodSelect .mood-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#moodSelect button {
+    background: var(--accent-teal);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#relaxMusic audio {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#relaxMusic .playlist {
+    list-style: none;
+    padding: 0;
+}
+
+#relaxMusic .playlist li {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    cursor: pointer;
+}
+
+#relaxMusic .playlist li:hover {
+    background: var(--bg-primary);
+}
+
+#relaxGame .game-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#relaxGame .game-grid div {
+    background: var(--accent-blue);
+    color: #fff;
+    border-radius: 6px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#relaxGame .game-ui {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#relaxGame #gameStart {
+    background: var(--accent-green);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
 }
 
 /* ==================== */
@@ -720,134 +951,118 @@ body {
     body {
         padding-bottom: clamp(55px, 7vw, 65px);
     }
-/* ==================== */
-/* 🎯 استایل برای تم روشن */
-/* ==================== */
-
-[data-theme="light"] .touch-button {
-    background: linear-gradient(135deg, 
-        rgba(0, 0, 0, 0.1) 0%, 
-        rgba(0, 0, 0, 0.05) 50%,
-        rgba(0, 0, 0, 0.08) 100%);
-    border: 1.5px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.15),
-        0 0 0 1px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-[data-theme="light"] .touch-icon {
-    color: #333;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-[data-theme="light"] .assistive-touch.dragging .touch-button {
-    box-shadow: 
-        0 15px 40px rgba(0, 0, 0, 0.2),
-        0 0 0 2px rgba(0, 0, 0, 0.15),
-        inset 0 2px 0 rgba(255, 255, 255, 0.8);
-}
-
-/* ==================== */
-/* 🪟 منوی شیشه‌ای */
-/* ==================== */
-
-.glass-menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10001;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.glass-menu-overlay.active {
-    display: flex;
-    opacity: 1;
-}
-
-.glass-menu {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    min-width: 280px;
-    position: relative;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-}
-
-.glass-menu-overlay.active .glass-menu {
-    transform: scale(1);
-}
-
-.glass-close-btn {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* 🎯 دکمه‌ها */
+.calculate-btn, 
+.analyze-btn, 
+.convert-btn,
+.subscription-btn,
+.subscribe-btn {
+    background: var(--accent-blue);
     color: white;
-    cursor: pointer;
-    font-size: 1.1em;
-    transition: all 0.2s ease;
-}
-
-.glass-close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-}
-
-.glass-menu-content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 10px;
-}
-
-.glass-menu-item {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 15px;
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    width: 100%;
+}
+
+.calculate-btn:hover, 
+.analyze-btn:hover, 
+.convert-btn:hover,
+.subscription-btn:hover,
+.subscribe-btn:hover {
+    background: var(--accent-teal);
+    transform: translateY(-1px);
+}
+
+/* ✅ نتیجه‌ها */
+.result-box, .analysis-result {
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--glass-bg);
+  border-radius: 15px;
+  border: 1px solid var(--glass-border);
+}
+
+.result-box.success, .analysis-result.success {
+  border-left: 5px solid var(--success-green);
+}
+
+.result-box.error, .analysis-result.error {
+  border-left: 5px solid var(--error-red);
+}
+
+.loading {
+  text-align: center;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+/* ==================== */
+/* 💬 بخش چت هوش مصنوعی */
+/* ==================== */
+
+.ai-chat-section {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.chat-container {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: var(--glass-bg);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.ai-message {
+    background: var(--accent-blue);
     color: white;
-    font-family: inherit;
-    font-size: 1em;
-    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    max-width: 80%;
 }
 
-.glass-menu-item:hover {
-    background: rgba(255, 255, 255, 0.35);
-    transform: translateX(5px);
+.user-message {
+    background: var(--accent-teal);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    max-width: 80%;
+    margin-left: auto;
 }
 
-.glass-icon {
-    font-size: 1.3em;
+.chat-input-container {
+    display: flex;
+    gap: 12px;
 }
 
-.glass-text {
-    font-weight: 500;
-    font-size: 0.95em;
+.chat-input-container input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: var(--glass-bg);
+    color: var(--text-primary);
 }
 
+.usage-counter {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}

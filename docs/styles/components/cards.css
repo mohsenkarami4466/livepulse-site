@@ -1,15 +1,10 @@
 /**
  * ============================================
- * 📊 Cards Components Styles
+ * 📊 Cards - Price Cards Styles
  * ============================================
  * 
- * این فایل شامل تمام استایل‌های مربوط به کارت‌های قیمت است.
- * This file contains all styles related to price cards.
- * 
- * شامل / Includes:
- * - کارت‌های قیمت
- * - کانتینر کارت‌ها
- * - استایل‌های کارت‌ها
+ * این فایل شامل استایل‌های مربوط به Cards - Price Cards Styles است.
+ * This file contains styles related to Cards - Price Cards Styles.
  * 
  * ============================================
  */
@@ -218,5 +213,3 @@
 .mini-chart.down {
     background: transparent !important;
 }
-
-
