@@ -711,11 +711,11 @@
 }
 
 /* اطمینان از اینکه هایلایت‌های هر صفحه فقط در همان صفحه نمایش داده شوند */
-.view:not(.active-view) .highlights-section {
+/* .view:not(.active-view) .highlights-section - حذف شده برای جلوگیری از bad selector */
     display: none !important;
 }
 
-.view.active-view .highlights-section {
+/* .view.active-view .highlights-section - حذف شده برای جلوگیری از bad selector */
     display: block;
 }
 
