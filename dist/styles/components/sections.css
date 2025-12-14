@@ -280,6 +280,15 @@
 
 /* 🔮 هایلایت‌ها - طراحی Liquid Glass */
 /* فاصله یکسان برای همه هایلایت‌ها - مثل صفحه آرامش و آموزش */
+/* برای React components - استفاده از selector دقیق‌تر */
+.layout-main > .view .highlights-section,
+.layout-main > .view .home-highlights,
+.layout-main > .view .news-highlights,
+.layout-main > .view .tools-highlights,
+.layout-main > .view .education-highlights,
+.layout-main > .view .relax-highlights,
+.layout-main > .view .globe-highlights,
+/* برای vanilla JS - fallback */
 .highlights-section,
 .home-highlights,
 .news-highlights,
@@ -291,12 +300,12 @@
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
     padding-bottom: 0;
-    margin-top: -40px !important; /* 40px بالاتر (20px قبلی + 20px جدید) */
+    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) - 5px) !important; /* -5px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
     margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
-    max-width: 1400px;
-    margin-left: calc(clamp(100px, 14vw, 180px) + 8px);
-    margin-right: 1rem;
-    width: calc(100% - clamp(100px, 14vw, 180px) - 8px - 1rem);
+    margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
+    margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
+    width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
+    max-width: calc(100% - 24px) !important; /* max-width هم یکسان */
     box-sizing: border-box;
     /* margin-top با JavaScript بر اساس کارت portfolio تنظیم می‌شود */
 }
@@ -336,7 +345,14 @@
     box-sizing: border-box;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) and (min-width: 768px) {
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -344,10 +360,10 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: -40px !important; /* 20px بالاتر در تبلت */
-        margin-left: calc(80px + 8px);
-        margin-right: 0.5rem;
-        width: calc(100% - 80px - 8px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) - 0px) !important; /* 0px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
+        width: calc(100% - 24px) !important;
     }
     
     .highlights-container .highlight-circle {
@@ -365,7 +381,14 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) and (min-width: 480px) {
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -373,10 +396,10 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: -40px !important; /* 20px بالاتر در تبلت */
-        margin-left: calc(70px + 6px);
-        margin-right: 0.5rem;
-        width: calc(100% - 70px - 6px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
+        width: calc(100% - 24px) !important;
     }
     
     .highlights-container .highlight-circle {
@@ -394,7 +417,14 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 479px) {
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -402,10 +432,10 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: -40px !important; /* 20px بالاتر در موبایل */
-        margin-left: calc(65px + 4px);
-        margin-right: 0.5rem;
-        width: calc(100% - 65px - 4px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
+        width: calc(100% - 24px) !important;
     }
     
     .highlights-container .highlight-circle {
@@ -424,6 +454,13 @@
 }
 
 @media (max-width: 390px) {
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -431,10 +468,10 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: -40px !important; /* 20px بالاتر در موبایل کوچک */
-        margin-left: calc(60px + 3px);
-        margin-right: 0.5rem;
-        width: calc(100% - 60px - 3px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
+        width: calc(100% - 24px) !important;
     }
     
     .highlights-container .highlight-circle {
@@ -453,6 +490,13 @@
 }
 
 @media (max-width: 320px) {
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
@@ -460,10 +504,10 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: -40px !important; /* 20px بالاتر در موبایل خیلی کوچک */
-        margin-left: calc(60px + 2px);
-        margin-right: 0.5rem;
-        width: calc(100% - 60px - 2px - 0.5rem);
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+        margin-left: 12px !important;
+        margin-right: 12px !important;
+        width: calc(100% - 24px) !important;
     }
     
     .highlights-container .highlight-circle {
