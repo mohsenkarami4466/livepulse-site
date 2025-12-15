@@ -25,12 +25,12 @@
     background: #050505;
 }
 
-/* هدر - تم تاریک */
+/* هدر - تم تاریک - دقیقاً مثل کارت جفت ارزها */
 [data-theme="dark"] .glass-header,
 [data-theme="dark"] .header-container {
-    background: var(--glass-bg) !important;
-    backdrop-filter: var(--glass-blur) !important;
-    -webkit-backdrop-filter: var(--glass-blur) !important;
+    background: rgba(18, 18, 18, 0.6) !important; /* مثل کارت جفت ارزها */
+    backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
     border: none !important;
     box-shadow: var(--shadow) !important;
     color: var(--text-primary) !important;
@@ -150,12 +150,12 @@
     background: #e8eef5;
 }
 
-/* هدر - تم روشن */
+/* هدر - تم روشن - دقیقاً مثل کارت جفت ارزها */
 [data-theme="light"] .glass-header,
 [data-theme="light"] .header-container {
-    background: var(--glass-bg) !important;
-    backdrop-filter: var(--glass-blur) !important;
-    -webkit-backdrop-filter: var(--glass-blur) !important;
+    background: rgba(255, 255, 255, 0.75) !important; /* مثل کارت جفت ارزها */
+    backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
     border: none !important;
     box-shadow: var(--shadow) !important;
     color: var(--text-primary) !important;

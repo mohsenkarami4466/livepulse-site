@@ -2,36 +2,44 @@
 /* 🎨 بهینه‌سازی تم تاریک و روشن */
 /* ==================== */
 
-/* هدر - شیشه‌ای مات بدون خط دور */
+/* هدر - Liquid Glass دقیقاً مثل کارت جفت ارزها */
 .glass-header,
 .header-container {
-    background: var(--glass-bg) !important;
-    backdrop-filter: var(--glass-blur) !important;
-    -webkit-backdrop-filter: var(--glass-blur) !important;
+    backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
     border: none !important; /* بدون خط دور */
     box-shadow: var(--shadow) !important;
 }
 
-/* تم تاریک - هدر */
+/* تم تاریک - هدر - مثل کارت جفت ارزها */
 [data-theme="dark"] .glass-header,
 [data-theme="dark"] .header-container {
-    background: var(--glass-bg) !important;
+    background: rgba(18, 18, 18, 0.6) !important; /* مثل کارت جفت ارزها */
 }
 
-/* تم روشن - هدر */
+/* تم روشن - هدر - مثل کارت جفت ارزها */
 [data-theme="light"] .glass-header,
 [data-theme="light"] .header-container {
-    background: var(--glass-bg) !important;
+    background: rgba(255, 255, 255, 0.75) !important; /* مثل کارت جفت ارزها */
 }
 
-/* فوتر - شیشه‌ای مات بدون خط دور */
+/* فوتر - Liquid Glass دقیقاً مثل کارت جفت ارزها */
 .main-footer {
     background: var(--glass-bg) !important;
-    backdrop-filter: var(--glass-blur) !important;
-    -webkit-backdrop-filter: var(--glass-blur) !important;
+    backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
     border: none !important; /* بدون خط دور */
     border-top: none !important;
     box-shadow: var(--shadow) !important;
+}
+
+/* فوتر - دقیقاً مثل کارت جفت ارزها */
+[data-theme="dark"] .main-footer {
+    background: rgba(18, 18, 18, 0.6) !important; /* مثل کارت جفت ارزها */
+}
+
+[data-theme="light"] .main-footer {
+    background: rgba(255, 255, 255, 0.75) !important; /* مثل کارت جفت ارزها */
 }
 
 /* شاخص‌ها (جفت ارزها) - شیشه‌ای مات بدون خط دور */

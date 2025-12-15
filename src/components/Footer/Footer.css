@@ -10,14 +10,24 @@
  * آخرین بروزرسانی: 2025-12-06
  */
 
-/* فوتر اصلی */
+/* فوتر اصلی - Liquid Glass دقیقاً مثل کارت جفت ارزها */
 .main-footer {
+    /* Liquid Glass - دقیقاً مثل کارت جفت ارزها */
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important; /* مثل کارت جفت ارزها */
     border-top: 1px solid var(--glass-border);
     padding: 1.2rem 1rem;
     margin-top: 2rem;
+}
+
+/* فوتر - دقیقاً مثل کارت جفت ارزها */
+[data-theme="dark"] .main-footer {
+    background: rgba(18, 18, 18, 0.6) !important; /* مثل کارت جفت ارزها */
+}
+
+[data-theme="light"] .main-footer {
+    background: rgba(255, 255, 255, 0.75) !important; /* مثل کارت جفت ارزها */
 }
 
 .footer-content {

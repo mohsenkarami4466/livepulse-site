@@ -3081,7 +3081,7 @@
 /* هدر */
 [data-theme="light"] .glass-header,
 [data-theme="light"] .header-container {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.75) !important; /* مثل کارت جفت ارزها */
     border-color: rgba(0, 0, 0, 0.08);
 }
 
