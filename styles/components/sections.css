@@ -296,11 +296,13 @@
 .education-highlights,
 .relax-highlights,
 .globe-highlights {
-    z-index: 100;
+    z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
+    position: relative !important; /* برای z-index کار کند */
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
     padding-bottom: 0;
-    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* +20px gap - فاصله از کارت portfolio */
+    /* margin-top: header + gap + indicators + gap + portfolio height + 20px gap */
+    margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* 20px پایین‌تر از کارت portfolio */
     margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
     margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
@@ -360,7 +362,10 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 20px) !important; /* +20px gap - فاصله از کارت portfolio */
+        z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
+        position: relative !important; /* برای z-index کار کند */
+        /* margin-top: header + gap + indicators + gap + portfolio height + 20px gap */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* 20px پایین‌تر از کارت portfolio */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -432,7 +437,9 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از کارت portfolio */
+        z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
+        position: relative !important; /* برای z-index کار کند */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* 20px پایین‌تر از کارت portfolio */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -468,7 +475,9 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از کارت portfolio */
+        z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
+        position: relative !important; /* برای z-index کار کند */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* 20px پایین‌تر از کارت portfolio */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -504,7 +513,9 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از کارت portfolio */
+        z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
+        position: relative !important; /* برای z-index کار کند */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* 20px پایین‌تر از کارت portfolio */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -697,27 +708,27 @@
 /* 🖥️ مدیریت View ها */
 /* ==================== */
 
+/* در React Router، همه viewها render می‌شوند - فقط یکی در هر زمان نمایش داده می‌شود */
 .view {
-    display: none;
-    opacity: 0;
-    transform: translateY(10px);
+    display: block !important; /* در React Router همه viewها باید نمایش داده شوند */
+    opacity: 1 !important;
+    transform: translateY(0) !important;
     transition: opacity 0.3s ease, transform 0.3s ease;
     min-height: 100vh;
 }
 
+/* برای vanilla JS - اگر کلاس active-view وجود داشت */
 .view.active-view {
     display: block;
     opacity: 1;
     transform: translateY(0);
 }
 
-/* اطمینان از اینکه هایلایت‌های هر صفحه فقط در همان صفحه نمایش داده شوند */
-.view:not(.active-view) .highlights-section {
-    display: none !important;
-}
-
-.view.active-view .highlights-section {
-    display: block;
+/* اطمینان از اینکه هایلایت‌های هر صفحه نمایش داده می‌شوند */
+.view .highlights-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* 🎯 بخش‌های مشترک - همیشه نمایش داده می‌شوند در تمام صفحات */
