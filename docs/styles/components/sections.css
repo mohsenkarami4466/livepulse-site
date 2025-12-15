@@ -280,27 +280,26 @@
 
 /* 🔮 هایلایت‌ها - طراحی Liquid Glass */
 /* فاصله یکسان برای همه هایلایت‌ها - مثل صفحه آرامش و آموزش */
-/* برای React components - استفاده از selector دقیق‌تر */
-.layout-main > .view .highlights-section,
-.layout-main > .view .home-highlights,
-.layout-main > .view .news-highlights,
-.layout-main > .view .tools-highlights,
-.layout-main > .view .education-highlights,
-.layout-main > .view .relax-highlights,
-.layout-main > .view .globe-highlights,
-/* برای vanilla JS - fallback */
+/* برای React components و vanilla JS - استفاده از selector ساده‌تر */
 .highlights-section,
 .home-highlights,
 .news-highlights,
 .tools-highlights,
 .education-highlights,
 .relax-highlights,
-.globe-highlights {
+.globe-highlights,
+.layout-main > .view .highlights-section,
+.layout-main > .view .home-highlights,
+.layout-main > .view .news-highlights,
+.layout-main > .view .tools-highlights,
+.layout-main > .view .education-highlights,
+.layout-main > .view .relax-highlights,
+.layout-main > .view .globe-highlights {
     z-index: 100;
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
     padding-bottom: 0;
-    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) - 5px) !important; /* -5px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio */
     margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
     margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
@@ -346,21 +345,21 @@
 }
 
 @media (max-width: 1023px) and (min-width: 768px) {
-    .layout-main > .view .highlights-section,
-    .layout-main > .view .home-highlights,
-    .layout-main > .view .news-highlights,
-    .layout-main > .view .tools-highlights,
-    .layout-main > .view .education-highlights,
-    .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
     .tools-highlights,
     .education-highlights,
     .relax-highlights,
-    .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) - 0px) !important; /* 0px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+    .globe-highlights,
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در تبلت */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -382,21 +381,21 @@
 }
 
 @media (max-width: 767px) and (min-width: 480px) {
-    .layout-main > .view .highlights-section,
-    .layout-main > .view .home-highlights,
-    .layout-main > .view .news-highlights,
-    .layout-main > .view .tools-highlights,
-    .layout-main > .view .education-highlights,
-    .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
     .tools-highlights,
     .education-highlights,
     .relax-highlights,
-    .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+    .globe-highlights,
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -418,21 +417,21 @@
 }
 
 @media (max-width: 479px) {
-    .layout-main > .view .highlights-section,
-    .layout-main > .view .home-highlights,
-    .layout-main > .view .news-highlights,
-    .layout-main > .view .tools-highlights,
-    .layout-main > .view .education-highlights,
-    .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
     .tools-highlights,
     .education-highlights,
     .relax-highlights,
-    .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+    .globe-highlights,
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل کوچک */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -454,21 +453,21 @@
 }
 
 @media (max-width: 390px) {
-    .layout-main > .view .highlights-section,
-    .layout-main > .view .home-highlights,
-    .layout-main > .view .news-highlights,
-    .layout-main > .view .tools-highlights,
-    .layout-main > .view .education-highlights,
-    .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
     .tools-highlights,
     .education-highlights,
     .relax-highlights,
-    .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+    .globe-highlights,
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل خیلی کوچک */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -490,21 +489,21 @@
 }
 
 @media (max-width: 320px) {
-    .layout-main > .view .highlights-section,
-    .layout-main > .view .home-highlights,
-    .layout-main > .view .news-highlights,
-    .layout-main > .view .tools-highlights,
-    .layout-main > .view .education-highlights,
-    .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights,
     .highlights-section,
     .home-highlights,
     .news-highlights,
     .tools-highlights,
     .education-highlights,
     .relax-highlights,
-    .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
+    .globe-highlights,
+    .layout-main > .view .highlights-section,
+    .layout-main > .view .home-highlights,
+    .layout-main > .view .news-highlights,
+    .layout-main > .view .tools-highlights,
+    .layout-main > .view .education-highlights,
+    .layout-main > .view .relax-highlights,
+    .layout-main > .view .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل خیلی خیلی کوچک */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -712,13 +711,8 @@
 }
 
 /* اطمینان از اینکه هایلایت‌های هر صفحه فقط در همان صفحه نمایش داده شوند */
-.view:not(.active-view) .highlights-section {
-    display: none !important;
-}
-
-.view.active-view .highlights-section {
-    display: block;
-}
+/* .view:not(.active-view) .highlights-section - حذف شده برای جلوگیری از bad selector */
+/* .view.active-view .highlights-section - حذف شده برای جلوگیری از bad selector */
 
 /* 🎯 بخش‌های مشترک - همیشه نمایش داده می‌شوند در تمام صفحات */
 .global-section,
