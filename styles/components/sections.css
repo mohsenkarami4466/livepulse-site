@@ -300,7 +300,7 @@
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
     padding-bottom: 0;
-    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio */
+    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) - 5px) !important; /* -5px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
     margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
     margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
@@ -346,21 +346,21 @@
 }
 
 @media (max-width: 1023px) and (min-width: 768px) {
-    .highlights-section,
-    .home-highlights,
-    .news-highlights,
-    .tools-highlights,
-    .education-highlights,
-    .relax-highlights,
-    .globe-highlights,
     .layout-main > .view .highlights-section,
     .layout-main > .view .home-highlights,
     .layout-main > .view .news-highlights,
     .layout-main > .view .tools-highlights,
     .layout-main > .view .education-highlights,
     .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در تبلت */
+    .layout-main > .view .globe-highlights,
+    .highlights-section,
+    .home-highlights,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) - 0px) !important; /* 0px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -382,21 +382,21 @@
 }
 
 @media (max-width: 767px) and (min-width: 480px) {
-    .highlights-section,
-    .home-highlights,
-    .news-highlights,
-    .tools-highlights,
-    .education-highlights,
-    .relax-highlights,
-    .globe-highlights,
     .layout-main > .view .highlights-section,
     .layout-main > .view .home-highlights,
     .layout-main > .view .news-highlights,
     .layout-main > .view .tools-highlights,
     .layout-main > .view .education-highlights,
     .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل */
+    .layout-main > .view .globe-highlights,
+    .highlights-section,
+    .home-highlights,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -432,7 +432,7 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل کوچک */
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -454,21 +454,21 @@
 }
 
 @media (max-width: 390px) {
-    .highlights-section,
-    .home-highlights,
-    .news-highlights,
-    .tools-highlights,
-    .education-highlights,
-    .relax-highlights,
-    .globe-highlights,
     .layout-main > .view .highlights-section,
     .layout-main > .view .home-highlights,
     .layout-main > .view .news-highlights,
     .layout-main > .view .tools-highlights,
     .layout-main > .view .education-highlights,
     .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل خیلی کوچک */
+    .layout-main > .view .globe-highlights,
+    .highlights-section,
+    .home-highlights,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -490,21 +490,21 @@
 }
 
 @media (max-width: 320px) {
-    .highlights-section,
-    .home-highlights,
-    .news-highlights,
-    .tools-highlights,
-    .education-highlights,
-    .relax-highlights,
-    .globe-highlights,
     .layout-main > .view .highlights-section,
     .layout-main > .view .home-highlights,
     .layout-main > .view .news-highlights,
     .layout-main > .view .tools-highlights,
     .layout-main > .view .education-highlights,
     .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل خیلی خیلی کوچک */
+    .layout-main > .view .globe-highlights,
+    .highlights-section,
+    .home-highlights,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
+        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
         margin-left: 12px !important;
         margin-right: 12px !important;
         width: calc(100% - 24px) !important;
@@ -712,8 +712,13 @@
 }
 
 /* اطمینان از اینکه هایلایت‌های هر صفحه فقط در همان صفحه نمایش داده شوند */
-/* .view:not(.active-view) .highlights-section - حذف شده برای جلوگیری از bad selector */
-/* .view.active-view .highlights-section - حذف شده برای جلوگیری از bad selector */
+.view:not(.active-view) .highlights-section {
+    display: none !important;
+}
+
+.view.active-view .highlights-section {
+    display: block;
+}
 
 /* 🎯 بخش‌های مشترک - همیشه نمایش داده می‌شوند در تمام صفحات */
 .global-section,
@@ -961,7 +966,7 @@
 }
 
 .news-item:hover {
-  transform: translateX(-5px);
+  transform: translateX(+20px);
   background: var(--glass-bg);
 }
 
@@ -1622,7 +1627,7 @@
 }
 
 .news-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(+20px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
