@@ -140,3 +140,12 @@ vite.config.ts.timestamp-*
 
 # فولدر فایل‌های بکاپ و یادداشت‌ها (فقط برای سیستم محلی)
 فایلهای_قبل_از_تبدیل/
+یادداشتها/
+*.md
+!README.md
+!LICENSE
+INVESTIGATION.md
+NOTES.md
+CSS_COMPARISON.md
+start-dev.sh
+deploy.sh
