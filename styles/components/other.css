@@ -951,6 +951,8 @@ body {
     body {
         padding-bottom: clamp(55px, 7vw, 65px);
     }
+}
+
 /* 🎯 دکمه‌ها */
 .calculate-btn, 
 .analyze-btn, 

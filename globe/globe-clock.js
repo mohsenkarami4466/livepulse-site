@@ -502,6 +502,16 @@ function initGlobe() {
   const log = window.logger || { error: console.error, warn: console.warn, success: console.log };
   const errorHandler = window.errorHandler;
   
+  // بررسی React mode - اگر در React mode هستیم، initGlobe را اجرا نکن
+  const globeWrapper = document.getElementById('globeClockWrapper');
+  const isReactMode = globeWrapper && globeWrapper.getAttribute('data-react-mode') === 'true';
+  
+  if (isReactMode) {
+    // در React mode، کامپوننت GlobeClock خودش initGlobe را فراخوانی می‌کند
+    log.info('✅ React mode تشخیص داده شد - initGlobe توسط React component مدیریت می‌شود');
+    return;
+  }
+  
   const container = document.getElementById('globeContainer');
   if (!container) {
     const error = new Error('globeContainer پیدا نشد');

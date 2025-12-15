@@ -73,9 +73,12 @@ function AppContent() {
  * 4. AppRouter: مدیریت مسیرها و صفحات
  */
 function App() {
+  // تعیین basename بر اساس محیط: development از /، production از /livepulse-site/
+  const basename = import.meta.env.DEV ? '/' : '/livepulse-site/'
+  
   return (
     <BrowserRouter
-      basename="/livepulse-site"
+      basename={basename}
       future={{
         v7_startTransition: true,
         v7_relativeSplatPath: true
