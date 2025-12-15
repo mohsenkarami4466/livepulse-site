@@ -280,21 +280,22 @@
 
 /* 🔮 هایلایت‌ها - طراحی Liquid Glass */
 /* فاصله یکسان برای همه هایلایت‌ها - مثل صفحه آرامش و آموزش */
-/* برای React components و vanilla JS - استفاده از selector ساده‌تر */
-.highlights-section,
-.home-highlights,
-.news-highlights,
-.tools-highlights,
-.education-highlights,
-.relax-highlights,
-.globe-highlights,
+/* برای React components - استفاده از selector دقیق‌تر */
 .layout-main > .view .highlights-section,
 .layout-main > .view .home-highlights,
 .layout-main > .view .news-highlights,
 .layout-main > .view .tools-highlights,
 .layout-main > .view .education-highlights,
 .layout-main > .view .relax-highlights,
-.layout-main > .view .globe-highlights {
+.layout-main > .view .globe-highlights,
+/* برای vanilla JS - fallback */
+.highlights-section,
+.home-highlights,
+.news-highlights,
+.tools-highlights,
+.education-highlights,
+.relax-highlights,
+.globe-highlights {
     z-index: 100;
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
@@ -417,20 +418,20 @@
 }
 
 @media (max-width: 479px) {
-    .highlights-section,
-    .home-highlights,
-    .news-highlights,
-    .tools-highlights,
-    .education-highlights,
-    .relax-highlights,
-    .globe-highlights,
     .layout-main > .view .highlights-section,
     .layout-main > .view .home-highlights,
     .layout-main > .view .news-highlights,
     .layout-main > .view .tools-highlights,
     .layout-main > .view .education-highlights,
     .layout-main > .view .relax-highlights,
-    .layout-main > .view .globe-highlights {
+    .layout-main > .view .globe-highlights,
+    .highlights-section,
+    .home-highlights,
+    .news-highlights,
+    .tools-highlights,
+    .education-highlights,
+    .relax-highlights,
+    .globe-highlights {
         margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 20px) !important; /* +20px gap - فاصله از زیر کارت portfolio در موبایل کوچک */
         margin-left: 12px !important;
         margin-right: 12px !important;
