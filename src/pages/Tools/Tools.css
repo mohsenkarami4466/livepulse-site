@@ -1,9 +1,11 @@
 /* استایل‌های Tools page از style.css استفاده می‌کنند */
 /* این فایل فقط برای override های خاص React است */
 
-/* اطمینان از نمایش view */
-#toolsView.view.active-view {
+/* اطمینان از نمایش view - برای React Router (بدون نیاز به .active-view) */
+#toolsView.view {
   display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* تنظیم فاصله مطالب از هایلایت‌ها در دسکتاپ */

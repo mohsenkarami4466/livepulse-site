@@ -1,8 +1,8 @@
 /* استایل‌های Home page از style.css استفاده می‌کنند */
 /* این فایل فقط برای override های خاص React است */
 
-/* اطمینان از نمایش view */
-#homeView.view.active-view {
+/* اطمینان از نمایش view - برای React Router (بدون نیاز به .active-view) */
+#homeView.view {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;

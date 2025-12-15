@@ -301,6 +301,10 @@
     background: transparent;
     padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
     padding-bottom: 0;
+    display: flex !important; /* flex برای highlights-container */
+    flex-direction: column !important; /* highlights-container در داخل */
+    visibility: visible !important;
+    opacity: 1 !important;
     /* margin-top: header + gap + indicators + gap + portfolio height + 20px gap */
     margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* 20px پایین‌تر از کارت portfolio */
     margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
@@ -308,6 +312,7 @@
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
     width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
     max-width: calc(100% - 24px) !important; /* max-width هم یکسان */
+    min-height: 80px !important; /* حداقل ارتفاع برای highlights-container */
     box-sizing: border-box;
     /* margin-top با JavaScript بر اساس کارت portfolio تنظیم می‌شود */
 }
@@ -725,10 +730,20 @@
 }
 
 /* اطمینان از اینکه هایلایت‌های هر صفحه نمایش داده می‌شوند */
-.view .highlights-section {
-    display: block !important;
+.view .highlights-section,
+.layout-main > .view .highlights-section,
+.layout-main .view .highlights-section,
+#homeView .highlights-section,
+#newsView .highlights-section,
+#toolsView .highlights-section,
+#tutorialView .highlights-section,
+#relaxView .highlights-section,
+#globeView .highlights-section {
+    display: flex !important; /* تغییر از block به flex برای highlights-container */
     visibility: visible !important;
     opacity: 1 !important;
+    position: relative !important;
+    z-index: 996 !important;
 }
 
 /* 🎯 بخش‌های مشترک - همیشه نمایش داده می‌شوند در تمام صفحات */

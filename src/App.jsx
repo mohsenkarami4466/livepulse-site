@@ -54,6 +54,32 @@ function AppContent() {
         })
       })
     }
+    
+    // به‌روزرسانی موقعیت هایلایت‌ها بعد از تغییر مسیر
+    const updateHighlights = () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          console.log('🔄 App.jsx: Calling updateHighlightsPosition...', {
+            pathname: location.pathname,
+            functionExists: typeof window.updateHighlightsPosition === 'function',
+            views: document.querySelectorAll('.view').length,
+            highlights: document.querySelectorAll('.highlights-section').length
+          });
+          
+          if (typeof window.updateHighlightsPosition === 'function') {
+            window.updateHighlightsPosition()
+          } else {
+            console.warn('⚠️ updateHighlightsPosition function not found on window!');
+          }
+        })
+      })
+    }
+    
+    // چند بار با تاخیر برای اطمینان از render شدن
+    setTimeout(updateHighlights, 100)
+    setTimeout(updateHighlights, 500)
+    setTimeout(updateHighlights, 1000)
+    setTimeout(updateHighlights, 2000) // یک بار دیگر برای اطمینان
   }, [location.pathname]) // اجرا با هر تغییر مسیر
 
   return (

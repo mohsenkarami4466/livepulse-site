@@ -1,8 +1,10 @@
 /* استایل‌های Globe page از style.css استفاده می‌کنند */
 
-/* اطمینان از نمایش view */
-#globeView.view.active-view {
+/* اطمینان از نمایش view - برای React Router (بدون نیاز به .active-view) */
+#globeView.view {
   display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .view-content {

@@ -278,14 +278,49 @@ function updateGlobePosition() {
  * This function sets highlights sections position based on portfolio card position.
  */
 function updateHighlightsPosition() {
-  // پیدا کردن view فعال
-  // Find active view
-  const activeView = document.querySelector('.view.active-view');
-  if (!activeView) return;
+  // پیدا کردن view فعال - در React Router همه viewها render می‌شوند
+  // Find active view - in React Router all views are rendered
+  // اول سعی می‌کنیم view فعال را پیدا کنیم (برای vanilla JS)
+  let activeView = document.querySelector('.view.active-view');
+  
+  // اگر view فعال پیدا نشد، همه viewها را بررسی می‌کنیم (برای React Router)
+  // If active view not found, check all views (for React Router)
+  if (!activeView) {
+    // در React Router، view فعال view ای است که در layout-main است و display: block دارد
+    const allViews = document.querySelectorAll('.layout-main > .view, .view');
+    for (const view of allViews) {
+      const computedStyle = window.getComputedStyle(view);
+      if (computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden') {
+        activeView = view;
+        break;
+      }
+    }
+  }
+  
+  if (!activeView) {
+    console.warn('⚠️ updateHighlightsPosition: No active view found!', {
+      activeViewWithClass: document.querySelector('.view.active-view'),
+      allViews: document.querySelectorAll('.view'),
+      layoutMainViews: document.querySelectorAll('.layout-main > .view')
+    });
+    return;
+  }
+  
+  console.log('✅ updateHighlightsPosition: Active view found:', {
+    viewId: activeView.id,
+    viewClass: activeView.className,
+    viewDisplay: window.getComputedStyle(activeView).display
+  });
   
   // پیدا کردن همه هایلایت‌ها
   // Find all highlights
-  const highlightsSections = activeView.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
+  let highlightsSections = activeView.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
+  
+  // اگر در view پیدا نشد، در کل document جستجو کن (fallback)
+  if (highlightsSections.length === 0) {
+    console.warn('⚠️ No highlights in active view, searching in document...');
+    highlightsSections = document.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
+  }
   
   // پیدا کردن المان‌های مورد نیاز برای محاسبه
   // Find elements needed for calculation
@@ -302,9 +337,30 @@ function updateHighlightsPosition() {
   let marginTop;
   
   if (isDesktop) {
-    // در دسکتاپ: پایین کارت portfolio + 20px gap
-    // Desktop: below portfolio card + 20px gap
-    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
+    // در دسکتاپ: محاسبه بر اساس موقعیت واقعی کارت portfolio
+    // Desktop: calculate based on actual portfolio card position
+    if (portfolioCard && activeView) {
+      const portfolioRect = portfolioCard.getBoundingClientRect();
+      const portfolioBottom = portfolioRect.bottom;
+      const viewRect = activeView.getBoundingClientRect();
+      const viewTop = viewRect.top;
+      const scrollTop = window.scrollY || 0;
+      // محاسبه دقیق: فاصله از بالای view تا پایین کارت portfolio + 20px gap
+      const calculatedMargin = portfolioBottom - viewTop + scrollTop + 20;
+      marginTop = `${Math.max(calculatedMargin, 100)}px`; // حداقل 100px برای اطمینان از نمایش
+      
+      console.log('🔍 Desktop margin calculation:', {
+        portfolioBottom,
+        viewTop,
+        scrollTop,
+        calculatedMargin,
+        finalMargin: marginTop
+      });
+    } else {
+      // fallback: محاسبه بر اساس ارتفاع‌های ثابت
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
+      console.warn('⚠️ Portfolio card or active view not found, using fallback margin');
+    }
   } else if (isTablet) {
     // در تبلت: پایین کارت portfolio + 20px gap
     // Tablet: below portfolio card + 20px gap
@@ -339,21 +395,36 @@ function updateHighlightsPosition() {
     if (section) {
       section.style.setProperty('margin-top', marginTop, 'important');
       section.style.setProperty('padding-top', '0', 'important');
-      section.style.setProperty('display', 'block', 'important');
+      section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
+      section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
       section.style.setProperty('visibility', 'visible', 'important');
       section.style.setProperty('opacity', '1', 'important');
+      section.style.setProperty('position', 'relative', 'important');
+      section.style.setProperty('z-index', '996', 'important');
       
-      if (window.DEBUG) {
-        console.log('Highlights position updated:', {
-          section: section.className,
-          marginTop: marginTop,
-          isMobile: isMobile,
-          isTablet: isTablet,
-          portfolioCard: portfolioCard ? 'found' : 'not found'
-        });
-      }
+      // Debug logging - همیشه فعال برای troubleshooting
+      console.log('🔍 Highlights position updated:', {
+        section: section.className,
+        marginTop: marginTop,
+        isMobile: isMobile,
+        isTablet: isTablet,
+        isDesktop: isDesktop,
+        portfolioCard: portfolioCard ? 'found' : 'not found',
+        activeView: activeView ? activeView.id || activeView.className : 'not found',
+        highlightsCount: highlightsSections.length
+      });
     }
   });
+  
+  // اگر highlights پیدا نشد، log کن
+  if (highlightsSections.length === 0) {
+    console.warn('⚠️ No highlights sections found!', {
+      activeView: activeView ? activeView.id || activeView.className : 'not found',
+      allViews: document.querySelectorAll('.view').length,
+      layoutMainViews: document.querySelectorAll('.layout-main > .view').length,
+      allHighlights: document.querySelectorAll('.highlights-section').length
+    });
+  }
 }
 
 // در دسترس قرار دادن تابع برای استفاده در جاهای دیگر
