@@ -73,14 +73,14 @@ export function forceShowHighlights() {
     section.style.setProperty('opacity', '1', 'important')
     section.style.setProperty('position', 'relative', 'important')
     section.style.setProperty('z-index', '999', 'important')
-    section.style.setProperty('width', 'calc(100% - 24px)', 'important')
-    section.style.setProperty('min-width', 'calc(100% - 24px)', 'important')
-    section.style.setProperty('max-width', 'calc(100% - 24px)', 'important')
+    section.style.setProperty('width', 'calc(100% - 16px)', 'important')
+    section.style.setProperty('min-width', 'calc(100% - 16px)', 'important')
+    section.style.setProperty('max-width', 'calc(100% - 16px)', 'important')
     section.style.setProperty('height', '80px', 'important')
     section.style.setProperty('min-height', '80px', 'important')
-    section.style.setProperty('margin-top', '12px', 'important')
-    section.style.setProperty('margin-left', '12px', 'important')
-    section.style.setProperty('margin-right', '12px', 'important')
+    section.style.setProperty('margin-top', '25px', 'important')
+    section.style.setProperty('margin-left', '8px', 'important')
+    section.style.setProperty('margin-right', '8px', 'important')
     section.style.setProperty('margin-bottom', '20px', 'important')
     section.style.setProperty('padding', '0', 'important')
     section.style.setProperty('box-sizing', 'border-box', 'important')
@@ -105,7 +105,7 @@ export function forceShowHighlights() {
       container.style.minHeight = '80px'
       container.style.padding = '0'
       container.style.margin = '0'
-      container.style.gap = '8px'
+      container.style.gap = '10px'
       container.style.flexWrap = 'nowrap'
       container.style.boxSizing = 'border-box'
       container.style.overflow = 'visible'
@@ -117,20 +117,25 @@ export function forceShowHighlights() {
       circle.style.display = 'flex'
       circle.style.visibility = 'visible'
       circle.style.opacity = '1'
-      circle.style.width = '60px'
+      circle.style.width = 'auto' // عرض خودکار برای متن
+      circle.style.minWidth = '70px'
+      circle.style.maxWidth = '140px'
       circle.style.height = '60px'
-      circle.style.minWidth = '60px'
       circle.style.minHeight = '60px'
-      circle.style.maxWidth = '75px'
-      circle.style.maxHeight = '75px'
-      circle.style.flex = '0 0 60px'
+      circle.style.flex = '0 0 auto' // عرض خودکار
       circle.style.flexShrink = '0'
       circle.style.flexGrow = '0'
       circle.style.alignItems = 'center'
       circle.style.justifyContent = 'center'
       circle.style.boxSizing = 'border-box'
       circle.style.position = 'relative'
-      circle.style.margin = '0 4px'
+      circle.style.margin = '0' // حذف margin - gap فاصله را ایجاد می‌کند
+      circle.style.setProperty('border-radius', '12px', 'important')
+      circle.style.setProperty('padding', '8px 16px', 'important')
+      circle.style.setProperty('font-size', 'clamp(0.7rem, 1.1vw, 0.85rem)', 'important')
+      circle.style.setProperty('line-height', '1.3', 'important')
+      circle.style.setProperty('white-space', 'nowrap', 'important')
+      circle.style.setProperty('text-align', 'center', 'important')
       circle.style.overflow = 'visible'
     })
   })

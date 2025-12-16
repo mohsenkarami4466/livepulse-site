@@ -143,8 +143,23 @@ function Home() {
             circle.style.setProperty('display', 'flex', 'important')
             circle.style.setProperty('visibility', 'visible', 'important')
             circle.style.setProperty('opacity', '1', 'important')
+            circle.style.setProperty('border-radius', '12px', 'important')
+            circle.style.setProperty('padding', '8px 12px', 'important')
+            circle.style.setProperty('margin', '0', 'important')
+            circle.style.setProperty('white-space', 'nowrap', 'important')
           })
         }
+        
+        // تنظیم gap برای container
+        if (highlightsContainer) {
+          highlightsContainer.style.setProperty('gap', '10px', 'important')
+        }
+        
+        // تنظیم margin-top و margin-left/right برای section
+        highlightsSection.style.setProperty('margin-top', '25px', 'important')
+        highlightsSection.style.setProperty('margin-left', '8px', 'important')
+        highlightsSection.style.setProperty('margin-right', '8px', 'important')
+        highlightsSection.style.setProperty('width', 'calc(100% - 16px)', 'important')
         
         // اطمینان از اینکه highlights-section در ابتدای view است
         const homeView = document.getElementById('homeView')
