@@ -105,7 +105,7 @@ async function createWorldBorders(earthMesh, options = {}) {
     const {
         defaultColor = 0x4488ff,
         defaultOpacity = 0.4,
-        highlightColor = 0x00ff00,
+        highlightColor: _highlightColor = 0x00ff00,
         selectedCountry = null
     } = options;
     
@@ -491,7 +491,7 @@ function createCountryLabel(text, position, scale = 0.08) {
 }
 
 // ایجاد برچسب‌های همه کشورها
-function createCountryLabels(earthMesh, camera) {
+function createCountryLabels(earthMesh, _camera) {
     if (!earthMesh || typeof countriesData === 'undefined') return null;
     
     const labelsGroup = new THREE.Group();
@@ -522,7 +522,7 @@ function createCountryLabels(earthMesh, camera) {
 }
 
 // آپدیت نمایش برچسب‌ها بر اساس فاصله دوربین
-function updateLabelsVisibility(labelsGroup, camera, minDistance = 1.5, maxDistance = 4) {
+function updateLabelsVisibility(labelsGroup, camera, _minDistance = 1.5, _maxDistance = 4) {
     if (!labelsGroup || !camera) return;
     
     const cameraDistance = camera.position.length();

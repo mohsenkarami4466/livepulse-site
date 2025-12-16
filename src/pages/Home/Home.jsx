@@ -103,6 +103,7 @@ function Home() {
    * 1. هنگام mount شدن صفحه، هایلایت "خانه" را فعال می‌کند
    * 2. currentCategory را به "home" تنظیم می‌کند
    * 3. به event categoryChanged گوش می‌دهد برای به‌روزرسانی کارت‌ها
+   * 4. مطمئن می‌شود که highlights-section نمایش داده می‌شود
    */
   useEffect(() => {
     // تنظیم هایلایت خانه به صورت پیش‌فرض
@@ -116,23 +117,81 @@ function Home() {
     
     addEventListener(events.categoryChanged, handleCategoryChange)
     
-    // هماهنگی با vanilla JS: فعال کردن هایلایت خانه و غیرفعال کردن بقیه
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
-        if (homeCircle) {
-          homeCircle.classList.add('active')
+    // تابع برای اطمینان از نمایش highlights
+    const ensureHighlightsVisible = () => {
+      // بررسی وجود highlights در DOM
+      const highlightsSection = document.querySelector('.highlights-section.home-highlights, .home-highlights, #homeView .highlights-section')
+      const highlightsContainer = highlightsSection?.querySelector('.highlights-container')
+      const highlightCircles = highlightsSection?.querySelectorAll('.highlight-circle')
+      
+      if (highlightsSection) {
+        // اعمال استایل‌های اجباری
+        highlightsSection.style.setProperty('display', 'flex', 'important')
+        highlightsSection.style.setProperty('visibility', 'visible', 'important')
+        highlightsSection.style.setProperty('opacity', '1', 'important')
+        highlightsSection.style.setProperty('position', 'relative', 'important')
+        highlightsSection.style.setProperty('z-index', '999', 'important')
+        
+        if (highlightsContainer) {
+          highlightsContainer.style.setProperty('display', 'flex', 'important')
+          highlightsContainer.style.setProperty('visibility', 'visible', 'important')
+          highlightsContainer.style.setProperty('opacity', '1', 'important')
         }
         
-        const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
-        otherCircles.forEach(circle => {
-          circle.classList.remove('active')
-        })
-      }, 100)
+        if (highlightCircles && highlightCircles.length > 0) {
+          highlightCircles.forEach(circle => {
+            circle.style.setProperty('display', 'flex', 'important')
+            circle.style.setProperty('visibility', 'visible', 'important')
+            circle.style.setProperty('opacity', '1', 'important')
+          })
+        }
+        
+        // اطمینان از اینکه highlights-section در ابتدای view است
+        const homeView = document.getElementById('homeView')
+        if (homeView && highlightsSection.parentNode === homeView) {
+          const firstChild = homeView.firstElementChild
+          if (firstChild && firstChild !== highlightsSection) {
+            // اگر highlights-section اولین child نیست، آن را به ابتدا منتقل کن
+            homeView.insertBefore(highlightsSection, firstChild)
+          }
+        }
+      } else {
+        console.warn('⚠️ highlights-section در DOM پیدا نشد!')
+      }
+      
+      // فعال کردن highlight خانه
+      const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
+      if (homeCircle) {
+        homeCircle.classList.add('active')
+      }
+      
+      // غیرفعال کردن بقیه highlights
+      const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
+      otherCircles.forEach(circle => {
+        circle.classList.remove('active')
+      })
     }
     
-    return () => {
-      removeEventListener(events.categoryChanged, handleCategoryChange)
+    // اجرای فوری و چند بار با تاخیر
+    if (typeof window !== 'undefined') {
+      ensureHighlightsVisible()
+      setTimeout(ensureHighlightsVisible, 50)
+      setTimeout(ensureHighlightsVisible, 100)
+      setTimeout(ensureHighlightsVisible, 200)
+      setTimeout(ensureHighlightsVisible, 500)
+      setTimeout(ensureHighlightsVisible, 1000)
+      
+      // اجرای مداوم
+      const interval = setInterval(ensureHighlightsVisible, 2000)
+      
+      return () => {
+        removeEventListener(events.categoryChanged, handleCategoryChange)
+        clearInterval(interval)
+      }
+    } else {
+      return () => {
+        removeEventListener(events.categoryChanged, handleCategoryChange)
+      }
     }
     
   }, []) // فقط یک بار هنگام mount

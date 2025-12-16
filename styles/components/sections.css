@@ -305,51 +305,59 @@
     flex-direction: column !important; /* highlights-container در داخل */
     visibility: visible !important;
     opacity: 1 !important;
-    /* margin-top: header + gap + indicators + gap + portfolio height + 20px gap */
-    margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px) !important; /* 20px پایین‌تر از کارت portfolio */
+    height: auto !important;
+    overflow: visible !important;
+    /* margin-top حذف شد - layout-main padding-top دارد */
+    margin-top: 0 !important;
     margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
     margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
     width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
     max-width: calc(100% - 24px) !important; /* max-width هم یکسان */
+    min-width: calc(100% - 24px) !important; /* حداقل عرض */
     min-height: 80px !important; /* حداقل ارتفاع برای highlights-container */
-    box-sizing: border-box;
+    height: 80px !important; /* ارتفاع ثابت */
+    box-sizing: border-box !important;
+    /* حذف هرگونه display: none که ممکن است از جای دیگری آمده باشد */
     /* margin-top با JavaScript بر اساس کارت portfolio تنظیم می‌شود */
 }
 
 /* موقعیت هایلایت‌ها با JavaScript تنظیم می‌شود - padding-top حذف شد */
 
 .highlight-circle {
-    /* اندازه به صورت خودکار توسط flex تنظیم می‌شود */
-    width: 100%;
-    height: auto;
-    min-width: 60px;
-    max-width: 75px;
-    border-radius: 50%;
-    background: var(--card-bg);
-    backdrop-filter: blur(30px) saturate(150%);
-    -webkit-backdrop-filter: blur(30px) saturate(150%);
-    border: 1px solid var(--card-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: clamp(0.6rem, 1.1vw, 0.75rem);
-    text-align: center;
-    padding: 6px;
+    /* عرض و ارتفاع ثابت برای اطمینان از نمایش - نه 100% که از container صفر می‌گیرد */
+    width: 60px !important; /* عرض ثابت - نه 100% */
+    height: 60px !important; /* ارتفاع ثابت - نه auto */
+    min-width: 60px !important;
+    min-height: 60px !important;
+    max-width: 75px !important;
+    max-height: 75px !important;
+    flex: 0 0 60px !important; /* نه flex: 1 - عرض ثابت 60px */
+    flex-shrink: 0 !important; /* نه shrink */
+    border-radius: 50% !important;
+    background: var(--card-bg) !important;
+    backdrop-filter: blur(30px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(150%) !important;
+    border: 1px solid var(--card-border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    font-size: clamp(0.6rem, 1.1vw, 0.75rem) !important;
+    text-align: center !important;
+    padding: 6px !important;
     box-shadow: 
         0 4px 16px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-    will-change: transform;
-    transform-origin: center;
-    flex-shrink: 1;
-    margin: 0 calc(0.1vw);
-    box-sizing: border-box;
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    position: relative !important;
+    overflow: visible !important; /* تغییر از hidden به visible برای نمایش محتوا */
+    will-change: transform !important;
+    transform-origin: center !important;
+    margin: 0 calc(0.1vw) !important;
+    box-sizing: border-box !important;
 }
 
 @media (max-width: 1023px) and (min-width: 768px) {
@@ -377,10 +385,11 @@
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.4vw)) / 7);
-        max-width: calc((100% - (6 * 0.4vw)) / 7);
-        width: calc((100% - (6 * 0.4vw)) / 7);
-        height: calc((100% - (6 * 0.4vw)) / 7);
+        flex: 0 0 50px !important; /* نه flex: 1 - عرض ثابت */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 50px !important; /* عرض ثابت */
+        height: 50px !important; /* ارتفاع ثابت */
         min-width: 35px !important;
         max-width: 50px !important;
         min-height: 35px !important;
@@ -413,10 +422,11 @@
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.35vw)) / 7);
-        max-width: calc((100% - (6 * 0.35vw)) / 7);
-        width: calc((100% - (6 * 0.35vw)) / 7);
-        height: calc((100% - (6 * 0.35vw)) / 7);
+        flex: 0 0 45px !important; /* نه flex: 1 - عرض ثابت */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 45px !important; /* عرض ثابت */
+        height: 45px !important; /* ارتفاع ثابت */
         min-width: 32px !important;
         max-width: 45px !important;
         min-height: 32px !important;
@@ -451,10 +461,11 @@
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.3vw)) / 7);
-        max-width: calc((100% - (6 * 0.3vw)) / 7);
-        width: calc((100% - (6 * 0.3vw)) / 7);
-        height: calc((100% - (6 * 0.3vw)) / 7);
+        flex: 0 0 40px !important; /* نه flex: 1 - عرض ثابت */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 40px !important; /* عرض ثابت */
+        height: 40px !important; /* ارتفاع ثابت */
         min-width: 28px !important;
         max-width: 40px !important;
         min-height: 28px !important;
@@ -489,10 +500,11 @@
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.25vw)) / 7);
-        max-width: calc((100% - (6 * 0.25vw)) / 7);
-        width: calc((100% - (6 * 0.25vw)) / 7);
-        height: calc((100% - (6 * 0.25vw)) / 7);
+        flex: 0 0 38px !important; /* نه flex: 1 - عرض ثابت */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 38px !important; /* عرض ثابت */
+        height: 38px !important; /* ارتفاع ثابت */
         min-width: 26px !important;
         max-width: 38px !important;
         min-height: 26px !important;
@@ -527,10 +539,11 @@
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.2vw)) / 7);
-        max-width: calc((100% - (6 * 0.2vw)) / 7);
-        width: calc((100% - (6 * 0.2vw)) / 7);
-        height: calc((100% - (6 * 0.2vw)) / 7);
+        flex: 0 0 35px !important; /* نه flex: 1 - عرض ثابت */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 35px !important; /* عرض ثابت */
+        height: 35px !important; /* ارتفاع ثابت */
         min-width: 24px !important;
         max-width: 35px !important;
         min-height: 24px !important;
@@ -543,73 +556,174 @@
 
 
 .highlights-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0;
-    flex-wrap: nowrap;
-    transition: all 0.3s ease;
-    min-height: 80px;
-    padding: 0;
-    margin-bottom: 25px;
-    width: 100%;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important; /* تغییر از space-between به flex-start - برای جلوگیری از collapse */
+    align-items: center !important;
+    gap: 8px !important; /* فاصله بین circles */
+    flex-wrap: nowrap !important;
+    transition: all 0.3s ease !important;
+    min-height: 80px !important;
+    height: 80px !important; /* ارتفاع ثابت */
+    padding: 0 !important;
+    margin-bottom: 25px !important;
+    width: 100% !important;
+    min-width: 100% !important; /* اضافه شد */
+    max-width: 100% !important; /* اضافه شد */
+    box-sizing: border-box !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important; /* اضافه شد */
     /* تقسیم یکنواخت فضا بین 7 هایلایت */
 }
 
 .highlights-container .highlight-circle {
-    /* هر هایلایت یک هفتم فضا را می‌گیرد (منهای gap) - محدود به max-width */
-    flex: 1 1 calc((100% - (6 * 0.1vw)) / 7);
-    max-width: 75px;
-    width: calc((100% - (6 * 0.1vw)) / 7);
-    height: calc((100% - (6 * 0.1vw)) / 7);
-    min-width: 60px;
-    min-height: 60px;
-    max-height: 75px;
-    aspect-ratio: 1;
+    /* عرض و ارتفاع ثابت برای اطمینان از نمایش */
+    flex: 0 0 60px !important; /* نه flex: 1 - عرض ثابت 60px */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    width: 60px !important; /* عرض ثابت */
+    height: 60px !important; /* ارتفاع ثابت */
+    min-width: 60px !important;
+    min-height: 60px !important;
+    max-width: 75px !important;
+    max-height: 75px !important;
+    aspect-ratio: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    margin: 0 4px !important; /* فاصله بین circles */
 }
 
 @media (max-width: 1024px) {
     .highlights-container {
-        gap: 0;
-        min-height: 40px;
+        gap: 8px !important; /* فاصله بین circles */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
         margin-bottom: 18px;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        flex: 0 0 50px !important; /* نه flex: 1 */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 35px !important;
+        max-width: 50px !important;
+        min-height: 35px !important;
+        max-height: 50px !important;
     }
 }
 
 @media (max-width: 768px) {
     .highlights-container {
-        gap: 0;
-        min-height: 36px;
+        gap: 8px !important; /* فاصله بین circles */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
         margin-bottom: 15px;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        flex: 0 0 45px !important; /* نه flex: 1 */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 45px !important;
+        height: 45px !important;
+        min-width: 32px !important;
+        max-width: 45px !important;
+        min-height: 32px !important;
+        max-height: 45px !important;
     }
 }
 
 @media (max-width: 480px) {
     .highlights-container {
-        gap: 0;
-        min-height: 32px;
+        gap: 8px !important; /* فاصله بین circles */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
         margin-bottom: 12px;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        flex: 0 0 40px !important; /* نه flex: 1 */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 28px !important;
+        max-width: 40px !important;
+        min-height: 28px !important;
+        max-height: 40px !important;
     }
 }
 
 @media (max-width: 390px) {
     .highlights-container {
-        gap: 0;
-        min-height: 30px;
+        gap: 8px !important; /* فاصله بین circles */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
         margin-bottom: 12px;
+        width: 100% !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        flex: 0 0 38px !important; /* نه flex: 1 */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 26px !important;
+        max-width: 38px !important;
+        min-height: 26px !important;
+        max-height: 38px !important;
     }
 }
 
 @media (max-width: 320px) {
     .highlights-container {
-        gap: 0;
-        min-height: 28px;
+        gap: 8px !important; /* فاصله بین circles */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
         margin-bottom: 10px;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        flex: 0 0 35px !important; /* نه flex: 1 */
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
+        width: 35px !important;
+        height: 35px !important;
+        min-width: 24px !important;
+        max-width: 35px !important;
+        min-height: 24px !important;
+        max-height: 35px !important;
     }
 }
 
@@ -729,7 +843,7 @@
     transform: translateY(0);
 }
 
-/* اطمینان از اینکه هایلایت‌های هر صفحه نمایش داده می‌شوند */
+/* اطمینان از اینکه هایلایت‌های هر صفحه نمایش داده می‌شوند - با بالاترین اولویت */
 .view .highlights-section,
 .layout-main > .view .highlights-section,
 .layout-main .view .highlights-section,
@@ -738,12 +852,76 @@
 #toolsView .highlights-section,
 #tutorialView .highlights-section,
 #relaxView .highlights-section,
-#globeView .highlights-section {
-    display: flex !important; /* تغییر از block به flex برای highlights-container */
+#globeView .highlights-section,
+section.highlights-section,
+section.home-highlights {
+    display: flex !important; /* flex برای highlights-container */
+    flex-direction: column !important;
     visibility: visible !important;
     opacity: 1 !important;
     position: relative !important;
-    z-index: 996 !important;
+    z-index: 1001 !important; /* بالاتر از همه المان‌های fixed */
+    width: calc(100% - 24px) !important; /* عرض با margin */
+    min-width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+    height: 80px !important; /* ارتفاع ثابت */
+    min-height: 80px !important;
+    margin-top: 0 !important; /* حذف margin-top - layout-main padding-top دارد */
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    margin-bottom: 20px !important; /* فاصله از کارت‌ها */
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+}
+
+/* اطمینان از نمایش highlights-container */
+.view .highlights-container,
+.layout-main > .view .highlights-container,
+#homeView .highlights-container,
+.highlights-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important; /* تغییر از space-between به flex-start - برای جلوگیری از collapse */
+    align-items: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+}
+
+/* اطمینان از نمایش highlight-circle */
+.view .highlight-circle,
+.layout-main > .view .highlight-circle,
+#homeView .highlight-circle,
+.highlight-circle {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px !important;
+    min-height: 60px !important;
+    max-width: 75px !important;
+    max-height: 75px !important;
+    flex: 0 0 60px !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    margin: 0 4px !important;
+    overflow: visible !important;
 }
 
 /* 🎯 بخش‌های مشترک - همیشه نمایش داده می‌شوند در تمام صفحات */
@@ -4184,7 +4362,6 @@ body.modal-open {
     height: 36px;
     border-radius: 50%;
     background: rgba(239, 68, 68, 0.9);
-    display: none;
     border: none;
     color: white;
     font-size: 1.4rem;
@@ -4199,4 +4376,101 @@ body.modal-open {
 .close-modal:hover {
     background: #ef4444;
     transform: scale(1.1);
+}
+
+/* ==================== */
+/* 🔥 FORCE DISPLAY HIGHLIGHTS - بالاترین اولویت */
+/* ==================== */
+/* این rule برای اطمینان از نمایش highlights است - با بالاترین specificity */
+section.highlights-section,
+section.home-highlights,
+section.news-highlights,
+section.tools-highlights,
+section.education-highlights,
+section.relax-highlights,
+section.globe-highlights,
+.highlights-section,
+.home-highlights,
+.news-highlights,
+.tools-highlights,
+.education-highlights,
+.relax-highlights,
+.globe-highlights {
+    display: flex !important;
+    flex-direction: column !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 996 !important;
+    width: calc(100% - 24px) !important; /* عرض با margin */
+    min-width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+    min-height: 80px !important;
+    height: 80px !important; /* ارتفاع ثابت - نه auto */
+    overflow: visible !important;
+    margin-top: 200px !important; /* تست - برای اطمینان از نمایش */
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+}
+
+.highlights-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important; /* تغییر از space-between به flex-start - برای جلوگیری از collapse */
+    align-items: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    min-width: 100% !important; /* حداقل عرض */
+    max-width: 100% !important;
+    min-height: 80px !important;
+    height: 80px !important; /* ارتفاع ثابت - نه auto */
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 8px !important; /* فاصله بین circles */
+    flex-wrap: nowrap !important;
+    box-sizing: border-box !important;
+    overflow: visible !important; /* اضافه شد */
+}
+
+.highlight-circle {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 60px !important; /* عرض ثابت - نه auto */
+    height: 60px !important; /* ارتفاع ثابت - نه auto */
+    min-width: 60px !important;
+    min-height: 60px !important;
+    max-width: 75px !important;
+    max-height: 75px !important;
+    flex: 0 0 60px !important; /* نه flex: 1 - عرض ثابت 60px */
+    flex-shrink: 0 !important; /* نه shrink */
+    flex-grow: 0 !important; /* نه grow */
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    border-radius: 50% !important;
+    background: var(--card-bg) !important;
+    backdrop-filter: blur(30px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(150%) !important;
+    border: 1px solid var(--card-border) !important;
+    cursor: pointer !important;
+    padding: 6px !important;
+    box-sizing: border-box !important;
+    margin: 0 4px !important; /* فاصله بین circles */
+    overflow: visible !important;
+}
+
+/* اطمینان از نمایش span داخل highlight-circle */
+.highlight-circle span {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
 }

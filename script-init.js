@@ -114,10 +114,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         return;
                     }
                     
-                    // 1. بررسی وجود THREE.js و راه‌اندازی کره
-                    if (typeof THREE === 'undefined') {
-                        log.error('THREE.js لود نشده! منتظر می‌مانیم...');
-                        setTimeout(() => {
+                // 1. بررسی وجود THREE.js و راه‌اندازی کره
+                if (typeof THREE === 'undefined') {
+                    log.error('THREE.js لود نشده! منتظر می‌مانیم...');
+                    setTimeout(() => {
                             // بررسی دوباره React mode
                             if (checkReactMode()) {
                                 log.info('✅ React mode بعد از انتظار برای THREE.js تشخیص داده شد');
@@ -140,28 +140,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                 log.info('✅ React mode بعد از بررسی container تشخیص داده شد');
                                 return;
                             }
-                            if (typeof THREE !== 'undefined') {
+                        if (typeof THREE !== 'undefined') {
                                 // بررسی نهایی container قبل از initGlobe
                                 const finalContainerCheck = document.getElementById('globeContainer');
                                 if (!finalContainerCheck) {
                                     log.warn('⚠️ globeContainer پیدا نشد - احتمالاً React mode است. از initGlobe صرف نظر می‌کنیم');
                                     return;
                                 }
-                                try {
-                                    if (typeof initGlobe === 'function') {
-                                        initGlobe();
-                                    }
-                                } catch (error) {
-                                    if (window.errorHandler) {
-                                        window.errorHandler.handleError(error, 'initGlobe');
-                                    } else {
-                                        log.error('خطا در initGlobe:', error);
-                                    }
+                            try {
+                                if (typeof initGlobe === 'function') {
+                                    initGlobe();
                                 }
-                            } else {
-                                log.error('THREE.js هنوز لود نشده است!');
+                            } catch (error) {
+                                if (window.errorHandler) {
+                                    window.errorHandler.handleError(error, 'initGlobe');
+                                } else {
+                                    log.error('خطا در initGlobe:', error);
+                                }
                             }
-                        }, 500);
+                        } else {
+                            log.error('THREE.js هنوز لود نشده است!');
+                        }
+                    }, 500);
                     } else {
                         // بررسی نهایی React mode و وجود container قبل از initGlobe
                         const lastCheckReactMode = checkReactMode();
@@ -172,16 +172,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             const finalContainer = document.getElementById('globeContainer');
                             if (!finalContainer) {
                                 log.warn('⚠️ globeContainer پیدا نشد - احتمالاً React mode است. از initGlobe صرف نظر می‌کنیم');
-                            } else {
-                                try {
-                                    if (typeof initGlobe === 'function') {
-                                        initGlobe();
-                                    }
-                                } catch (error) {
-                                    if (window.errorHandler) {
-                                        window.errorHandler.handleError(error, 'initGlobe');
-                                    } else {
-                                        log.error('خطا در initGlobe:', error);
+                } else {
+                    try {
+                        if (typeof initGlobe === 'function') {
+                            initGlobe();
+                        }
+                    } catch (error) {
+                        if (window.errorHandler) {
+                            window.errorHandler.handleError(error, 'initGlobe');
+                        } else {
+                            log.error('خطا در initGlobe:', error);
                                     }
                                 }
                             }

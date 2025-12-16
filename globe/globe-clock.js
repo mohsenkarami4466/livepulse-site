@@ -401,19 +401,50 @@ function updateHighlightsPosition() {
       section.style.setProperty('opacity', '1', 'important');
       section.style.setProperty('position', 'relative', 'important');
       section.style.setProperty('z-index', '996', 'important');
+      section.style.setProperty('width', 'calc(100% - 24px)', 'important'); // عرض ثابت
+      section.style.setProperty('min-width', 'calc(100% - 24px)', 'important');
+      section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
+      section.style.setProperty('min-height', '80px', 'important');
+      
+      // اطمینان از نمایش highlights-container
+      const container = section.querySelector('.highlights-container');
+      if (container) {
+        container.style.setProperty('display', 'flex', 'important');
+        container.style.setProperty('width', '100%', 'important');
+        container.style.setProperty('min-width', '100%', 'important');
+        container.style.setProperty('height', '80px', 'important');
+        container.style.setProperty('min-height', '80px', 'important');
+        container.style.setProperty('visibility', 'visible', 'important');
+        container.style.setProperty('opacity', '1', 'important');
+      }
+      
+      // اطمینان از نمایش highlight-circle ها
+      const circles = section.querySelectorAll('.highlight-circle');
+      circles.forEach(circle => {
+        circle.style.setProperty('display', 'flex', 'important');
+        circle.style.setProperty('width', '60px', 'important');
+        circle.style.setProperty('height', '60px', 'important');
+        circle.style.setProperty('min-width', '60px', 'important');
+        circle.style.setProperty('min-height', '60px', 'important');
+        circle.style.setProperty('flex', '0 0 60px', 'important');
+        circle.style.setProperty('flex-shrink', '0', 'important');
+        circle.style.setProperty('flex-grow', '0', 'important');
+        circle.style.setProperty('visibility', 'visible', 'important');
+        circle.style.setProperty('opacity', '1', 'important');
+      });
       
       // Debug logging - همیشه فعال برای troubleshooting
       console.log('🔍 Highlights position updated:', {
-        section: section.className,
-        marginTop: marginTop,
-        isMobile: isMobile,
-        isTablet: isTablet,
+          section: section.className,
+          marginTop: marginTop,
+          isMobile: isMobile,
+          isTablet: isTablet,
         isDesktop: isDesktop,
         portfolioCard: portfolioCard ? 'found' : 'not found',
         activeView: activeView ? activeView.id || activeView.className : 'not found',
         highlightsCount: highlightsSections.length
-      });
-    }
+        });
+      }
   });
   
   // اگر highlights پیدا نشد، log کن
@@ -423,7 +454,7 @@ function updateHighlightsPosition() {
       allViews: document.querySelectorAll('.view').length,
       layoutMainViews: document.querySelectorAll('.layout-main > .view').length,
       allHighlights: document.querySelectorAll('.highlights-section').length
-    });
+  });
   }
 }
 

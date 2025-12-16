@@ -10,7 +10,11 @@
   flex: 1;
   width: 100%;
   margin-top: 0;
-  padding-top: 0;
+  /* اضافه کردن padding-top برای فاصله از المان‌های fixed (Header, Indicators, Portfolio) */
+  /* Header (60px) + Indicators (80px) + Portfolio (70px) + فاصله (20px) = 230px */
+  padding-top: clamp(200px, calc(var(--header-height, 60px) + 80px + 70px + 20px), 250px) !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* اطمینان از نمایش view ها */
@@ -32,13 +36,18 @@
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
-  margin-top: 20px !important;
-  padding: 1rem !important;
+  margin-top: 0 !important; /* فاصله از highlights-section */
+  padding-top: 0 !important; /* highlights-section margin-bottom دارد */
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  padding-bottom: 1rem !important;
   /* جلوگیری از layout shift */
   min-height: 400px; /* حداقل ارتفاع برای جلوگیری از پرش */
   contain: layout style;
   /* Smooth transition */
   transition: min-height 0.2s ease-in-out;
+  position: relative !important;
+  z-index: 1 !important; /* پایین‌تر از highlights */
 }
 
 /* اطمینان از نمایش کارت‌ها */

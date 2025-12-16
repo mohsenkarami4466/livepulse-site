@@ -23,7 +23,9 @@ import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom'
 import { AppProvider } from './contexts/AppContext'
 import AppRouter from './router/AppRouter'
 import Layout from './components/Layout/Layout'
+import { forceShowHighlights } from './utils/highlights-fix'
 import './App.css'
+import './styles/highlights-force.css'
 
 /**
  * کامپوننت داخلی برای مدیریت رفرش و اسکرول
@@ -36,50 +38,43 @@ function AppContent() {
     // اسکرول به بالای صفحه روی mount و route change
     window.scrollTo(0, 0)
     
-    // فعال کردن هایلایت خانه فقط زمانی که در مسیر خانه هستیم
-    if (location.pathname === '/' || location.pathname === '/livepulse-site/') {
-      // استفاده از requestAnimationFrame برای بهینه‌سازی
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
-          if (homeCircle) {
-            homeCircle.classList.add('active')
-          }
-          
-          // غیرفعال کردن بقیه highlights
-          const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
-          otherCircles.forEach(circle => {
-            circle.classList.remove('active')
-          })
+    // فیکس قوی برای نمایش هایلایت‌ها
+    const fixHighlights = () => {
+      forceShowHighlights()
+      
+      // فعال کردن هایلایت خانه فقط زمانی که در مسیر خانه هستیم
+      if (location.pathname === '/' || location.pathname === '/livepulse-site/') {
+        const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
+        if (homeCircle) {
+          homeCircle.classList.add('active')
+        }
+        
+        // غیرفعال کردن بقیه highlights
+        const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
+        otherCircles.forEach(circle => {
+          circle.classList.remove('active')
         })
-      })
+      }
+      
+      // به‌روزرسانی موقعیت هایلایت‌ها
+      if (typeof window.updateHighlightsPosition === 'function') {
+        window.updateHighlightsPosition()
+      }
     }
     
-    // به‌روزرسانی موقعیت هایلایت‌ها بعد از تغییر مسیر
-    const updateHighlights = () => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          console.log('🔄 App.jsx: Calling updateHighlightsPosition...', {
-            pathname: location.pathname,
-            functionExists: typeof window.updateHighlightsPosition === 'function',
-            views: document.querySelectorAll('.view').length,
-            highlights: document.querySelectorAll('.highlights-section').length
-          });
-          
-          if (typeof window.updateHighlightsPosition === 'function') {
-            window.updateHighlightsPosition()
-          } else {
-            console.warn('⚠️ updateHighlightsPosition function not found on window!');
-          }
-        })
-      })
-    }
+    // اجرای فوری و چند بار با تاخیر
+    fixHighlights()
+    setTimeout(fixHighlights, 50)
+    setTimeout(fixHighlights, 100)
+    setTimeout(fixHighlights, 300)
+    setTimeout(fixHighlights, 500)
+    setTimeout(fixHighlights, 1000)
+    setTimeout(fixHighlights, 2000)
     
-    // چند بار با تاخیر برای اطمینان از render شدن
-    setTimeout(updateHighlights, 100)
-    setTimeout(updateHighlights, 500)
-    setTimeout(updateHighlights, 1000)
-    setTimeout(updateHighlights, 2000) // یک بار دیگر برای اطمینان
+    // اجرا بعد از هر render
+    const interval = setInterval(fixHighlights, 2000)
+    
+    return () => clearInterval(interval)
   }, [location.pathname]) // اجرا با هر تغییر مسیر
 
   return (

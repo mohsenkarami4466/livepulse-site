@@ -122,7 +122,7 @@ function initGlobe2DMapsOnViewChange() {
 function setupGlobe2DEventListeners() {
     // دکمه تمام صفحه برای نقشه‌های 2D
     document.querySelectorAll('.map-fullscreen-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', (_e) => {
             const mapId = btn.getAttribute('data-map-id');
             toggleMapFullscreen(mapId);
         });
@@ -130,7 +130,7 @@ function setupGlobe2DEventListeners() {
     
     // دکمه باز کردن کره 3D از نقشه 2D
     document.querySelectorAll('.map-to-3d-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', (_e) => {
             const globeType = btn.getAttribute('data-globe-type');
             openGlobe3DFrom2D(globeType);
         });
@@ -138,7 +138,7 @@ function setupGlobe2DEventListeners() {
     
     // دکمه بازگشت از کره 3D به نقشه 2D
     document.querySelectorAll('.globe-to-2d-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', (_e) => {
             const globeType = btn.getAttribute('data-globe-type');
             returnTo2DFrom3D(globeType);
         });
@@ -267,9 +267,10 @@ function openGlobe3DFrom2D(globeType) {
                 window.open3DGlobe('natural-resources');
             }
             break;
-        default:
+        default: {
             const log = window.logger || { warn: console.warn };
             log.warn(`نوع کره ${globeType} شناخته نشد`);
+        }
     }
 }
 

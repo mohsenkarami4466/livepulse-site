@@ -1,0 +1,172 @@
+/**
+ * CSS قوی برای نمایش اجباری هایلایت‌ها
+ * این فایل با اولویت بالا مطمئن می‌شود که هایلایت‌ها همیشه نمایش داده می‌شوند
+ */
+
+/* ==================== */
+/* هایلایت‌ها - با اولویت بسیار بالا */
+/* ==================== */
+
+/* همه انواع highlights-section - با selector های بسیار قوی */
+section.highlights-section,
+section.home-highlights,
+section.news-highlights,
+section.tools-highlights,
+section.education-highlights,
+section.relax-highlights,
+section.globe-highlights,
+div.view section.highlights-section,
+div.view section.home-highlights,
+div.view section.news-highlights,
+div.view section.tools-highlights,
+div.view section.education-highlights,
+div.view section.relax-highlights,
+div.view section.globe-highlights,
+.layout-main section.highlights-section,
+.layout-main > div.view section.highlights-section,
+.layout-main div.view section.highlights-section,
+#homeView section.highlights-section,
+#newsView section.highlights-section,
+#toolsView section.highlights-section,
+#tutorialView section.highlights-section,
+#relaxView section.highlights-section,
+#globeView section.highlights-section,
+.highlights-section,
+.home-highlights,
+.news-highlights,
+.tools-highlights,
+.education-highlights,
+.relax-highlights,
+.globe-highlights,
+.view .highlights-section,
+.layout-main .highlights-section,
+.layout-main > .view .highlights-section {
+  display: flex !important;
+  flex-direction: column !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 999 !important;
+  width: calc(100% - 24px) !important;
+  min-width: calc(100% - 24px) !important;
+  max-width: calc(100% - 24px) !important;
+  height: 80px !important;
+  min-height: 80px !important;
+  margin-top: 12px !important;
+  margin-left: 12px !important;
+  margin-right: 12px !important;
+  margin-bottom: 20px !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  /* جلوگیری از مخفی شدن */
+  clip: auto !important;
+  clip-path: none !important;
+  transform: none !important;
+  /* جلوگیری از هرگونه مخفی شدن */
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+/* highlights-container */
+.highlights-container,
+.view .highlights-container,
+.layout-main .highlights-container,
+.layout-main > .view .highlights-container,
+#homeView .highlights-container,
+#newsView .highlights-container,
+#toolsView .highlights-container {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: 80px !important;
+  min-height: 80px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+/* highlight-circle */
+.highlight-circle,
+.view .highlight-circle,
+.layout-main .highlight-circle,
+.layout-main > .view .highlight-circle,
+#homeView .highlight-circle,
+#newsView .highlight-circle,
+#toolsView .highlight-circle {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 60px !important;
+  height: 60px !important;
+  min-width: 60px !important;
+  min-height: 60px !important;
+  max-width: 75px !important;
+  max-height: 75px !important;
+  flex: 0 0 60px !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  margin: 0 4px !important;
+  overflow: visible !important;
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+  .highlights-section,
+  .home-highlights,
+  .news-highlights,
+  .tools-highlights {
+    height: 70px !important;
+    min-height: 70px !important;
+  }
+  
+  .highlights-container {
+    height: 70px !important;
+    min-height: 70px !important;
+  }
+  
+  .highlight-circle {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    flex: 0 0 50px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .highlights-section,
+  .home-highlights,
+  .news-highlights,
+  .tools-highlights {
+    height: 60px !important;
+    min-height: 60px !important;
+  }
+  
+  .highlights-container {
+    height: 60px !important;
+    min-height: 60px !important;
+  }
+  
+  .highlight-circle {
+    width: 45px !important;
+    height: 45px !important;
+    min-width: 45px !important;
+    min-height: 45px !important;
+    flex: 0 0 45px !important;
+  }
+}
+

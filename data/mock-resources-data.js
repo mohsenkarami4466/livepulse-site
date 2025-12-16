@@ -308,13 +308,13 @@ const mockResourcesData = [
 ];
 
 // تابع فیلتر منابع
-function filterResources(type) {
+function _filterResources(type) {
   if (type === 'all') return mockResourcesData;
   return mockResourcesData.filter(r => r.resource === type);
 }
 
 // تابع برای پر کردن لجند
-function populateResourcesLegend() {
+function _populateResourcesLegend() {
   const legend = document.getElementById('resourcesLegend');
   if (!legend) return;
   

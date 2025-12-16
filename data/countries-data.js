@@ -1520,19 +1520,6 @@ const countriesData = {
   },
 
   // ===== کشورهای بیشتر آسیا =====
-  "KR": {
-    name: "کره جنوبی", nameEn: "South Korea",
-    capital: { name: "سئول", coords: [37.5665, 126.9780] },
-    continent: "asia",
-    gdp: 1665, gdpRank: 13, gdpPerCapita: 32000,
-    inflation: 3.5, unemployment: 2.8, currency: "KRW", currencyName: "وون",
-    population: 51700000, populationDensity: 527, populationGrowth: 0.1,
-    resources: { iron: { reserves: 200, production: 1, unit: "mt", rank: 40 } },
-    exports: { total: 644, partners: [{ country: "CN", amount: 162, percent: 25 }, { country: "US", amount: 90, percent: 14 }, { country: "VN", amount: 50, percent: 8 }, { country: "HK", amount: 45, percent: 7 }, { country: "JP", amount: 40, percent: 6 }, { country: "IN", amount: 35, percent: 5 }, { country: "SG", amount: 30, percent: 5 }, { country: "MX", amount: 25, percent: 4 }, { country: "DE", amount: 22, percent: 3 }, { country: "TH", amount: 20, percent: 3 }], mainProducts: ["الکترونیک", "خودرو", "ماشین‌آلات"] },
-    imports: { total: 615, partners: [{ country: "CN", amount: 123, percent: 20 }, { country: "US", amount: 68, percent: 11 }, { country: "JP", amount: 55, percent: 9 }, { country: "SA", amount: 45, percent: 7 }, { country: "AU", amount: 35, percent: 6 }, { country: "DE", amount: 30, percent: 5 }, { country: "VN", amount: 28, percent: 5 }, { country: "QA", amount: 25, percent: 4 }, { country: "RU", amount: 22, percent: 4 }, { country: "IN", amount: 20, percent: 3 }], mainProducts: ["نفت", "گاز", "الکترونیک"] },
-    investmentRisk: 15, relations: { "US": "green", "JP": "white", "CN": "white", "KP": "red" },
-    customs: [{ name: "بندر بوسان", coords: [35.1796, 129.0756] }, { name: "اینچئون", coords: [37.4563, 126.7052] }]
-  },
   "TH": {
     name: "تایلند", nameEn: "Thailand",
     capital: { name: "بانکوک", coords: [13.7563, 100.5018] },
@@ -1952,32 +1939,6 @@ const countriesData = {
     imports: { total: 52, partners: [{ country: "CN", amount: 13, percent: 25 }, { country: "NL", amount: 5, percent: 10 }], mainProducts: ["ماشین‌آلات", "شیمیایی", "غذا"] },
     investmentRisk: 65, relations: { "US": "green", "UK": "green", "CN": "green" },
     customs: [{ name: "بندر لاگوس", coords: [6.4541, 3.3947] }]
-  },
-  "ZA": {
-    name: "آفریقای جنوبی", nameEn: "South Africa",
-    capital: { name: "پرتوریا", coords: [-25.7479, 28.2293] },
-    continent: "africa",
-    gdp: 405, gdpRank: 34, gdpPerCapita: 6700,
-    inflation: 6.9, unemployment: 32.9, currency: "ZAR", currencyName: "رند",
-    population: 60000000, populationDensity: 49, populationGrowth: 1.0,
-    resources: { gold: { reserves: 6000, production: 100, unit: "tons", rank: 9 }, diamond: { reserves: 130, production: 8, unit: "mct", rank: 5 }, coal: { reserves: 10000, production: 250, unit: "mt", rank: 6 } },
-    exports: { total: 123, partners: [{ country: "CN", amount: 12, percent: 10 }, { country: "US", amount: 10, percent: 8 }], mainProducts: ["طلا", "الماس", "زغال"] },
-    imports: { total: 113, partners: [{ country: "CN", amount: 23, percent: 20 }, { country: "DE", amount: 11, percent: 10 }], mainProducts: ["ماشین‌آلات", "نفت", "الکترونیک"] },
-    investmentRisk: 45, relations: { "US": "green", "CN": "green", "UK": "green" },
-    customs: [{ name: "بندر دوربان", coords: [-29.8587, 31.0218] }, { name: "بندر کیپ‌تاون", coords: [-33.9249, 18.4241] }]
-  },
-  "EG": {
-    name: "مصر", nameEn: "Egypt",
-    capital: { name: "قاهره", coords: [30.0444, 31.2357] },
-    continent: "africa",
-    gdp: 477, gdpRank: 28, gdpPerCapita: 4500,
-    inflation: 13.9, unemployment: 7.2, currency: "EGP", currencyName: "پوند",
-    population: 104000000, populationDensity: 103, populationGrowth: 1.9,
-    resources: { oil: { reserves: 4400, production: 600, unit: "mbbl", rank: 25 }, gas: { reserves: 2100, production: 67, unit: "bcm", rank: 13 } },
-    exports: { total: 52, partners: [{ country: "IT", amount: 5, percent: 10 }, { country: "TR", amount: 5, percent: 10 }], mainProducts: ["نفت", "گاز", "پنبه"] },
-    imports: { total: 89, partners: [{ country: "CN", amount: 18, percent: 20 }, { country: "SA", amount: 9, percent: 10 }], mainProducts: ["ماشین‌آلات", "غذا", "شیمیایی"] },
-    investmentRisk: 50, relations: { "SA": "green", "AE": "green", "US": "green", "IL": "white" },
-    customs: [{ name: "بندر اسکندریه", coords: [31.2001, 29.9187] }, { name: "بندر سعید", coords: [31.2653, 32.3019] }]
   },
   "KE": {
     name: "کنیا", nameEn: "Kenya",
@@ -3170,19 +3131,6 @@ const countriesData = {
     investmentRisk: 30, relations: { "IN": "green", "LK": "green", "CN": "green" },
     customs: [{ name: "بندر ماله", coords: [4.1755, 73.5093], workingHours: "24/7" }]
   },
-  "AF": {
-    name: "افغانستان", nameEn: "Afghanistan",
-    capital: { name: "کابل", coords: [34.5553, 69.2075] },
-    continent: "asia",
-    gdp: 14, gdpRank: 111, gdpPerCapita: 500,
-    inflation: 2.0, unemployment: 11.2, currency: "AFN", currencyName: "افغانی",
-    population: 41000000, populationDensity: 63, populationGrowth: 2.3,
-    resources: { lithium: { reserves: 1000, production: 0, unit: "kt", rank: 3 }, copper: { reserves: 3000, production: 0, unit: "kt", rank: 20 }, gold: { reserves: 30, production: 0.5, unit: "tons", rank: 50 } },
-    exports: { total: 1.5, partners: [{ country: "PK", amount: 0.5, percent: 33 }, { country: "IN", amount: 0.4, percent: 27 }, { country: "CN", amount: 0.3, percent: 20 }, { country: "IR", amount: 0.15, percent: 10 }, { country: "UZ", amount: 0.1, percent: 7 }], mainProducts: ["میوه", "پشم", "فرش"] },
-    imports: { total: 7, partners: [{ country: "PK", amount: 2, percent: 29 }, { country: "CN", amount: 1.5, percent: 21 }, { country: "IR", amount: 1, percent: 14 }, { country: "IN", amount: 0.8, percent: 11 }, { country: "UZ", amount: 0.5, percent: 7 }], mainProducts: ["غذا", "نفت", "ماشین‌آلات"] },
-    investmentRisk: 95, relations: { "PK": "white", "IR": "white", "CN": "white" },
-    customs: [{ name: "گمرک کابل", coords: [34.5553, 69.2075], workingHours: "شنبه تا پنجشنبه: 8:00-16:00" }]
-  },
   "CY": {
     name: "قبرس", nameEn: "Cyprus",
     capital: { name: "نیکوزیا", coords: [35.1856, 33.3823] },
@@ -3546,97 +3494,6 @@ const countriesData = {
     imports: { total: 0.3, partners: [{ country: "US", amount: 0.12, percent: 40 }, { country: "CN", amount: 0.08, percent: 27 }, { country: "CA", amount: 0.05, percent: 17 }, { country: "UK", amount: 0.04, percent: 13 }, { country: "TR", amount: 0.03, percent: 10 }], mainProducts: ["غذا", "نفت", "ماشین‌آلات"] },
     investmentRisk: 35, relations: { "US": "green", "UK": "green", "CA": "green" },
     customs: [{ name: "بندر روزو", coords: [15.3092, -61.3790], workingHours: "24/7" }]
-  },
-  "BZ": {
-    name: "بلیز", nameEn: "Belize",
-    capital: { name: "بلموپان", coords: [17.2510, -88.7590] },
-    continent: "north_america",
-    gdp: 2.8, gdpRank: 163, gdpPerCapita: 6800,
-    inflation: 3.0, unemployment: 3.0, currency: "BZD", currencyName: "دلار",
-    population: 410000, populationDensity: 18, populationGrowth: 1.9,
-    resources: {},
-    exports: { total: 0.6, partners: [{ country: "US", amount: 0.25, percent: 42 }, { country: "UK", amount: 0.1, percent: 17 }, { country: "GT", amount: 0.08, percent: 13 }, { country: "MX", amount: 0.06, percent: 10 }, { country: "CR", amount: 0.04, percent: 7 }], mainProducts: ["شکر", "موز", "ماهی"] },
-    imports: { total: 1.2, partners: [{ country: "US", amount: 0.5, percent: 42 }, { country: "MX", amount: 0.2, percent: 17 }, { country: "CN", amount: 0.15, percent: 13 }, { country: "GT", amount: 0.1, percent: 8 }, { country: "CR", amount: 0.08, percent: 7 }], mainProducts: ["ماشین‌آلات", "نفت", "غذا"] },
-    investmentRisk: 30, relations: { "US": "green", "UK": "green", "GT": "white" },
-    customs: [{ name: "بندر بلیز", coords: [17.4950, -88.2019], workingHours: "24/7" }]
-  },
-  "SR": {
-    name: "سورینام", nameEn: "Suriname",
-    capital: { name: "پاراماریبو", coords: [5.8520, -55.2038] },
-    continent: "south_america",
-    gdp: 3, gdpRank: 161, gdpPerCapita: 5500,
-    inflation: 55.0, unemployment: 8.7, currency: "SRD", currencyName: "دلار",
-    population: 600000, populationDensity: 4, populationGrowth: 0.9,
-    resources: { gold: { reserves: 200, production: 30, unit: "tons", rank: 20 }, bauxite: { reserves: 580, production: 3, unit: "mt", rank: 8 } },
-    exports: { total: 2.5, partners: [{ country: "CH", amount: 0.8, percent: 32 }, { country: "AE", amount: 0.5, percent: 20 }, { country: "US", amount: 0.4, percent: 16 }, { country: "BE", amount: 0.3, percent: 12 }, { country: "NL", amount: 0.25, percent: 10 }], mainProducts: ["طلا", "باکسیت", "نفت"] },
-    imports: { total: 1.8, partners: [{ country: "US", amount: 0.5, percent: 28 }, { country: "NL", amount: 0.4, percent: 22 }, { country: "CN", amount: 0.3, percent: 17 }, { country: "TR", amount: 0.2, percent: 11 }, { country: "BR", amount: 0.15, percent: 8 }], mainProducts: ["ماشین‌آلات", "نفت", "غذا"] },
-    investmentRisk: 50, relations: { "NL": "green", "GY": "white", "BR": "white" },
-    customs: [{ name: "بندر پاراماریبو", coords: [5.8520, -55.2038], workingHours: "24/7" }]
-  },
-  "GF": {
-    name: "گویان فرانسه", nameEn: "French Guiana",
-    capital: { name: "کاین", coords: [4.9224, -52.3135] },
-    continent: "south_america",
-    gdp: 5, gdpRank: 150, gdpPerCapita: 18000,
-    inflation: 2.0, unemployment: 19.0, currency: "EUR", currencyName: "یورو",
-    population: 300000, populationDensity: 4, populationGrowth: 2.2,
-    resources: { gold: { reserves: 50, production: 2, unit: "tons", rank: 45 } },
-    exports: { total: 0.3, partners: [{ country: "FR", amount: 0.15, percent: 50 }, { country: "US", amount: 0.05, percent: 17 }, { country: "SR", amount: 0.03, percent: 10 }, { country: "BR", amount: 0.025, percent: 8 }, { country: "GY", amount: 0.02, percent: 7 }], mainProducts: ["طلا", "میگو", "چوب"] },
-    imports: { total: 1.5, partners: [{ country: "FR", amount: 0.6, percent: 40 }, { country: "US", amount: 0.3, percent: 20 }, { country: "SR", amount: 0.15, percent: 10 }, { country: "BR", amount: 0.12, percent: 8 }, { country: "CN", amount: 0.1, percent: 7 }], mainProducts: ["غذا", "نفت", "ماشین‌آلات"] },
-    investmentRisk: 30, relations: { "FR": "green", "SR": "white", "BR": "white" },
-    customs: [{ name: "بندر کاین", coords: [4.9224, -52.3135], workingHours: "24/7" }]
-  },
-  "BN": {
-    name: "برونئی", nameEn: "Brunei",
-    capital: { name: "بندر سری بگاوان", coords: [4.9031, 114.9398] },
-    continent: "asia",
-    gdp: 15, gdpRank: 111, gdpPerCapita: 32000,
-    inflation: 1.0, unemployment: 6.8, currency: "BND", currencyName: "دلار",
-    population: 450000, populationDensity: 83, populationGrowth: 0.8,
-    resources: { oil: { reserves: 1100, production: 120, unit: "mbbl", rank: 40 }, gas: { reserves: 300, production: 12, unit: "bcm", rank: 30 } },
-    exports: { total: 8, partners: [{ country: "JP", amount: 2.5, percent: 31 }, { country: "AU", amount: 1.5, percent: 19 }, { country: "CN", amount: 1.2, percent: 15 }, { country: "IN", amount: 0.8, percent: 10 }, { country: "MY", amount: 0.6, percent: 8 }], mainProducts: ["نفت", "گاز", "پتروشیمی"] },
-    imports: { total: 4, partners: [{ country: "CN", amount: 1, percent: 25 }, { country: "MY", amount: 0.6, percent: 15 }, { country: "SG", amount: 0.5, percent: 13 }, { country: "US", amount: 0.4, percent: 10 }, { country: "JP", amount: 0.3, percent: 8 }], mainProducts: ["ماشین‌آلات", "خودرو", "الکترونیک"] },
-    investmentRisk: 20, relations: { "MY": "green", "SG": "green", "ID": "white" },
-    customs: [{ name: "بندر سری بگاوان", coords: [4.9031, 114.9398], workingHours: "24/7" }]
-  },
-  "MV": {
-    name: "مالدیو", nameEn: "Maldives",
-    capital: { name: "ماله", coords: [4.1755, 73.5093] },
-    continent: "asia",
-    gdp: 6, gdpRank: 153, gdpPerCapita: 11000,
-    inflation: 2.3, unemployment: 5.0, currency: "MVR", currencyName: "روفیا",
-    population: 550000, populationDensity: 1800, populationGrowth: 0.2,
-    resources: {},
-    exports: { total: 0.5, partners: [{ country: "TH", amount: 0.15, percent: 30 }, { country: "FR", amount: 0.1, percent: 20 }, { country: "US", amount: 0.08, percent: 16 }, { country: "IN", amount: 0.06, percent: 12 }, { country: "SG", amount: 0.04, percent: 8 }], mainProducts: ["ماهی", "پوشاک"] },
-    imports: { total: 2, partners: [{ country: "IN", amount: 0.5, percent: 25 }, { country: "CN", amount: 0.4, percent: 20 }, { country: "SG", amount: 0.3, percent: 15 }, { country: "AE", amount: 0.25, percent: 13 }, { country: "TH", amount: 0.2, percent: 10 }], mainProducts: ["غذا", "نفت", "ماشین‌آلات"] },
-    investmentRisk: 30, relations: { "IN": "green", "LK": "green", "CN": "green" },
-    customs: [{ name: "بندر ماله", coords: [4.1755, 73.5093], workingHours: "24/7" }]
-  },
-  "LA": {
-    name: "لائوس", nameEn: "Laos",
-    capital: { name: "ویانتیان", coords: [17.9757, 102.6331] },
-    continent: "asia",
-    gdp: 15, gdpRank: 135, gdpPerCapita: 2500,
-    inflation: 3.0, unemployment: 0.7, currency: "LAK", currencyName: "کیپ",
-    population: 7500000, populationDensity: 32, populationGrowth: 1.4,
-    resources: { hydro: { reserves: 26000, production: 5000, unit: "MW", rank: 10 }, copper: { reserves: 5000, production: 100, unit: "kt", rank: 15 } },
-    exports: { total: 6, partners: [{ country: "TH", amount: 2, percent: 33 }, { country: "CN", amount: 1.5, percent: 25 }, { country: "VN", amount: 1, percent: 17 }, { country: "MY", amount: 0.5, percent: 8 }, { country: "JP", amount: 0.4, percent: 7 }], mainProducts: ["برق", "مس", "چوب"] },
-    imports: { total: 5.5, partners: [{ country: "TH", amount: 2, percent: 36 }, { country: "CN", amount: 1.5, percent: 27 }, { country: "VN", amount: 0.8, percent: 15 }, { country: "MY", amount: 0.5, percent: 9 }, { country: "JP", amount: 0.4, percent: 7 }], mainProducts: ["ماشین‌آلات", "نفت", "غذا"] },
-    investmentRisk: 45, relations: { "TH": "green", "VN": "green", "CN": "green" },
-    customs: [{ name: "گمرک ویانتیان", coords: [17.9757, 102.6331], workingHours: "دوشنبه تا جمعه: 8:00-17:00" }]
-  },
-  "KH": {
-    name: "کامبوج", nameEn: "Cambodia",
-    capital: { name: "پنوم‌پن", coords: [11.5564, 104.9282] },
-    continent: "asia",
-    gdp: 29, gdpRank: 110, gdpPerCapita: 1700,
-    inflation: 2.9, unemployment: 0.3, currency: "KHR", currencyName: "ریل",
-    population: 17000000, populationDensity: 96, populationGrowth: 1.3,
-    resources: {},
-    exports: { total: 19, partners: [{ country: "US", amount: 8, percent: 42 }, { country: "CN", amount: 3, percent: 16 }, { country: "GB", amount: 2, percent: 11 }, { country: "JP", amount: 1.5, percent: 8 }, { country: "VN", amount: 1.2, percent: 6 }], mainProducts: ["پوشاک", "ماهی", "برنج"] },
-    imports: { total: 25, partners: [{ country: "CN", amount: 8, percent: 32 }, { country: "TH", amount: 4, percent: 16 }, { country: "VN", amount: 3, percent: 12 }, { country: "SG", amount: 2, percent: 8 }, { country: "JP", amount: 1.5, percent: 6 }], mainProducts: ["ماشین‌آلات", "نفت", "الکترونیک"] },
-    investmentRisk: 40, relations: { "VN": "green", "TH": "green", "LA": "green" },
-    customs: [{ name: "بندر سیانوكویل", coords: [10.6093, 103.5296], workingHours: "24/7" }]
   },
   "PSE": {
     name: "فلسطین", nameEn: "Palestine",

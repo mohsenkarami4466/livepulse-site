@@ -298,7 +298,7 @@ setInterval(updateMarketStatuses, 60000);
 updateMarketStatuses();
 
 // تابع برای پر کردن لیست بازارها
-function populateMarketList() {
+function _populateMarketList() {
   const marketList = document.getElementById('marketList');
   if (!marketList) return;
   
