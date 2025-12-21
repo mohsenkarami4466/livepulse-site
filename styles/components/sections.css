@@ -873,19 +873,19 @@
 /* ==================== */
 
 .layout-main {
-  /* padding-top بر اساس پایین‌ترین کارت fixed - محاسبه جداگانه برای هر دستگاه */
+  /* padding-top بر اساس پایین‌ترین کارت fixed - کاهش یافته */
 
-  /* دسکتاپ: GlobeClock(180px) + Indicators(148px) + Portfolio(230px) + gap(20px) = 250px */
+  /* دسکتاپ: Header(60px) + GlobeClock(180px) + gap(10px) = 250px */
   padding-top: 250px !important;
 
-  /* تبلت: GlobeClock(120px) + Indicators(80px) + Portfolio(70px) + gap(20px) = 220px */
+  /* تبلت: Header(60px) + GlobeClock(120px) + gap(15px) = 195px */
   @media (max-width: 1023px) and (min-width: 768px) {
-    padding-top: 220px !important;
+    padding-top: 195px !important;
   }
 
-  /* موبایل: GlobeClock(80px) + Indicators(90px) + Portfolio(70px) + gap(20px) = 200px */
+  /* موبایل: Header(60px) + GlobeClock(80px) + gap(10px) = 150px */
   @media (max-width: 767px) {
-    padding-top: 200px !important;
+    padding-top: 150px !important;
   }
 
   position: relative !important;
