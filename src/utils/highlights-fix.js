@@ -7,10 +7,17 @@ export function forceShowHighlights() {
   console.log('🔍 forceShowHighlights called - positioning based on indicators card')
 
   // یافتن کارت indicators (جفت ارزها) برای تعیین موقعیت هایلایت‌ها
-  const indicatorsCard = document.querySelector('.indicators-glass-card, .indicators-container')
+  let indicatorsCard = document.querySelector('.indicators-glass-card')
+  if (!indicatorsCard) {
+    // اگر پیدا نشد، شاید هنوز render نشده - صبر کن
+    console.log('⏳ Indicators card not found yet, waiting...')
+    setTimeout(() => forceShowHighlights(), 500)
+    return
+  }
+
   if (indicatorsCard) {
     const indicatorsRect = indicatorsCard.getBoundingClientRect()
-    const indicatorsBottom = indicatorsRect.bottom + 15 // 15px زیر کارت indicators
+    const indicatorsBottom = indicatorsRect.bottom + 35 // 35px زیر کارت indicators برای فاصله مناسب
 
     // تنظیم موقعیت هایلایت‌ها
     const highlightsSections = document.querySelectorAll('.highlights-section')

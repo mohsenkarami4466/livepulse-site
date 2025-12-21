@@ -175,11 +175,12 @@ function buildSimpleGlobe(containerId, type) {
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const texturePaths = [
-            // اول از فایل‌های محلی با base path استفاده کن
-            '/livepulse-site/earth-day.jpg',
+            // اول از فایل‌های محلی استفاده کن (development)
             './earth-day.jpg',
             'earth-day.jpg',
             '/earth-day.jpg',
+            // سپس production path
+            '/livepulse-site/earth-day.jpg',
             // سپس CDN به عنوان fallback
             'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
             'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
