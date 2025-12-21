@@ -1,5 +1,5 @@
 /**
- * CSS قوی برای نمایش اجباری هایلایت‌ها
+ * CSS قوی برای نمایش هایلایت‌ها
  * این فایل با اولویت بالا مطمئن می‌شود که هایلایت‌ها همیشه نمایش داده می‌شوند
  */
 
@@ -47,16 +47,21 @@ div.view section.globe-highlights,
   opacity: 1 !important;
   position: relative !important;
   z-index: 999 !important;
-  width: 100% !important; /* عرض کامل نمایشگر */
-  min-width: 100% !important;
-  max-width: 100% !important;
+  /* عرض کامل نمایشگر - بدون هیچ محدودیتی */
+  width: 100vw !important; /* عرض کامل viewport */
+  min-width: 100vw !important;
+  max-width: 100vw !important;
   height: 80px !important;
   min-height: 80px !important;
   margin-top: 10px !important; /* فاصله کمتر از بالا */
-  margin-left: 0 !important; /* بدون margin چپ */
-  margin-right: 0 !important; /* بدون margin راست */
+  margin-left: 0 !important; /* بدون margin */
+  margin-right: 0 !important; /* بدون margin */
   margin-bottom: 20px !important;
-  padding: 0 !important;
+  /* override padding از Layout */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
   box-sizing: border-box !important;
   overflow: visible !important;
   /* جلوگیری از مخفی شدن */
@@ -82,13 +87,14 @@ div.view section.globe-highlights,
   align-items: center !important;
   visibility: visible !important;
   opacity: 1 !important;
-  width: 100% !important;
-  min-width: 100% !important;
-  max-width: 100% !important;
+  /* عرض کامل container پدر - با padding برای margin از کناره‌ها */
+  width: calc(100vw - 2rem) !important; /* عرض کامل منهای padding هایلایت */
+  min-width: calc(100vw - 2rem) !important;
+  max-width: calc(100vw - 2rem) !important;
   height: 80px !important;
   min-height: 80px !important;
   padding: 0 !important;
-  margin: 0 !important;
+  margin: 0 auto !important; /* وسط چین */
   gap: 10px !important; /* فاصله بین highlights */
   flex-wrap: nowrap !important;
   box-sizing: border-box !important;
@@ -135,19 +141,17 @@ div.view section.globe-highlights,
   .news-highlights,
   .tools-highlights {
     margin-top: 10px !important; /* فاصله کمتر */
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important; /* عرض کامل */
     height: 70px !important;
     min-height: 70px !important;
   }
-  
+
   .highlights-container {
+    width: calc(100vw - 1.5rem) !important; /* کمتر در تبلت */
     height: 70px !important;
     min-height: 70px !important;
     gap: 10px !important; /* فاصله بین highlights */
   }
-  
+
   .highlight-circle {
     width: auto !important; /* عرض خودکار برای متن */
     min-width: 60px !important;
@@ -168,19 +172,17 @@ div.view section.globe-highlights,
   .news-highlights,
   .tools-highlights {
     margin-top: 10px !important; /* فاصله کمتر */
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important; /* عرض کامل */
     height: 60px !important;
     min-height: 60px !important;
   }
-  
+
   .highlights-container {
+    width: calc(100vw - 1rem) !important; /* کمتر در موبایل */
     height: 60px !important;
     min-height: 60px !important;
     gap: 8px !important; /* فاصله کمتر در موبایل */
   }
-  
+
   .highlight-circle {
     width: auto !important; /* عرض خودکار برای متن */
     min-width: 50px !important;
@@ -205,13 +207,14 @@ div.view section.globe-highlights,
     height: 55px !important;
     min-height: 55px !important;
   }
-  
+
   .highlights-container {
+    width: calc(100vw - 0.8rem) !important; /* کمتر در موبایل کوچک */
     height: 55px !important;
     min-height: 55px !important;
     gap: 6px !important; /* فاصله کمتر در موبایل کوچک */
   }
-  
+
   .highlight-circle {
     width: auto !important;
     min-width: 45px !important;
@@ -226,4 +229,3 @@ div.view section.globe-highlights,
     white-space: nowrap !important;
   }
 }
-
