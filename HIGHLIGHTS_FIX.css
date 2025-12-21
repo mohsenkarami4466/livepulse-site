@@ -10,13 +10,14 @@
 /* ==================== */
 /* 1. تنظیم layout-main برای فاصله از المان‌های fixed */
 /* ==================== */
+/* این فایل دیگر استفاده نمی‌شود - تنظیمات به Layout.css منتقل شد */
+/*
 .layout-main {
-  /* محاسبه padding-top بر اساس ارتفاع المان‌های fixed */
-  /* Header (60px) + Indicators (80px) + Portfolio (70px) + فاصله (20px) = 230px */
-  padding-top: clamp(200px, calc(var(--header-height, 60px) + 80px + 70px + 20px), 250px) !important;
+  padding-top: 250px !important; // تنظیم شده در Layout.css
   position: relative !important;
   z-index: 1 !important;
 }
+*/
 
 /* ==================== */
 /* 2. اطمینان از نمایش highlights-section */

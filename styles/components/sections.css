@@ -869,6 +869,30 @@
 }
 
 /* ==================== */
+/* 📐 تنظیمات Layout Main */
+/* ==================== */
+
+.layout-main {
+  /* padding-top بر اساس پایین‌ترین کارت fixed - محاسبه جداگانه برای هر دستگاه */
+
+  /* دسکتاپ: GlobeClock(180px) + Indicators(148px) + Portfolio(230px) + gap(20px) = 250px */
+  padding-top: 250px !important;
+
+  /* تبلت: GlobeClock(120px) + Indicators(80px) + Portfolio(70px) + gap(20px) = 220px */
+  @media (max-width: 1023px) and (min-width: 768px) {
+    padding-top: 220px !important;
+  }
+
+  /* موبایل: GlobeClock(80px) + Indicators(90px) + Portfolio(70px) + gap(20px) = 200px */
+  @media (max-width: 767px) {
+    padding-top: 200px !important;
+  }
+
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ==================== */
 /* 🖥️ مدیریت View ها */
 /* ==================== */
 
