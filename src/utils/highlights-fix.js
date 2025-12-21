@@ -36,9 +36,6 @@ export function forceShowHighlights() {
     }
   })
 
-  console.log(`✅ Highlights simplified positioning applied to ${highlightsSections.length} sections`)
-  return
-
   // تنظیم highlights-container
   const highlightsContainers = document.querySelectorAll('.highlights-container')
   highlightsContainers.forEach(container => {
@@ -83,7 +80,7 @@ export function forceShowHighlights() {
     }
   })
 
-  console.log('✅ Highlights simplified - containers and circles fixed')
+  console.log(`✅ Highlights fixed - ${highlightsSections.length} sections, ${highlightsContainers.length} containers, ${circles.length} circles`)
 }
 
   // اجرای خودکار بعد از load شدن صفحه
