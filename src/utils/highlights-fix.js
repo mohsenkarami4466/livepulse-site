@@ -4,33 +4,31 @@
  */
 
 export function forceShowHighlights() {
-  console.log('🔍 forceShowHighlights called - positioning based on PortfolioSummary')
+  console.log('🔍 forceShowHighlights called - positioning based on indicators card')
 
-  // یافتن کارت PortfolioSummary برای تعیین موقعیت هایلایت‌ها
-  const portfolioCard = document.querySelector('.portfolio-summary-card')
-  if (portfolioCard) {
-    const portfolioRect = portfolioCard.getBoundingClientRect()
-    const portfolioBottom = portfolioRect.bottom + 15 // 15px زیر کارت PortfolioSummary
+  // یافتن کارت indicators (جفت ارزها) برای تعیین موقعیت هایلایت‌ها
+  const indicatorsCard = document.querySelector('.indicators-glass-card, .indicators-container')
+  if (indicatorsCard) {
+    const indicatorsRect = indicatorsCard.getBoundingClientRect()
+    const indicatorsBottom = indicatorsRect.bottom + 15 // 15px زیر کارت indicators
 
     // تنظیم موقعیت هایلایت‌ها
     const highlightsSections = document.querySelectorAll('.highlights-section')
     highlightsSections.forEach(section => {
       if (section) {
         section.style.position = 'fixed'
-        section.style.top = `${portfolioBottom}px`
+        section.style.top = `${indicatorsBottom}px`
         section.style.left = '0'
         section.style.right = '0'
         section.style.width = '100%'
-        section.style.zIndex = '995' // زیر PortfolioSummary
+        section.style.zIndex = '990' // زیر indicators
         section.style.margin = '0'
         section.style.paddingLeft = '1rem'
         section.style.paddingRight = '1rem'
         section.style.paddingTop = '0'
         section.style.paddingBottom = '20px'
         section.style.boxSizing = 'border-box'
-        section.style.background = 'transparent'
-        section.style.backdropFilter = 'none'
-        section.style.webkitBackdropFilter = 'none'
+        // حذف هرگونه styling اضافه که ممکن است تداخل ایجاد کند
       }
     })
 
@@ -45,12 +43,12 @@ export function forceShowHighlights() {
       }
     })
 
-    console.log(`✅ Highlights positioned 15px below PortfolioSummary (at ${portfolioBottom}px)`)
+    console.log(`✅ Highlights positioned 15px below indicators card (at ${indicatorsBottom}px)`)
     return
   }
 
-  // fallback اگر PortfolioSummary پیدا نشد
-  console.warn('⚠️ PortfolioSummary card not found, using fallback positioning')
+  // fallback اگر indicators هم پیدا نشد
+  console.warn('⚠️ Indicators card not found, using fallback positioning')
   const activeView = document.querySelector('.view, #homeView, #newsView, #toolsView, #tutorialView, #relaxView, #globeView')
 
   if (!activeView) {
