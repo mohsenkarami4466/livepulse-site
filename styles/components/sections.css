@@ -307,9 +307,9 @@
     opacity: 1 !important;
     height: auto !important;
     overflow: visible !important;
-    /* margin-top حذف شد - layout-main padding-top دارد */
-    margin-top: 0 !important;
-    margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
+    /* margin-top ثابت برای همه صفحات */
+    margin-top: 20px !important; /* فاصله ثابت از layout-main */
+    margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - ثابت */
     margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
     margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
     width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
@@ -377,7 +377,7 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 25px !important; /* فاصله ثابت 25px از بالا */
+        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
@@ -422,7 +422,7 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 25px !important; /* فاصله ثابت 25px از بالا */
+        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
@@ -467,7 +467,7 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 25px !important; /* فاصله ثابت 25px از بالا */
+        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
@@ -512,7 +512,7 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 25px !important; /* فاصله ثابت 25px از بالا */
+        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
@@ -559,7 +559,7 @@
     .globe-highlights {
         z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
         position: relative !important; /* برای z-index کار کند */
-        margin-top: 25px !important; /* فاصله ثابت 25px از بالا */
+        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
@@ -597,7 +597,7 @@
     min-height: 80px !important;
     height: 80px !important; /* ارتفاع ثابت */
     padding: 0 !important;
-    margin-bottom: 25px !important;
+    margin-bottom: 20px !important; /* یکسان با دسکتاپ */
     width: 100% !important;
     min-width: 100% !important; /* اضافه شد */
     max-width: 100% !important; /* اضافه شد */
@@ -640,7 +640,7 @@
         min-height: 80px !important;
         height: 80px !important;
         padding: 0;
-        margin-bottom: 18px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
@@ -669,7 +669,7 @@
         min-height: 80px !important;
         height: 80px !important;
         padding: 0;
-        margin-bottom: 15px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
@@ -698,7 +698,7 @@
         min-height: 80px !important;
         height: 80px !important;
         padding: 0;
-        margin-bottom: 12px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
@@ -727,7 +727,7 @@
         min-height: 50px !important;
         height: 50px !important;
         padding: 0;
-        margin-bottom: 12px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
         width: 100% !important;
     }
     
@@ -752,7 +752,7 @@
         min-height: 50px !important;
         height: 50px !important;
         padding: 0;
-        margin-bottom: 10px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
@@ -1288,11 +1288,7 @@ section.home-highlights {
     opacity: 0.8;
 }
 
-/* صفحه اخبار */
-#newsView {
-    margin-top: 0;
-    padding: 0 20px 20px;
-}
+/* همه صفحات padding یکسانی دارند */
 
 /* فیلترهای اخبار */
 .news-filters {

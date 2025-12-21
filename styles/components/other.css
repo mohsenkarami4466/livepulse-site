@@ -305,14 +305,7 @@
 /* 📚 بخش آموزش (AI) */
 /* ==================== */
 
-#tutorialView {
-    display: none; /* مثل بقیه viewها، پیش‌فرض مخفی */
-    padding: 0 2rem 2rem;
-}
-
-#tutorialView.active-view {
-    display: block; /* وقتی فعال شد نمایش داده شود */
-}
+/* tutorialView padding یکسانی دارد */
 
 #tutorialView .panel-header {
     text-align: center;
@@ -402,14 +395,7 @@
 /* 🧘‍♂️ بخش آرامش (AI) */
 /* ==================== */
 
-#relaxView {
-    display: none;
-    padding: 0 2rem 2rem;
-}
-
-#relaxView.active-view {
-    display: block;
-}
+/* relaxView padding یکسانی دارد */
 
 #relaxView .panel-header {
     text-align: center;
