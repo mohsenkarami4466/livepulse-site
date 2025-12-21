@@ -4,144 +4,44 @@
  */
 
 export function forceShowHighlights() {
-  console.log('🔍 forceShowHighlights called - positioning based on indicators card')
+  console.log('🔍 forceShowHighlights called - simple positioning fix')
 
-  // یافتن کارت indicators (جفت ارزها) برای تعیین موقعیت هایلایت‌ها
-  let indicatorsCard = document.querySelector('.indicators-glass-card')
-  if (!indicatorsCard) {
-    // اگر پیدا نشد، شاید هنوز render نشده - صبر کن
-    console.log('⏳ Indicators card not found yet, waiting...')
-    setTimeout(() => forceShowHighlights(), 500)
-    return
-  }
+  // استفاده از positioning ساده CSS به جای fixed positioning پیچیده
+  const highlightsSections = document.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights')
 
-  if (indicatorsCard) {
-    const indicatorsRect = indicatorsCard.getBoundingClientRect()
-    const indicatorsBottom = indicatorsRect.bottom + 35 // 35px زیر کارت indicators برای فاصله مناسب
+  highlightsSections.forEach(section => {
+    if (section) {
+      // پاکسازی همه استایل‌های قبلی که ممکن است تداخل ایجاد کنند
+      section.style.removeProperty('position')
+      section.style.removeProperty('top')
+      section.style.removeProperty('left')
+      section.style.removeProperty('right')
+      section.style.removeProperty('width')
+      section.style.removeProperty('z-index')
+      section.style.removeProperty('margin')
+      section.style.removeProperty('padding-left')
+      section.style.removeProperty('padding-right')
+      section.style.removeProperty('padding-top')
+      section.style.removeProperty('padding-bottom')
+      section.style.removeProperty('box-sizing')
 
-    // تنظیم موقعیت هایلایت‌ها
-    const highlightsSections = document.querySelectorAll('.highlights-section')
-    highlightsSections.forEach(section => {
-      if (section) {
-        section.style.position = 'fixed'
-        section.style.top = `${indicatorsBottom}px`
-        section.style.left = '0'
-        section.style.right = '0'
-        section.style.width = '100%'
-        section.style.zIndex = '990' // زیر indicators
-        section.style.margin = '0'
-        section.style.paddingLeft = '1rem'
-        section.style.paddingRight = '1rem'
-        section.style.paddingTop = '0'
-        section.style.paddingBottom = '20px'
-        section.style.boxSizing = 'border-box'
-        // حذف هرگونه styling اضافه که ممکن است تداخل ایجاد کند
-      }
-    })
-
-    // تنظیم highlights-container
-    const highlightsContainers = document.querySelectorAll('.highlights-container')
-    highlightsContainers.forEach(container => {
-      if (container) {
-        container.style.width = '100%'
-        container.style.maxWidth = 'none'
-        container.style.margin = '0'
-        container.style.padding = '0'
-      }
-    })
-
-    console.log(`✅ Highlights positioned 15px below indicators card (at ${indicatorsBottom}px)`)
-    return
-  }
-
-  // fallback اگر indicators هم پیدا نشد
-  console.warn('⚠️ Indicators card not found, using fallback positioning')
-  const activeView = document.querySelector('.view, #homeView, #newsView, #toolsView, #tutorialView, #relaxView, #globeView')
-
-  if (!activeView) {
-    console.warn('⚠️ هیچ view فعالی پیدا نشد!')
-    return
-  }
-  
-  // پیدا کردن همه highlights-section ها با selector های مختلف
-  const selectors = [
-    '.highlights-section',
-    '.home-highlights',
-    '.news-highlights',
-    '.tools-highlights',
-    '.education-highlights',
-    '.relax-highlights',
-    '.globe-highlights',
-    'section.highlights-section',
-    '#homeView .highlights-section',
-    '#newsView .highlights-section',
-    '#toolsView .highlights-section',
-    '#tutorialView .highlights-section',
-    '#relaxView .highlights-section',
-    '#globeView .highlights-section'
-  ]
-  
-  let allSections = []
-  selectors.forEach(selector => {
-    const sections = document.querySelectorAll(selector)
-    allSections.push(...Array.from(sections))
-  })
-  
-  // حذف duplicates
-  const uniqueSections = [...new Set(allSections)]
-  
-  // اگر highlights-section پیدا نشد، بررسی کن که آیا در view وجود دارد
-  if (uniqueSections.length === 0) {
-    console.warn('⚠️ هیچ highlights-section پیدا نشد! بررسی view...')
-    const viewChildren = Array.from(activeView.children)
-    console.log('Children of active view:', viewChildren.map(c => ({
-      tagName: c.tagName,
-      className: c.className,
-      id: c.id
-    })))
-    
-    // اگر highlights-section در view وجود ندارد اما باید وجود داشته باشد، warning بده
-    const hasHighlights = viewChildren.some(child => 
-      child.classList.contains('highlights-section') || 
-      child.classList.contains('home-highlights') ||
-      child.classList.contains('news-highlights') ||
-      child.classList.contains('tools-highlights')
-    )
-    
-    if (!hasHighlights) {
-      console.error('❌ highlights-section در view وجود ندارد! این یک مشکل جدی است.')
-      console.error('View ID:', activeView.id)
-      console.error('View classes:', activeView.className)
+      // تنظیم استایل‌های پایه برای نمایش صحیح
+      section.style.display = 'flex'
+      section.style.visibility = 'visible'
+      section.style.opacity = '1'
+      section.style.overflow = 'visible'
+      section.style.clip = 'auto'
+      section.style.clipPath = 'none'
+      section.style.transform = 'none'
     }
-  }
-  
-  uniqueSections.forEach(section => {
-    if (!section) return
-    
-    // اعمال استایل‌های اجباری با !important از طریق setProperty
-    section.style.setProperty('display', 'flex', 'important')
-    section.style.setProperty('visibility', 'visible', 'important')
-    section.style.setProperty('opacity', '1', 'important')
-    section.style.setProperty('position', 'relative', 'important')
-    section.style.setProperty('z-index', '999', 'important')
-    section.style.setProperty('width', 'calc(100% - 16px)', 'important')
-    section.style.setProperty('min-width', 'calc(100% - 16px)', 'important')
-    section.style.setProperty('max-width', 'calc(100% - 16px)', 'important')
-    section.style.setProperty('height', '80px', 'important')
-    section.style.setProperty('min-height', '80px', 'important')
-    section.style.setProperty('margin-top', '25px', 'important')
-    section.style.setProperty('margin-left', '8px', 'important')
-    section.style.setProperty('margin-right', '8px', 'important')
-    section.style.setProperty('margin-bottom', '20px', 'important')
-    section.style.setProperty('padding', '0', 'important')
-    section.style.setProperty('box-sizing', 'border-box', 'important')
-    section.style.setProperty('overflow', 'visible', 'important')
-    section.style.setProperty('clip', 'auto', 'important')
-    section.style.setProperty('clip-path', 'none', 'important')
-    section.style.setProperty('transform', 'none', 'important')
-    
-    // پیدا کردن highlights-container
-    const container = section.querySelector('.highlights-container')
+  })
+
+  console.log(`✅ Highlights simplified positioning applied to ${highlightsSections.length} sections`)
+  return
+
+  // تنظیم highlights-container
+  const highlightsContainers = document.querySelectorAll('.highlights-container')
+  highlightsContainers.forEach(container => {
     if (container) {
       container.style.display = 'flex'
       container.style.flexDirection = 'row'
@@ -150,64 +50,40 @@ export function forceShowHighlights() {
       container.style.visibility = 'visible'
       container.style.opacity = '1'
       container.style.width = '100%'
-      container.style.minWidth = '100%'
-      container.style.maxWidth = '100%'
-      container.style.height = '80px'
-      container.style.minHeight = '80px'
-      container.style.padding = '0'
-      container.style.margin = '0'
       container.style.gap = '10px'
       container.style.flexWrap = 'nowrap'
-      container.style.boxSizing = 'border-box'
       container.style.overflow = 'visible'
     }
-    
-    // پیدا کردن همه highlight-circle ها
-    const circles = section.querySelectorAll('.highlight-circle')
-    circles.forEach(circle => {
+  })
+
+  // تنظیم highlight-circle ها
+  const circles = document.querySelectorAll('.highlight-circle')
+  circles.forEach(circle => {
+    if (circle) {
       circle.style.display = 'flex'
       circle.style.visibility = 'visible'
       circle.style.opacity = '1'
-      circle.style.width = 'auto' // عرض خودکار برای متن
+      circle.style.width = 'auto'
       circle.style.minWidth = '70px'
       circle.style.maxWidth = '140px'
       circle.style.height = '60px'
-      circle.style.minHeight = '60px'
-      circle.style.flex = '0 0 auto' // عرض خودکار
-      circle.style.flexShrink = '0'
-      circle.style.flexGrow = '0'
       circle.style.alignItems = 'center'
       circle.style.justifyContent = 'center'
-      circle.style.boxSizing = 'border-box'
-      circle.style.position = 'relative'
-      circle.style.margin = '0' // حذف margin - gap فاصله را ایجاد می‌کند
-      circle.style.setProperty('border-radius', '12px', 'important')
-      circle.style.setProperty('padding', '8px 16px', 'important')
-      circle.style.setProperty('font-size', 'clamp(0.7rem, 1.1vw, 0.85rem)', 'important')
-      circle.style.setProperty('line-height', '1.3', 'important')
-      circle.style.setProperty('white-space', 'nowrap', 'important')
-      circle.style.setProperty('text-align', 'center', 'important')
+      circle.style.flex = '0 0 auto'
+      circle.style.flexShrink = '0'
+      circle.style.flexGrow = '0'
+      circle.style.borderRadius = '12px'
+      circle.style.padding = '8px 16px'
+      circle.style.fontSize = 'clamp(0.7rem, 1.1vw, 0.85rem)'
+      circle.style.lineHeight = '1.3'
+      circle.style.whiteSpace = 'nowrap'
+      circle.style.textAlign = 'center'
       circle.style.overflow = 'visible'
-    })
+      circle.style.boxSizing = 'border-box'
+    }
   })
-  
-  console.log('✅ Highlights force-fixed:', uniqueSections.length, 'sections found')
-  
-  // اگر هیچ highlights پیدا نشد، warning بده
-  if (uniqueSections.length === 0) {
-    console.warn('⚠️ هیچ highlights-section در DOM پیدا نشد!')
-    console.warn('🔍 بررسی DOM structure...')
-    const views = document.querySelectorAll('.view, #homeView, #newsView, #toolsView')
-    console.log('Views found:', views.length)
-    views.forEach((view, index) => {
-      console.log(`View ${index}:`, {
-        id: view.id,
-        className: view.className,
-        children: view.children.length,
-        innerHTML: view.innerHTML.substring(0, 200)
-      })
-    })
-  }
+
+  console.log('✅ Highlights simplified - containers and circles fixed')
 }
 
   // اجرای خودکار بعد از load شدن صفحه
