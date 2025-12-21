@@ -4,9 +4,55 @@
  */
 
 export function forceShowHighlights() {
-  // پیدا کردن view فعال
+  console.log('🔍 forceShowHighlights called - positioning based on PortfolioSummary')
+
+  // یافتن کارت PortfolioSummary برای تعیین موقعیت هایلایت‌ها
+  const portfolioCard = document.querySelector('.portfolio-summary-card')
+  if (portfolioCard) {
+    const portfolioRect = portfolioCard.getBoundingClientRect()
+    const portfolioBottom = portfolioRect.bottom + 15 // 15px زیر کارت PortfolioSummary
+
+    // تنظیم موقعیت هایلایت‌ها
+    const highlightsSections = document.querySelectorAll('.highlights-section')
+    highlightsSections.forEach(section => {
+      if (section) {
+        section.style.position = 'fixed'
+        section.style.top = `${portfolioBottom}px`
+        section.style.left = '0'
+        section.style.right = '0'
+        section.style.width = '100%'
+        section.style.zIndex = '995' // زیر PortfolioSummary
+        section.style.margin = '0'
+        section.style.paddingLeft = '1rem'
+        section.style.paddingRight = '1rem'
+        section.style.paddingTop = '0'
+        section.style.paddingBottom = '20px'
+        section.style.boxSizing = 'border-box'
+        section.style.background = 'transparent'
+        section.style.backdropFilter = 'none'
+        section.style.webkitBackdropFilter = 'none'
+      }
+    })
+
+    // تنظیم highlights-container
+    const highlightsContainers = document.querySelectorAll('.highlights-container')
+    highlightsContainers.forEach(container => {
+      if (container) {
+        container.style.width = '100%'
+        container.style.maxWidth = 'none'
+        container.style.margin = '0'
+        container.style.padding = '0'
+      }
+    })
+
+    console.log(`✅ Highlights positioned 15px below PortfolioSummary (at ${portfolioBottom}px)`)
+    return
+  }
+
+  // fallback اگر PortfolioSummary پیدا نشد
+  console.warn('⚠️ PortfolioSummary card not found, using fallback positioning')
   const activeView = document.querySelector('.view, #homeView, #newsView, #toolsView, #tutorialView, #relaxView, #globeView')
-  
+
   if (!activeView) {
     console.warn('⚠️ هیچ view فعالی پیدا نشد!')
     return
@@ -165,7 +211,7 @@ if (typeof window !== 'undefined') {
   const runFix = () => {
     forceShowHighlights()
   }
-  
+
   // اجرای فوری
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
@@ -186,7 +232,7 @@ if (typeof window !== 'undefined') {
     setTimeout(runFix, 1000)
     setTimeout(runFix, 2000)
   }
-  
+
   // اجرا بعد از هر تغییر route
   let lastPathname = window.location.pathname
   const observer = new MutationObserver(() => {
@@ -199,20 +245,25 @@ if (typeof window !== 'undefined') {
     }
     runFix()
   })
-  
+
   observer.observe(document.body, {
     childList: true,
     subtree: true,
     attributes: true,
     attributeFilter: ['style', 'class']
   })
-  
+
+  // اجرا بعد از تغییر اندازه صفحه
+  window.addEventListener('resize', () => {
+    setTimeout(runFix, 100)
+  })
+
   // اجرای مداوم هر 2 ثانیه
   const interval = setInterval(runFix, 2000)
-  
+
   // اضافه کردن به window برای دسترسی از جاهای دیگر
   window.forceShowHighlights = forceShowHighlights
-  
+
   // Cleanup
   window.addEventListener('beforeunload', () => {
     clearInterval(interval)
