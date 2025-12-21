@@ -36,7 +36,7 @@ export function forceShowHighlights() {
     }
   })
 
-  // تنظیم highlights-container
+  // تنظیم highlights-container - عرض کامل برای همه دستگاه‌ها
   const highlightsContainers = document.querySelectorAll('.highlights-container')
   highlightsContainers.forEach(container => {
     if (container) {
@@ -47,9 +47,14 @@ export function forceShowHighlights() {
       container.style.visibility = 'visible'
       container.style.opacity = '1'
       container.style.width = '100%'
+      container.style.minWidth = '100%'
+      container.style.maxWidth = '100%'
       container.style.gap = '10px'
       container.style.flexWrap = 'nowrap'
       container.style.overflow = 'visible'
+      container.style.boxSizing = 'border-box'
+      container.style.padding = '0'
+      container.style.margin = '0'
     }
   })
 

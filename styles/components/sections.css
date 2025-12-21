@@ -309,8 +309,9 @@
     margin-bottom: 20px !important; /* فاصله از پایین */
     margin-left: 0 !important;
     margin-right: 0 !important;
-    padding-left: 1rem !important; /* padding برای دسکتاپ */
-    padding-right: 1rem !important;
+    /* override padding از layout-main > .view */
+    padding-left: 0 !important; /* بدون padding اضافی */
+    padding-right: 0 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     box-sizing: border-box !important;
