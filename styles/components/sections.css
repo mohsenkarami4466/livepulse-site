@@ -305,11 +305,14 @@
     height: auto !important;
     min-height: 80px !important;
     /* margins ساده */
-    margin-top: 15px !important; /* فاصله از بالا */
+    margin-top: 10px !important; /* فاصله از بالا - بالاتر */
     margin-bottom: 20px !important; /* فاصله از پایین */
     margin-left: 0 !important;
     margin-right: 0 !important;
-    padding: 0 !important;
+    padding-left: 1rem !important; /* padding برای دسکتاپ */
+    padding-right: 1rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
     box-sizing: border-box !important;
     /* background شفاف */
     background: transparent !important;
