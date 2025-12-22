@@ -4,7 +4,8 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  // در development از / استفاده می‌کنیم، در build از /livepulse-site/
+  // تنظیمات base: development از /، build و preview از /livepulse-site/
+  // برای preview نیاز به base درست داریم چون فایل‌های build شده را serve می‌کنیم
   const base = command === 'serve' ? '/' : '/livepulse-site/'
   
   return {
