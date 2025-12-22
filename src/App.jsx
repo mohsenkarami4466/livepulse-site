@@ -23,6 +23,7 @@ import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom'
 import { AppProvider } from './contexts/AppContext'
 import AppRouter from './router/AppRouter'
 import Layout from './components/Layout/Layout'
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 import { forceShowHighlights } from './utils/highlights-fix'
 import './App.css'
 import './styles/highlights-force.css'
@@ -96,21 +97,23 @@ function AppContent() {
 function App() {
   // تعیین basename بر اساس محیط: development از /، production از /livepulse-site/
   const basename = import.meta.env.DEV ? '/' : '/livepulse-site/'
-  
+
   return (
-    <BrowserRouter
-      basename={basename}
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true
-      }}
-    >
-      <AppProvider>
-        <div className="App">
-          <AppContent />
-        </div>
-      </AppProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter
+        basename={basename}
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
+        <AppProvider>
+          <div className="App">
+            <AppContent />
+          </div>
+        </AppProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
 

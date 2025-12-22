@@ -8,7 +8,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "deploy": "npm run build && rm -rf docs/* && cp -r dist/* docs/ && cp .nojekyll docs/ && echo '✅ آماده! حالا: git add docs/ && git commit -m \"deploy\" && git push'"
+    "lint:fix": "eslint . --ext js,jsx --fix",
+    "clean": "rm -rf dist docs node_modules/.vite",
+    "build:analyze": "npm run build && npx vite-bundle-analyzer dist/assets/*.js",
+    "preview:docs": "cd docs && python3 -m http.server 8000 || npx serve docs",
+    "deploy": "npm run clean && npm run build && rm -rf docs/* && cp -r dist/* docs/ && cp .nojekyll docs/ && echo '✅ آماده! حالا: git add docs/ && git commit -m \"deploy\" && git push'",
+    "deploy:preview": "npm run build && npm run preview:docs"
   },
   "dependencies": {
     "react": "^18.2.0",

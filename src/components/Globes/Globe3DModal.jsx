@@ -88,13 +88,8 @@ const typeToIds = {
 function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
   const modalRef = useRef(null)
   const containerRef = useRef(null)
-  
+
   const ids = typeToIds[type]
-  if (!ids) {
-    const log = window.logger || { error: console.error }
-    log.error(`❌ نوع کره نامعتبر: ${type}`)
-    return null
-  }
 
   useEffect(() => {
     if (isOpen && containerRef.current) {
@@ -120,6 +115,7 @@ function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
   }, [isOpen, type, ids])
 
   const dockMenuItems = useMemo(() => {
+    if (!ids) return []
     return [
       { id: 'close', label: 'بستن', icon: '✕', onClick: onClose },
       { id: 'reset', label: 'ریست دید', icon: '⟲', onClick: actions.resetView },
@@ -127,7 +123,17 @@ function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
       { id: 'filters', label: 'فیلترها', icon: '🧭', onClick: actions.toggleFilters },
       { id: 'country', label: 'کشورها', icon: '🌐', onClick: actions.openCountryPanel }
     ].filter(item => typeof item.onClick === 'function')
-  }, [actions, onClose])
+  }, [ids, onClose, actions])
+
+  if (!ids) {
+    const log = window.logger || { error: console.error }
+    log.error(`❌ نوع کره نامعتبر: ${type}`)
+    return null
+  }
+
+  const renderContent = () => {
+    return dockMenuItems
+  }
 
   // همیشه render می‌شود اما hidden است تا vanilla JS بتواند آن را پیدا کند
   return (
