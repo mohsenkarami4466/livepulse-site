@@ -1067,24 +1067,8 @@ function buildSimpleGlobe(containerId, type) {
             hasRenderer: !!globeData.renderer
         });
         
-        // فعال کردن ساعت بازار در کره‌های ۳ بعدی
-        // Enable market clock in 3D globes
-        if (type === 'financial' || type === 'resources') {
-            const log = window.logger || { info: console.log };
-            log.info('🕐 فعال کردن ساعت بازار در کره ۳ بعدی...');
-
-            // یک تاخیر کوتاه برای اطمینان از بارگذاری کامل کره
-            setTimeout(() => {
-                if (typeof initGlobe === 'function') {
-                    try {
-                        initGlobe();
-                        log.info('✅ ساعت بازار در کره ۳ بعدی فعال شد');
-                    } catch (error) {
-                        log.warn('⚠️ خطا در فعال کردن ساعت بازار:', error.message);
-                    }
-                }
-            }, 1000);
-        }
+        // ساعت بازار فقط در صفحه اصلی فعال می‌شود
+        // Market clock is only enabled on main page, not in 3D globe modals
 
         // برگرداندن globeData
         return globeData;

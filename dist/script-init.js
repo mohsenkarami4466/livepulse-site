@@ -8,13 +8,17 @@ function checkReactMode() {
     if (!root) return false;
     
     // بررسی اینکه آیا React render شده (root باید محتوا داشته باشد)
-    // یا اینکه element های React وجود دارند
     const hasReactContent = root.children.length > 0;
-    const hasGlobeContainer = document.getElementById('globeContainer') !== null;
-    const hasAssistiveTouch = document.getElementById('assistiveTouch') !== null;
     
-    // اگر root محتوا دارد یا element های React وجود دارند، یعنی React mode است
-    return hasReactContent || (hasGlobeContainer && hasAssistiveTouch);
+    // بررسی وجود data-react-mode attribute که توسط React components تنظیم می‌شود
+    const hasReactModeAttribute = document.querySelector('[data-react-mode="true"]') !== null;
+    
+    // بررسی وجود کامپوننت‌های React (مثل globeClockWrapper با data-react-mode)
+    const globeWrapper = document.getElementById('globeClockWrapper');
+    const hasReactGlobeWrapper = globeWrapper && globeWrapper.getAttribute('data-react-mode') === 'true';
+    
+    // اگر root محتوا دارد یا attribute های React وجود دارند، یعنی React mode است
+    return hasReactContent || hasReactModeAttribute || hasReactGlobeWrapper;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -30,7 +34,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkReactAndInit = () => {
         // بررسی با تاخیر بیشتر برای اطمینان از render شدن React
         setTimeout(() => {
-            const isReactMode = checkReactMode();
+            // بررسی چندباره React mode برای اطمینان
+            let isReactMode = false;
+            for (let i = 0; i < 5; i++) {
+                isReactMode = checkReactMode();
+                if (isReactMode) break;
+                // صبر کوتاه و دوباره چک کن
+                if (i < 4) {
+                    const checkElement = document.getElementById('root');
+                    if (checkElement && checkElement.children.length > 0) {
+                        // React render شده، یک بار دیگر چک کن
+                        isReactMode = checkReactMode();
+                        if (isReactMode) break;
+                    }
+                }
+            }
             
             if (isReactMode) {
                 log.info('✅ React mode تشخیص داده شد - کره کوچک و دکمه سیار توسط React components مدیریت می‌شوند');
@@ -56,11 +74,79 @@ document.addEventListener('DOMContentLoaded', function() {
             // اگر React mode نیست، vanilla JS initialization را انجام بده
             log.info('⚠️ Vanilla JS mode - انجام initialization...');
             try {
+                // بررسی نهایی React mode قبل از initGlobe
+                const finalCheckReactMode = checkReactMode();
+                if (finalCheckReactMode) {
+                    log.info('✅ React mode در final check تشخیص داده شد - از initGlobe صرف نظر می‌کنیم');
+                } else {
+                    // بررسی وجود globeContainer قبل از initGlobe
+                    const container = document.getElementById('globeContainer');
+                    if (!container) {
+                        log.warn('⚠️ globeContainer پیدا نشد - ممکن است React mode باشد. منتظر می‌مانیم...');
+                        // صبر می‌کنیم تا React render شود
+                        setTimeout(() => {
+                            // بررسی نهایی React mode
+                            const finalCheck = checkReactMode();
+                            if (finalCheck) {
+                                log.info('✅ React mode بعد از انتظار برای globeContainer تشخیص داده شد');
+                                return;
+                            }
+                            // اگر هنوز React mode نیست و container پیدا شد، initGlobe را فراخوانی کن
+                            const retryContainer = document.getElementById('globeContainer');
+                            if (retryContainer && typeof initGlobe === 'function') {
+                                // ساعت بازار را همیشه فعال کن - این بخشی از UI اصلی است
+                                log.info('🕐 فعال کردن ساعت بازار در صفحه اصلی...');
+                                try {
+                                    // مجبور کردن فعال‌سازی ساعت بازار
+                                    setTimeout(() => {
+                                        initGlobe();
+                                        log.info('✅ ساعت بازار فعال شد');
+                                    }, 500);
+                                } catch (error) {
+                                    if (window.errorHandler) {
+                                        window.errorHandler.handleError(error, 'initGlobe');
+                                    } else {
+                                        log.error('خطا در initGlobe:', error);
+                                    }
+                                }
+                            }
+                        }, 1000);
+                        return;
+                    }
+                    
                 // 1. بررسی وجود THREE.js و راه‌اندازی کره
                 if (typeof THREE === 'undefined') {
                     log.error('THREE.js لود نشده! منتظر می‌مانیم...');
                     setTimeout(() => {
+                            // بررسی دوباره React mode
+                            if (checkReactMode()) {
+                                log.info('✅ React mode بعد از انتظار برای THREE.js تشخیص داده شد');
+                                return;
+                            }
+                            // بررسی دوباره React mode و container
+                            if (checkReactMode()) {
+                                log.info('✅ React mode بعد از انتظار برای THREE.js تشخیص داده شد');
+                                return;
+                            }
+                            // بررسی وجود container قبل از initGlobe
+                            const containerAfterWait = document.getElementById('globeContainer');
+                            if (!containerAfterWait) {
+                                log.warn('⚠️ globeContainer پیدا نشد - احتمالاً React mode است. از initGlobe صرف نظر می‌کنیم');
+                                return;
+                            }
+                            // بررسی نهایی React mode قبل از initGlobe
+                            const lastReactCheckForThree = checkReactMode();
+                            if (lastReactCheckForThree) {
+                                log.info('✅ React mode بعد از بررسی container تشخیص داده شد');
+                                return;
+                            }
                         if (typeof THREE !== 'undefined') {
+                                // بررسی نهایی container قبل از initGlobe
+                                const finalContainerCheck = document.getElementById('globeContainer');
+                                if (!finalContainerCheck) {
+                                    log.warn('⚠️ globeContainer پیدا نشد - احتمالاً React mode است. از initGlobe صرف نظر می‌کنیم');
+                                    return;
+                                }
                             try {
                                 if (typeof initGlobe === 'function') {
                                     initGlobe();
@@ -76,6 +162,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             log.error('THREE.js هنوز لود نشده است!');
                         }
                     }, 500);
+                    } else {
+                        // بررسی نهایی React mode و وجود container قبل از initGlobe
+                        const lastCheckReactMode = checkReactMode();
+                        if (lastCheckReactMode) {
+                            log.info('✅ React mode در last check تشخیص داده شد - از initGlobe صرف نظر می‌کنیم');
+                        } else {
+                            // بررسی وجود container قبل از initGlobe
+                            const finalContainer = document.getElementById('globeContainer');
+                            if (!finalContainer) {
+                                log.warn('⚠️ globeContainer پیدا نشد - احتمالاً React mode است. از initGlobe صرف نظر می‌کنیم');
                 } else {
                     try {
                         if (typeof initGlobe === 'function') {
@@ -86,6 +182,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             window.errorHandler.handleError(error, 'initGlobe');
                         } else {
                             log.error('خطا در initGlobe:', error);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -166,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     errorHandler.handleError(error, 'DOMContentLoaded');
                 }
             }
-        }, 1000); // تاخیر 1 ثانیه برای اطمینان از render شدن React
+        }, 2000); // تاخیر 2 ثانیه برای اطمینان از render شدن React
     };
     
     // بررسی اولیه - اگر React هنوز render نشده، منتظر بمان
@@ -175,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         // React هنوز render نشده - منتظر بمان و دوباره چک کن
         let retryCount = 0;
-        const maxRetries = 30; // 3 ثانیه (30 * 100ms)
+        const maxRetries = 50; // 5 ثانیه (50 * 100ms) - افزایش برای اطمینان از render شدن React
         const checkInterval = setInterval(() => {
             retryCount++;
             if (checkReactMode() || retryCount >= maxRetries) {
@@ -185,6 +284,90 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 });
+
+// ساعت بازار را مجبور کنیم همیشه فعال شود
+function forceEnableMarketClock() {
+    const log = window.logger || { info: console.log, error: console.error };
+
+    // بررسی اینکه آیا ساعت بازار قبلاً فعال شده
+    const existingWrapper = document.getElementById('globeClockWrapper');
+    if (existingWrapper) {
+        log.info('🕐 ساعت بازار قبلاً فعال است');
+        return;
+    }
+
+    // اگر فعال نشده، مجبور کنیم فعال شود
+    if (typeof initGlobe === 'function') {
+        log.info('🕐 مجبور کردن فعال‌سازی ساعت بازار...');
+        try {
+            initGlobe();
+            log.info('✅ ساعت بازار مجبوراً فعال شد');
+        } catch (error) {
+            log.error('❌ خطا در فعال‌سازی ساعت بازار:', error);
+        }
+    }
+}
+
+// فعال‌سازی ساعت بازار با تاخیرهای مختلف
+setTimeout(forceEnableMarketClock, 1000);
+setTimeout(forceEnableMarketClock, 2000);
+setTimeout(forceEnableMarketClock, 3000);
+
+// اگر ساعت بازار فعال نشد، المان‌های HTML را مستقیماً اضافه کن
+setTimeout(() => {
+    const log = window.logger || { info: console.log, warn: console.warn };
+    const existingWrapper = document.getElementById('globeClockWrapper');
+
+    if (!existingWrapper) {
+        log.warn('⚠️ ساعت بازار فعال نشد، اضافه کردن المان‌های HTML...');
+
+        // اضافه کردن المان‌های HTML ساعت بازار
+        const wrapper = document.createElement('div');
+        wrapper.id = 'globeClockWrapper';
+        wrapper.className = 'globe-clock-wrapper';
+        wrapper.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 5, 16, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        `;
+
+        wrapper.innerHTML = `
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #00d4ff;">
+                🕐 ساعت بازار
+            </div>
+            <div id="utcClock" style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">
+                UTC: --:--
+            </div>
+            <div id="localClock" style="font-size: 16px; color: #cccccc;">
+                محلی: --:--
+            </div>
+            <div style="margin-top: 10px; font-size: 12px; color: #888888;">
+                کلیک برای جزئیات
+            </div>
+        `;
+
+        // اضافه کردن event listener برای کلیک
+        wrapper.addEventListener('click', () => {
+            if (typeof openFinancialGlobe === 'function') {
+                openFinancialGlobe();
+            } else if (typeof window.openFinancialGlobe === 'function') {
+                window.openFinancialGlobe();
+            }
+        });
+
+        document.body.appendChild(wrapper);
+        log.info('✅ ساعت بازار HTML اضافه شد');
+    }
+}, 4000);
 
 // سیستم بستن مودال‌ها
 document.addEventListener('click', function(e) {

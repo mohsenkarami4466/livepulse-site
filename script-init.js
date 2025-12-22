@@ -94,20 +94,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             // اگر هنوز React mode نیست و container پیدا شد، initGlobe را فراخوانی کن
                             const retryContainer = document.getElementById('globeContainer');
                             if (retryContainer && typeof initGlobe === 'function') {
-                                // بررسی نهایی React mode قبل از initGlobe
-                                const lastReactCheck = checkReactMode();
-                                if (!lastReactCheck) {
-                                    try {
+                                // ساعت بازار را همیشه فعال کن - این بخشی از UI اصلی است
+                                log.info('🕐 فعال کردن ساعت بازار در صفحه اصلی...');
+                                try {
+                                    // مجبور کردن فعال‌سازی ساعت بازار
+                                    setTimeout(() => {
                                         initGlobe();
-                                    } catch (error) {
-                                        if (window.errorHandler) {
-                                            window.errorHandler.handleError(error, 'initGlobe');
-                                        } else {
-                                            log.error('خطا در initGlobe:', error);
-                                        }
+                                        log.info('✅ ساعت بازار فعال شد');
+                                    }, 500);
+                                } catch (error) {
+                                    if (window.errorHandler) {
+                                        window.errorHandler.handleError(error, 'initGlobe');
+                                    } else {
+                                        log.error('خطا در initGlobe:', error);
                                     }
-                                } else {
-                                    log.info('✅ React mode در retry تشخیص داده شد - از initGlobe صرف نظر می‌کنیم');
                                 }
                             }
                         }, 1000);
@@ -284,6 +284,90 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 });
+
+// ساعت بازار را مجبور کنیم همیشه فعال شود
+function forceEnableMarketClock() {
+    const log = window.logger || { info: console.log, error: console.error };
+
+    // بررسی اینکه آیا ساعت بازار قبلاً فعال شده
+    const existingWrapper = document.getElementById('globeClockWrapper');
+    if (existingWrapper) {
+        log.info('🕐 ساعت بازار قبلاً فعال است');
+        return;
+    }
+
+    // اگر فعال نشده، مجبور کنیم فعال شود
+    if (typeof initGlobe === 'function') {
+        log.info('🕐 مجبور کردن فعال‌سازی ساعت بازار...');
+        try {
+            initGlobe();
+            log.info('✅ ساعت بازار مجبوراً فعال شد');
+        } catch (error) {
+            log.error('❌ خطا در فعال‌سازی ساعت بازار:', error);
+        }
+    }
+}
+
+// فعال‌سازی ساعت بازار با تاخیرهای مختلف
+setTimeout(forceEnableMarketClock, 1000);
+setTimeout(forceEnableMarketClock, 2000);
+setTimeout(forceEnableMarketClock, 3000);
+
+// اگر ساعت بازار فعال نشد، المان‌های HTML را مستقیماً اضافه کن
+setTimeout(() => {
+    const log = window.logger || { info: console.log, warn: console.warn };
+    const existingWrapper = document.getElementById('globeClockWrapper');
+
+    if (!existingWrapper) {
+        log.warn('⚠️ ساعت بازار فعال نشد، اضافه کردن المان‌های HTML...');
+
+        // اضافه کردن المان‌های HTML ساعت بازار
+        const wrapper = document.createElement('div');
+        wrapper.id = 'globeClockWrapper';
+        wrapper.className = 'globe-clock-wrapper';
+        wrapper.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 5, 16, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        `;
+
+        wrapper.innerHTML = `
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #00d4ff;">
+                🕐 ساعت بازار
+            </div>
+            <div id="utcClock" style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">
+                UTC: --:--
+            </div>
+            <div id="localClock" style="font-size: 16px; color: #cccccc;">
+                محلی: --:--
+            </div>
+            <div style="margin-top: 10px; font-size: 12px; color: #888888;">
+                کلیک برای جزئیات
+            </div>
+        `;
+
+        // اضافه کردن event listener برای کلیک
+        wrapper.addEventListener('click', () => {
+            if (typeof openFinancialGlobe === 'function') {
+                openFinancialGlobe();
+            } else if (typeof window.openFinancialGlobe === 'function') {
+                window.openFinancialGlobe();
+            }
+        });
+
+        document.body.appendChild(wrapper);
+        log.info('✅ ساعت بازار HTML اضافه شد');
+    }
+}, 4000);
 
 // سیستم بستن مودال‌ها
 document.addEventListener('click', function(e) {

@@ -31,6 +31,7 @@ window.updateAllFacilities = window.updateAllFacilities || function() {};
 window.showResourcesByType = window.showResourcesByType || function() {};
 window.getUserTimezone = window.getUserTimezone || function() {};
 window.setManualTimezone = window.setManualTimezone || function() {};
+window.initGlobe = window.initGlobe || function() {};
 
 // متغیرهای مفقود شده در globe-modals.js
 window.checkLoginRequired = window.checkLoginRequired || function() {};
