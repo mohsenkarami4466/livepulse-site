@@ -9,7 +9,7 @@
  * وابستگی‌ها / Dependencies:
  * - THREE.js (THREE.Group, THREE.Mesh, THREE.Vector3, etc.)
  * - globe-helpers.js (addEventListenerOnce)
- * - globe-simple.js (buildSimpleGlobe, simpleGlobeScenes)
+ * - globe-simple.js (buildSimpleGlobe, window.simpleGlobeScenes)
  * - globe-resources.js (createNeonMarker, getFacilityColor)
  * - window.countriesData (داده‌های کشورها)
  * - window.iranProvinces (داده‌های استان‌های ایران)
@@ -205,7 +205,7 @@ window.saveEarthquakeNotificationSettings = saveEarthquakeNotificationSettings;
 
 // فیلتر زلزله‌ها بر اساس سال
 function filterEarthquakesByYear(year) {
-    const scene = simpleGlobeScenes['earthquake'];
+    const scene = window.simpleGlobeScenes['earthquake'];
     if (!scene || !scene.scene) return;
     
     scene.scene.traverse((obj) => {
@@ -241,7 +241,7 @@ function filterEarthquakesByYear(year) {
 
 // فیلتر زلزله‌ها بر اساس بزرگی
 function filterEarthquakesByMagnitude(magnitude) {
-    const scene = simpleGlobeScenes['earthquake'];
+    const scene = window.simpleGlobeScenes['earthquake'];
     if (!scene || !scene.scene) return;
     
     scene.scene.traverse((obj) => {
@@ -286,7 +286,7 @@ function setupNaturalResourcesFilters() {
 
 // فیلتر منابع طبیعی
 function filterNaturalResources(resource) {
-    const scene = simpleGlobeScenes['natural-resources'];
+    const scene = window.simpleGlobeScenes['natural-resources'];
     if (!scene || !scene.scene) return;
     
     scene.scene.traverse((obj) => {
@@ -306,7 +306,7 @@ function filterNaturalResources(resource) {
 
 // بارگذاری داده‌های کره 3D بر اساس نوع
 function load3DGlobeData(type, container) {
-    const scene = simpleGlobeScenes[type];
+    const scene = window.simpleGlobeScenes[type];
     if (!scene || !scene.scene) return;
     
     switch(type) {

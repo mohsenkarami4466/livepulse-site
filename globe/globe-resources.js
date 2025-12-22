@@ -1039,6 +1039,54 @@ function zoomToCountry(code) {
     }
 }
 
+// پاک کردن تمام خطوط تجارت
+function clearTradeLines(earth) {
+    if (!earth) return;
+
+    // حذف گروه tradeLines قبلی
+    const existingGroup = earth.children.find(child => child.name === 'tradeLines');
+    if (existingGroup) {
+        earth.remove(existingGroup);
+    }
+}
+
+// ایجاد خط منحنی سه‌بعدی بین دو نقطه
+function createArcLine(fromCoords, toCoords, color, height = 0.3) {
+    const points = [];
+    const segments = 50;
+
+    // تبدیل مختصات جغرافیایی به مختصات سه‌بعدی
+    const fromLat = fromCoords[0] * Math.PI / 180;
+    const fromLng = fromCoords[1] * Math.PI / 180;
+    const toLat = toCoords[0] * Math.PI / 180;
+    const toLng = toCoords[1] * Math.PI / 180;
+
+    for (let i = 0; i <= segments; i++) {
+        const t = i / segments;
+
+        // درون‌یابی خطی بین دو نقطه
+        const lat = fromLat + (toLat - fromLat) * t;
+        const lng = fromLng + (toLng - fromLng) * t;
+
+        // ارتفاع منحنی
+        const arcHeight = Math.sin(t * Math.PI) * height;
+
+        // تبدیل به مختصات کارتزین
+        const radius = 1 + arcHeight;
+        const x = radius * Math.cos(lat) * Math.cos(lng);
+        const y = radius * Math.sin(lat);
+        const z = radius * Math.cos(lat) * Math.sin(lng);
+
+        points.push(new THREE.Vector3(x, y, z));
+    }
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+    const line = new THREE.Line(geometry, material);
+
+    return line;
+}
+
 // نمایش خط تجارت به یک کشور
 function showTradeLine(fromCode, toCode, type) {
     const log = window.logger || { info: console.log }; log.info(`📊 نمایش خط ${type} از ${fromCode} به ${toCode}`);
@@ -1068,6 +1116,31 @@ function showTradeLine(fromCode, toCode, type) {
     // اضافه کردن به earth نه scene
     earth.add(tradeGroup);
     resourcesGlobeData.tradeLinesGroup = tradeGroup;
+}
+
+// ایجاد خطوط تجارت برای یک کشور
+function createTradeLines(countryCode, type, earth) {
+    const tradeGroup = new THREE.Group();
+    tradeGroup.name = 'tradeLines';
+
+    const countryData = countriesData[countryCode];
+    if (!countryData || !countryData.trade) return tradeGroup;
+
+    const tradePartners = countryData.trade[type] || [];
+    const fromCoords = countryData.capital.coords;
+    const color = type === 'exports' ? 0x22c55e : 0x3b82f6;
+
+    tradePartners.forEach(partnerCode => {
+        const partnerData = countriesData[partnerCode];
+        if (partnerData) {
+            const toCoords = partnerData.capital.coords;
+            const arc = createArcLine(fromCoords, toCoords, color, 0.2);
+            tradeGroup.add(arc);
+        }
+    });
+
+    earth.add(tradeGroup);
+    return tradeGroup;
 }
 
 // نمایش همه خطوط تجارت
@@ -1233,6 +1306,39 @@ function setupResourcesGlobePanels() {
             updateAllFacilities(); // به‌روزرسانی همه المان‌ها بر اساس فیلترهای فعال
         });
     });
+}
+
+// نمایش منابع بر اساس نوع
+function showResourcesByType(earth, resourceType) {
+    if (!earth || !facilityMarkersGroup) return;
+
+    // نمایش نشانگرهای مربوط به این نوع منبع
+    facilityMarkersGroup.children.forEach(marker => {
+        if (marker.userData && marker.userData.type === resourceType) {
+            marker.visible = true;
+        }
+    });
+}
+
+// به‌روزرسانی تمام المان‌ها بر اساس فیلترهای فعال
+function updateAllFacilities() {
+    if (!window.resourcesGlobeObjects) return;
+
+    const activeFilters = Array.from(document.querySelectorAll('#facilityFilters .filter-btn.active'))
+        .map(btn => btn.dataset.filter);
+
+    // مخفی کردن تمام نشانگرها
+    if (facilityMarkersGroup) {
+        facilityMarkersGroup.children.forEach(marker => {
+            marker.visible = false;
+        });
+    }
+
+    // نمایش نشانگرهای فیلترهای فعال
+    activeFilters.forEach(filterType => {
+        showResourcesByType(window.resourcesGlobeObjects.earth, filterType);
+    });
+}
     
     // تابع به‌روزرسانی همه المان‌ها بر اساس فیلترهای فعال
     window.updateAllFacilities = function() {
@@ -2919,6 +3025,7 @@ window.hideMilitaryMarkers = hideMilitaryMarkers;
 window.setupResourcesGlobePanels = setupResourcesGlobePanels;
 window.filterCountriesByResource = filterCountriesByResource;
 window.filterCountriesByContinent = filterCountriesByContinent;
+window.createNeonMarker = createNeonMarker;
 // toggleLegend قبلاً در خط 2426 به window export شده است
 
 // Export متغیرهای global
