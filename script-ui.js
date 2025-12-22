@@ -1895,7 +1895,7 @@ class GlobeAssistiveTouch {
                 this.togglePanel('marketSelectPanel');
                 break;
                 
-            case 'selectCountry':
+            case 'selectCountry': {
                 const countryPanel = document.getElementById('countrySelectPanel');
                 if (countryPanel) {
                     countryPanel.classList.add('active');
@@ -1905,8 +1905,9 @@ class GlobeAssistiveTouch {
                     }
                 }
                 break;
+            }
                 
-            case 'toggleFilters':
+            case 'toggleFilters': {
                 // تشخیص نوع پنل فیلتر بر اساس نوع کره
                 let filterPanelId = 'resourcesFilterPanel';
                 if (this.globeType === 'earthquake') {
@@ -1916,6 +1917,7 @@ class GlobeAssistiveTouch {
                 }
                 this.togglePanel(filterPanelId);
                 break;
+            }
                 
             case 'countryInfo':
                 this.togglePanel('countryInfoPanel');
