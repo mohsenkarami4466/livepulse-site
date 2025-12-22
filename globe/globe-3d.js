@@ -305,7 +305,7 @@ function filterNaturalResources(resource) {
 }
 
 // بارگذاری داده‌های کره 3D بر اساس نوع
-function load3DGlobeData(type, container) {
+function load3DGlobeData(type, _container) {
     const scene = window.simpleGlobeScenes[type];
     if (!scene || !scene.scene) return;
     
@@ -948,7 +948,7 @@ function loadIranProvincialBorders(scene) {
     // ایجاد خطوط مرزی بین استان‌ها (خطوط مستقیم بین مراکز استان‌ها)
     const provinces = Object.values(iranProvinces);
     const cfg = window.CONFIG || CONFIG;
-    const iranCenter = [cfg.GLOBE.IRAN.LAT, cfg.GLOBE.IRAN.LNG]; // مرکز تقریبی ایران
+    const _iranCenter = [cfg.GLOBE.IRAN.LAT, cfg.GLOBE.IRAN.LNG]; // مرکز تقریبی ایران
     
     // ایجاد خطوط مرزی بین استان‌های مجاور
     provinces.forEach((province, index) => {
@@ -1098,7 +1098,7 @@ const naturalResourcesData = {
         'RU': [
             { name: 'جنگل تایگا', coords: [60.0, 100.0], area: 12000000, age: 10000, type: 'بورئال', description: 'بزرگترین جنگل جهان' }
         ],
-        'CA': [
+        'CA_BC': [
             { name: 'جنگل بریتیش کلمبیا', coords: [54.0, -125.0], area: 600000, age: 500, type: 'معتدل', description: 'جنگل معتدل کانادا' }
         ],
         'ID': [
@@ -1204,7 +1204,7 @@ const naturalResourcesData = {
         'NG': [
             { name: 'نیجر', start: [9.0, 7.0], end: [5.0, 6.0], length: 4180, description: 'رودخانه نیجر' }
         ],
-        'EG': [
+        'EG_Nile': [
             { name: 'نیل', start: [0.0, 32.9], end: [31.0, 30.0], length: 6650, description: 'طولانی‌ترین رودخانه جهان' }
         ],
         'SD': [
@@ -1321,7 +1321,7 @@ const naturalResourcesData = {
         'ZA': [
             { name: 'نامیب', coords: [-24.0, 15.0], area: 81000, temp: 35, description: 'بیابان نامیب' }
         ],
-        'AU': [
+        'AU_deserts': [
             { name: 'ویکتوریا', coords: [-29.0, 129.0], area: 348750, temp: 45, description: 'بزرگترین بیابان استرالیا' },
             { name: 'گریت سندی', coords: [-20.0, 125.0], area: 284993, temp: 45, description: 'بیابان گریت سندی' },
             { name: 'سیمپسون', coords: [-25.0, 137.0], area: 176500, temp: 45, description: 'بیابان سیمپسون' },

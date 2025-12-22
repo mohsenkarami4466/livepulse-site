@@ -161,7 +161,7 @@ let marketData = [
  * آرایه ساعات UTC (00:00 تا 23:00)
  * Array of UTC hours (00:00 to 23:00)
  */
-const utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+const _utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
 
 /* ========== متغیرهای سراسری THREE.js / Global THREE.js Variables ========== */
 /**
@@ -177,7 +177,7 @@ const utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '
  * - sun: نور خورشید / Sun light
  * - sunAngle: زاویه خورشید / Sun angle
  */
-let scene, camera, renderer, globe, dayMat, nightMat, sun;
+let scene, camera, renderer, globe, dayMat, _nightMat, sun;
 let sunAngle = 0;
 
 // استفاده از CONFIG برای UPDATE_MS
@@ -186,7 +186,7 @@ let sunAngle = 0;
  * Using CONFIG for update interval
  */
 const cfg = window.CONFIG || CONFIG;
-const UPDATE_MS = cfg.TIME.UPDATE_INTERVAL; // ۳۰ ثانیه
+const _UPDATE_MS = cfg.TIME.UPDATE_INTERVAL; // ۳۰ ثانیه
 
 /* ========== توابع موقعیت / Position Functions ========== */
 
@@ -203,7 +203,7 @@ const UPDATE_MS = cfg.TIME.UPDATE_INTERVAL; // ۳۰ ثانیه
  * این تابع موقعیت کره کوچک را بر اساس موقعیت شاخص‌ها تنظیم می‌کند.
  * This function sets the small globe position based on indicators position.
  */
-function updateGlobePosition() {
+function _updateGlobePosition() {
   const indicatorsContainer = document.querySelector('.indicators-unified-container');
   const globeWrapper = document.getElementById('globeClockWrapper');
   
@@ -327,8 +327,8 @@ function updateHighlightsPosition() {
   const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
   const headerHeight = header ? header.offsetHeight : 60;
   const portfolioCard = document.querySelector('.portfolio-summary-card');
-  const indicatorsCard = document.querySelector('.indicators-glass-card');
-  const globeWrapper = document.getElementById('globeClockWrapper');
+  const _indicatorsCard = document.querySelector('.indicators-glass-card');
+  const _globeWrapper = document.getElementById('globeClockWrapper');
   
   const isMobile = window.innerWidth < 768;
   const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
@@ -477,7 +477,7 @@ if (typeof window !== 'undefined') {
  * این تابع حلقه ساعت UTC را دور کره کوچک می‌سازد.
  * This function creates UTC clock ring around small globe.
  */
-function createUTCClockRing() {
+function _createUTCClockRing() {
   const ring = document.getElementById('utcClockRing');
   if (!ring) return;
   

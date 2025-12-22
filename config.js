@@ -202,12 +202,21 @@ const CONFIG = {
         CANDLE_COUNT: 12,
         MIN_VALUE: 10,
         MAX_VALUE: 90
+    },
+
+    // 🌍 تنظیمات Texture کره زمین (Earth Texture Settings)
+    EARTH_TEXTURE_PATHS: {
+        day: './textures/earth_day.jpg',
+        night: './textures/earth_night.jpg',
+        normal: './textures/earth_normal.jpg',
+        specular: './textures/earth_specular.jpg'
     }
 };
 
 // در دسترس قرار دادن برای استفاده در فایل‌های دیگر
 if (typeof window !== 'undefined') {
     window.CONFIG = CONFIG;
+    window.EARTH_TEXTURE_PATHS = CONFIG.EARTH_TEXTURE_PATHS;
 }
 
 // Export برای استفاده در ماژول‌ها

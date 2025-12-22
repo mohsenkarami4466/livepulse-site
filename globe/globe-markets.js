@@ -371,7 +371,9 @@ function getUserTimezone() {
     if (savedTimezone) {
         try {
             return JSON.parse(savedTimezone);
-        } catch (e) {}
+        } catch (e) {
+            // Ignore invalid timezone data
+        }
     }
     
     // تشخیص خودکار / Auto detection

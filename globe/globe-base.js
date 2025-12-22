@@ -1,5 +1,5 @@
 // توابع پایه و مشترک برای هر دو کره
-class GlobeBase {
+class _GlobeBase {
   constructor(containerId, data) {
     this.containerId = containerId;
     this.data = data;
@@ -22,6 +22,12 @@ class GlobeBase {
     globeElement.innerHTML = '';
 
     try {
+      // چک کردن وجود Globe
+      if (typeof Globe === 'undefined') {
+        log.error('Globe library is not loaded');
+        return null;
+      }
+
       this.globe = Globe()
         .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
         .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
@@ -61,7 +67,7 @@ class GlobeBase {
 }
 
 // تابع کمکی برای ایجاد HTML tooltip
-function createTooltipHTML(data, type) {
+function _createTooltipHTML(data, type) {
   if (type === 'financial') {
     return `
       <div class="tooltip financial-tooltip">

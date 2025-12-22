@@ -1392,7 +1392,6 @@ function updateAllFacilities() {
             }
         });
     }
-}
 
 // نمایش پیام تغییر سال
 function showYearChangeMessage(year) {
