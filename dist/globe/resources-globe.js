@@ -191,7 +191,6 @@ class ResourcesGlobe {
         const loader = new THREE.TextureLoader();
         const texturePaths = [
             // اول از فایل‌های محلی با base path استفاده کن
-            '/livepulse-site/assets/images/earth-day.jpg',
             '/livepulse-site/earth-day.jpg',
             './earth-day.jpg',
             'earth-day.jpg',

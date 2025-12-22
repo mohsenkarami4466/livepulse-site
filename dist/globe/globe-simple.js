@@ -175,11 +175,8 @@ function buildSimpleGlobe(containerId, type) {
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const texturePaths = [
-            // اول production path جدید
-            '/livepulse-site/assets/images/earth-day.jpg',
-            // سپس production path قدیمی
+            // اول از فایل‌های محلی با base path استفاده کن
             '/livepulse-site/earth-day.jpg',
-            // سپس فایل‌های محلی (development)
             './earth-day.jpg',
             'earth-day.jpg',
             '/earth-day.jpg',
@@ -1067,9 +1064,6 @@ function buildSimpleGlobe(containerId, type) {
             hasRenderer: !!globeData.renderer
         });
         
-        // ساعت بازار فقط در صفحه اصلی فعال می‌شود
-        // Market clock is only enabled on main page, not in 3D globe modals
-
         // برگرداندن globeData
         return globeData;
         

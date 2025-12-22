@@ -126,7 +126,7 @@ class FinancialGlobe {
                 this.controls.autoRotateSpeed = cfg.GLOBE.CONTROLS.AUTO_ROTATE ? cfg.GLOBE.CONTROLS.AUTO_ROTATE_SPEED : 0;
                 
                 // جلوگیری از چرخش با wheel event
-                const _originalWheelHandler = this.controls.handleMouseWheel;
+                const originalWheelHandler = this.controls.handleMouseWheel;
                 this.controls.handleMouseWheel = function(event) {
                     // فقط zoom، نه rotate
                     if (event.deltaY !== 0) {
@@ -189,7 +189,6 @@ class FinancialGlobe {
         const loader = new THREE.TextureLoader();
         const texturePaths = [
             // اول از فایل‌های محلی با base path استفاده کن
-            '/livepulse-site/assets/images/earth-day.jpg',
             '/livepulse-site/earth-day.jpg',
             './earth-day.jpg',
             'earth-day.jpg',

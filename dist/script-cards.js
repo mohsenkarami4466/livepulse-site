@@ -428,131 +428,59 @@ function setupHighlightPanels(triggerSelector, triggerAttr, panelSelector, panel
  */
 function openPriceDetail(item) {
     const log = window.logger || { info: console.log };
-    log.info('🎯 مودال تمام صفحه فراخوانی شد برای:', item.name);
-
-    // بررسی وجود مودال اختصاصی کارت
-    let modal = document.getElementById('priceDetailModal');
-    if (!modal) {
-        // ساخت مودال اگر وجود ندارد
-        modal = document.createElement('div');
-        modal.id = 'priceDetailModal';
-        modal.className = 'price-detail-modal';
-        modal.innerHTML = `
-            <div class="price-modal-content">
-                <div class="price-modal-header">
-                    <button class="price-modal-close" onclick="closePriceDetailModal()">×</button>
-                    <div class="price-modal-floating-dock">
-                        <button class="dock-btn" onclick="closePriceDetailModal()">✕ بستن</button>
-                    </div>
-                </div>
-                <div class="price-modal-body" id="priceModalContent"></div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-
-        // اضافه کردن event listener برای ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                closePriceDetailModal();
-            }
-        });
-    }
-
-    const modalContent = document.getElementById('priceModalContent');
+    log.info('🎯 مودال جدید فراخوانی شد برای:', item.name);
+    
+    const modalContent = document.getElementById('modalContent');
     if (!modalContent) {
         const log = window.logger || { warn: console.warn };
-        log.warn('⚠️ priceModalContent element not found');
+        log.warn('⚠️ modalContent element not found - ممکن است در React component باشد');
+        // اگر modalContent وجود ندارد، از PriceModal در React استفاده می‌شود
         return;
     }
-
-    // نمایش مودال تمام صفحه
-    document.body.classList.add('price-modal-open');
-    document.body.style.overflow = 'hidden';
-    modal.classList.add('active');
-
     const changeClass = item.change >= 0 ? 'positive' : 'negative';
     
     modalContent.innerHTML = `
-        <div class="price-detail-fullscreen-header">
-            <div class="price-detail-title-section">
-                <h1 class="price-detail-name">${item.name}</h1>
-                <span class="price-detail-symbol">${item.symbol}</span>
-            </div>
-            <div class="price-detail-price-section">
+        <div class="detail-header">
+            <h2>${item.name} (${item.symbol})</h2>
+            <div class="detail-price">
                 <span class="price-large">${formatPrice(item.price, item.symbol)}</span>
                 <span class="price-change ${changeClass}">${item.change >= 0 ? '+' : ''}${item.change}%</span>
             </div>
         </div>
-
-        <div class="price-detail-chart-area">
-            <div class="price-chart-controls">
-                <div class="timeframe-selector">
-                    <label>بازه زمانی:</label>
-                    <select id="timeframeSelect">
-                        <option value="1m">۱ دقیقه</option>
-                        <option value="5m">۵ دقیقه</option>
-                        <option value="1h">۱ ساعت</option>
-                        <option value="4h">۴ ساعت</option>
-                        <option value="1d">۱ روز</option>
-                        <option value="1w">۱ هفته</option>
-                    </select>
-                </div>
-
-                <div class="chart-type-selector">
-                    <label>نوع نمودار:</label>
-                    <div class="chart-buttons">
-                        <button class="chart-type-btn active" data-type="candle">کندل</button>
-                        <button class="chart-type-btn" data-type="line">خطی</button>
-                        <button class="chart-type-btn" data-type="area">ناحیه‌ای</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="price-interactive-chart" id="interactiveChart">
-                <div class="chart-placeholder-large">
-                    📊 نمودار تعاملی ${item.name}
-                    <div class="chart-tooltip" style="display: none;"></div>
-                </div>
+        
+        <div class="chart-controls">
+            <select id="timeframeSelect">
+                <option value="1m">۱ دقیقه</option>
+                <option value="5m">۵ دقیقه</option>
+                <option value="1h">۱ ساعت</option>
+                <option value="4h">۴ ساعت</option>
+                <option value="1d">۱ روز</option>
+                <option value="1w">۱ هفته</option>
+            </select>
+            
+            <button class="chart-type-btn active" data-type="candle">کندل</button>
+            <button class="chart-type-btn" data-type="line">خطی</button>
+            <button class="chart-type-btn" data-type="area">ناحیه‌ای</button>
+        </div>
+        
+        <div class="interactive-chart" id="interactiveChart">
+            <div class="chart-placeholder">
+                📊 نمودار تعاملی ${item.name}
+                <div class="chart-tooltip" style="display: none;"></div>
             </div>
         </div>
-
-        <div class="price-detail-analysis-section">
-            <div class="analysis-header-fullscreen">
-                <h3>🤖 تحلیل پیشرفته هوش مصنوعی</h3>
+        
+        <div class="ai-analysis-live">
+            <div class="analysis-header">
+                <h4>🤖 تحلیل لحظه‌ای هوش مصنوعی</h4>
                 <span class="live-indicator">● LIVE</span>
             </div>
-            <div class="analysis-grid-fullscreen">
-                <div class="analysis-card">
-                    <h4>📈 پیش‌بینی قیمت</h4>
-                    <div class="analysis-value ${item.change >= 0 ? 'positive' : 'negative'}">
-                        ${item.change >= 0 ? 'صعودی' : 'نزولی'}
-                    </div>
-                    <div class="analysis-confidence">اطمینان: ${Math.abs(item.change) > 2 ? 'بالا' : 'متوسط'}</div>
-                </div>
-                <div class="analysis-card">
-                    <h4>🎯 نقاط کلیدی</h4>
-                    <div class="analysis-points">
-                        <div>حمایت: ${formatPrice(item.price * 0.95, item.symbol)}</div>
-                        <div>مقاومت: ${formatPrice(item.price * 1.05, item.symbol)}</div>
-                    </div>
-                </div>
-                <div class="analysis-card">
-                    <h4>📊 حجم معاملات</h4>
-                    <div class="analysis-volume">بالا - بالاتر از میانگین</div>
-                </div>
-                <div class="analysis-card">
-                    <h4>🌍 روند بازار</h4>
-                    <div class="analysis-trend">مثبت - همراه با بازار جهانی</div>
-                </div>
+            <div class="analysis-content" id="aiAnalysisContent">
+                🔄 در حال دریافت تحلیل برای ${item.name}...
             </div>
-        </div>
-
-        <div class="price-detail-actions-fullscreen">
-            <button class="price-action-btn primary">📊 تحلیل تکنیکال پیشرفته</button>
-            <button class="price-action-btn secondary">🔔 تنظیم هشدار قیمت</button>
-            <button class="price-action-btn secondary">⭐ افزودن به پورتفولیو</button>
-            <button class="price-action-btn secondary">📈 مقایسه با شاخص‌ها</button>
-            <button class="price-action-btn secondary">💰 تبدیل ارز</button>
+            <div class="update-timer">
+                🔄 آپدیت بعدی: <span id="updateCountdown">60</span> ثانیه
+            </div>
         </div>
     `;
     
@@ -701,32 +629,6 @@ function startAnalysisTimer(item, countdownElement) {
     }, 1000);
 }
 
-/**
- * بستن مودال جزئیات قیمت تمام صفحه
- */
-function closePriceDetailModal() {
-    const modal = document.getElementById('priceDetailModal');
-    if (modal) {
-        // مخفی کردن مودال
-        modal.classList.remove('active');
-
-        // بازگرداندن حالت body
-        document.body.classList.remove('price-modal-open');
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        document.body.style.height = '';
-
-        // پاک کردن محتوا برای جلوگیری از memory leak
-        setTimeout(() => {
-            const modalContent = document.getElementById('priceModalContent');
-            if (modalContent) {
-                modalContent.innerHTML = '';
-            }
-        }, 300);
-    }
-}
-
 // Export functions to window for global access
 if (typeof window !== 'undefined') {
     window.generateHomeCards = generateHomeCards;
@@ -734,7 +636,6 @@ if (typeof window !== 'undefined') {
     window.checkLoginRequired = checkLoginRequired;
     window.openPriceDetail = openPriceDetail;
     window.setupHighlightPanels = setupHighlightPanels;
-    window.closePriceDetailModal = closePriceDetailModal;
 }
 
 // ==================== //

@@ -77,6 +77,70 @@
 </head>
 <body data-theme="light" style="margin: 0; padding: 0;">
     <div id="root"></div>
+
+    <!-- ساعت بازار در گوشه بالا سمت چپ -->
+    <div id="globeClockWrapper" class="globe-clock-wrapper" style="
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: rgba(0, 5, 16, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        padding: 20px;
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 200px;
+    " onclick="if(typeof openFinancialGlobe === 'function') openFinancialGlobe();">
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #00d4ff; display: flex; align-items: center; gap: 8px;">
+            <span>🌍</span>
+            <span>ساعت بازار جهانی</span>
+        </div>
+        <div id="utcClock" style="font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #ffffff;">
+            UTC: <span id="utcTime">--:--</span>
+        </div>
+        <div id="localClock" style="font-size: 16px; color: #cccccc; margin-bottom: 8px;">
+            تهران: <span id="localTime">--:--</span>
+        </div>
+        <div style="font-size: 12px; color: #888888; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 8px; margin-top: 12px;">
+            کلیک برای نمایش کره ۳ بعدی
+        </div>
+    </div>
+
+
+    <!-- اسکریپت به‌روزرسانی ساعت -->
+    <script>
+        function updateClocks() {
+            const now = new Date();
+            const utcHours = now.getUTCHours().toString().padStart(2, '0');
+            const utcMinutes = now.getUTCMinutes().toString().padStart(2, '0');
+            const utcTime = `${utcHours}:${utcMinutes}`;
+
+            // برای تهران (UTC+3:30)
+            const tehranOffset = 3.5 * 60 * 60 * 1000; // 3.5 hours in milliseconds
+            const tehranTime = new Date(now.getTime() + tehranOffset);
+            const tehranHours = tehranTime.getUTCHours().toString().padStart(2, '0');
+            const tehranMinutes = tehranTime.getUTCMinutes().toString().padStart(2, '0');
+            const localTime = `${tehranHours}:${tehranMinutes}`;
+
+            const utcElement = document.getElementById('utcTime');
+            const localElement = document.getElementById('localTime');
+
+            if (utcElement) utcElement.textContent = utcTime;
+            if (localElement) localElement.textContent = localTime;
+        }
+
+        // به‌روزرسانی ساعت هر دقیقه
+        updateClocks();
+        setInterval(updateClocks, 60000);
+
+        // به‌روزرسانی ساعت هر ثانیه برای دقت بیشتر
+        setInterval(updateClocks, 1000);
+    </script>
 </body>
 </html>
 
