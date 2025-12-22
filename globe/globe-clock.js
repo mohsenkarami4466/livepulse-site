@@ -710,6 +710,7 @@ function initGlobe() {
     const texturePaths = (typeof EARTH_TEXTURE_PATHS !== 'undefined' && EARTH_TEXTURE_PATHS.day) 
       ? EARTH_TEXTURE_PATHS.day
       : [
+          '/livepulse-site/assets/images/earth-day.jpg',
           './earth-day.jpg',
           'earth-day.jpg',
           '/earth-day.jpg',

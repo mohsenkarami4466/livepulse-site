@@ -175,12 +175,14 @@ function buildSimpleGlobe(containerId, type) {
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const texturePaths = [
-            // اول از فایل‌های محلی استفاده کن (development)
+            // اول production path جدید
+            '/livepulse-site/assets/images/earth-day.jpg',
+            // سپس production path قدیمی
+            '/livepulse-site/earth-day.jpg',
+            // سپس فایل‌های محلی (development)
             './earth-day.jpg',
             'earth-day.jpg',
             '/earth-day.jpg',
-            // سپس production path
-            '/livepulse-site/earth-day.jpg',
             // سپس CDN به عنوان fallback
             'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
             'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
@@ -1065,6 +1067,25 @@ function buildSimpleGlobe(containerId, type) {
             hasRenderer: !!globeData.renderer
         });
         
+        // فعال کردن ساعت بازار در کره‌های ۳ بعدی
+        // Enable market clock in 3D globes
+        if (type === 'financial' || type === 'resources') {
+            const log = window.logger || { info: console.log };
+            log.info('🕐 فعال کردن ساعت بازار در کره ۳ بعدی...');
+
+            // یک تاخیر کوتاه برای اطمینان از بارگذاری کامل کره
+            setTimeout(() => {
+                if (typeof initGlobe === 'function') {
+                    try {
+                        initGlobe();
+                        log.info('✅ ساعت بازار در کره ۳ بعدی فعال شد');
+                    } catch (error) {
+                        log.warn('⚠️ خطا در فعال کردن ساعت بازار:', error.message);
+                    }
+                }
+            }, 1000);
+        }
+
         // برگرداندن globeData
         return globeData;
         
