@@ -289,6 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // ساعت اصلی را همیشه فعال کن - این اولویت اصلی است
 function forceActivateOriginalClock() {
     console.log('🔧 فعال‌سازی ساعت اصلی بازار...');
+    console.log('📊 وضعیت initGlobe:', typeof initGlobe);
+    console.log('📊 وضعیت window.initGlobe:', typeof window.initGlobe);
 
     // بررسی وجود container
     let container = document.getElementById('globeContainer');
