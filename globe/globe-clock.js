@@ -604,15 +604,14 @@ function initGlobe() {
   const log = window.logger || { error: console.error, warn: console.warn, success: console.log };
   const errorHandler = window.errorHandler;
   
-  // ساعت بازار اصلی را همیشه فعال کنیم - این اولویت دارد
+  // ساعت اصلی همیشه اولویت دارد - React mode را نادیده بگیر
   const globeWrapper = document.getElementById('globeClockWrapper');
   const isReactMode = globeWrapper && globeWrapper.getAttribute('data-react-mode') === 'true';
 
-  // حتی در React mode هم ساعت بازار اصلی را فعال کنیم
-  // چون ساعت اصلی کامل‌تر و بهتر است
+  // ساعت اصلی همیشه فعال شود - این اولویت اصلی است
   if (isReactMode) {
-    log.info('ℹ️ React mode تشخیص داده شد اما ساعت بازار اصلی را فعال می‌کنیم');
-    // ادامه اجرا - ساعت اصلی اولویت دارد
+    log.info('ℹ️ React mode تشخیص داده شد اما ساعت اصلی اولویت دارد - ادامه اجرا...');
+    // ادامه اجرا - ساعت اصلی همیشه فعال شود
   }
   
   const container = document.getElementById('globeContainer');
@@ -711,7 +710,6 @@ function initGlobe() {
     const texturePaths = (typeof EARTH_TEXTURE_PATHS !== 'undefined' && EARTH_TEXTURE_PATHS.day) 
       ? EARTH_TEXTURE_PATHS.day
       : [
-          '/livepulse-site/assets/images/earth-day.jpg',
           './earth-day.jpg',
           'earth-day.jpg',
           '/earth-day.jpg',

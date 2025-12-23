@@ -74,11 +74,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // اگر React mode نیست، vanilla JS initialization را انجام بده
             log.info('⚠️ Vanilla JS mode - انجام initialization...');
             try {
-                // بررسی نهایی React mode قبل از initGlobe
+                // ساعت اصلی همیشه اولویت دارد - React mode را نادیده بگیر
                 const finalCheckReactMode = checkReactMode();
                 if (finalCheckReactMode) {
-                    log.info('✅ React mode در final check تشخیص داده شد - از initGlobe صرف نظر می‌کنیم');
-                } else {
+                    log.info('ℹ️ React mode تشخیص داده شد اما ساعت اصلی اولویت دارد - ادامه اجرا...');
+                    // ادامه اجرا - ساعت اصلی همیشه فعال شود
+                }
                     // بررسی وجود globeContainer قبل از initGlobe
                     const container = document.getElementById('globeContainer');
                     if (!container) {
@@ -94,20 +95,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             // اگر هنوز React mode نیست و container پیدا شد، initGlobe را فراخوانی کن
                             const retryContainer = document.getElementById('globeContainer');
                             if (retryContainer && typeof initGlobe === 'function') {
-                                // ساعت بازار را همیشه فعال کن - این بخشی از UI اصلی است
-                                log.info('🕐 فعال کردن ساعت بازار در صفحه اصلی...');
-                                try {
-                                    // مجبور کردن فعال‌سازی ساعت بازار
-                                    setTimeout(() => {
+                                // بررسی نهایی React mode قبل از initGlobe
+                                const lastReactCheck = checkReactMode();
+                                if (!lastReactCheck) {
+                                    try {
                                         initGlobe();
-                                        log.info('✅ ساعت بازار فعال شد');
-                                    }, 500);
-                                } catch (error) {
-                                    if (window.errorHandler) {
-                                        window.errorHandler.handleError(error, 'initGlobe');
-                                    } else {
-                                        log.error('خطا در initGlobe:', error);
+                                    } catch (error) {
+                                        if (window.errorHandler) {
+                                            window.errorHandler.handleError(error, 'initGlobe');
+                                        } else {
+                                            log.error('خطا در initGlobe:', error);
+                                        }
                                     }
+                                } else {
+                                    log.info('✅ React mode در retry تشخیص داده شد - از initGlobe صرف نظر می‌کنیم');
                                 }
                             }
                         }, 1000);
@@ -283,71 +284,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 100);
     }
-});
-
-// ساعت بازار اصلی را فعال کنیم
-function enableOriginalMarketClock() {
-    const log = window.logger || { info: console.log, error: console.error };
-
-    // همیشه ساعت بازار اصلی را فعال کنیم (نه React mode detection)
-    log.info('🕐 فعال کردن ساعت بازار اصلی با کره زمین...');
-
-    if (typeof initGlobe === 'function') {
-        try {
-            // بررسی وجود container
-            let container = document.getElementById('globeContainer');
-            if (!container) {
-                log.warn('⚠️ globeContainer پیدا نشد، ایجاد می‌کنیم...');
-                // ایجاد container اگر وجود ندارد
-                container = document.createElement('div');
-                container.id = 'globeContainer';
-                container.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    left: 20px;
-                    width: 200px;
-                    height: 200px;
-                    z-index: 100;
-                    pointer-events: auto;
-                    cursor: pointer;
-                `;
-                document.body.appendChild(container);
-            }
-
-            // بررسی وجود wrapper
-            let wrapper = document.getElementById('globeClockWrapper');
-            if (!wrapper) {
-                log.warn('⚠️ globeClockWrapper پیدا نشد، ایجاد می‌کنیم...');
-                wrapper = document.createElement('div');
-                wrapper.id = 'globeClockWrapper';
-                wrapper.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    left: 20px;
-                    z-index: 100;
-                    pointer-events: auto;
-                `;
-                document.body.appendChild(wrapper);
-            }
-
-            initGlobe();
-            log.info('✅ ساعت بازار اصلی با کره زمین فعال شد');
-        } catch (error) {
-            log.error('❌ خطا در فعال‌سازی ساعت بازار اصلی:', error);
-        }
-    } else {
-        log.error('❌ تابع initGlobe پیدا نشد');
-    }
-}
-
-// فعال‌سازی ساعت بازار اصلی با چند تلاش
-setTimeout(enableOriginalMarketClock, 1000);
-setTimeout(enableOriginalMarketClock, 2000);
-setTimeout(enableOriginalMarketClock, 3000);
-
-// همچنین ساعت بازار را در window load هم فعال کنیم
-window.addEventListener('load', () => {
-    setTimeout(enableOriginalMarketClock, 500);
 });
 
 // سیستم بستن مودال‌ها
