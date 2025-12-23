@@ -28,6 +28,12 @@ body.globe-modal-open {
   overflow: hidden !important;
 }
 
+/* پنهان کردن کره اصلی وقتی modal باز است */
+body.globe-modal-open #globeContainer,
+body.globe-modal-open #globeClockWrapper {
+  display: none !important;
+}
+
 .globe-modal-content {
   position: relative;
   width: 100%;
