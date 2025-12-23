@@ -710,10 +710,11 @@ function initGlobe() {
     const texturePaths = (typeof EARTH_TEXTURE_PATHS !== 'undefined' && EARTH_TEXTURE_PATHS.day) 
       ? EARTH_TEXTURE_PATHS.day
       : [
+          '/livepulse-site/assets/images/earth-day.jpg',
+          '/livepulse-site/earth-day.jpg',
           './earth-day.jpg',
           'earth-day.jpg',
           '/earth-day.jpg',
-          '/livepulse-site/earth-day.jpg',
           'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
           'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
           'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg'
