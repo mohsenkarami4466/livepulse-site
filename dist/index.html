@@ -81,15 +81,16 @@
     <!-- Container برای ساعت بازار اصلی -->
     <div id="globeContainer" style="
         position: fixed;
-        top: 20px;
-        left: 20px;
-        width: 200px;
-        height: 200px;
+        top: 10px;
+        left: 10px;
+        width: 180px;
+        height: 180px;
         z-index: 10000;
         pointer-events: auto;
         cursor: pointer;
         background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        border-radius: 50%;
     "></div>
 
 
@@ -104,7 +105,7 @@
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'globeContainer';
-                container.style.cssText = 'position: fixed; top: 20px; left: 20px; width: 200px; height: 200px; z-index: 10000; background: transparent;';
+                container.style.cssText = 'position: fixed; top: 10px; left: 10px; width: 180px; height: 180px; z-index: 10000; background: transparent; overflow: hidden; border-radius: 50%;';
                 document.body.appendChild(container);
             }
 
@@ -113,7 +114,7 @@
             if (!wrapper) {
                 wrapper = document.createElement('div');
                 wrapper.id = 'globeClockWrapper';
-                wrapper.style.cssText = 'position: fixed; top: 20px; left: 20px; z-index: 10000;';
+                wrapper.style.cssText = 'position: fixed; top: 10px; left: 10px; z-index: 10000; width: 180px; height: 180px; overflow: hidden;';
                 document.body.appendChild(wrapper);
             }
 
