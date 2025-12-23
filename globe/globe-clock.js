@@ -604,14 +604,15 @@ function initGlobe() {
   const log = window.logger || { error: console.error, warn: console.warn, success: console.log };
   const errorHandler = window.errorHandler;
   
-  // بررسی React mode - اگر در React mode هستیم، initGlobe را اجرا نکن
+  // ساعت بازار اصلی را همیشه فعال کنیم - این اولویت دارد
   const globeWrapper = document.getElementById('globeClockWrapper');
   const isReactMode = globeWrapper && globeWrapper.getAttribute('data-react-mode') === 'true';
-  
+
+  // حتی در React mode هم ساعت بازار اصلی را فعال کنیم
+  // چون ساعت اصلی کامل‌تر و بهتر است
   if (isReactMode) {
-    // در React mode، کامپوننت GlobeClock خودش initGlobe را فراخوانی می‌کند
-    log.info('✅ React mode تشخیص داده شد - initGlobe توسط React component مدیریت می‌شود');
-    return;
+    log.info('ℹ️ React mode تشخیص داده شد اما ساعت بازار اصلی را فعال می‌کنیم');
+    // ادامه اجرا - ساعت اصلی اولویت دارد
   }
   
   const container = document.getElementById('globeContainer');

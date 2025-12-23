@@ -340,8 +340,15 @@ function enableOriginalMarketClock() {
     }
 }
 
-// فعال‌سازی ساعت بازار اصلی
-setTimeout(enableOriginalMarketClock, 1500);
+// فعال‌سازی ساعت بازار اصلی با چند تلاش
+setTimeout(enableOriginalMarketClock, 1000);
+setTimeout(enableOriginalMarketClock, 2000);
+setTimeout(enableOriginalMarketClock, 3000);
+
+// همچنین ساعت بازار را در window load هم فعال کنیم
+window.addEventListener('load', () => {
+    setTimeout(enableOriginalMarketClock, 500);
+});
 
 // سیستم بستن مودال‌ها
 document.addEventListener('click', function(e) {

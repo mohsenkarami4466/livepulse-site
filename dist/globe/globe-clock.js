@@ -161,7 +161,7 @@ let marketData = [
  * آرایه ساعات UTC (00:00 تا 23:00)
  * Array of UTC hours (00:00 to 23:00)
  */
-const utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+const _utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
 
 /* ========== متغیرهای سراسری THREE.js / Global THREE.js Variables ========== */
 /**
@@ -177,7 +177,7 @@ const utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '
  * - sun: نور خورشید / Sun light
  * - sunAngle: زاویه خورشید / Sun angle
  */
-let scene, camera, renderer, globe, dayMat, nightMat, sun;
+let scene, camera, renderer, globe, dayMat, _nightMat, sun;
 let sunAngle = 0;
 
 // استفاده از CONFIG برای UPDATE_MS
@@ -186,7 +186,7 @@ let sunAngle = 0;
  * Using CONFIG for update interval
  */
 const cfg = window.CONFIG || CONFIG;
-const UPDATE_MS = cfg.TIME.UPDATE_INTERVAL; // ۳۰ ثانیه
+const _UPDATE_MS = cfg.TIME.UPDATE_INTERVAL; // ۳۰ ثانیه
 
 /* ========== توابع موقعیت / Position Functions ========== */
 
@@ -203,7 +203,7 @@ const UPDATE_MS = cfg.TIME.UPDATE_INTERVAL; // ۳۰ ثانیه
  * این تابع موقعیت کره کوچک را بر اساس موقعیت شاخص‌ها تنظیم می‌کند.
  * This function sets the small globe position based on indicators position.
  */
-function updateGlobePosition() {
+function _updateGlobePosition() {
   const indicatorsContainer = document.querySelector('.indicators-unified-container');
   const globeWrapper = document.getElementById('globeClockWrapper');
   
@@ -278,22 +278,57 @@ function updateGlobePosition() {
  * This function sets highlights sections position based on portfolio card position.
  */
 function updateHighlightsPosition() {
-  // پیدا کردن view فعال
-  // Find active view
-  const activeView = document.querySelector('.view.active-view');
-  if (!activeView) return;
+  // پیدا کردن view فعال - در React Router همه viewها render می‌شوند
+  // Find active view - in React Router all views are rendered
+  // اول سعی می‌کنیم view فعال را پیدا کنیم (برای vanilla JS)
+  let activeView = document.querySelector('.view.active-view');
+  
+  // اگر view فعال پیدا نشد، همه viewها را بررسی می‌کنیم (برای React Router)
+  // If active view not found, check all views (for React Router)
+  if (!activeView) {
+    // در React Router، view فعال view ای است که در layout-main است و display: block دارد
+    const allViews = document.querySelectorAll('.layout-main > .view, .view');
+    for (const view of allViews) {
+      const computedStyle = window.getComputedStyle(view);
+      if (computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden') {
+        activeView = view;
+        break;
+      }
+    }
+  }
+  
+  if (!activeView) {
+    console.warn('⚠️ updateHighlightsPosition: No active view found!', {
+      activeViewWithClass: document.querySelector('.view.active-view'),
+      allViews: document.querySelectorAll('.view'),
+      layoutMainViews: document.querySelectorAll('.layout-main > .view')
+    });
+    return;
+  }
+  
+  console.log('✅ updateHighlightsPosition: Active view found:', {
+    viewId: activeView.id,
+    viewClass: activeView.className,
+    viewDisplay: window.getComputedStyle(activeView).display
+  });
   
   // پیدا کردن همه هایلایت‌ها
   // Find all highlights
-  const highlightsSections = activeView.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
+  let highlightsSections = activeView.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
+  
+  // اگر در view پیدا نشد، در کل document جستجو کن (fallback)
+  if (highlightsSections.length === 0) {
+    console.warn('⚠️ No highlights in active view, searching in document...');
+    highlightsSections = document.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
+  }
   
   // پیدا کردن المان‌های مورد نیاز برای محاسبه
   // Find elements needed for calculation
   const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
   const headerHeight = header ? header.offsetHeight : 60;
   const portfolioCard = document.querySelector('.portfolio-summary-card');
-  const indicatorsCard = document.querySelector('.indicators-glass-card');
-  const globeWrapper = document.getElementById('globeClockWrapper');
+  const _indicatorsCard = document.querySelector('.indicators-glass-card');
+  const _globeWrapper = document.getElementById('globeClockWrapper');
   
   const isMobile = window.innerWidth < 768;
   const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
@@ -302,9 +337,30 @@ function updateHighlightsPosition() {
   let marginTop;
   
   if (isDesktop) {
-    // در دسکتاپ: پایین کارت portfolio + 15px gap
-    // Desktop: below portfolio card + 15px gap
-    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 15px)`;
+    // در دسکتاپ: محاسبه بر اساس موقعیت واقعی کارت portfolio
+    // Desktop: calculate based on actual portfolio card position
+    if (portfolioCard && activeView) {
+      const portfolioRect = portfolioCard.getBoundingClientRect();
+      const portfolioBottom = portfolioRect.bottom;
+      const viewRect = activeView.getBoundingClientRect();
+      const viewTop = viewRect.top;
+      const scrollTop = window.scrollY || 0;
+      // محاسبه دقیق: فاصله از بالای view تا پایین کارت portfolio + 20px gap
+      const calculatedMargin = portfolioBottom - viewTop + scrollTop + 20;
+      marginTop = `${Math.max(calculatedMargin, 100)}px`; // حداقل 100px برای اطمینان از نمایش
+      
+      console.log('🔍 Desktop margin calculation:', {
+        portfolioBottom,
+        viewTop,
+        scrollTop,
+        calculatedMargin,
+        finalMargin: marginTop
+      });
+    } else {
+      // fallback: محاسبه بر اساس ارتفاع‌های ثابت
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
+      console.warn('⚠️ Portfolio card or active view not found, using fallback margin');
+    }
   } else if (isTablet) {
     // در تبلت: پایین کارت portfolio + 20px gap
     // Tablet: below portfolio card + 20px gap
@@ -325,35 +381,81 @@ function updateHighlightsPosition() {
       const portfolioRect = portfolioCard.getBoundingClientRect();
       const portfolioBottom = portfolioRect.bottom;
       const viewportTop = activeView.getBoundingClientRect().top;
-      marginTop = `${portfolioBottom - viewportTop + 23}px`;
+      marginTop = `${portfolioBottom - viewportTop + 20}px`;
     } else {
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 23px)`;
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 20px)`;
     }
   } else {
     // fallback برای سایر حالت‌ها
     // fallback for other cases
-    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 5px)`;
+    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
   }
   
   highlightsSections.forEach(section => {
     if (section) {
       section.style.setProperty('margin-top', marginTop, 'important');
       section.style.setProperty('padding-top', '0', 'important');
-      section.style.setProperty('display', 'block', 'important');
+      section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
+      section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
       section.style.setProperty('visibility', 'visible', 'important');
       section.style.setProperty('opacity', '1', 'important');
+      section.style.setProperty('position', 'relative', 'important');
+      section.style.setProperty('z-index', '996', 'important');
+      section.style.setProperty('width', 'calc(100% - 24px)', 'important'); // عرض ثابت
+      section.style.setProperty('min-width', 'calc(100% - 24px)', 'important');
+      section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
+      section.style.setProperty('min-height', '80px', 'important');
       
-      if (window.DEBUG) {
-        console.log('Highlights position updated:', {
+      // اطمینان از نمایش highlights-container
+      const container = section.querySelector('.highlights-container');
+      if (container) {
+        container.style.setProperty('display', 'flex', 'important');
+        container.style.setProperty('width', '100%', 'important');
+        container.style.setProperty('min-width', '100%', 'important');
+        container.style.setProperty('height', '80px', 'important');
+        container.style.setProperty('min-height', '80px', 'important');
+        container.style.setProperty('visibility', 'visible', 'important');
+        container.style.setProperty('opacity', '1', 'important');
+      }
+      
+      // اطمینان از نمایش highlight-circle ها
+      const circles = section.querySelectorAll('.highlight-circle');
+      circles.forEach(circle => {
+        circle.style.setProperty('display', 'flex', 'important');
+        circle.style.setProperty('width', '60px', 'important');
+        circle.style.setProperty('height', '60px', 'important');
+        circle.style.setProperty('min-width', '60px', 'important');
+        circle.style.setProperty('min-height', '60px', 'important');
+        circle.style.setProperty('flex', '0 0 60px', 'important');
+        circle.style.setProperty('flex-shrink', '0', 'important');
+        circle.style.setProperty('flex-grow', '0', 'important');
+        circle.style.setProperty('visibility', 'visible', 'important');
+        circle.style.setProperty('opacity', '1', 'important');
+      });
+      
+      // Debug logging - همیشه فعال برای troubleshooting
+      console.log('🔍 Highlights position updated:', {
           section: section.className,
           marginTop: marginTop,
           isMobile: isMobile,
           isTablet: isTablet,
-          portfolioCard: portfolioCard ? 'found' : 'not found'
+        isDesktop: isDesktop,
+        portfolioCard: portfolioCard ? 'found' : 'not found',
+        activeView: activeView ? activeView.id || activeView.className : 'not found',
+        highlightsCount: highlightsSections.length
         });
       }
-    }
   });
+  
+  // اگر highlights پیدا نشد، log کن
+  if (highlightsSections.length === 0) {
+    console.warn('⚠️ No highlights sections found!', {
+      activeView: activeView ? activeView.id || activeView.className : 'not found',
+      allViews: document.querySelectorAll('.view').length,
+      layoutMainViews: document.querySelectorAll('.layout-main > .view').length,
+      allHighlights: document.querySelectorAll('.highlights-section').length
+  });
+  }
 }
 
 // در دسترس قرار دادن تابع برای استفاده در جاهای دیگر
@@ -375,7 +477,7 @@ if (typeof window !== 'undefined') {
  * این تابع حلقه ساعت UTC را دور کره کوچک می‌سازد.
  * This function creates UTC clock ring around small globe.
  */
-function createUTCClockRing() {
+function _createUTCClockRing() {
   const ring = document.getElementById('utcClockRing');
   if (!ring) return;
   
@@ -502,6 +604,17 @@ function initGlobe() {
   const log = window.logger || { error: console.error, warn: console.warn, success: console.log };
   const errorHandler = window.errorHandler;
   
+  // ساعت بازار اصلی را همیشه فعال کنیم - این اولویت دارد
+  const globeWrapper = document.getElementById('globeClockWrapper');
+  const isReactMode = globeWrapper && globeWrapper.getAttribute('data-react-mode') === 'true';
+
+  // حتی در React mode هم ساعت بازار اصلی را فعال کنیم
+  // چون ساعت اصلی کامل‌تر و بهتر است
+  if (isReactMode) {
+    log.info('ℹ️ React mode تشخیص داده شد اما ساعت بازار اصلی را فعال می‌کنیم');
+    // ادامه اجرا - ساعت اصلی اولویت دارد
+  }
+  
   const container = document.getElementById('globeContainer');
   if (!container) {
     const error = new Error('globeContainer پیدا نشد');
@@ -596,12 +709,13 @@ function initGlobe() {
   let dayTextureLoaded = false;
   const tryLoadDayTexture = (index) => {
     const texturePaths = (typeof EARTH_TEXTURE_PATHS !== 'undefined' && EARTH_TEXTURE_PATHS.day) 
-      ? EARTH_TEXTURE_PATHS.day 
+      ? EARTH_TEXTURE_PATHS.day
       : [
-          '/livepulse-site/earth-day.jpg',
-          './earth-day.jpg', 
-          'earth-day.jpg', 
+          '/livepulse-site/assets/images/earth-day.jpg',
+          './earth-day.jpg',
+          'earth-day.jpg',
           '/earth-day.jpg',
+          '/livepulse-site/earth-day.jpg',
           'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
           'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
           'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg'
