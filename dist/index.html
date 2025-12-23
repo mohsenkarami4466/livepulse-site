@@ -135,13 +135,25 @@
 
         // فعال‌سازی در زمان‌های مختلف
         setTimeout(activateOriginalClock, 500);
+        setTimeout(activateOriginalClock, 1000);
         setTimeout(activateOriginalClock, 1500);
+        setTimeout(activateOriginalClock, 2000);
         setTimeout(activateOriginalClock, 3000);
+        setTimeout(activateOriginalClock, 5000);
 
         // فعال‌سازی در window load
         window.addEventListener('load', () => {
+            setTimeout(activateOriginalClock, 500);
             setTimeout(activateOriginalClock, 1000);
+            setTimeout(activateOriginalClock, 2000);
         });
+
+        // فعال‌سازی مداوم هر 3 ثانیه
+        setInterval(() => {
+            if (!document.getElementById('globeClockWrapper')) {
+                activateOriginalClock();
+            }
+        }, 3000);
     </script>
 
 </body>
