@@ -29,8 +29,9 @@ import React, { useState, useEffect } from 'react'
 import { useApp } from '../../contexts/AppContext'
 import { addEventListener, removeEventListener, events } from '../../utils/dom-bridge'
 import CardContainer from '../../components/Cards/CardContainer'
-import FinancialGlobeModal from '../../components/Globes/FinancialGlobeModal'
-import ResourcesGlobeModal from '../../components/Globes/ResourcesGlobeModal'
+// Modal ها در Layout.jsx مدیریت می‌شوند - import حذف شد
+// import FinancialGlobeModal from '../../components/Globes/FinancialGlobeModal' // حذف شد
+// import ResourcesGlobeModal from '../../components/Globes/ResourcesGlobeModal' // حذف شد
 import PriceModal from '../../components/Modals/PriceModal'
 import './Home.css'
 
@@ -90,8 +91,9 @@ const mainItems = [
 function Home() {
   // Hook های React
   const { currentCategory, setCategory, incrementModals } = useApp() // دسترسی به Context
-  const [isFinancialGlobeOpen, setIsFinancialGlobeOpen] = useState(false) // وضعیت مودال کره مالی
-  const [isResourcesGlobeOpen, setIsResourcesGlobeOpen] = useState(false) // وضعیت مودال کره منابع
+  // حذف state های duplicate - این modal ها در Layout.jsx مدیریت می‌شوند
+  // const [isFinancialGlobeOpen, setIsFinancialGlobeOpen] = useState(false) // حذف شد - در Layout.jsx است
+  // const [isResourcesGlobeOpen, setIsResourcesGlobeOpen] = useState(false) // حذف شد - در Layout.jsx است
   const [selectedPriceItem, setSelectedPriceItem] = useState(null) // آیتم قیمت انتخاب شده
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false) // وضعیت مودال قیمت
   const [showRanking, setShowRanking] = useState(false) // کنترل نمایش رتبه‌بندی نقشه
@@ -265,14 +267,14 @@ function Home() {
    * - window.addEventListener: برای گوش دادن به event های vanilla JS
    */
   useEffect(() => {
-    // Handler های باز شدن Globe Modals از vanilla JS
-    const handleFinancialGlobeOpen = () => setIsFinancialGlobeOpen(true)
-    const handleResourcesGlobeOpen = () => setIsResourcesGlobeOpen(true)
+    // Handler های باز شدن Globe Modals در Layout.jsx مدیریت می‌شوند - حذف شدند
+    // const handleFinancialGlobeOpen = () => setIsFinancialGlobeOpen(true) // حذف شد
+    // const handleResourcesGlobeOpen = () => setIsResourcesGlobeOpen(true) // حذف شد
     
     if (typeof window !== 'undefined') {
-      // گوش دادن به event های باز شدن Globe Modals
-      window.addEventListener('financialGlobeOpen', handleFinancialGlobeOpen)
-      window.addEventListener('resourcesGlobeOpen', handleResourcesGlobeOpen)
+      // Event listener ها در Layout.jsx هستند - حذف شدند
+      // window.addEventListener('financialGlobeOpen', handleFinancialGlobeOpen) // حذف شد
+      // window.addEventListener('resourcesGlobeOpen', handleResourcesGlobeOpen) // حذف شد
       
       // هماهنگی با appState برای backward compatibility
       if (window.appState) {
@@ -319,8 +321,9 @@ function Home() {
     // Cleanup: حذف event listener ها هنگام unmount
     return () => {
       if (typeof window !== 'undefined') {
-        window.removeEventListener('financialGlobeOpen', handleFinancialGlobeOpen)
-        window.removeEventListener('resourcesGlobeOpen', handleResourcesGlobeOpen)
+        // Event listener ها در Layout.jsx هستند - حذف شدند
+        // window.removeEventListener('financialGlobeOpen', handleFinancialGlobeOpen) // حذف شد
+        // window.removeEventListener('resourcesGlobeOpen', handleResourcesGlobeOpen) // حذف شد
       }
     }
   }, [currentCategory])
@@ -359,15 +362,9 @@ function Home() {
    */
   return (
     <div id="homeView" className="view">
-      {/* مودال‌های کره‌های بزرگ - فقط زمانی نمایش داده می‌شوند که state مربوطه true باشد */}
-      <FinancialGlobeModal 
-        isOpen={isFinancialGlobeOpen} 
-        onClose={() => setIsFinancialGlobeOpen(false)} 
-      />
-      <ResourcesGlobeModal 
-        isOpen={isResourcesGlobeOpen} 
-        onClose={() => setIsResourcesGlobeOpen(false)} 
-      />
+      {/* مودال‌های کره‌های بزرگ در Layout.jsx مدیریت می‌شوند - حذف شدند از اینجا */}
+      {/* <FinancialGlobeModal /> - حذف شد - در Layout.jsx است */}
+      {/* <ResourcesGlobeModal /> - حذف شد - در Layout.jsx است */}
       
       {/* مودال جزئیات قیمت - فقط زمانی نمایش داده می‌شود که isPriceModalOpen true باشد */}
       <PriceModal

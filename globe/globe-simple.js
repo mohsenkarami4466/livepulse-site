@@ -112,7 +112,16 @@ function buildSimpleGlobe(containerId, type) {
             const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
             // این مقدار بعداً برای تکسچرها استفاده می‌شود
         }
-        container.appendChild(renderer.domElement);
+        
+        // تنظیم z-index و pointer-events برای canvas
+        const canvas = renderer.domElement;
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.zIndex = '1'; // پایین‌تر از FloatingDock
+        canvas.style.pointerEvents = 'auto'; // برای interaction با کره
+        
+        container.appendChild(canvas);
         
         // Controls
         let controls = null;
@@ -174,19 +183,27 @@ function buildSimpleGlobe(containerId, type) {
         loader.crossOrigin = 'anonymous';
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
+        // تشخیص محیط: development یا production
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const basePath = isDev ? '' : '/livepulse-site';
+        
         const texturePaths = [
-            // اول production path جدید
-            '/livepulse-site/assets/images/earth-day.jpg',
-            // سپس production path قدیمی
-            '/livepulse-site/earth-day.jpg',
-            // سپس فایل‌های محلی (development)
+            // اول از فایل محلی در development
+            '/assets/images/earth-day.jpg',
+            './assets/images/earth-day.jpg',
+            'assets/images/earth-day.jpg',
+            // سپس production paths
+            `${basePath}/assets/images/earth-day.jpg`,
+            `${basePath}/earth-day.jpg`,
+            // سپس فایل‌های محلی دیگر
             './earth-day.jpg',
             'earth-day.jpg',
             '/earth-day.jpg',
-            // سپس CDN به عنوان fallback
-            'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+            // سپس CDN fallback (با crossOrigin)
+            'https://unpkg.com/three-globe@2.27.3/example/img/earth-blue-marble.jpg',
             'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
-            'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg'
+            'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg',
+            'https://cdn.jsdelivr.net/gh/dataarts/webgl-globe@master/globe/diffuse.jpg'
         ];
         
         const tryLoadTexture = (index) => {
@@ -195,8 +212,16 @@ function buildSimpleGlobe(containerId, type) {
                 return;
             }
             
+            const texturePath = texturePaths[index];
+            const isCDN = texturePath.startsWith('http://') || texturePath.startsWith('https://');
+            
+            // تنظیم crossOrigin برای CDN
+            if (isCDN) {
+                loader.crossOrigin = 'anonymous';
+            }
+            
             loader.load(
-                texturePaths[index],
+                texturePath,
                 (texture) => {
                     texture.wrapS = THREE.ClampToEdgeWrapping;
                     texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -205,13 +230,13 @@ function buildSimpleGlobe(containerId, type) {
                     texture.magFilter = THREE.LinearFilter;
                     texture.generateMipmaps = true;
                     texture.anisotropy = renderer.capabilities.getMaxAnisotropy(); // حداکثر کیفیت
-            earth.material.map = texture;
-            earth.material.needsUpdate = true;
-                    const log = window.logger || { info: console.log }; log.info('✅ تکسچر کره با کیفیت بالا بارگذاری شد:', texturePaths[index]);
+                    earth.material.map = texture;
+                    earth.material.needsUpdate = true;
+                    const log = window.logger || { info: console.log }; log.info('✅ تکسچر کره با کیفیت بالا بارگذاری شد:', texturePath);
                 },
                 undefined,
-                () => {
-                    const log = window.logger || { warn: console.warn }; log.warn(`⚠️ تکسچر ${texturePaths[index]} بارگذاری نشد، تلاش بعدی...`);
+                (error) => {
+                    const log = window.logger || { warn: console.warn }; log.warn(`⚠️ تکسچر ${texturePath} بارگذاری نشد، تلاش بعدی...`, error);
                     tryLoadTexture(index + 1);
                 }
             );

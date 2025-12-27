@@ -88,6 +88,7 @@ const typeToIds = {
 function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
   const modalRef = useRef(null)
   const containerRef = useRef(null)
+  const modalContentRef = useRef(null) // ref برای globe-modal-content
   
   const ids = typeToIds[type]
 
@@ -152,7 +153,10 @@ function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
         }
       }}
     >
-      <div className="globe-modal-content">
+      <div 
+        className="globe-modal-content"
+        ref={modalContentRef}
+      >
         <div 
           id={ids.containerId} 
           ref={containerRef}
@@ -162,7 +166,7 @@ function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
           mode="globe"
           storageKey={`floatingDockPos-${type}`}
           menuItems={dockMenuItems}
-          containerRef={modalRef}
+          containerRef={modalContentRef}
           icon="⚙️"
         />
       </div>

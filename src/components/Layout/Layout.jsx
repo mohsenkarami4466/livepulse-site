@@ -118,7 +118,7 @@ function Layout({ children }) {
       // این برای سازگاری با script-globes.js است
       const log = getLogger()
       window.openFinancialGlobe = () => {
-        log.debug('🔍 window.openFinancialGlobe called - opening via React')
+        log.info('🔍 window.openFinancialGlobe called - opening via React')
         // بررسی checkLoginRequired اگر موجود باشد
         if (typeof window.checkLoginRequired === 'function') {
           if (!window.checkLoginRequired()) {
@@ -126,14 +126,49 @@ function Layout({ children }) {
             return
           }
         }
-        setIsFinancialGlobeOpen(true)
+        log.info('✅ باز کردن کره مالی - setIsFinancialGlobeOpen(true)')
+        // ابتدا همه کره‌های دیگر را ببند
+        setOpen3DGlobeType(null)
+        setIsResourcesGlobeOpen(false)
+        // استفاده از functional update برای دسترسی به state فعلی
+        setIsFinancialGlobeOpen(prev => {
+          if (prev) {
+            // اگر قبلاً باز است، ابتدا ببند و دوباره باز کن
+            setTimeout(() => setIsFinancialGlobeOpen(true), 100)
+            return false
+          } else {
+            return true
+          }
+        })
         // Dispatch event هم برای backward compatibility
         window.dispatchEvent(new Event('financialGlobeOpen'))
+        
+        // بررسی بعد از تاخیر کوتاه
+        setTimeout(() => {
+          const modal = document.getElementById('financialGlobeModal')
+          const container = document.getElementById('financialGlobeContainer')
+          log.info('🔍 بررسی modal:', {
+            modal: modal ? 'پیدا شد' : 'پیدا نشد',
+            container: container ? 'پیدا شد' : 'پیدا نشد',
+            isOpen: isFinancialGlobeOpen
+          })
+        }, 500)
       }
       
       window.openResourcesGlobe = () => {
-        log.debug('🔍 window.openResourcesGlobe called - opening via React')
-        setIsResourcesGlobeOpen(true)
+        log.info('🔍 window.openResourcesGlobe called - opening via React')
+        // استفاده از functional update برای دسترسی به state فعلی
+        setOpen3DGlobeType(null) // ابتدا همه کره‌های دیگر را ببند
+        setIsFinancialGlobeOpen(false)
+        setIsResourcesGlobeOpen(prev => {
+          if (prev) {
+            // اگر قبلاً باز است، ابتدا ببند و دوباره باز کن
+            setTimeout(() => setIsResourcesGlobeOpen(true), 100)
+            return false
+          } else {
+            return true
+          }
+        })
         // Dispatch event هم برای backward compatibility
         window.dispatchEvent(new Event('resourcesGlobeOpen'))
       }
@@ -144,8 +179,23 @@ function Layout({ children }) {
       
       // Override open3DGlobe برای استفاده از React state
       window.open3DGlobe = (type) => {
-        log.debug(`🔍 window.open3DGlobe called with type: ${type}`)
-        setOpen3DGlobeType(type)
+        log.info(`🔍 window.open3DGlobe called with type: ${type}`)
+        // ابتدا همه کره‌های دیگر را ببند
+        setIsFinancialGlobeOpen(false)
+        setIsResourcesGlobeOpen(false)
+        // استفاده از functional update برای دسترسی به state فعلی
+        setOpen3DGlobeType(prevType => {
+          // اگر همان type قبلی است، ابتدا null می‌کنیم تا state تغییر کند
+          if (prevType === type) {
+            // بستن و باز کردن مجدد برای force re-render
+            setTimeout(() => {
+              setOpen3DGlobeType(null)
+              setTimeout(() => setOpen3DGlobeType(type), 50)
+            }, 10)
+            return null
+          }
+          return type
+        })
       }
       
       log.debug('✅ window.navigate تنظیم شد')
@@ -200,22 +250,29 @@ function Layout({ children }) {
       {/* بخش‌های مشترک (تحلیل AI، اخبار، چت) */}
       <GlobalSections />
       
-      {/* دکمه سیار - نمایش داده می‌شود در همه صفحات */}
-      <FloatingDock
-        mode="page"
-        storageKey="floatingDockPos-page"
-        menuItems={dockMenuItems}
-      />
+      {/* دکمه سیار - نمایش داده می‌شود در همه صفحات (مخفی می‌شود وقتی modal باز است) */}
+      {!isFinancialGlobeOpen && !isResourcesGlobeOpen && !open3DGlobeType && (
+        <FloatingDock
+          mode="page"
+          storageKey="floatingDockPos-page"
+          menuItems={dockMenuItems}
+        />
+      )}
       
       {/* مودال‌های کره‌های بزرگ - همیشه render می‌شوند اما hidden هستند تا vanilla JS بتواند آن‌ها را پیدا کند */}
-        <FinancialGlobeModal 
-          isOpen={isFinancialGlobeOpen} 
-          onClose={() => setIsFinancialGlobeOpen(false)} 
-        />
-        <ResourcesGlobeModal 
-          isOpen={isResourcesGlobeOpen} 
-          onClose={() => setIsResourcesGlobeOpen(false)} 
-        />
+      {/* مهم: این modal ها باید همیشه در DOM باشند (حتی اگر hidden) */}
+      <FinancialGlobeModal 
+        isOpen={isFinancialGlobeOpen} 
+        onClose={() => {
+          setIsFinancialGlobeOpen(false)
+          const log = window.logger || { info: console.log }
+          log.info('✅ FinancialGlobeModal بسته شد')
+        }} 
+      />
+      <ResourcesGlobeModal 
+        isOpen={isResourcesGlobeOpen} 
+        onClose={() => setIsResourcesGlobeOpen(false)} 
+      />
       
       {/* مودال‌های کره‌های 3D - همیشه render می‌شوند اما hidden هستند */}
       {open3DGlobeType && (

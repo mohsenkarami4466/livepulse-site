@@ -74,7 +74,10 @@ export default defineConfig(({ command, mode }) => {
     port: 3000,
     strictPort: true, // اگر پورت اشغال باشد، خطا بدهد به جای استفاده از پورت دیگر
     open: false, // غیرفعال کردن auto-open
-    host: 'localhost' // فقط localhost
+    host: 'localhost', // فقط localhost
+    hmr: {
+      overlay: false // غیرفعال کردن overlay خطاها
+    }
   },
   build: {
     outDir: 'dist',

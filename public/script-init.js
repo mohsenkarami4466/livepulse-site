@@ -37,14 +37,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // در React mode، فقط updateSunAndMarkets و سایر توابع utility را راه‌اندازی می‌کنیم
                 setTimeout(() => {
                     try {
-                        if (typeof updateSunAndMarkets === 'function') {
-                            setInterval(updateSunAndMarkets, UPDATE_MS);
+                        if (typeof window.updateSunAndMarkets === 'function') {
+                            const UPDATE_MS = (window.CONFIG && window.CONFIG.TIME && window.CONFIG.TIME.UPDATE_INTERVAL) || 30000;
+                            setInterval(window.updateSunAndMarkets, UPDATE_MS);
                         }
-                        if (typeof createUTCClockRing === 'function') {
-                            createUTCClockRing();
+                        if (typeof window.createUTCClockRing === 'function') {
+                            window.createUTCClockRing();
                         }
-                        if (typeof updateUTCClock === 'function') {
-                            setInterval(updateUTCClock, 1000);
+                        if (typeof window.updateUTCClock === 'function') {
+                            setInterval(window.updateUTCClock, 1000);
                         }
                     } catch (error) {
                         log.error('❌ خطا در راه‌اندازی utility functions:', error);
@@ -93,19 +94,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 2. سایر تنظیمات با تاخیر
                 setTimeout(() => {
                     try {
-                        if (typeof updateSunAndMarkets === 'function') {
-                            setInterval(updateSunAndMarkets, UPDATE_MS);
+                        if (typeof window.updateSunAndMarkets === 'function') {
+                            const UPDATE_MS = (window.CONFIG && window.CONFIG.TIME && window.CONFIG.TIME.UPDATE_INTERVAL) || 30000;
+                            setInterval(window.updateSunAndMarkets, UPDATE_MS);
                         }
                         
-                        if (typeof setupSmallGlobeClick === 'function') {
-                            setupSmallGlobeClick();
+                        if (typeof window.setupSmallGlobeClick === 'function') {
+                            window.setupSmallGlobeClick();
                         }
                         
-                        if (typeof createUTCClockRing === 'function') {
-                            createUTCClockRing();
+                        if (typeof window.createUTCClockRing === 'function') {
+                            window.createUTCClockRing();
                         }
-                        if (typeof updateUTCClock === 'function') {
-                            setInterval(updateUTCClock, 1000);
+                        if (typeof window.updateUTCClock === 'function') {
+                            setInterval(window.updateUTCClock, 1000);
                         }
                         // تنظیم موقعیت کره کوچک زیر شاخص‌ها
                         if (typeof updateGlobePosition === 'function') {

@@ -1,6 +1,6 @@
 .floating-dock {
   position: fixed !important;
-  z-index: 10050;
+  z-index: 100050 !important; /* بالاتر از canvas Three.js */
   width: 64px;
   height: 64px;
   touch-action: none;
@@ -10,6 +10,18 @@
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* اطمینان از اینکه FloatingDock در modal‌ها هم کار می‌کند */
+.globe-modal .floating-dock,
+.globe-modal-content .floating-dock {
+  z-index: 100050 !important; /* بالاتر از canvas Three.js */
+  pointer-events: auto !important;
+}
+
+/* همه المان‌های داخل FloatingDock باید pointer-events داشته باشند */
+.floating-dock * {
   pointer-events: auto !important;
 }
 

@@ -126,7 +126,7 @@ class FinancialGlobe {
                 this.controls.autoRotateSpeed = cfg.GLOBE.CONTROLS.AUTO_ROTATE ? cfg.GLOBE.CONTROLS.AUTO_ROTATE_SPEED : 0;
                 
                 // جلوگیری از چرخش با wheel event
-                const originalWheelHandler = this.controls.handleMouseWheel;
+                const _originalWheelHandler = this.controls.handleMouseWheel;
                 this.controls.handleMouseWheel = function(event) {
                     // فقط zoom، نه rotate
                     if (event.deltaY !== 0) {
@@ -187,16 +187,28 @@ class FinancialGlobe {
         
         // بارگذاری تکسچر - اولویت با فایل‌های محلی
         const loader = new THREE.TextureLoader();
+        
+        // تشخیص محیط: development یا production
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const basePath = isDev ? '' : '/livepulse-site';
+        
         const texturePaths = [
-            // اول از فایل‌های محلی با base path استفاده کن
-            '/livepulse-site/earth-day.jpg',
+            // اول از فایل محلی در development
+            '/assets/images/earth-day.jpg',
+            './assets/images/earth-day.jpg',
+            'assets/images/earth-day.jpg',
+            // سپس production paths
+            `${basePath}/assets/images/earth-day.jpg`,
+            `${basePath}/earth-day.jpg`,
+            // سپس فایل‌های محلی دیگر
             './earth-day.jpg',
             'earth-day.jpg',
             '/earth-day.jpg',
-            // سپس CDN به عنوان fallback
-            'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+            // سپس CDN fallback (با crossOrigin)
+            'https://unpkg.com/three-globe@2.27.3/example/img/earth-blue-marble.jpg',
             'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
-            'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg'
+            'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg',
+            'https://cdn.jsdelivr.net/gh/dataarts/webgl-globe@master/globe/diffuse.jpg'
         ];
         
         const tryLoadTexture = (index) => {
@@ -205,8 +217,16 @@ class FinancialGlobe {
                 return;
             }
             
+            const texturePath = texturePaths[index];
+            const isCDN = texturePath.startsWith('http://') || texturePath.startsWith('https://');
+            
+            // تنظیم crossOrigin برای CDN
+            if (isCDN) {
+                loader.crossOrigin = 'anonymous';
+            }
+            
             loader.load(
-                texturePaths[index],
+                texturePath,
                 (texture) => {
                     texture.wrapS = THREE.ClampToEdgeWrapping;
                     texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -221,11 +241,11 @@ class FinancialGlobe {
                     this.globe.material.map = texture;
                     this.globe.material.needsUpdate = true;
                     
-                    log.info('✅ تکسچر کره مالی با کیفیت بالا بارگذاری شد:', texturePaths[index]);
+                    log.info('✅ تکسچر کره مالی با کیفیت بالا بارگذاری شد:', texturePath);
                 },
                 undefined,
-                () => {
-                    log.warn(`⚠️ تکسچر ${texturePaths[index]} بارگذاری نشد، تلاش بعدی...`);
+                (error) => {
+                    log.warn(`⚠️ تکسچر ${texturePath} بارگذاری نشد، تلاش بعدی...`, error);
                     tryLoadTexture(index + 1);
                 }
             );

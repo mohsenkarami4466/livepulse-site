@@ -66,9 +66,52 @@ function GlobeClock() {
       }
 
       try {
-        // Initialize کره
-        window.initGlobe()
-        log.info('✅ GlobeClock: initGlobe called')
+        // ساخت حلقه ساعت UTC - اول این را بساز (نیازی به کره ندارد)
+        // باید بعد از render شدن element فراخوانی شود
+        const ringElement = document.getElementById('utcClockRing')
+        if (ringElement && typeof window.createUTCClockRing === 'function') {
+          try {
+            // تاخیر کوتاه برای اطمینان از render شدن کامل
+            setTimeout(() => {
+              window.createUTCClockRing()
+              log.info('✅ GlobeClock: createUTCClockRing called')
+              
+              // بررسی که آیا اعداد ساخته شدند
+              setTimeout(() => {
+                const hours = ringElement.querySelectorAll('.utc-hour')
+                if (hours.length > 0) {
+                  log.info(`✅ GlobeClock: ${hours.length} عدد ساعت UTC ساخته شد`)
+                } else {
+                  log.warn('⚠️ GlobeClock: هیچ عددی ساخته نشد، retry...')
+                  window.createUTCClockRing()
+                }
+              }, 200)
+              
+              // راه‌اندازی به‌روزرسانی ساعت UTC هر 1 ثانیه
+              if (typeof window.updateUTCClock === 'function') {
+                setInterval(window.updateUTCClock, 1000)
+                log.info('✅ GlobeClock: updateUTCClock interval started')
+              }
+            }, 100)
+          } catch (error) {
+            log.error('❌ خطا در createUTCClockRing:', error)
+          }
+        } else {
+          if (!ringElement) {
+            log.warn('⚠️ GlobeClock: utcClockRing element هنوز render نشده')
+          }
+          if (typeof window.createUTCClockRing !== 'function') {
+            log.warn('⚠️ GlobeClock: window.createUTCClockRing پیدا نشد')
+          }
+        }
+        
+        // Initialize کره - بعد از ساخت حلقه ساعت
+        if (typeof window.initGlobe === 'function') {
+          window.initGlobe()
+          log.info('✅ GlobeClock: initGlobe called')
+        } else {
+          log.warn('⚠️ GlobeClock: window.initGlobe پیدا نشد')
+        }
         
         // بررسی اجرای animate بعد از تاخیر کوتاه
         setTimeout(() => {
@@ -100,14 +143,30 @@ function GlobeClock() {
     }
 
     // تلاش اولیه بعد از تاخیر برای اطمینان از آماده بودن DOM
+    // تاخیر بیشتر برای اطمینان از render شدن React
     const timer = setTimeout(() => {
       if (initializeGlobeClock()) {
-        // موفق بود
+        // موفق بود - اما اگر حلقه ساعت ساخته نشد، دوباره تلاش کن
+        setTimeout(() => {
+          const ringElement = document.getElementById('utcClockRing')
+          if (ringElement && ringElement.children.length === 0 && typeof window.createUTCClockRing === 'function') {
+            log.info('🔄 GlobeClock: retry createUTCClockRing')
+            window.createUTCClockRing()
+          }
+        }, 500)
       } else {
         // اگر موفق نشد، retry با interval
         const retryInterval = setInterval(() => {
           if (initializeGlobeClock()) {
             clearInterval(retryInterval)
+            // بعد از موفقیت، دوباره چک کن که حلقه ساعت ساخته شده
+            setTimeout(() => {
+              const ringElement = document.getElementById('utcClockRing')
+              if (ringElement && ringElement.children.length === 0 && typeof window.createUTCClockRing === 'function') {
+                log.info('🔄 GlobeClock: retry createUTCClockRing after init')
+                window.createUTCClockRing()
+              }
+            }, 500)
           }
         }, 300)
         
@@ -116,7 +175,7 @@ function GlobeClock() {
           clearInterval(retryInterval)
         }, 10000)
       }
-    }, 500)
+    }, 800) // تاخیر بیشتر برای اطمینان از render شدن React
 
     return () => {
       clearTimeout(timer)

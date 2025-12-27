@@ -48,22 +48,28 @@ function initializeUtilityFunctions() {
     
     try {
         // راه‌اندازی updateSunAndMarkets (به‌روزرسانی موقعیت خورشید و بازارها)
-        if (typeof updateSunAndMarkets === 'function') {
-            const UPDATE_MS = window.UPDATE_MS || 30000; // 30 ثانیه
-            setInterval(updateSunAndMarkets, UPDATE_MS);
+        if (typeof window.updateSunAndMarkets === 'function') {
+            const UPDATE_MS = (window.CONFIG && window.CONFIG.TIME && window.CONFIG.TIME.UPDATE_INTERVAL) || 30000; // 30 ثانیه
+            setInterval(window.updateSunAndMarkets, UPDATE_MS);
             log.info('✅ updateSunAndMarkets راه‌اندازی شد');
+        } else {
+            log.warn('⚠️ window.updateSunAndMarkets پیدا نشد');
         }
         
         // راه‌اندازی createUTCClockRing (ساخت حلقه ساعت UTC)
-        if (typeof createUTCClockRing === 'function') {
-            createUTCClockRing();
+        if (typeof window.createUTCClockRing === 'function') {
+            window.createUTCClockRing();
             log.info('✅ createUTCClockRing راه‌اندازی شد');
+        } else {
+            log.warn('⚠️ window.createUTCClockRing پیدا نشد');
         }
         
         // راه‌اندازی updateUTCClock (به‌روزرسانی ساعت UTC)
-        if (typeof updateUTCClock === 'function') {
-            setInterval(updateUTCClock, 1000); // هر 1 ثانیه
+        if (typeof window.updateUTCClock === 'function') {
+            setInterval(window.updateUTCClock, 1000); // هر 1 ثانیه
             log.info('✅ updateUTCClock راه‌اندازی شد');
+        } else {
+            log.warn('⚠️ window.updateUTCClock پیدا نشد');
         }
     } catch (error) {
         const log = window.logger || { error: console.error };

@@ -63,18 +63,38 @@ function FloatingDock({
   useEffect(() => {
     const el = btnRef.current
     if (!el) return
+    
+    // بررسی اینکه آیا containerRef موجود است و modal باز است
+    const container = containerRef && containerRef.current
+    let isVisible = true
+    
+    if (container) {
+      // بررسی style های container برای تشخیص باز بودن modal
+      const parentModal = container.closest('.globe-modal')
+      if (parentModal) {
+        const modalStyle = window.getComputedStyle(parentModal)
+        isVisible = modalStyle.display !== 'none' && 
+                   modalStyle.visibility !== 'hidden' && 
+                   modalStyle.opacity !== '0' &&
+                   parseInt(modalStyle.zIndex) > 0
+      }
+    }
+    
     el.style.left = `${pos.left}px`
     el.style.top = `${pos.top}px`
     el.style.right = 'auto'
     el.style.bottom = 'auto'
-    el.style.display = 'block'
-    el.style.visibility = 'visible'
-    el.style.opacity = '1'
-    el.style.pointerEvents = 'auto'
-  }, [pos])
+    el.style.display = isVisible ? 'block' : 'none'
+    el.style.visibility = isVisible ? 'visible' : 'hidden'
+    el.style.opacity = isVisible ? '1' : '0'
+    el.style.pointerEvents = isVisible ? 'auto' : 'none'
+    // z-index را همیشه بالا نگه دار حتی اگر modal بسته است
+    el.style.zIndex = '10050'
+  }, [pos, containerRef])
 
   // Ensure container rect cached
   useEffect(() => {
+    // Update container rect when containerRef changes or on mount
     containerRectRef.current = resolveContainerRect()
     const handleResize = () => {
       containerRectRef.current = resolveContainerRect()
@@ -85,7 +105,7 @@ function FloatingDock({
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [containerRef, pos.left, pos.top])
+  }, [containerRef]) // فقط containerRef - pos را حذف کردیم تا از loop جلوگیری شود
 
   const clampPos = (left, top) => {
     const rect = containerRectRef.current || resolveContainerRect()
@@ -134,6 +154,24 @@ function FloatingDock({
   const startDrag = (clientX, clientY) => {
     const el = btnRef.current
     if (!el) return
+    
+    // بررسی visibility قبل از شروع drag
+    const container = containerRef && containerRef.current
+    if (container) {
+      const parentModal = container.closest('.globe-modal')
+      if (parentModal) {
+        const modalStyle = window.getComputedStyle(parentModal)
+        const isVisible = modalStyle.display !== 'none' && 
+                         modalStyle.visibility !== 'hidden' && 
+                         modalStyle.opacity !== '0' &&
+                         parseInt(modalStyle.zIndex) > 0
+        if (!isVisible) {
+          console.warn('FloatingDock: modal بسته است - drag لغو شد')
+          return
+        }
+      }
+    }
+    
     containerRectRef.current = resolveContainerRect()
     const rect = el.getBoundingClientRect()
     dragState.current = {
@@ -219,6 +257,24 @@ function FloatingDock({
     if (e.stopImmediatePropagation && typeof e.stopImmediatePropagation === 'function') {
       e.stopImmediatePropagation()
     }
+    
+    // بررسی visibility قبل از click
+    const container = containerRef && containerRef.current
+    if (container) {
+      const parentModal = container.closest('.globe-modal')
+      if (parentModal) {
+        const modalStyle = window.getComputedStyle(parentModal)
+        const isVisible = modalStyle.display !== 'none' && 
+                         modalStyle.visibility !== 'hidden' && 
+                         modalStyle.opacity !== '0' &&
+                         parseInt(modalStyle.zIndex) > 0
+        if (!isVisible) {
+          console.warn('FloatingDock: modal بسته است - click لغو شد')
+          return
+        }
+      }
+    }
+    
     if (!dragState.current.moved) {
       setIsOpen((v) => !v)
     }
@@ -245,20 +301,26 @@ function FloatingDock({
   }, [isOpen])
 
   // Clamp position after load/mount to avoid off-screen (mobile/tablet)
+  // همچنین update container rect وقتی containerRef تغییر می‌کند
   useEffect(() => {
+    containerRectRef.current = resolveContainerRect()
     const clamped = clampPos(pos.left, pos.top)
     if (clamped.left !== pos.left || clamped.top !== pos.top) {
       setPos(clamped)
     }
-  }, [pos.left, pos.top])
+  }, [pos.left, pos.top, containerRef])
 
   const mainIcon = icon || (mode === 'globe' ? '⚙️' : '☰')
 
-  // Debug: بررسی menuItems
+  // Debug: بررسی menuItems (فقط در development)
   useEffect(() => {
-    console.log('FloatingDock: menuItems:', menuItems)
-    console.log('FloatingDock: تعداد آیتم‌ها:', menuItems.length)
-  }, [menuItems])
+    if (process.env.NODE_ENV === 'development') {
+      const log = window.logger || { info: console.log }
+      log.info('FloatingDock: menuItems:', menuItems)
+      log.info('FloatingDock: تعداد آیتم‌ها:', menuItems.length)
+      log.info('FloatingDock: containerRef:', containerRef?.current ? 'موجود است' : 'موجود نیست')
+    }
+  }, [menuItems, containerRef])
 
   const menuStyle = {
     position: 'fixed',

@@ -52,6 +52,17 @@ body.globe-modal-open #globeClockWrapper {
 
 .globe-container canvas {
   display: block;
+  pointer-events: auto; /* برای interaction با کره */
+}
+
+/* اما FloatingDock باید بالاتر از canvas باشد */
+.globe-modal-content .floating-dock {
+  pointer-events: auto !important;
+  z-index: 100050 !important; /* بالاتر از canvas */
+}
+
+.globe-modal-content .floating-dock * {
+  pointer-events: auto !important;
 }
 
 .globe-controls {

@@ -179,6 +179,7 @@ const _utcHours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, 
  */
 let scene, camera, renderer, globe, dayMat, _nightMat, sun;
 let sunAngle = 0;
+let globeInitialized = false; // جلوگیری از initialization چندباره
 
 // استفاده از CONFIG برای UPDATE_MS
 /**
@@ -477,9 +478,13 @@ if (typeof window !== 'undefined') {
  * این تابع حلقه ساعت UTC را دور کره کوچک می‌سازد.
  * This function creates UTC clock ring around small globe.
  */
-function _createUTCClockRing() {
+function createUTCClockRing() {
   const ring = document.getElementById('utcClockRing');
-  if (!ring) return;
+  if (!ring) {
+    const log = window.logger || { warn: console.warn };
+    log.warn('⚠️ createUTCClockRing: utcClockRing element پیدا نشد');
+    return;
+  }
   
   ring.innerHTML = '';
   
@@ -601,6 +606,13 @@ function updateUTCClock() {
  * This function initializes THREE.js scene for small globe.
  */
 function initGlobe() {
+  // جلوگیری از initialization چندباره
+  if (globeInitialized && globe && renderer && scene && camera) {
+    const log = window.logger || { info: console.log };
+    log.info('ℹ️ کره کوچک قبلاً راه‌اندازی شده است');
+    return;
+  }
+  
   const log = window.logger || { error: console.error, warn: console.warn, success: console.log };
   const errorHandler = window.errorHandler;
   
@@ -623,6 +635,21 @@ function initGlobe() {
       log.error('globeContainer پیدا نشد!');
     }
     return;
+  }
+  
+  // اگر قبلاً renderer ساخته شده، آن را پاک کن
+  if (renderer && container.contains(renderer.domElement)) {
+    container.removeChild(renderer.domElement);
+    renderer.dispose();
+    renderer = null;
+  }
+  
+  // اگر قبلاً scene ساخته شده، آن را پاک کن
+  if (scene) {
+    while(scene.children.length > 0) {
+      scene.remove(scene.children[0]);
+    }
+    scene = null;
   }
   
   try {
@@ -707,18 +734,28 @@ function initGlobe() {
   // Load day texture - with CDN fallback
   let dayTextureLoaded = false;
   const tryLoadDayTexture = (index) => {
-    const texturePaths = (typeof EARTH_TEXTURE_PATHS !== 'undefined' && EARTH_TEXTURE_PATHS.day) 
-      ? EARTH_TEXTURE_PATHS.day
-      : [
-          '/livepulse-site/assets/images/earth-day.jpg',
-          '/livepulse-site/earth-day.jpg',
-          './earth-day.jpg',
-          'earth-day.jpg',
-          '/earth-day.jpg',
-          'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
-          'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
-          'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg'
-        ];
+    // تشخیص محیط: development یا production
+    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const basePath = isDev ? '' : '/livepulse-site';
+    
+    const texturePaths = [
+      // اول از فایل محلی در development
+      '/assets/images/earth-day.jpg',
+      './assets/images/earth-day.jpg',
+      'assets/images/earth-day.jpg',
+      // سپس production paths
+      `${basePath}/assets/images/earth-day.jpg`,
+      `${basePath}/earth-day.jpg`,
+      // سپس فایل‌های محلی دیگر
+      './earth-day.jpg',
+      'earth-day.jpg',
+      '/earth-day.jpg',
+      // سپس CDN fallback (با crossOrigin)
+      'https://unpkg.com/three-globe@2.27.3/example/img/earth-blue-marble.jpg',
+      'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
+      'https://raw.githubusercontent.com/dataarts/webgl-globe/master/globe/diffuse.jpg',
+      'https://cdn.jsdelivr.net/gh/dataarts/webgl-globe@master/globe/diffuse.jpg'
+    ];
     
     if (index >= texturePaths.length) {
       const log = window.logger || { warn: console.warn }; 
@@ -731,21 +768,52 @@ function initGlobe() {
     }
     
     try {
+      const texturePath = texturePaths[index];
+      const isCDN = texturePath.startsWith('http://') || texturePath.startsWith('https://');
+      
+      // تنظیم crossOrigin برای CDN
+      if (isCDN) {
+        loader.crossOrigin = 'anonymous';
+      }
+      
       loader.load(
-        texturePaths[index],
+        texturePath,
         (texture) => {
+          // تنظیمات texture برای کیفیت بهتر
+          texture.wrapS = THREE.ClampToEdgeWrapping;
+          texture.wrapT = THREE.ClampToEdgeWrapping;
+          texture.minFilter = THREE.LinearMipmapLinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+          texture.generateMipmaps = true;
+          
           dayMat = new THREE.MeshPhongMaterial({ map: texture });
           if (globe) {
             globe.material = dayMat;
+            globe.material.needsUpdate = true;
           }
           dayTextureLoaded = true;
           const log = window.logger || { info: console.log }; 
-          log.info('✅ تکسچر روز زمین بارگذاری شد:', texturePaths[index]);
+          log.info('✅ تکسچر روز زمین بارگذاری شد:', texturePath);
+          
+          // اگر کره هنوز ساخته نشده، بعد از ساخت texture را اعمال کن
+          if (!globe && scene) {
+            // صبر کن تا کره ساخته شود
+            const checkGlobe = setInterval(() => {
+              if (globe) {
+                globe.material = dayMat;
+                globe.material.needsUpdate = true;
+                clearInterval(checkGlobe);
+              }
+            }, 50);
+            
+            // تایم‌اوت بعد از 2 ثانیه
+            setTimeout(() => clearInterval(checkGlobe), 2000);
+          }
         },
         undefined,
-        () => {
+        (error) => {
           const log = window.logger || { warn: console.warn }; 
-          log.warn(`⚠️ تکسچر ${texturePaths[index]} بارگذاری نشد، تلاش بعدی...`);
+          log.warn(`⚠️ تکسچر ${texturePath} بارگذاری نشد، تلاش بعدی...`, error);
           tryLoadDayTexture(index + 1);
         }
       );
@@ -756,8 +824,7 @@ function initGlobe() {
     }
   };
   
-  tryLoadDayTexture(0);
-  
+  // ساخت کره با material اولیه (رنگ آبی) - texture بعداً اعمال می‌شود
   if (!dayMat) {
     dayMat = new THREE.MeshPhongMaterial({ color: 0x2563eb });
   }
@@ -767,8 +834,13 @@ function initGlobe() {
   } else {
     nightMat = new THREE.MeshPhongMaterial({ color: 0x1e3a8a });
   }
+  
+  // ساخت کره بلافاصله
   globe = new THREE.Mesh(geometry, dayMat);
   scene.add(globe);
+  
+  // شروع لود texture - بعد از ساخت کره
+  tryLoadDayTexture(0);
 
   addMarketPoints();
   
@@ -780,16 +852,19 @@ function initGlobe() {
   }
   
   if (globe && renderer && scene && camera) {
+    globeInitialized = true;
     animate();
     log.success('✅ انیمیشن کره کوچک شروع شد');
   } else {
     log.warn('⚠️ کره کوچک آماده نیست برای انیمیشن - تلاش مجدد...');
     setTimeout(() => {
       if (globe && renderer && scene && camera) {
+        globeInitialized = true;
         animate();
         log.success('✅ انیمیشن کره کوچک شروع شد (retry)');
       } else {
         log.error('❌ کره کوچک آماده نیست برای انیمیشن بعد از retry');
+        globeInitialized = false; // اجازه retry بعدی
       }
     }, 200);
   }
@@ -1100,6 +1175,8 @@ if (typeof window !== 'undefined') {
     window.setupSmallGlobeClick = setupSmallGlobeClick;
     window.updateSunAndMarkets = updateSunAndMarkets;
     window.addMarketPoints = addMarketPoints;
+    window.createUTCClockRing = createUTCClockRing;
+    window.updateUTCClock = updateUTCClock;
     window.marketData = marketData; // Export marketData for use in other files
 }
 
