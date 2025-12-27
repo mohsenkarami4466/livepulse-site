@@ -88,7 +88,7 @@ const typeToIds = {
 function Globe3DModal({ type, isOpen, onClose, actions = {} }) {
   const modalRef = useRef(null)
   const containerRef = useRef(null)
-
+  
   const ids = typeToIds[type]
 
   useEffect(() => {

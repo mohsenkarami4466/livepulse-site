@@ -87,18 +87,15 @@ function BottomNavigation() {
       }
     }
     
-    // هماهنگی با vanilla JS
+    // هماهنگی با vanilla JS (فقط برای backward compatibility)
     if (typeof window !== 'undefined' && window.appState) {
       window.appState.currentView = page
     }
     
-    // Dispatch event برای vanilla JS compatibility
-    if (typeof window !== 'undefined' && window.showView) {
-      window.showView(page)
-    }
-    
-    // ناوبری به صفحه مورد نظر
+    // ناوبری به صفحه مورد نظر با React Router
     navigate(path)
+    
+    // توجه: window.showView دیگر استفاده نمی‌شود چون React Router ناوبری را مدیریت می‌کند
   }
 
   /**

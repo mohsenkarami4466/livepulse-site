@@ -73,8 +73,8 @@ export default defineConfig(({ command, mode }) => {
   server: {
     port: 3000,
     strictPort: true, // اگر پورت اشغال باشد، خطا بدهد به جای استفاده از پورت دیگر
-    open: true,
-    host: true // دسترسی از شبکه محلی
+    open: false, // غیرفعال کردن auto-open
+    host: 'localhost' // فقط localhost
   },
   build: {
     outDir: 'dist',

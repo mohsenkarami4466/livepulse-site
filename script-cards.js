@@ -429,7 +429,7 @@ function setupHighlightPanels(triggerSelector, triggerAttr, panelSelector, panel
 function openPriceDetail(item) {
     const log = window.logger || { info: console.log };
     log.info('🎯 مودال تمام صفحه فراخوانی شد برای:', item.name);
-
+    
     // بررسی وجود مودال اختصاصی کارت
     let modal = document.getElementById('priceDetailModal');
     if (!modal) {
@@ -483,39 +483,39 @@ function openPriceDetail(item) {
                 <span class="price-change ${changeClass}">${item.change >= 0 ? '+' : ''}${item.change}%</span>
             </div>
         </div>
-
+        
         <div class="price-detail-chart-area">
             <div class="price-chart-controls">
                 <div class="timeframe-selector">
                     <label>بازه زمانی:</label>
-                    <select id="timeframeSelect">
-                        <option value="1m">۱ دقیقه</option>
-                        <option value="5m">۵ دقیقه</option>
-                        <option value="1h">۱ ساعت</option>
-                        <option value="4h">۴ ساعت</option>
-                        <option value="1d">۱ روز</option>
-                        <option value="1w">۱ هفته</option>
-                    </select>
+            <select id="timeframeSelect">
+                <option value="1m">۱ دقیقه</option>
+                <option value="5m">۵ دقیقه</option>
+                <option value="1h">۱ ساعت</option>
+                <option value="4h">۴ ساعت</option>
+                <option value="1d">۱ روز</option>
+                <option value="1w">۱ هفته</option>
+            </select>
                 </div>
-
+            
                 <div class="chart-type-selector">
                     <label>نوع نمودار:</label>
                     <div class="chart-buttons">
-                        <button class="chart-type-btn active" data-type="candle">کندل</button>
-                        <button class="chart-type-btn" data-type="line">خطی</button>
-                        <button class="chart-type-btn" data-type="area">ناحیه‌ای</button>
+            <button class="chart-type-btn active" data-type="candle">کندل</button>
+            <button class="chart-type-btn" data-type="line">خطی</button>
+            <button class="chart-type-btn" data-type="area">ناحیه‌ای</button>
                     </div>
                 </div>
-            </div>
-
+        </div>
+        
             <div class="price-interactive-chart" id="interactiveChart">
                 <div class="chart-placeholder-large">
-                    📊 نمودار تعاملی ${item.name}
-                    <div class="chart-tooltip" style="display: none;"></div>
+                📊 نمودار تعاملی ${item.name}
+                <div class="chart-tooltip" style="display: none;"></div>
                 </div>
             </div>
         </div>
-
+        
         <div class="price-detail-analysis-section">
             <div class="analysis-header-fullscreen">
                 <h3>🤖 تحلیل پیشرفته هوش مصنوعی</h3>
@@ -543,7 +543,7 @@ function openPriceDetail(item) {
                 <div class="analysis-card">
                     <h4>🌍 روند بازار</h4>
                     <div class="analysis-trend">مثبت - همراه با بازار جهانی</div>
-                </div>
+            </div>
             </div>
         </div>
 

@@ -607,7 +607,7 @@ function initGlobe() {
   // ساعت اصلی همیشه اولویت دارد - React mode را نادیده بگیر
   const globeWrapper = document.getElementById('globeClockWrapper');
   const isReactMode = globeWrapper && globeWrapper.getAttribute('data-react-mode') === 'true';
-
+  
   // ساعت اصلی همیشه فعال شود - این اولویت اصلی است
   if (isReactMode) {
     log.info('ℹ️ React mode تشخیص داده شد اما ساعت اصلی اولویت دارد - ادامه اجرا...');

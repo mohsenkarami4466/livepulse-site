@@ -97,22 +97,22 @@ function AppContent() {
 function App() {
   // تعیین basename بر اساس محیط: development از /، production از /livepulse-site/
   const basename = import.meta.env.DEV ? '/' : '/livepulse-site/'
-
+  
   return (
     <ErrorBoundary>
-      <BrowserRouter
-        basename={basename}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true
-        }}
-      >
-        <AppProvider>
-          <div className="App">
-            <AppContent />
-          </div>
-        </AppProvider>
-      </BrowserRouter>
+    <BrowserRouter
+      basename={basename}
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
+      <AppProvider>
+        <div className="App">
+          <AppContent />
+        </div>
+      </AppProvider>
+    </BrowserRouter>
     </ErrorBoundary>
   )
 }
