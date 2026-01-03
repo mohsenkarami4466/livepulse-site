@@ -55,7 +55,7 @@ div.view section.globe-highlights,
   right: auto !important; /* اطمینان از عدم align به راست */
   height: 80px !important;
   min-height: 80px !important;
-  margin-top: 35px !important; /* 35px از بالا + با JS تنظیم می‌شود (15px از Portfolio) */
+  margin-top: 150px !important; /* 150px از بالا (140px قبلی + 10px پایین‌تر) - فقط دسکتاپ */
   margin-left: 5px !important; /* 5px از چپ */
   margin-right: 5px !important; /* 5px از راست */
   margin-bottom: 20px !important;
@@ -142,7 +142,7 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 35px !important; /* 35px از بالا */
+    margin-top: 90px !important; /* 90px از بالا در تبلت (110px قبلی - 20px بالا) */
     height: 70px !important;
     min-height: 70px !important;
   }
@@ -173,7 +173,7 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 35px !important; /* 35px از بالا */
+    margin-top: 60px !important; /* 60px از بالا در موبایل (80px قبلی - 20px بالا) */
     height: 60px !important;
     min-height: 60px !important;
   }
@@ -206,7 +206,7 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 35px !important; /* 35px از بالا */
+    margin-top: 60px !important; /* 60px از بالا در موبایل (80px قبلی - 20px بالا) */
     height: 55px !important;
     min-height: 55px !important;
   }
