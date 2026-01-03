@@ -84,8 +84,8 @@
 .utc-hour.active {
   color: #00ff88;
   font-size: 0.5rem;
-  text-shadow: 0 0 6px #00ff88;
-  background: rgba(0, 255, 136, 0.15);
+  text-shadow: none;
+  background: transparent;
 }
 
 [data-theme="light"] .utc-hour {
@@ -96,7 +96,8 @@
 
 [data-theme="light"] .utc-hour.active {
   color: #059669;
-  background: rgba(5, 150, 105, 0.15);
+  background: transparent;
+  text-shadow: none;
 }
 
 /* نقطه چشمک‌زن نیم‌ساعت - بین هر جفت عدد */
