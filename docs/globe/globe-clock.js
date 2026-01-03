@@ -561,10 +561,21 @@ function updateHighlightsPosition() {
   }
 }
 
+// تابع wrapper برای انتظار stylesheet‌ها قبل از اجرا
+// Wrapper function to wait for stylesheets before execution
+function updateHighlightsPositionSafe() {
+  waitForStylesheets(() => {
+    // تاخیر اضافی برای اطمینان از render شدن
+    setTimeout(() => {
+      updateHighlightsPosition();
+    }, 100);
+  });
+}
+
 // در دسترس قرار دادن تابع برای استفاده در جاهای دیگر
 // Export function for use elsewhere
 if (typeof window !== 'undefined') {
-  window.updateHighlightsPosition = updateHighlightsPosition;
+  window.updateHighlightsPosition = updateHighlightsPositionSafe;
 }
 
 /* ========== توابع ساعت UTC / UTC Clock Functions ========== */
