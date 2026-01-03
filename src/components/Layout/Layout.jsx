@@ -93,12 +93,16 @@ function Layout({ children }) {
    */
   // Effect: فراخوانی updateHighlightsPosition بعد از render
   React.useEffect(() => {
-    // تاخیر برای اطمینان از render شدن کامل
+    // استفاده از updateHighlightsPositionSafe که منتظر stylesheet‌ها می‌ماند
     const timeoutId = setTimeout(() => {
-      if (typeof window !== 'undefined' && typeof window.updateHighlightsPosition === 'function') {
-        window.updateHighlightsPosition()
+      if (typeof window !== 'undefined') {
+        if (typeof window.updateHighlightsPositionSafe === 'function') {
+          window.updateHighlightsPositionSafe()
+        } else if (typeof window.updateHighlightsPosition === 'function') {
+          window.updateHighlightsPosition()
+        }
       }
-    }, 800)
+    }, 100)
     
     return () => clearTimeout(timeoutId)
   }, []) // فقط یکبار هنگام mount

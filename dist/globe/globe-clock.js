@@ -483,7 +483,17 @@ function updateHighlightsPosition() {
       
       // استفاده از requestAnimationFrame برای جلوگیری از force layout
       requestAnimationFrame(() => {
-        section.style.setProperty('margin-top', marginTop, 'important');
+        // فقط اگر stylesheet‌ها لود شده‌اند، margin-top را تنظیم کن
+        if (areStylesheetsLoaded()) {
+          section.style.setProperty('margin-top', marginTop, 'important');
+        } else {
+          // اگر stylesheet‌ها لود نشده‌اند، منتظر بمان
+          waitForStylesheets(() => {
+            requestAnimationFrame(() => {
+              section.style.setProperty('margin-top', marginTop, 'important');
+            });
+          });
+        }
         section.style.setProperty('padding-top', '0', 'important');
         section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
         section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
