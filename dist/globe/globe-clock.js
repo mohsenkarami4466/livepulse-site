@@ -486,73 +486,74 @@ function updateHighlightsPosition() {
         section.style.setProperty('margin-top', marginTop, 'important');
         section.style.setProperty('padding-top', '0', 'important');
         section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
-      section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
-      section.style.setProperty('visibility', 'visible', 'important');
-      section.style.setProperty('opacity', '1', 'important');
-      section.style.setProperty('position', 'relative', 'important');
-      section.style.setProperty('z-index', '10', 'important'); // بالاتر از view ها (1) اما پایین‌تر از fixed elements
-      // عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل
-      // عرض با CSS تنظیم می‌شود - اینجا فقط margin-top را تنظیم می‌کنیم
-      // Width is set by CSS - we only set margin-top here
-      // section.style.setProperty('width', 'calc(100vw - 10px)', 'important'); // حذف شد - با CSS تنظیم می‌شود
-      // section.style.setProperty('min-width', 'calc(100vw - 10px)', 'important'); // حذف شد
-      // section.style.setProperty('max-width', 'calc(100vw - 10px)', 'important'); // حذف شد
-      // section.style.setProperty('margin-left', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
-      // section.style.setProperty('margin-right', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
-      // section.style.setProperty('left', '0', 'important'); // حذف شد - با CSS تنظیم می‌شود
-      // section.style.setProperty('right', 'auto', 'important'); // حذف شد - با CSS تنظیم می‌شود
-      section.style.setProperty('padding-left', '0', 'important'); // padding حذف شد - margin استفاده می‌شود
-      section.style.setProperty('padding-right', '0', 'important');
-      section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
-      section.style.setProperty('min-height', '80px', 'important');
-      
-      // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
-      const container = section.querySelector('.highlights-container');
-      if (container) {
-        container.style.setProperty('display', 'flex', 'important');
-        // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
-        // Width and sizes are set by CSS - we don't change them here
-        // container.style.setProperty('width', '100%', 'important'); // حذف شد
-        // container.style.setProperty('min-width', '100%', 'important'); // حذف شد
-        // container.style.setProperty('max-width', '100%', 'important'); // حذف شد
-        // container.style.setProperty('height', '80px', 'important'); // حذف شد
-        // container.style.setProperty('min-height', '80px', 'important'); // حذف شد
-        container.style.setProperty('visibility', 'visible', 'important');
-        container.style.setProperty('opacity', '1', 'important');
-        container.style.setProperty('justify-content', 'flex-start', 'important');
-        container.style.setProperty('align-items', 'center', 'important');
-        container.style.setProperty('flex-wrap', 'nowrap', 'important');
-        container.style.setProperty('overflow-x', 'auto', 'important');
-        container.style.setProperty('overflow-y', 'hidden', 'important');
-        container.style.setProperty('gap', '5px', 'important'); // gap ثابت 5px بین هایلایت‌ها
-      }
-      
-      // اطمینان از نمایش highlight-circle ها - فقط استایل‌های ضروری (نه width یا اندازه)
-      const circles = section.querySelectorAll('.highlight-circle');
-      
-      circles.forEach(circle => {
-        circle.style.setProperty('display', 'flex', 'important');
-        circle.style.setProperty('visibility', 'visible', 'important');
-        circle.style.setProperty('opacity', '1', 'important');
-        // عرض، flex، و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
-        // Width, flex, and sizes are set by CSS - we don't change them here
-        // circle.style.setProperty('flex-shrink', '0', 'important'); // حذف شد
-        // circle.style.setProperty('flex-grow', '0', 'important'); // حذف شد
-        // همه اندازه‌های ریسپانسیو حذف شدند - با CSS تنظیم می‌شوند
-      });
-      
-      // Debug logging - همیشه فعال برای troubleshooting
-      console.log('🔍 Highlights position updated:', {
-          section: section.className,
-          marginTop: marginTop,
-          isMobile: isMobile,
-          isTablet: isTablet,
-        isDesktop: isDesktop,
-        portfolioCard: portfolioCard ? 'found' : 'not found',
-        activeView: activeView ? activeView.id || activeView.className : 'not found',
-        highlightsCount: highlightsSections.length
+        section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
+        section.style.setProperty('visibility', 'visible', 'important');
+        section.style.setProperty('opacity', '1', 'important');
+        section.style.setProperty('position', 'relative', 'important');
+        section.style.setProperty('z-index', '10', 'important'); // بالاتر از view ها (1) اما پایین‌تر از fixed elements
+        // عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل
+        // عرض با CSS تنظیم می‌شود - اینجا فقط margin-top را تنظیم می‌کنیم
+        // Width is set by CSS - we only set margin-top here
+        // section.style.setProperty('width', 'calc(100vw - 10px)', 'important'); // حذف شد - با CSS تنظیم می‌شود
+        // section.style.setProperty('min-width', 'calc(100vw - 10px)', 'important'); // حذف شد
+        // section.style.setProperty('max-width', 'calc(100vw - 10px)', 'important'); // حذف شد
+        // section.style.setProperty('margin-left', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
+        // section.style.setProperty('margin-right', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
+        // section.style.setProperty('left', '0', 'important'); // حذف شد - با CSS تنظیم می‌شود
+        // section.style.setProperty('right', 'auto', 'important'); // حذف شد - با CSS تنظیم می‌شود
+        section.style.setProperty('padding-left', '0', 'important'); // padding حذف شد - margin استفاده می‌شود
+        section.style.setProperty('padding-right', '0', 'important');
+        section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
+        section.style.setProperty('min-height', '80px', 'important');
+        
+        // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
+        const container = section.querySelector('.highlights-container');
+        if (container) {
+          container.style.setProperty('display', 'flex', 'important');
+          // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+          // Width and sizes are set by CSS - we don't change them here
+          // container.style.setProperty('width', '100%', 'important'); // حذف شد
+          // container.style.setProperty('min-width', '100%', 'important'); // حذف شد
+          // container.style.setProperty('max-width', '100%', 'important'); // حذف شد
+          // container.style.setProperty('height', '80px', 'important'); // حذف شد
+          // container.style.setProperty('min-height', '80px', 'important'); // حذف شد
+          container.style.setProperty('visibility', 'visible', 'important');
+          container.style.setProperty('opacity', '1', 'important');
+          container.style.setProperty('justify-content', 'flex-start', 'important');
+          container.style.setProperty('align-items', 'center', 'important');
+          container.style.setProperty('flex-wrap', 'nowrap', 'important');
+          container.style.setProperty('overflow-x', 'auto', 'important');
+          container.style.setProperty('overflow-y', 'hidden', 'important');
+          container.style.setProperty('gap', '5px', 'important'); // gap ثابت 5px بین هایلایت‌ها
+        }
+        
+        // اطمینان از نمایش highlight-circle ها - فقط استایل‌های ضروری (نه width یا اندازه)
+        const circles = section.querySelectorAll('.highlight-circle');
+        
+        circles.forEach(circle => {
+          circle.style.setProperty('display', 'flex', 'important');
+          circle.style.setProperty('visibility', 'visible', 'important');
+          circle.style.setProperty('opacity', '1', 'important');
+          // عرض، flex، و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+          // Width, flex, and sizes are set by CSS - we don't change them here
+          // circle.style.setProperty('flex-shrink', '0', 'important'); // حذف شد
+          // circle.style.setProperty('flex-grow', '0', 'important'); // حذف شد
+          // همه اندازه‌های ریسپانسیو حذف شدند - با CSS تنظیم می‌شوند
         });
-      }
+        
+        // Debug logging - همیشه فعال برای troubleshooting
+        console.log('🔍 Highlights position updated:', {
+            section: section.className,
+            marginTop: marginTop,
+            isMobile: isMobile,
+            isTablet: isTablet,
+          isDesktop: isDesktop,
+          portfolioCard: portfolioCard ? 'found' : 'not found',
+          activeView: activeView ? activeView.id || activeView.className : 'not found',
+          highlightsCount: highlightsSections.length
+          });
+      });
+    }
   });
   
   // اگر highlights پیدا نشد، خروج کن - بدون log (normal در React Router)
