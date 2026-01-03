@@ -501,49 +501,48 @@ function updateHighlightsPosition() {
           section.style.setProperty('padding-right', '0', 'important');
           section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
           section.style.setProperty('min-height', '80px', 'important');
-        });
-      });
-        
-        // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
-        const container = section.querySelector('.highlights-container');
-        if (container) {
-          container.style.setProperty('display', 'flex', 'important');
-          // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
-          // Width and sizes are set by CSS - we don't change them here
-          container.style.setProperty('visibility', 'visible', 'important');
-          container.style.setProperty('opacity', '1', 'important');
-          container.style.setProperty('justify-content', 'flex-start', 'important');
-          container.style.setProperty('align-items', 'center', 'important');
-          container.style.setProperty('flex-wrap', 'nowrap', 'important');
-          container.style.setProperty('overflow-x', 'auto', 'important');
-          container.style.setProperty('overflow-y', 'hidden', 'important');
-          container.style.setProperty('gap', '5px', 'important'); // gap ثابت 5px بین هایلایت‌ها
-        }
-        
-        // اطمینان از نمایش highlight-circle ها - فقط استایل‌های ضروری (نه width یا اندازه)
-        const circles = section.querySelectorAll('.highlight-circle');
-        
-        circles.forEach(circle => {
-          circle.style.setProperty('display', 'flex', 'important');
-          circle.style.setProperty('visibility', 'visible', 'important');
-          circle.style.setProperty('opacity', '1', 'important');
-          // عرض، flex، و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
-          // Width, flex, and sizes are set by CSS - we don't change them here
-        });
-        
-        // Debug logging - فقط در development
-        if (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') {
-          console.log('🔍 Highlights position updated:', {
-            section: section.className,
-            marginTop: marginTop,
-            isMobile: isMobile,
-            isTablet: isTablet,
-            isDesktop: isDesktop,
-            portfolioCard: portfolioCard ? 'found' : 'not found',
-            activeView: activeView ? activeView.id || activeView.className : 'not found',
-            highlightsCount: highlightsSections.length
+          
+          // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
+          const container = section.querySelector('.highlights-container');
+          if (container) {
+            container.style.setProperty('display', 'flex', 'important');
+            // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+            // Width and sizes are set by CSS - we don't change them here
+            container.style.setProperty('visibility', 'visible', 'important');
+            container.style.setProperty('opacity', '1', 'important');
+            container.style.setProperty('justify-content', 'flex-start', 'important');
+            container.style.setProperty('align-items', 'center', 'important');
+            container.style.setProperty('flex-wrap', 'nowrap', 'important');
+            container.style.setProperty('overflow-x', 'auto', 'important');
+            container.style.setProperty('overflow-y', 'hidden', 'important');
+            container.style.setProperty('gap', '5px', 'important'); // gap ثابت 5px بین هایلایت‌ها
+          }
+          
+          // اطمینان از نمایش highlight-circle ها - فقط استایل‌های ضروری (نه width یا اندازه)
+          const circles = section.querySelectorAll('.highlight-circle');
+          
+          circles.forEach(circle => {
+            circle.style.setProperty('display', 'flex', 'important');
+            circle.style.setProperty('visibility', 'visible', 'important');
+            circle.style.setProperty('opacity', '1', 'important');
+            // عرض، flex، و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+            // Width, flex, and sizes are set by CSS - we don't change them here
           });
-        }
+          
+          // Debug logging - فقط در development
+          if (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') {
+            console.log('🔍 Highlights position updated:', {
+              section: section.className,
+              marginTop: marginTop,
+              isMobile: isMobile,
+              isTablet: isTablet,
+              isDesktop: isDesktop,
+              portfolioCard: portfolioCard ? 'found' : 'not found',
+              activeView: activeView ? activeView.id || activeView.className : 'not found',
+              highlightsCount: highlightsSections.length
+            });
+          }
+        });
       });
     }
   });
