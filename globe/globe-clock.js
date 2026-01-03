@@ -481,18 +481,18 @@ function updateHighlightsPosition() {
       
       if (portfolioCard) {
         // portfolio card با position: fixed است
-        // باید از offsetTop و offsetHeight استفاده کنیم
+        // باید از getBoundingClientRect استفاده کنیم و scroll را در نظر بگیریم
         // portfolio card is position: fixed
-        // we need to use offsetTop and offsetHeight
-        const portfolioTop = portfolioCard.offsetTop;
-        const portfolioHeight = portfolioCard.offsetHeight;
-        const portfolioBottom = portfolioTop + portfolioHeight;
+        // we need to use getBoundingClientRect and account for scroll
+        const portfolioRect = portfolioCard.getBoundingClientRect();
+        const portfolioBottom = portfolioRect.bottom + window.scrollY;
         
-        // پیدا کردن موقعیت بالای layout-main
-        // Find top position of layout-main
+        // پیدا کردن موقعیت بالای layout-main (با scroll)
+        // Find top position of layout-main (with scroll)
         const layoutMain = document.querySelector('.layout-main');
         const referenceElement = activeView || layoutMain || document.body;
-        const referenceTop = referenceElement.offsetTop || 0;
+        const referenceRect = referenceElement.getBoundingClientRect();
+        const referenceTop = referenceRect.top + window.scrollY;
         
         // محاسبه فاصله از بالای reference element تا پایین portfolio card + 15px
         // Calculate distance from top of reference element to bottom of portfolio card + 15px
