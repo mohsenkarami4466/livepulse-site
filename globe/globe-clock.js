@@ -475,11 +475,11 @@ function updateHighlightsPosition() {
   
   highlightsSections.forEach(section => {
     if (section) {
-      // تنظیم margin-top - به حالت قبل از تغییرات agent
-      // دسکتاپ: 120px، تبلت: 60px، موبایل: 30px
+      // تنظیم margin-top - 40 پیکسل بالاتر از قبل
+      // دسکتاپ: 80px، تبلت: 20px، موبایل: 0px
       const isDesktop = window.innerWidth >= 1024;
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-      const marginTop = isDesktop ? '120px' : (isTablet ? '60px' : '30px');
+      const marginTop = isDesktop ? '80px' : (isTablet ? '20px' : '0px');
       
       // استفاده از waitForStylesheets برای جلوگیری از Layout warning
       // Wait for stylesheets before setting styles to prevent Layout warning
@@ -665,7 +665,7 @@ function updateUTCClock() {
   // آپدیت اعداد - هر موقعیت ساعت متناظر خودش را نشان می‌دهد
   // Update numbers - each position shows its corresponding hour
   document.querySelectorAll('.utc-hour').forEach((el, index) => {
-    const displayHour = (index * 2) % 24;
+    const displayHour = index;
     el.textContent = displayHour.toString().padStart(2, '0');
     el.dataset.hour = displayHour;
     
@@ -682,8 +682,8 @@ function updateUTCClock() {
   // آپدیت نقطه‌های چشمک‌زن - نشان‌دهنده نیم ساعت
   // Update blinking dots - indicating half hour
   document.querySelectorAll('.half-hour-dot').forEach((el, index) => {
-    const hour1 = (index * 2) % 24;
-    const hour2 = ((index * 2) + 1) % 24;
+    const hour1 = index;
+    const hour2 = (index + 1) % 24;
     
     if (isHalfHour && (currentHour === hour1 || currentHour === hour2)) {
       el.classList.add('active');
