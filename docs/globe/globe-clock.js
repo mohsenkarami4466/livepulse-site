@@ -480,22 +480,24 @@ function updateHighlightsPosition() {
       let marginTop = '0px';
       
       if (portfolioCard) {
-        // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
-        // Use getBoundingClientRect to calculate viewport position
-        const portfolioRect = portfolioCard.getBoundingClientRect();
-        const portfolioBottom = portfolioRect.bottom;
+        // portfolio card با position: fixed است
+        // باید از offsetTop و offsetHeight استفاده کنیم
+        // portfolio card is position: fixed
+        // we need to use offsetTop and offsetHeight
+        const portfolioTop = portfolioCard.offsetTop;
+        const portfolioHeight = portfolioCard.offsetHeight;
+        const portfolioBottom = portfolioTop + portfolioHeight;
         
-        // پیدا کردن موقعیت بالای layout-main در viewport
-        // Find top position of layout-main in viewport
+        // پیدا کردن موقعیت بالای layout-main
+        // Find top position of layout-main
         const layoutMain = document.querySelector('.layout-main');
         const referenceElement = activeView || layoutMain || document.body;
-        const referenceRect = referenceElement.getBoundingClientRect();
-        const referenceTop = referenceRect.top;
+        const referenceTop = referenceElement.offsetTop || 0;
         
         // محاسبه فاصله از بالای reference element تا پایین portfolio card + 15px
         // Calculate distance from top of reference element to bottom of portfolio card + 15px
         const distanceFromTop = portfolioBottom - referenceTop + 15;
-        marginTop = `${Math.max(0, distanceFromTop)}px`;
+        marginTop = `${Math.max(15, distanceFromTop)}px`; // حداقل 15px
       } else {
         // fallback: اگر portfolio card پیدا نشد
         // fallback: if portfolio card not found
