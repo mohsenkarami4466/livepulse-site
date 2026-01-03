@@ -1,0 +1,215 @@
+/**
+ * ============================================
+ * 📊 Cards - Price Cards Styles
+ * ============================================
+ * 
+ * این فایل شامل استایل‌های مربوط به Cards - Price Cards Styles است.
+ * This file contains styles related to Cards - Price Cards Styles.
+ * 
+ * ============================================
+ */
+
+/* ==================== */
+/* 📊 کارت‌های قیمت */
+/* ==================== */
+
+.main-content {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🎨 کانتینر کارت‌ها - گرید منظم */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 2rem;
+    padding: 0 10px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ریسپانسیو کارت‌ها */
+@media (max-width: 1400px) {
+    .cards-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1100px) {
+    .cards-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 0 8px;
+    }
+}
+
+/* کارت‌های قیمت - Liquid Glass - هر دو تم */
+.price-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    background: var(--card-bg);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+/* افکت شاین */
+.price-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: none;
+    pointer-events: none;
+    border-radius: 16px 16px 0 0;
+}
+
+/* حذف نوار رنگی بالای کارت */
+.price-card::before {
+    display: none !important;
+}
+
+.price-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.15),
+        0 0 0 1px var(--accent-blue);
+}
+
+/* رنگ متن کارت‌ها */
+.price-card h3,
+.price-card .card-header h3 {
+    color: var(--card-text);
+}
+
+.price-card .current-price {
+    color: var(--card-text);
+}
+
+/* حذف تبلیغات از کارت‌ها */
+.price-card .ad-space,
+.price-card .ad-banner {
+    display: none !important;
+}
+
+/* تم روشن - تنظیمات اضافی */
+[data-theme="light"] .price-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 
+        0 4px 24px rgba(0, 0, 0, 0.06),
+        0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .price-card:hover {
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.12),
+        0 0 0 1px var(--accent-blue);
+}
+
+[data-theme="light"] .price-card::after {
+    background: none;
+}
+
+/* تم تاریک - تنظیمات اضافی */
+[data-theme="dark"] .price-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .price-card::after {
+    background: none;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.card-header h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--card-text, var(--text-primary));
+}
+
+.price-change {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.price-change.positive {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    font-weight: 600;
+}
+
+.price-change.negative {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    font-weight: 600;
+}
+
+.current-price {
+    color: var(--card-text, var(--text-primary));
+}
+
+.card-content .current-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+/* نمودار مینی SVG - مثل سایت‌های مالی */
+.mini-chart {
+    height: 36px;
+    border-radius: 6px;
+    margin: 6px 0 0 0;
+    position: relative;
+    overflow: hidden;
+    background: transparent !important;
+}
+
+.mini-chart svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* حذف استایل قدیمی - فقط SVG نمایش داده میشه */
+.mini-chart.up,
+.mini-chart.down {
+    background: transparent !important;
+}
