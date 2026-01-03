@@ -424,11 +424,11 @@ function updateHighlightsPosition() {
   
   highlightsSections.forEach(section => {
     if (section) {
-      // تنظیم margin-top به 120px از بالا (150px - 30px بالا) - فقط دسکتاپ
-      // در تبلت 60px و در موبایل 30px
+      // تنظیم margin-top به 100px از بالا (120px - 20px بالا) - فقط دسکتاپ
+      // در تبلت 40px و در موبایل 10px
       const isDesktop = window.innerWidth >= 1024;
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-      const marginTop = isDesktop ? '120px' : (isTablet ? '60px' : '30px');
+      const marginTop = isDesktop ? '100px' : (isTablet ? '40px' : '10px');
       section.style.setProperty('margin-top', marginTop, 'important');
       section.style.setProperty('padding-top', '0', 'important');
       section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container

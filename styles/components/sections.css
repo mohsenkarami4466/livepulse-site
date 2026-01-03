@@ -311,7 +311,7 @@
     max-height: 80px !important;
     /* margins ساده */
     /* margin-top با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card + 65px اضافی) */
-    margin-top: 120px !important; /* 120px از بالا (150px - 30px بالا) - فقط دسکتاپ */
+    margin-top: 100px !important; /* 100px از بالا (120px - 20px بالا) - فقط دسکتاپ */
     margin-bottom: 20px !important; /* فاصله از پایین */
     margin-left: 5px !important; /* 5px از چپ */
     margin-right: 5px !important; /* 5px از راست */
@@ -380,7 +380,7 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 60px !important; /* فاصله 60px از بالا در تبلت (90px - 30px بالا) */
+        margin-top: 40px !important; /* فاصله 40px از بالا در تبلت (60px - 20px بالا) */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
