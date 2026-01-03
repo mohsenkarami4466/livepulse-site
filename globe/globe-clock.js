@@ -494,27 +494,47 @@ function updateHighlightsPosition() {
             });
           });
         }
-        section.style.setProperty('padding-top', '0', 'important');
-        section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
-        section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
-        section.style.setProperty('visibility', 'visible', 'important');
-        section.style.setProperty('opacity', '1', 'important');
-        section.style.setProperty('position', 'relative', 'important');
-        section.style.setProperty('z-index', '10', 'important'); // بالاتر از view ها (1) اما پایین‌تر از fixed elements
-        // عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل
-        // عرض با CSS تنظیم می‌شود - اینجا فقط margin-top را تنظیم می‌کنیم
-        // Width is set by CSS - we only set margin-top here
-        // section.style.setProperty('width', 'calc(100vw - 10px)', 'important'); // حذف شد - با CSS تنظیم می‌شود
-        // section.style.setProperty('min-width', 'calc(100vw - 10px)', 'important'); // حذف شد
-        // section.style.setProperty('max-width', 'calc(100vw - 10px)', 'important'); // حذف شد
-        // section.style.setProperty('margin-left', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
-        // section.style.setProperty('margin-right', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
-        // section.style.setProperty('left', '0', 'important'); // حذف شد - با CSS تنظیم می‌شود
-        // section.style.setProperty('right', 'auto', 'important'); // حذف شد - با CSS تنظیم می‌شود
-        section.style.setProperty('padding-left', '0', 'important'); // padding حذف شد - margin استفاده می‌شود
-        section.style.setProperty('padding-right', '0', 'important');
-        section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
-        section.style.setProperty('min-height', '80px', 'important');
+        // تنظیم بقیه استایل‌ها - فقط اگر stylesheet‌ها لود شده‌اند
+        if (areStylesheetsLoaded()) {
+          section.style.setProperty('padding-top', '0', 'important');
+          section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
+          section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
+          section.style.setProperty('visibility', 'visible', 'important');
+          section.style.setProperty('opacity', '1', 'important');
+          section.style.setProperty('position', 'relative', 'important');
+          section.style.setProperty('z-index', '10', 'important'); // بالاتر از view ها (1) اما پایین‌تر از fixed elements
+          // عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل
+          // عرض با CSS تنظیم می‌شود - اینجا فقط margin-top را تنظیم می‌کنیم
+          // Width is set by CSS - we only set margin-top here
+          // section.style.setProperty('width', 'calc(100vw - 10px)', 'important'); // حذف شد - با CSS تنظیم می‌شود
+          // section.style.setProperty('min-width', 'calc(100vw - 10px)', 'important'); // حذف شد
+          // section.style.setProperty('max-width', 'calc(100vw - 10px)', 'important'); // حذف شد
+          // section.style.setProperty('margin-left', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
+          // section.style.setProperty('margin-right', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
+          // section.style.setProperty('left', '0', 'important'); // حذف شد - با CSS تنظیم می‌شود
+          // section.style.setProperty('right', 'auto', 'important'); // حذف شد - با CSS تنظیم می‌شود
+          section.style.setProperty('padding-left', '0', 'important'); // padding حذف شد - margin استفاده می‌شود
+          section.style.setProperty('padding-right', '0', 'important');
+          section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
+          section.style.setProperty('min-height', '80px', 'important');
+        } else {
+          // اگر stylesheet‌ها لود نشده‌اند، منتظر بمان
+          waitForStylesheets(() => {
+            requestAnimationFrame(() => {
+              section.style.setProperty('padding-top', '0', 'important');
+              section.style.setProperty('display', 'flex', 'important');
+              section.style.setProperty('flex-direction', 'column', 'important');
+              section.style.setProperty('visibility', 'visible', 'important');
+              section.style.setProperty('opacity', '1', 'important');
+              section.style.setProperty('position', 'relative', 'important');
+              section.style.setProperty('z-index', '10', 'important');
+              section.style.setProperty('padding-left', '0', 'important');
+              section.style.setProperty('padding-right', '0', 'important');
+              section.style.setProperty('height', '80px', 'important');
+              section.style.setProperty('min-height', '80px', 'important');
+            });
+          });
+        }
         
         // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
         const container = section.querySelector('.highlights-container');
