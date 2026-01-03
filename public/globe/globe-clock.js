@@ -880,16 +880,18 @@ function initGlobe() {
   const tryLoadDayTexture = (index) => {
     // تشخیص محیط: development یا production
     const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const basePath = isDev ? '' : '/livepulse-site';
+    // تشخیص basePath از window.location.pathname
+    const pathname = window.location.pathname;
+    const basePath = pathname.startsWith('/livepulse-site') ? '/livepulse-site' : (isDev ? '' : '/livepulse-site');
     
     const texturePaths = [
-      // اول از فایل محلی در development
+      // اول از production paths (اولویت با basePath)
+      `${basePath}/assets/images/earth-day.jpg`,
+      `${basePath}/earth-day.jpg`,
+      // سپس فایل‌های محلی در development
       '/assets/images/earth-day.jpg',
       './assets/images/earth-day.jpg',
       'assets/images/earth-day.jpg',
-      // سپس production paths
-      `${basePath}/assets/images/earth-day.jpg`,
-      `${basePath}/earth-day.jpg`,
       // سپس فایل‌های محلی دیگر
       './earth-day.jpg',
       'earth-day.jpg',
