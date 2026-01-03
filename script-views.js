@@ -195,6 +195,10 @@ function showView(view) {
             });
         });
 
+        // ⚠️ انتقال highlights غیرفعال شد - Highlights در Layout.jsx مدیریت می‌شوند
+        // Highlights دیگر در view ها نیستند، در layout-main قرار دارند
+        // این کد باعث می‌شد highlights دوباره تشکیل شوند و جابجا شوند
+        /*
         // انتقال هایلایت‌های اصلی فقط به صفحات اصلی - با insertBefore برای قرارگیری در ابتدا
         // صفحاتی که هایلایت‌های مخصوص خودشان را دارند نباید هایلایت‌های اصلی را بگیرند
         if (!['tools', 'news', 'tutorial', 'relax', 'globe'].includes(view)) {
@@ -242,6 +246,7 @@ function showView(view) {
                 }
             }
         }
+        */
 
         // تنظیم ایونت‌لیستنر برای کارت‌های این صفحه - با تاخیر برای transition
         setTimeout(() => {

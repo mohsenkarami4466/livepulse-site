@@ -72,8 +72,8 @@
     <script src="/livepulse-site/gold-map.js"></script>
     <script src="/livepulse-site/data/geo-borders.js"></script>
     <script src="/livepulse-site/script-init.js"></script>
-  <script type="module" crossorigin src="/livepulse-site/assets/index-CgHzSoOQ.js"></script>
-  <link rel="stylesheet" crossorigin href="/livepulse-site/assets/index-Bv9EDEFf.css">
+  <script type="module" crossorigin src="/livepulse-site/assets/index-BttLKPIO.js"></script>
+  <link rel="stylesheet" crossorigin href="/livepulse-site/assets/index-B_mdDPVl.css">
 </head>
 <body data-theme="light" style="margin: 0; padding: 0;">
     <div id="root"></div>
@@ -94,67 +94,52 @@
     "></div>
 
 
-    <!-- ساعت اصلی را همیشه فعال کن -->
+    <!-- Fallback: فعال‌سازی کره کوچک در صورت عدم وجود React GlobeClock -->
     <script>
-        // ساعت اصلی را همیشه فعال کن
-        function activateOriginalClock() {
-            console.log('🔧 فعال‌سازی ساعت اصلی بازار...');
-
-            // بررسی وجود container
-            let container = document.getElementById('globeContainer');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'globeContainer';
-                container.style.cssText = 'position: fixed; top: 10px; left: 10px; width: 180px; height: 180px; z-index: 10000; background: transparent; overflow: hidden; border-radius: 50%;';
-                document.body.appendChild(container);
-            }
-
-            // بررسی وجود wrapper
-            let wrapper = document.getElementById('globeClockWrapper');
-            if (!wrapper) {
-                wrapper = document.createElement('div');
-                wrapper.id = 'globeClockWrapper';
-                wrapper.style.cssText = 'position: fixed; top: 10px; left: 10px; z-index: 10000; width: 180px; height: 180px; overflow: hidden;';
-                document.body.appendChild(wrapper);
-            }
-
-            // فعال کردن ساعت اصلی
-            if (typeof initGlobe === 'function') {
-                try {
-                    console.log('🕐 اجرای initGlobe...');
-                    initGlobe();
-                    console.log('✅ ساعت اصلی با کره زمین فعال شد!');
-                } catch (error) {
-                    console.error('❌ خطا در فعال‌سازی ساعت اصلی:', error);
+        // این کد فقط به عنوان fallback عمل می‌کند
+        // اگر React GlobeClock کار کند، این کد اجرا نمی‌شود
+        (function() {
+            // صبر می‌کنیم تا React render شود
+            setTimeout(function() {
+                // بررسی اینکه آیا React GlobeClock وجود دارد
+                const reactGlobeClock = document.querySelector('#globeClockWrapper[data-react-mode="true"]');
+                if (reactGlobeClock) {
+                    // React GlobeClock وجود دارد، نیازی به fallback نیست
+                    return;
                 }
-            } else {
-                console.error('❌ تابع initGlobe پیدا نشد');
-                // اگر پیدا نشد، دوباره امتحان کن
-                setTimeout(activateOriginalClock, 1000);
-            }
-        }
-
-        // فعال‌سازی در زمان‌های مختلف
-        setTimeout(activateOriginalClock, 500);
-        setTimeout(activateOriginalClock, 1000);
-        setTimeout(activateOriginalClock, 1500);
-        setTimeout(activateOriginalClock, 2000);
-        setTimeout(activateOriginalClock, 3000);
-        setTimeout(activateOriginalClock, 5000);
-
-        // فعال‌سازی در window load
-        window.addEventListener('load', () => {
-            setTimeout(activateOriginalClock, 500);
-            setTimeout(activateOriginalClock, 1000);
-            setTimeout(activateOriginalClock, 2000);
-        });
-
-        // فعال‌سازی مداوم هر 3 ثانیه
-        setInterval(() => {
-            if (!document.getElementById('globeClockWrapper')) {
-                activateOriginalClock();
-            }
-        }, 3000);
+                
+                // اگر React GlobeClock وجود ندارد، fallback را فعال می‌کنیم
+                const log = window.logger || { info: console.log, warn: console.warn };
+                log.info('⚠️ React GlobeClock پیدا نشد - استفاده از fallback');
+                
+                // ایجاد container و wrapper
+                let container = document.getElementById('globeContainer');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'globeContainer';
+                    container.style.cssText = 'position: fixed; top: 10px; left: 10px; width: 180px; height: 180px; z-index: 10000; background: transparent; overflow: hidden; border-radius: 50%;';
+                    document.body.appendChild(container);
+                }
+                
+                let wrapper = document.getElementById('globeClockWrapper');
+                if (!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.id = 'globeClockWrapper';
+                    wrapper.style.cssText = 'position: fixed; top: 10px; left: 10px; z-index: 10000; width: 180px; height: 180px; overflow: hidden;';
+                    document.body.appendChild(wrapper);
+                }
+                
+                // فعال کردن ساعت اصلی
+                if (typeof initGlobe === 'function') {
+                    try {
+                        initGlobe();
+                        log.info('✅ Fallback: کره کوچک فعال شد');
+                    } catch (error) {
+                        log.warn('❌ خطا در فعال‌سازی fallback:', error);
+                    }
+                }
+            }, 2000); // تاخیر 2 ثانیه برای اطمینان از render شدن React
+        })();
     </script>
 
 </body>

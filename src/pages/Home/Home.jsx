@@ -99,16 +99,12 @@ function Home() {
   const [showRanking, setShowRanking] = useState(false) // کنترل نمایش رتبه‌بندی نقشه
 
   /**
-   * Effect: تنظیم هایلایت خانه به صورت پیش‌فرض و گوش دادن به تغییرات category
+   * Effect: تنظیم category خانه به صورت پیش‌فرض و گوش دادن به تغییرات category
    * 
-   * این effect:
-   * 1. هنگام mount شدن صفحه، هایلایت "خانه" را فعال می‌کند
-   * 2. currentCategory را به "home" تنظیم می‌کند
-   * 3. به event categoryChanged گوش می‌دهد برای به‌روزرسانی کارت‌ها
-   * 4. مطمئن می‌شود که highlights-section نمایش داده می‌شود
+   * Highlights در Layout.jsx مدیریت می‌شوند - این effect فقط category را تنظیم می‌کند
    */
   useEffect(() => {
-    // تنظیم هایلایت خانه به صورت پیش‌فرض
+    // تنظیم category خانه به صورت پیش‌فرض
     setCategory('home')
     
     // گوش دادن به تغییرات category از Header
@@ -119,98 +115,9 @@ function Home() {
     
     addEventListener(events.categoryChanged, handleCategoryChange)
     
-    // تابع برای اطمینان از نمایش highlights
-    const ensureHighlightsVisible = () => {
-      // بررسی وجود highlights در DOM
-      const highlightsSection = document.querySelector('.highlights-section.home-highlights, .home-highlights, #homeView .highlights-section')
-      const highlightsContainer = highlightsSection?.querySelector('.highlights-container')
-      const highlightCircles = highlightsSection?.querySelectorAll('.highlight-circle')
-      
-      if (highlightsSection) {
-        // اعمال استایل‌های اجباری
-        highlightsSection.style.setProperty('display', 'flex', 'important')
-        highlightsSection.style.setProperty('visibility', 'visible', 'important')
-        highlightsSection.style.setProperty('opacity', '1', 'important')
-        highlightsSection.style.setProperty('position', 'relative', 'important')
-        highlightsSection.style.setProperty('z-index', '999', 'important')
-        
-        if (highlightsContainer) {
-          highlightsContainer.style.setProperty('display', 'flex', 'important')
-          highlightsContainer.style.setProperty('visibility', 'visible', 'important')
-          highlightsContainer.style.setProperty('opacity', '1', 'important')
-        }
-        
-        if (highlightCircles && highlightCircles.length > 0) {
-          highlightCircles.forEach(circle => {
-            circle.style.setProperty('display', 'flex', 'important')
-            circle.style.setProperty('visibility', 'visible', 'important')
-            circle.style.setProperty('opacity', '1', 'important')
-            circle.style.setProperty('border-radius', '12px', 'important')
-            circle.style.setProperty('padding', '8px 12px', 'important')
-            circle.style.setProperty('margin', '0', 'important')
-            circle.style.setProperty('white-space', 'nowrap', 'important')
-          })
-        }
-        
-        // تنظیم gap برای container
-        if (highlightsContainer) {
-          highlightsContainer.style.setProperty('gap', '10px', 'important')
-        }
-        
-        // تنظیم margin-top و margin-left/right برای section
-        highlightsSection.style.setProperty('margin-top', '25px', 'important')
-        highlightsSection.style.setProperty('margin-left', '8px', 'important')
-        highlightsSection.style.setProperty('margin-right', '8px', 'important')
-        highlightsSection.style.setProperty('width', 'calc(100% - 16px)', 'important')
-        
-        // اطمینان از اینکه highlights-section در ابتدای view است
-        const homeView = document.getElementById('homeView')
-        if (homeView && highlightsSection.parentNode === homeView) {
-          const firstChild = homeView.firstElementChild
-          if (firstChild && firstChild !== highlightsSection) {
-            // اگر highlights-section اولین child نیست، آن را به ابتدا منتقل کن
-            homeView.insertBefore(highlightsSection, firstChild)
-          }
-        }
-      } else {
-        console.warn('⚠️ highlights-section در DOM پیدا نشد!')
-      }
-      
-      // فعال کردن highlight خانه
-      const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
-      if (homeCircle) {
-        homeCircle.classList.add('active')
-      }
-      
-      // غیرفعال کردن بقیه highlights
-      const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
-      otherCircles.forEach(circle => {
-        circle.classList.remove('active')
-      })
+    return () => {
+      removeEventListener(events.categoryChanged, handleCategoryChange)
     }
-    
-    // اجرای فوری و چند بار با تاخیر
-    if (typeof window !== 'undefined') {
-      ensureHighlightsVisible()
-      setTimeout(ensureHighlightsVisible, 50)
-      setTimeout(ensureHighlightsVisible, 100)
-      setTimeout(ensureHighlightsVisible, 200)
-      setTimeout(ensureHighlightsVisible, 500)
-      setTimeout(ensureHighlightsVisible, 1000)
-      
-      // اجرای مداوم
-      const interval = setInterval(ensureHighlightsVisible, 2000)
-      
-      return () => {
-        removeEventListener(events.categoryChanged, handleCategoryChange)
-        clearInterval(interval)
-      }
-    } else {
-      return () => {
-        removeEventListener(events.categoryChanged, handleCategoryChange)
-      }
-    }
-    
   }, []) // فقط یک بار هنگام mount
 
   /**
@@ -376,63 +283,10 @@ function Home() {
         item={selectedPriceItem}
       />
       
-      {/* بخش Highlights - دسته‌بندی‌ها برای فیلتر کردن کارت‌ها */}
-      <section className="highlights-section home-highlights">
-        <div className="highlights-container">
-          <div 
-            className={`highlight-circle ${currentCategory === 'home' ? 'active' : ''}`} 
-            data-category="home"
-            onClick={() => setCategory('home')}
-          >
-            <span>خانه</span>
-          </div>
-          <div 
-            className={`highlight-circle ${currentCategory === 'crypto' ? 'active' : ''}`} 
-            data-category="crypto"
-            onClick={() => setCategory('crypto')}
-          >
-            <span>رمزارز</span>
-          </div>
-          <div 
-            className={`highlight-circle ${currentCategory === 'currency' ? 'active' : ''}`} 
-            data-category="currency"
-            onClick={() => setCategory('currency')}
-          >
-            <span>ارز</span>
-          </div>
-          <div 
-            className={`highlight-circle ${currentCategory === 'gold' ? 'active' : ''}`} 
-            data-category="gold"
-            onClick={() => setCategory('gold')}
-          >
-            <span>طلا</span>
-          </div>
-          <div 
-            className={`highlight-circle ${currentCategory === 'forex' ? 'active' : ''}`} 
-            data-category="forex"
-            onClick={() => setCategory('forex')}
-          >
-            <span>فارکس</span>
-          </div>
-          <div 
-            className={`highlight-circle ${currentCategory === 'stock' ? 'active' : ''}`} 
-            data-category="stock"
-            onClick={() => setCategory('stock')}
-          >
-            <span>بورس</span>
-          </div>
-          <div 
-            className={`highlight-circle ${currentCategory === 'oil' ? 'active' : ''}`} 
-            data-category="oil"
-            onClick={() => setCategory('oil')}
-          >
-            <span>نفت</span>
-          </div>
-        </div>
-      </section>
-
+      {/* Highlights در Layout.jsx قرار دارد - حذف شد */}
+      
       {/* کانتینر اصلی کارت‌ها */}
-      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+      <div className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
         {cards && cards.length > 0 ? (
           <CardContainer 
             items={cards} 
@@ -444,7 +298,7 @@ function Home() {
             <p>در حال بارگذاری کارت‌ها...</p>
           </div>
         )}
-      </main>
+      </div>
 
       {/* بخش نقشه طلای جهانی - فقط در صفحه خانه نمایش داده می‌شود */}
       {/* این نقشه از D3.js برای رندر کردن نقشه 2D استفاده می‌کند */}

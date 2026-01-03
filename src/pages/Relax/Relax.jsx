@@ -119,29 +119,15 @@ function Relax() {
 
   return (
     <div id="relaxView" className="view">
-      {/* Highlights Section */}
-      <section className="highlights-section relax-highlights">
-        <div className="highlights-container">
-          {relaxCategories.map((category) => (
-            <div
-              key={category.id}
-              className={`highlight-circle ${activeCategory === category.id ? 'active' : ''}`}
-              data-relax={category.id}
-              onClick={() => handleCategoryClick(category.id)}
-            >
-              <span>{category.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Highlights در Layout.jsx قرار دارد - حذف شد */}
 
       {/* Relax Cards Container */}
-      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+      <div className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
         <CardContainer 
           items={cards} 
           className={`relax-cards`}
         />
-      </main>
+      </div>
     </div>
   )
 }

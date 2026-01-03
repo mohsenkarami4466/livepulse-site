@@ -168,10 +168,10 @@ function PortfolioSummary() {
     
     window.addEventListener('storage', handleStorageChange)
     
-    // بررسی هر 2 ثانیه برای به‌روزرسانی لحظه‌ای
+    // بررسی هر 10 ثانیه برای به‌روزرسانی (کاهش از 2 به 10 برای کاهش rebuild)
     const interval = setInterval(() => {
       updatePortfolioValue()
-    }, 2000)
+    }, 10000)
     
     return () => {
       window.removeEventListener('storage', handleStorageChange)
@@ -269,33 +269,27 @@ function PortfolioSummary() {
       }
     }
     
-    updatePosition()
-    window.addEventListener('resize', updatePosition)
+    // اجرای اولیه با تاخیر برای اطمینان از render شدن DOM
+    const timeoutId = setTimeout(() => {
+      updatePosition()
+      // به‌روزرسانی highlights فقط یکبار بعد از تنظیم موقعیت (فقط در resize)
+      // حذف شد - updateHighlightsPosition در App.jsx فراخوانی می‌شود
+    }, 500)
     
-    // بررسی بعد از render
-    setTimeout(updatePosition, 100)
-    setTimeout(updatePosition, 500)
-    setTimeout(updatePosition, 1000)
-    
-    // به‌روزرسانی موقعیت هایلایت‌ها بعد از تنظیم موقعیت کارت portfolio
-    const updateHighlights = () => {
-      // صبر می‌کنیم تا DOM کاملاً render شود
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (typeof window.updateHighlightsPosition === 'function') {
-            window.updateHighlightsPosition()
-          }
-        })
-      })
+    // فقط resize listener - بدون timeout های اضافی
+    const handleResize = () => {
+      updatePosition()
+      // به‌روزرسانی highlights فقط در resize (نه در mount)
+      // حذف شد - highlights فقط یکبار در App.jsx تنظیم می‌شوند
     }
-    setTimeout(updateHighlights, 150)
-    setTimeout(updateHighlights, 600)
-    setTimeout(updateHighlights, 1100)
-    // یک بار دیگر بعد از اینکه همه چیز کاملاً render شد
-    setTimeout(updateHighlights, 1500)
     
-    return () => window.removeEventListener('resize', updatePosition)
-  }, [isValueVisible]) // وابسته به isValueVisible برای محاسبه مجدد ارتفاع
+    window.addEventListener('resize', handleResize)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      clearTimeout(timeoutId)
+    }
+  }, []) // فقط یکبار هنگام mount - بدون dependency به isValueVisible
 
   // تابع toggle نمایش/پنهان عدد
   const toggleValueVisibility = () => {

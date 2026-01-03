@@ -84,21 +84,7 @@ function Tools() {
 
   return (
     <div id="toolsView" className="view">
-      {/* Highlights Section */}
-      <section className="highlights-section tools-highlights">
-        <div className="highlights-container">
-          {tools.map((tool) => (
-            <div
-              key={tool.id}
-              className={`highlight-circle ${activeTool === tool.id ? 'active' : ''}`}
-              data-tool={tool.id}
-              onClick={() => handleToolClick(tool.id)}
-            >
-              <span>{tool.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Highlights در Layout.jsx قرار دارد - حذف شد */}
 
       {/* Tools Content */}
       <main className="tools-content">

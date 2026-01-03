@@ -22,6 +22,9 @@
   visibility: visible !important;
   padding: 0 1rem 1rem !important; /* padding یکسان برای همه صفحات */
   transform: translateY(0) !important;
+  position: relative !important;
+  z-index: 1 !important; /* پایین‌تر از highlights (10) */
+  margin-top: 0 !important; /* highlights margin-bottom دارد */
 }
 
 /* ⚠️ استایل‌های highlights به sections.css منتقل شدند تا از تداخل با bundle CSS جلوگیری شود */

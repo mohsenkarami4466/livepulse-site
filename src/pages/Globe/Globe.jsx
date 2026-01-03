@@ -180,30 +180,16 @@ function Globe() {
 
   return (
     <div id="globeView" className="view">
-      {/* Highlights Section */}
-      <section className="highlights-section globe-highlights">
-        <div className="highlights-container">
-          {globeCategories.map((category) => (
-            <div
-              key={category.id}
-              className={`highlight-circle ${activeGlobe === category.id ? 'active' : ''}`}
-              data-globe={category.id}
-              onClick={() => handleGlobeClick(category.id)}
-            >
-              <span>{category.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Highlights در Layout.jsx قرار دارد - حذف شد */}
 
       {/* Globe Cards Container */}
-      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+      <div className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
         <CardContainer 
           items={cards} 
           className={`globe-cards`}
           onCardClick={handleCardClick}
         />
-      </main>
+      </div>
     </div>
   )
 }

@@ -46,16 +46,18 @@ div.view section.globe-highlights,
   visibility: visible !important;
   opacity: 1 !important;
   position: relative !important;
-  z-index: 999 !important;
-  /* عرض کامل نمایشگر - بدون هیچ محدودیتی */
-  width: 100vw !important; /* عرض کامل viewport */
-  min-width: 100vw !important;
-  max-width: 100vw !important;
+  z-index: 10 !important; /* بالاتر از view ها (1) اما پایین‌تر از fixed elements */
+  /* عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل */
+  width: calc(100vw - 10px) !important; /* عرض کامل viewport منهای 10px */
+  min-width: calc(100vw - 10px) !important;
+  max-width: calc(100vw - 10px) !important;
+  left: 0 !important; /* اطمینان از شروع از چپ */
+  right: auto !important; /* اطمینان از عدم align به راست */
   height: 80px !important;
   min-height: 80px !important;
-  margin-top: 10px !important; /* فاصله کمتر از بالا */
-  margin-left: 0 !important; /* بدون margin */
-  margin-right: 0 !important; /* بدون margin */
+  margin-top: 35px !important; /* 35px از بالا + با JS تنظیم می‌شود (15px از Portfolio) */
+  margin-left: 5px !important; /* 5px از چپ */
+  margin-right: 5px !important; /* 5px از راست */
   margin-bottom: 20px !important;
   /* override padding از Layout */
   padding-left: 0 !important;
@@ -87,15 +89,15 @@ div.view section.globe-highlights,
   align-items: center !important;
   visibility: visible !important;
   opacity: 1 !important;
-  /* عرض کامل container پدر - با padding برای margin از کناره‌ها */
-  width: calc(100vw - 2rem) !important; /* عرض کامل منهای padding هایلایت */
-  min-width: calc(100vw - 2rem) !important;
-  max-width: calc(100vw - 2rem) !important;
+  /* عرض کامل container */
+  width: 100% !important; /* عرض کامل */
+  min-width: 100% !important;
+  max-width: 100% !important;
   height: 80px !important;
   min-height: 80px !important;
   padding: 0 !important;
-  margin: 0 auto !important; /* وسط چین */
-  gap: 10px !important; /* فاصله بین highlights */
+  margin: 0 !important; /* بدون margin - section margin دارد */
+  gap: 5px !important; /* فاصله 5px بین highlights */
   flex-wrap: nowrap !important;
   box-sizing: border-box !important;
   overflow: visible !important;
@@ -113,13 +115,13 @@ div.view section.globe-highlights,
   visibility: visible !important;
   opacity: 1 !important;
   width: auto !important; /* عرض خودکار برای متن */
-  min-width: 70px !important;
-  max-width: 140px !important;
+  flex: 1 1 0 !important; /* تقسیم یکنواخت فضا بین 7 highlights */
+  min-width: 0 !important; /* برای flex-shrink */
+  max-width: none !important; /* بدون محدودیت */
   height: 60px !important;
   min-height: 60px !important;
-  flex: 0 0 auto !important; /* عرض خودکار */
-  flex-shrink: 0 !important;
-  flex-grow: 0 !important;
+  flex-shrink: 1 !important; /* می‌تواند کوچک شود */
+  flex-grow: 1 !important; /* می‌تواند بزرگ شود */
   align-items: center !important;
   justify-content: center !important;
   box-sizing: border-box !important;
@@ -140,7 +142,7 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 10px !important; /* فاصله کمتر */
+    margin-top: 35px !important; /* 35px از بالا */
     height: 70px !important;
     min-height: 70px !important;
   }
@@ -171,7 +173,7 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 10px !important; /* فاصله کمتر */
+    margin-top: 35px !important; /* 35px از بالا */
     height: 60px !important;
     min-height: 60px !important;
   }
@@ -204,6 +206,7 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
+    margin-top: 35px !important; /* 35px از بالا */
     height: 55px !important;
     min-height: 55px !important;
   }

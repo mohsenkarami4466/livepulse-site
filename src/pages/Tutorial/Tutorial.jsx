@@ -113,29 +113,15 @@ function Tutorial() {
 
   return (
     <div id="tutorialView" className="view">
-      {/* Highlights Section */}
-      <section className="highlights-section education-highlights">
-        <div className="highlights-container">
-          {educationCategories.map((category) => (
-            <div
-              key={category.id}
-              className={`highlight-circle ${activeCategory === category.id ? 'active' : ''}`}
-              data-edu={category.id}
-              onClick={() => handleCategoryClick(category.id)}
-            >
-              <span>{category.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Highlights در Layout.jsx قرار دارد - حذف شد */}
 
       {/* Tutorial Cards Container */}
-      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+      <div className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
         <CardContainer 
           items={cards} 
           className={`tutorial-cards`}
         />
-      </main>
+      </div>
     </div>
   )
 }

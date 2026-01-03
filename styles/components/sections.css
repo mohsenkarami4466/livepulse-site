@@ -301,16 +301,22 @@
     overflow: visible !important;
     /* positioning ساده - JavaScript کنترل می‌کند */
     position: relative !important;
-    width: 100% !important;
-    height: auto !important;
+    width: calc(100vw - 10px) !important; /* عرض کامل viewport منهای 10px (5px از هر طرف) */
+    min-width: calc(100vw - 10px) !important;
+    max-width: calc(100vw - 10px) !important;
+    left: 0 !important; /* اطمینان از شروع از چپ */
+    right: auto !important; /* اطمینان از عدم align به راست */
+    height: 80px !important; /* ارتفاع ثابت */
     min-height: 80px !important;
+    max-height: 80px !important;
     /* margins ساده */
-    margin-top: 10px !important; /* فاصله از بالا - بالاتر */
+    /* margin-top با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card + 35px اضافی) */
+    margin-top: 35px !important; /* 35px از بالا + با JS تنظیم می‌شود */
     margin-bottom: 20px !important; /* فاصله از پایین */
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin-left: 5px !important; /* 5px از چپ */
+    margin-right: 5px !important; /* 5px از راست */
     /* override padding از layout-main > .view */
-    padding-left: 0 !important; /* بدون padding اضافی */
+    padding-left: 0 !important; /* padding حذف شد - margin استفاده می‌شود */
     padding-right: 0 !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
@@ -322,15 +328,15 @@
 /* موقعیت هایلایت‌ها با JavaScript تنظیم می‌شود - padding-top حذف شد */
 
 .highlight-circle {
-    /* مستطیل با عرض خودکار برای متن */
+    /* تقسیم یکنواخت فضا بین 7 highlights */
     width: auto !important; /* عرض خودکار برای متن */
-    min-width: 70px !important;
-    max-width: 140px !important;
-    height: 60px !important;
-    min-height: 60px !important;
-    flex: 0 0 auto !important; /* عرض خودکار */
-    flex-shrink: 0 !important;
-    flex-grow: 0 !important;
+    flex: 1 1 0 !important; /* تقسیم یکنواخت فضا */
+    min-width: 0 !important; /* برای flex-shrink */
+    max-width: none !important; /* بدون محدودیت */
+    height: clamp(55px, 6vw, 70px) !important; /* ارتفاع متناسب */
+    min-height: clamp(55px, 6vw, 70px) !important;
+    flex-shrink: 1 !important; /* می‌تواند کوچک شود */
+    flex-grow: 1 !important; /* می‌تواند بزرگ شود */
     border-radius: 12px !important; /* مستطیل با گوشه‌های گرد */
     background: var(--card-bg) !important;
     backdrop-filter: blur(30px) saturate(150%) !important;
@@ -343,9 +349,9 @@
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
     font-weight: 600 !important;
     color: var(--text-primary) !important;
-    font-size: clamp(0.7rem, 1.1vw, 0.85rem) !important; /* فونت متناسب */
+    font-size: clamp(0.7rem, 1.1vw, 0.9rem) !important; /* فونت متناسب */
     text-align: center !important;
-    padding: 8px 16px !important; /* padding متناسب برای مستطیل */
+    padding: clamp(8px, 1vw, 12px) clamp(12px, 1.5vw, 20px) !important; /* padding متناسب */
     line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
     white-space: nowrap !important; /* جلوگیری از شکستن خط */
     box-shadow: 
@@ -374,7 +380,7 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
+        margin-top: 35px !important; /* فاصله 35px از بالا */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
@@ -383,7 +389,7 @@
     }
     
     .highlights-container {
-        gap: 10px !important; /* فاصله بین highlights */
+        gap: 5px !important; /* فاصله بین highlights (5px) */
         height: 70px !important;
         min-height: 70px !important;
     }
@@ -419,31 +425,35 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
-        margin-left: 8px !important; /* فاصله از چپ */
-        margin-right: 8px !important; /* فاصله از راست */
-        width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
+        margin-top: 10px !important; /* 10px از بالا + با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
         height: 60px !important;
         min-height: 60px !important;
     }
     
     .highlights-container {
-        gap: 8px !important; /* فاصله بین highlights */
+        gap: 5px !important; /* فاصله بین highlights (5px) */
         height: 60px !important;
         min-height: 60px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
     }
     
     .highlights-container .highlight-circle {
         width: auto !important; /* عرض خودکار برای متن */
-        min-width: 50px !important;
-        max-width: 100px !important;
-        height: 45px !important;
-        min-height: 45px !important;
+        min-width: clamp(50px, 12vw, 80px) !important; /* متناسب برای 7 هایلایت */
+        max-width: clamp(80px, 15vw, 110px) !important;
+        height: clamp(45px, 10vw, 55px) !important;
+        min-height: clamp(45px, 10vw, 55px) !important;
         flex: 0 0 auto !important;
         margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
         border-radius: 10px !important; /* مستطیل با گوشه‌های گرد */
-        font-size: clamp(0.5rem, 0.9vw, 0.65rem) !important; /* فونت متناسب */
-        padding: 6px 10px !important; /* padding متناسب برای مستطیل */
+        font-size: clamp(0.5rem, 2.5vw, 0.7rem) !important; /* فونت متناسب */
+        padding: clamp(5px, 1vw, 8px) clamp(6px, 1.5vw, 12px) !important; /* padding متناسب */
         line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
         white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
@@ -464,31 +474,35 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
-        margin-left: 8px !important; /* فاصله از چپ */
-        margin-right: 8px !important; /* فاصله از راست */
-        width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
+        margin-top: 10px !important; /* 10px از بالا + با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
         height: 55px !important;
         min-height: 55px !important;
     }
     
     .highlights-container {
-        gap: 6px !important; /* فاصله کمتر در موبایل کوچک */
+        gap: clamp(4px, 1.5vw, 8px) !important; /* فاصله کمتر در موبایل کوچک - متناسب */
         height: 55px !important;
         min-height: 55px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
     }
     
     .highlights-container .highlight-circle {
         width: auto !important; /* عرض خودکار برای متن */
-        min-width: 45px !important;
-        max-width: 90px !important;
-        height: 40px !important;
-        min-height: 40px !important;
+        min-width: clamp(45px, 12vw, 70px) !important; /* متناسب برای 7 هایلایت */
+        max-width: clamp(70px, 15vw, 100px) !important;
+        height: clamp(40px, 10vw, 50px) !important;
+        min-height: clamp(40px, 10vw, 50px) !important;
         flex: 0 0 auto !important;
         margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
         border-radius: 8px !important; /* مستطیل با گوشه‌های گرد */
-        font-size: clamp(0.45rem, 0.85vw, 0.6rem) !important; /* فونت متناسب */
-        padding: 5px 8px !important; /* padding متناسب برای مستطیل */
+        font-size: clamp(0.5rem, 2.5vw, 0.7rem) !important; /* فونت متناسب */
+        padding: clamp(4px, 1vw, 6px) clamp(6px, 1.5vw, 10px) !important; /* padding متناسب */
         line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
         white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
@@ -509,31 +523,35 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
-        margin-left: 8px !important; /* فاصله از چپ */
-        margin-right: 8px !important; /* فاصله از راست */
-        width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
+        margin-top: 10px !important; /* 10px از بالا + با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
         height: 50px !important;
         min-height: 50px !important;
     }
     
     .highlights-container {
-        gap: 6px !important; /* فاصله کمتر در موبایل خیلی کوچک */
+        gap: clamp(4px, 1.5vw, 6px) !important; /* فاصله کمتر در موبایل خیلی کوچک - متناسب */
         height: 50px !important;
         min-height: 50px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
     }
     
     .highlights-container .highlight-circle {
         width: auto !important; /* عرض خودکار برای متن */
-        min-width: 40px !important;
-        max-width: 80px !important;
-        height: 38px !important;
-        min-height: 38px !important;
+        min-width: clamp(40px, 12vw, 65px) !important; /* متناسب برای 7 هایلایت */
+        max-width: clamp(65px, 15vw, 90px) !important;
+        height: clamp(38px, 10vw, 48px) !important;
+        min-height: clamp(38px, 10vw, 48px) !important;
         flex: 0 0 auto !important;
         margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
         border-radius: 8px !important; /* مستطیل با گوشه‌های گرد */
-        font-size: clamp(0.4rem, 0.85vw, 0.55rem) !important; /* فونت متناسب */
-        padding: 4px 6px !important; /* padding متناسب برای مستطیل */
+        font-size: clamp(0.45rem, 2.5vw, 0.65rem) !important; /* فونت متناسب */
+        padding: clamp(4px, 1vw, 6px) clamp(5px, 1.5vw, 8px) !important; /* padding متناسب */
         line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
         white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
@@ -556,10 +574,12 @@
     .globe-highlights {
         z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
         position: relative !important; /* برای z-index کار کند */
-        margin-top: 20px !important; /* فاصله ثابت 20px از بالا - یکسان با دسکتاپ */
-        margin-left: 8px !important; /* فاصله از چپ */
-        margin-right: 8px !important; /* فاصله از راست */
-        width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
+        margin-top: 0 !important; /* با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
     }
     
     .highlights-container {
@@ -932,10 +952,11 @@
     min-height: 80px !important;
     padding: 0 !important;
     margin: 0 !important;
-    gap: 10px !important; /* فاصله بین highlights */
+    gap: 5px !important; /* فاصله 5px بین highlights */
     flex-wrap: nowrap !important;
     box-sizing: border-box !important;
-    overflow: visible !important;
+    overflow-x: auto !important; /* برای scroll در صورت نیاز */
+    overflow-y: hidden !important;
 }
 
 /* اطمینان از نمایش highlight-circle - مستطیل با فاصله */

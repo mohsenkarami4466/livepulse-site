@@ -24,9 +24,7 @@ import { AppProvider } from './contexts/AppContext'
 import AppRouter from './router/AppRouter'
 import Layout from './components/Layout/Layout'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
-import { forceShowHighlights } from './utils/highlights-fix'
 import './App.css'
-import './styles/highlights-force.css'
 
 /**
  * کامپوننت داخلی برای مدیریت رفرش و اسکرول
@@ -35,48 +33,15 @@ function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  // Effect برای تنظیم اولیه - فقط یکبار هنگام mount
   useEffect(() => {
-    // اسکرول به بالای صفحه روی mount و route change
+    // اسکرول به بالای صفحه روی mount
     window.scrollTo(0, 0)
     
-    // فیکس قوی برای نمایش هایلایت‌ها
-    const fixHighlights = () => {
-      forceShowHighlights()
-      
-      // فعال کردن هایلایت خانه فقط زمانی که در مسیر خانه هستیم
-      if (location.pathname === '/' || location.pathname === '/livepulse-site/') {
-        const homeCircle = document.querySelector('.highlight-circle[data-category="home"]')
-        if (homeCircle) {
-          homeCircle.classList.add('active')
-        }
-        
-        // غیرفعال کردن بقیه highlights
-        const otherCircles = document.querySelectorAll('.highlight-circle[data-category]:not([data-category="home"])')
-        otherCircles.forEach(circle => {
-          circle.classList.remove('active')
-        })
-      }
-      
-      // به‌روزرسانی موقعیت هایلایت‌ها
-      if (typeof window.updateHighlightsPosition === 'function') {
-        window.updateHighlightsPosition()
-      }
-    }
-    
-    // اجرای فوری و چند بار با تاخیر
-    fixHighlights()
-    setTimeout(fixHighlights, 50)
-    setTimeout(fixHighlights, 100)
-    setTimeout(fixHighlights, 300)
-    setTimeout(fixHighlights, 500)
-    setTimeout(fixHighlights, 1000)
-    setTimeout(fixHighlights, 2000)
-    
-    // اجرا بعد از هر render
-    const interval = setInterval(fixHighlights, 2000)
-    
-    return () => clearInterval(interval)
-  }, [location.pathname]) // اجرا با هر تغییر مسیر
+    // تنظیم موقعیت هایلایت‌ها - Highlights در Layout.jsx مدیریت می‌شوند
+    // تابع updateHighlightsPosition در Highlights.jsx فراخوانی می‌شود
+    // حذف شد - Highlights.jsx خودش updateHighlightsPosition را فراخوانی می‌کند
+  }, []) // فقط یکبار هنگام mount
 
   return (
     <Layout>

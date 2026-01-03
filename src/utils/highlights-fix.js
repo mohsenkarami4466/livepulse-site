@@ -11,77 +11,76 @@ export function forceShowHighlights() {
 
   highlightsSections.forEach(section => {
     if (section) {
-      // پاکسازی همه استایل‌های قبلی که ممکن است تداخل ایجاد کنند
-      section.style.removeProperty('position')
+      // پاکسازی فقط استایل‌های مشکل‌ساز (نه همه)
       section.style.removeProperty('top')
       section.style.removeProperty('left')
       section.style.removeProperty('right')
-      section.style.removeProperty('width')
-      section.style.removeProperty('z-index')
-      section.style.removeProperty('margin')
-      section.style.removeProperty('padding-left')
-      section.style.removeProperty('padding-right')
-      section.style.removeProperty('padding-top')
-      section.style.removeProperty('padding-bottom')
-      section.style.removeProperty('box-sizing')
+      section.style.removeProperty('clip')
+      section.style.removeProperty('clip-path')
+      section.style.removeProperty('transform')
 
-      // تنظیم استایل‌های پایه برای نمایش صحیح
-      section.style.display = 'flex'
-      section.style.visibility = 'visible'
-      section.style.opacity = '1'
-      section.style.overflow = 'visible'
-      section.style.clip = 'auto'
-      section.style.clipPath = 'none'
-      section.style.transform = 'none'
+      // تنظیم استایل‌های پایه برای نمایش صحیح - حفظ استایل‌های جدید
+      section.style.setProperty('display', 'flex', 'important')
+      section.style.setProperty('visibility', 'visible', 'important')
+      section.style.setProperty('opacity', '1', 'important')
+      section.style.setProperty('overflow', 'visible', 'important')
+      section.style.setProperty('position', 'relative', 'important')
+      section.style.setProperty('z-index', '10', 'important') // بالاتر از view ها (1) اما پایین‌تر از fixed elements
+      
+      // عرض و margin با CSS و updateHighlightsPosition تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+      // فقط استایل‌های مشکل‌ساز را پاک می‌کنیم
     }
   })
 
-  // تنظیم highlights-container - عرض کامل برای همه دستگاه‌ها
+  // تنظیم highlights-container - فقط استایل‌های ضروری (نه width)
   const highlightsContainers = document.querySelectorAll('.highlights-container')
   highlightsContainers.forEach(container => {
     if (container) {
-      container.style.display = 'flex'
-      container.style.flexDirection = 'row'
-      container.style.justifyContent = 'flex-start'
-      container.style.alignItems = 'center'
-      container.style.visibility = 'visible'
-      container.style.opacity = '1'
-      container.style.width = '100%'
-      container.style.minWidth = '100%'
-      container.style.maxWidth = '100%'
-      container.style.gap = '10px'
-      container.style.flexWrap = 'nowrap'
-      container.style.overflow = 'visible'
-      container.style.boxSizing = 'border-box'
-      container.style.padding = '0'
-      container.style.margin = '0'
+      container.style.setProperty('display', 'flex', 'important')
+      container.style.setProperty('flex-direction', 'row', 'important')
+      container.style.setProperty('justify-content', 'flex-start', 'important')
+      container.style.setProperty('align-items', 'center', 'important')
+      container.style.setProperty('visibility', 'visible', 'important')
+      container.style.setProperty('opacity', '1', 'important')
+      // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+      // Width and sizes are set by CSS - we don't change them here
+      container.style.setProperty('gap', '5px', 'important') // gap ثابت 5px بین هایلایت‌ها
+      container.style.setProperty('flex-wrap', 'nowrap', 'important')
+      container.style.setProperty('overflow-x', 'auto', 'important') // برای scroll در صورت نیاز
+      container.style.setProperty('overflow-y', 'hidden', 'important')
+      container.style.setProperty('box-sizing', 'border-box', 'important')
+      container.style.setProperty('padding', '0', 'important')
+      container.style.setProperty('margin', '0', 'important')
     }
   })
 
-  // تنظیم highlight-circle ها
+  // تنظیم highlight-circle ها - حفظ استایل‌های ریسپانسیو جدید
   const circles = document.querySelectorAll('.highlight-circle')
+  const isMobile = window.innerWidth < 768
+  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
+  
   circles.forEach(circle => {
     if (circle) {
-      circle.style.display = 'flex'
-      circle.style.visibility = 'visible'
-      circle.style.opacity = '1'
-      circle.style.width = 'auto'
-      circle.style.minWidth = '70px'
-      circle.style.maxWidth = '140px'
-      circle.style.height = '60px'
-      circle.style.alignItems = 'center'
-      circle.style.justifyContent = 'center'
-      circle.style.flex = '0 0 auto'
-      circle.style.flexShrink = '0'
-      circle.style.flexGrow = '0'
-      circle.style.borderRadius = '12px'
-      circle.style.padding = '8px 16px'
-      circle.style.fontSize = 'clamp(0.7rem, 1.1vw, 0.85rem)'
-      circle.style.lineHeight = '1.3'
-      circle.style.whiteSpace = 'nowrap'
-      circle.style.textAlign = 'center'
-      circle.style.overflow = 'visible'
-      circle.style.boxSizing = 'border-box'
+      circle.style.setProperty('display', 'flex', 'important')
+      circle.style.setProperty('visibility', 'visible', 'important')
+      circle.style.setProperty('opacity', '1', 'important')
+      // عرض و flex با CSS تنظیم می‌شود - اینجا تغییر نمی‌دهیم
+      // circle.style.setProperty('width', 'auto', 'important')
+      // circle.style.setProperty('flex', '0 0 auto', 'important')
+      // circle.style.setProperty('flex-shrink', '0', 'important')
+      // circle.style.setProperty('flex-grow', '0', 'important')
+      circle.style.setProperty('align-items', 'center', 'important')
+      circle.style.setProperty('justify-content', 'center', 'important')
+      circle.style.setProperty('border-radius', '12px', 'important')
+      circle.style.setProperty('line-height', '1.3', 'important')
+      circle.style.setProperty('white-space', 'nowrap', 'important')
+      circle.style.setProperty('text-align', 'center', 'important')
+      circle.style.setProperty('overflow', 'visible', 'important')
+      circle.style.setProperty('box-sizing', 'border-box', 'important')
+      circle.style.setProperty('margin', '0', 'important')
+      
+      // اندازه‌های ریسپانسیو با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+      // فقط استایل‌های پایه را تنظیم می‌کنیم
     }
   })
 
@@ -95,62 +94,39 @@ if (typeof window !== 'undefined') {
     forceShowHighlights()
   }
 
-  // اجرای فوری
+  // اجرای فوری - فقط یکبار و با تاخیر محدود
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       runFix()
-      setTimeout(runFix, 50)
-      setTimeout(runFix, 100)
-      setTimeout(runFix, 200)
-      setTimeout(runFix, 500)
-      setTimeout(runFix, 1000)
-      setTimeout(runFix, 2000)
+      setTimeout(runFix, 500) // فقط یکبار بعد از تاخیر
     })
   } else {
     runFix()
-    setTimeout(runFix, 50)
-    setTimeout(runFix, 100)
-    setTimeout(runFix, 200)
-    setTimeout(runFix, 500)
-    setTimeout(runFix, 1000)
-    setTimeout(runFix, 2000)
+    setTimeout(runFix, 500) // فقط یکبار بعد از تاخیر
   }
 
-  // اجرا بعد از هر تغییر route
-  let lastPathname = window.location.pathname
-  const observer = new MutationObserver(() => {
-    if (window.location.pathname !== lastPathname) {
-      lastPathname = window.location.pathname
-      runFix()
-      setTimeout(runFix, 100)
-      setTimeout(runFix, 500)
-      setTimeout(runFix, 1000)
-    }
-    runFix()
-  })
+  // حذف MutationObserver - باعث rebuild مداوم می‌شد
+  // اجرا فقط یکبار بعد از load
+  // حذف resize event - باعث تغییر width می‌شد
+  // resize event removed - was causing width changes
+  // let resizeTimeout = null
+  // window.addEventListener('resize', () => {
+  //   if (resizeTimeout) clearTimeout(resizeTimeout)
+  //   resizeTimeout = setTimeout(() => {
+  //     runFix() // فقط forceShowHighlights
+  //     // updateHighlightsPosition در PortfolioSummary.jsx با resize فراخوانی می‌شود
+  //   }, 300) // debounce
+  // })
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['style', 'class']
-  })
-
-  // اجرا بعد از تغییر اندازه صفحه
-  window.addEventListener('resize', () => {
-    setTimeout(runFix, 100)
-  })
-
-  // اجرای مداوم هر 2 ثانیه
-  const interval = setInterval(runFix, 2000)
+  // حذف setInterval - دیگر نیازی نیست
+  // const interval = setInterval(runFix, 2000) // حذف شد
 
   // اضافه کردن به window برای دسترسی از جاهای دیگر
   window.forceShowHighlights = forceShowHighlights
 
   // Cleanup
   window.addEventListener('beforeunload', () => {
-    clearInterval(interval)
-    observer.disconnect()
+    if (resizeTimeout) clearTimeout(resizeTimeout)
   })
 }
 

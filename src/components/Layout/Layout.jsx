@@ -40,6 +40,7 @@ import FloatingDock from '../FloatingDock/FloatingDock'
 import Footer from '../Footer/Footer'
 import MarketHoursModal from '../Modals/MarketHoursModal'
 import GlobalSections from '../Shared/GlobalSections'
+import Highlights from '../Highlights/Highlights'
 import './Layout.css'
 
 /**
@@ -241,6 +242,8 @@ function Layout({ children }) {
       
       {/* محتوای اصلی صفحات */}
       <main className="layout-main">
+        {/* هایلایت‌ها - نمایش داده می‌شود در همه صفحات */}
+        <Highlights />
         {children}
       </main>
       

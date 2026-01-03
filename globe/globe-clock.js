@@ -259,9 +259,10 @@ function _updateGlobePosition() {
     globeWrapper.style.setProperty('top', `${adjustedTop}px`, 'important');
   }
   
-  // تنظیم موقعیت هایلایت‌ها
-  // Set highlights position
-  updateHighlightsPosition();
+  // تنظیم موقعیت هایلایت‌ها - فقط اگر DOM آماده است
+  // Set highlights position - only if DOM is ready
+  // این فراخوانی اولیه حذف شد - باید از React فراخوانی شود
+  // updateHighlightsPosition(); // حذف شد - باید از React فراخوانی شود
 }
 
 /**
@@ -298,29 +299,29 @@ function updateHighlightsPosition() {
     }
   }
   
-  if (!activeView) {
-    console.warn('⚠️ updateHighlightsPosition: No active view found!', {
-      activeViewWithClass: document.querySelector('.view.active-view'),
-      allViews: document.querySelectorAll('.view'),
-      layoutMainViews: document.querySelectorAll('.layout-main > .view')
-    });
-    return;
+  // در React Router، activeView اختیاری است - highlights در .layout-main هستند
+  // In React Router, activeView is optional - highlights are in .layout-main
+  // فقط در development log کن - در React Router activeView ممکن است پیدا نشود
+  // Only log in development - in React Router activeView might not be found
+  
+  // پیدا کردن highlights - در React Router highlights در .layout-main است (نه در .view)
+  // Find highlights - in React Router highlights are in .layout-main (not in .view)
+  let highlightsSections = [];
+  
+  // اول در .layout-main جستجو کن (جایی که highlights واقعاً هستند)
+  const layoutMain = document.querySelector('.layout-main');
+  if (layoutMain) {
+    highlightsSections = layoutMain.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
   }
   
-  console.log('✅ updateHighlightsPosition: Active view found:', {
-    viewId: activeView.id,
-    viewClass: activeView.className,
-    viewDisplay: window.getComputedStyle(activeView).display
-  });
-  
-  // پیدا کردن همه هایلایت‌ها
-  // Find all highlights
-  let highlightsSections = activeView.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
-  
-  // اگر در view پیدا نشد، در کل document جستجو کن (fallback)
+  // اگر پیدا نشد، در کل document جستجو کن (fallback)
   if (highlightsSections.length === 0) {
-    console.warn('⚠️ No highlights in active view, searching in document...');
     highlightsSections = document.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
+  }
+  
+  if (highlightsSections.length === 0) {
+    // اگر highlights پیدا نشد، خروج کن - بدون log (normal در React Router)
+    return;
   }
   
   // پیدا کردن المان‌های مورد نیاز برای محاسبه
@@ -340,98 +341,146 @@ function updateHighlightsPosition() {
   if (isDesktop) {
     // در دسکتاپ: محاسبه بر اساس موقعیت واقعی کارت portfolio
     // Desktop: calculate based on actual portfolio card position
-    if (portfolioCard && activeView) {
+    if (portfolioCard) {
+      // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
+      // portfolioCard با position: fixed است، پس باید از getBoundingClientRect استفاده کنیم
       const portfolioRect = portfolioCard.getBoundingClientRect();
       const portfolioBottom = portfolioRect.bottom;
-      const viewRect = activeView.getBoundingClientRect();
-      const viewTop = viewRect.top;
-      const scrollTop = window.scrollY || 0;
-      // محاسبه دقیق: فاصله از بالای view تا پایین کارت portfolio + 20px gap
-      const calculatedMargin = portfolioBottom - viewTop + scrollTop + 20;
-      marginTop = `${Math.max(calculatedMargin, 100)}px`; // حداقل 100px برای اطمینان از نمایش
       
-      console.log('🔍 Desktop margin calculation:', {
-        portfolioBottom,
-        viewTop,
-        scrollTop,
-        calculatedMargin,
-        finalMargin: marginTop
-      });
+      // پیدا کردن موقعیت بالای layout-main در viewport (یا activeView اگر موجود باشد)
+      const layoutMain = document.querySelector('.layout-main');
+      const referenceElement = activeView || layoutMain || document.body;
+      const referenceRect = referenceElement.getBoundingClientRect();
+      const referenceTop = referenceRect.top;
+      
+      // محاسبه فاصله از بالای reference element تا پایین کارت portfolio + 15px gap
+      // چون هر دو در viewport هستند، می‌توانیم مستقیماً تفریق کنیم
+      const calculatedMargin = portfolioBottom - referenceTop + 15;
+      marginTop = `${Math.max(calculatedMargin, 15)}px`; // حداقل 15px
+      
+      // فقط در development log کن
+      // Check if we're in development mode (works in both browser and Node.js)
+      const isDev = (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') || 
+                    (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development');
+      if (isDev) {
+        console.log('🔍 Desktop margin calculation (viewport):', {
+          portfolioBottom,
+          referenceTop: referenceTop,
+          calculatedMargin,
+          finalMargin: marginTop
+        });
+      }
     } else {
       // fallback: محاسبه بر اساس ارتفاع‌های ثابت
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
-      console.warn('⚠️ Portfolio card or active view not found, using fallback margin');
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 15px)`;
+      // فقط در development log کن
+      const isDev = (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') || 
+                    (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development');
+      if (isDev) {
+        console.warn('⚠️ Portfolio card not found, using fallback margin');
+      }
     }
   } else if (isTablet) {
     // در تبلت: پایین کارت portfolio + 20px gap
     // Tablet: below portfolio card + 20px gap
     if (portfolioCard) {
+      // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
       const portfolioRect = portfolioCard.getBoundingClientRect();
       const portfolioBottom = portfolioRect.bottom;
-      const viewportTop = activeView.getBoundingClientRect().top;
-      const scrollTop = activeView.scrollTop || 0;
-      const calculatedMargin = portfolioBottom - viewportTop + scrollTop + 20;
-      marginTop = `${Math.max(calculatedMargin, 0)}px`;
+      
+      const layoutMain = document.querySelector('.layout-main');
+      const referenceElement = activeView || layoutMain || document.body;
+      const referenceRect = referenceElement.getBoundingClientRect();
+      const referenceTop = referenceRect.top;
+      
+      const calculatedMargin = portfolioBottom - referenceTop + 20;
+      marginTop = `${Math.max(calculatedMargin, 20)}px`; // حداقل 20px
     } else {
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 20px)`;
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 15px)`;
     }
   } else if (isMobile) {
     // در موبایل: محاسبه بر اساس موقعیت واقعی کارت portfolio
     // Mobile: calculate based on actual portfolio card position
     if (portfolioCard) {
+      // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
       const portfolioRect = portfolioCard.getBoundingClientRect();
       const portfolioBottom = portfolioRect.bottom;
-      const viewportTop = activeView.getBoundingClientRect().top;
-      marginTop = `${portfolioBottom - viewportTop + 20}px`;
+      
+      const layoutMain = document.querySelector('.layout-main');
+      const referenceElement = activeView || layoutMain || document.body;
+      const referenceRect = referenceElement.getBoundingClientRect();
+      const referenceTop = referenceRect.top;
+      
+      const calculatedMargin = portfolioBottom - referenceTop + 20;
+      marginTop = `${Math.max(calculatedMargin, 20)}px`; // حداقل 20px
     } else {
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 20px)`;
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 15px)`;
     }
   } else {
     // fallback برای سایر حالت‌ها
     // fallback for other cases
-    marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 20px)`;
+      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 15px)`;
   }
   
   highlightsSections.forEach(section => {
     if (section) {
-      section.style.setProperty('margin-top', marginTop, 'important');
+      // تنظیم margin-top به 35px از بالا (بدون محاسبه JS - فقط 35px)
+      section.style.setProperty('margin-top', '35px', 'important');
       section.style.setProperty('padding-top', '0', 'important');
       section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
       section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
       section.style.setProperty('visibility', 'visible', 'important');
       section.style.setProperty('opacity', '1', 'important');
       section.style.setProperty('position', 'relative', 'important');
-      section.style.setProperty('z-index', '996', 'important');
-      section.style.setProperty('width', 'calc(100% - 24px)', 'important'); // عرض ثابت
-      section.style.setProperty('min-width', 'calc(100% - 24px)', 'important');
+      section.style.setProperty('z-index', '10', 'important'); // بالاتر از view ها (1) اما پایین‌تر از fixed elements
+      // عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل
+      // عرض با CSS تنظیم می‌شود - اینجا فقط margin-top را تنظیم می‌کنیم
+      // Width is set by CSS - we only set margin-top here
+      // section.style.setProperty('width', 'calc(100vw - 10px)', 'important'); // حذف شد - با CSS تنظیم می‌شود
+      // section.style.setProperty('min-width', 'calc(100vw - 10px)', 'important'); // حذف شد
+      // section.style.setProperty('max-width', 'calc(100vw - 10px)', 'important'); // حذف شد
+      // section.style.setProperty('margin-left', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
+      // section.style.setProperty('margin-right', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
+      // section.style.setProperty('left', '0', 'important'); // حذف شد - با CSS تنظیم می‌شود
+      // section.style.setProperty('right', 'auto', 'important'); // حذف شد - با CSS تنظیم می‌شود
+      section.style.setProperty('padding-left', '0', 'important'); // padding حذف شد - margin استفاده می‌شود
+      section.style.setProperty('padding-right', '0', 'important');
       section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
       section.style.setProperty('min-height', '80px', 'important');
       
-      // اطمینان از نمایش highlights-container
+      // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
       const container = section.querySelector('.highlights-container');
       if (container) {
         container.style.setProperty('display', 'flex', 'important');
-        container.style.setProperty('width', '100%', 'important');
-        container.style.setProperty('min-width', '100%', 'important');
-        container.style.setProperty('height', '80px', 'important');
-        container.style.setProperty('min-height', '80px', 'important');
+        // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+        // Width and sizes are set by CSS - we don't change them here
+        // container.style.setProperty('width', '100%', 'important'); // حذف شد
+        // container.style.setProperty('min-width', '100%', 'important'); // حذف شد
+        // container.style.setProperty('max-width', '100%', 'important'); // حذف شد
+        // container.style.setProperty('height', '80px', 'important'); // حذف شد
+        // container.style.setProperty('min-height', '80px', 'important'); // حذف شد
         container.style.setProperty('visibility', 'visible', 'important');
         container.style.setProperty('opacity', '1', 'important');
+        container.style.setProperty('justify-content', 'flex-start', 'important');
+        container.style.setProperty('align-items', 'center', 'important');
+        container.style.setProperty('flex-wrap', 'nowrap', 'important');
+        container.style.setProperty('overflow-x', 'auto', 'important');
+        container.style.setProperty('overflow-y', 'hidden', 'important');
+        container.style.setProperty('gap', '5px', 'important'); // gap ثابت 5px بین هایلایت‌ها
       }
       
-      // اطمینان از نمایش highlight-circle ها
+      // اطمینان از نمایش highlight-circle ها - فقط استایل‌های ضروری (نه width یا اندازه)
       const circles = section.querySelectorAll('.highlight-circle');
+      
       circles.forEach(circle => {
         circle.style.setProperty('display', 'flex', 'important');
-        circle.style.setProperty('width', '60px', 'important');
-        circle.style.setProperty('height', '60px', 'important');
-        circle.style.setProperty('min-width', '60px', 'important');
-        circle.style.setProperty('min-height', '60px', 'important');
-        circle.style.setProperty('flex', '0 0 60px', 'important');
-        circle.style.setProperty('flex-shrink', '0', 'important');
-        circle.style.setProperty('flex-grow', '0', 'important');
         circle.style.setProperty('visibility', 'visible', 'important');
         circle.style.setProperty('opacity', '1', 'important');
+        // عرض، flex، و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
+        // Width, flex, and sizes are set by CSS - we don't change them here
+        // circle.style.setProperty('flex-shrink', '0', 'important'); // حذف شد
+        // circle.style.setProperty('flex-grow', '0', 'important'); // حذف شد
+        // همه اندازه‌های ریسپانسیو حذف شدند - با CSS تنظیم می‌شوند
       });
       
       // Debug logging - همیشه فعال برای troubleshooting
@@ -448,14 +497,9 @@ function updateHighlightsPosition() {
       }
   });
   
-  // اگر highlights پیدا نشد، log کن
+  // اگر highlights پیدا نشد، خروج کن - بدون log (normal در React Router)
   if (highlightsSections.length === 0) {
-    console.warn('⚠️ No highlights sections found!', {
-      activeView: activeView ? activeView.id || activeView.className : 'not found',
-      allViews: document.querySelectorAll('.view').length,
-      layoutMainViews: document.querySelectorAll('.layout-main > .view').length,
-      allHighlights: document.querySelectorAll('.highlights-section').length
-  });
+    return;
   }
 }
 

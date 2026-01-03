@@ -119,29 +119,15 @@ function News() {
 
   return (
     <div id="newsView" className="view">
-      {/* Highlights Section */}
-      <section className="highlights-section news-highlights">
-        <div className="highlights-container">
-          {newsCategories.map((category) => (
-            <div
-              key={category.id}
-              className={`highlight-circle ${activeCategory === category.id ? 'active' : ''}`}
-              data-news={category.id}
-              onClick={() => handleCategoryClick(category.id)}
-            >
-              <span>{category.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Highlights در Layout.jsx قرار دارد - حذف شد */}
 
       {/* News Cards Container */}
-      <main className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
+      <div className="main-content" style={{ padding: '1rem', minHeight: '200px' }}>
         <CardContainer 
           items={cards} 
           className={`news-cards`}
         />
-      </main>
+      </div>
     </div>
   )
 }
