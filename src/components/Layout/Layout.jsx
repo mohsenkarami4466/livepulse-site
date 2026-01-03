@@ -91,6 +91,18 @@ function Layout({ children }) {
    * - window.navigate باید قبل از لود شدن vanilla JS تنظیم شود
    * - این برای backward compatibility با کدهای vanilla JS است
    */
+  // Effect: فراخوانی updateHighlightsPosition بعد از render
+  React.useEffect(() => {
+    // تاخیر برای اطمینان از render شدن کامل
+    const timeoutId = setTimeout(() => {
+      if (typeof window !== 'undefined' && typeof window.updateHighlightsPosition === 'function') {
+        window.updateHighlightsPosition()
+      }
+    }, 800)
+    
+    return () => clearTimeout(timeoutId)
+  }, []) // فقط یکبار هنگام mount
+
   React.useEffect(() => {
     // Handler های باز شدن Globe Modals
     const handleFinancialGlobeOpen = () => setIsFinancialGlobeOpen(true)
