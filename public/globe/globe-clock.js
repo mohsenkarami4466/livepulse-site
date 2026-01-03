@@ -266,6 +266,57 @@ function _updateGlobePosition() {
 }
 
 /**
+ * بررسی اینکه آیا stylesheet‌ها لود شده‌اند
+ * Check if stylesheets are loaded
+ */
+function areStylesheetsLoaded() {
+  // بررسی اینکه آیا document.readyState 'complete' است
+  if (document.readyState !== 'complete') {
+    return false;
+  }
+  
+  // بررسی اینکه آیا همه stylesheet‌ها لود شده‌اند
+  const stylesheets = document.querySelectorAll('link[rel="stylesheet"]');
+  for (const sheet of stylesheets) {
+    if (sheet.sheet === null) {
+      // اگر sheet هنوز لود نشده، false برگردان
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+/**
+ * انتظار برای لود شدن stylesheet‌ها
+ * Wait for stylesheets to load
+ */
+function waitForStylesheets(callback, maxWait = 3000) {
+  const startTime = Date.now();
+  
+  function check() {
+    if (areStylesheetsLoaded()) {
+      callback();
+    } else if (Date.now() - startTime < maxWait) {
+      // اگر هنوز لود نشده و زمان تمام نشده، دوباره چک کن
+      requestAnimationFrame(check);
+    } else {
+      // اگر زمان تمام شد، callback را اجرا کن (fallback)
+      callback();
+    }
+  }
+  
+  // اگر document هنوز لود نشده، منتظر بمان
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      requestAnimationFrame(check);
+    });
+  } else {
+    requestAnimationFrame(check);
+  }
+}
+
+/**
  * تنظیم موقعیت هایلایت‌ها - محاسبه بر اساس موقعیت کارت portfolio
  * Set highlights position - calculate based on portfolio card position
  * 
