@@ -481,21 +481,12 @@ function updateHighlightsPosition() {
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
       const marginTop = isDesktop ? '100px' : (isTablet ? '40px' : '10px');
       
-      // استفاده از requestAnimationFrame برای جلوگیری از force layout
-      requestAnimationFrame(() => {
-        // فقط اگر stylesheet‌ها لود شده‌اند، margin-top را تنظیم کن
-        if (areStylesheetsLoaded()) {
+      // استفاده از waitForStylesheets برای جلوگیری از Layout warning
+      // Wait for stylesheets before setting styles to prevent Layout warning
+      waitForStylesheets(() => {
+        // استفاده از requestAnimationFrame برای جلوگیری از force layout
+        requestAnimationFrame(() => {
           section.style.setProperty('margin-top', marginTop, 'important');
-        } else {
-          // اگر stylesheet‌ها لود نشده‌اند، منتظر بمان
-          waitForStylesheets(() => {
-            requestAnimationFrame(() => {
-              section.style.setProperty('margin-top', marginTop, 'important');
-            });
-          });
-        }
-        // تنظیم بقیه استایل‌ها - فقط اگر stylesheet‌ها لود شده‌اند
-        if (areStylesheetsLoaded()) {
           section.style.setProperty('padding-top', '0', 'important');
           section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
           section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
@@ -506,35 +497,12 @@ function updateHighlightsPosition() {
           // عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل
           // عرض با CSS تنظیم می‌شود - اینجا فقط margin-top را تنظیم می‌کنیم
           // Width is set by CSS - we only set margin-top here
-          // section.style.setProperty('width', 'calc(100vw - 10px)', 'important'); // حذف شد - با CSS تنظیم می‌شود
-          // section.style.setProperty('min-width', 'calc(100vw - 10px)', 'important'); // حذف شد
-          // section.style.setProperty('max-width', 'calc(100vw - 10px)', 'important'); // حذف شد
-          // section.style.setProperty('margin-left', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
-          // section.style.setProperty('margin-right', '5px', 'important'); // حذف شد - با CSS تنظیم می‌شود
-          // section.style.setProperty('left', '0', 'important'); // حذف شد - با CSS تنظیم می‌شود
-          // section.style.setProperty('right', 'auto', 'important'); // حذف شد - با CSS تنظیم می‌شود
           section.style.setProperty('padding-left', '0', 'important'); // padding حذف شد - margin استفاده می‌شود
           section.style.setProperty('padding-right', '0', 'important');
           section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
           section.style.setProperty('min-height', '80px', 'important');
-        } else {
-          // اگر stylesheet‌ها لود نشده‌اند، منتظر بمان
-          waitForStylesheets(() => {
-            requestAnimationFrame(() => {
-              section.style.setProperty('padding-top', '0', 'important');
-              section.style.setProperty('display', 'flex', 'important');
-              section.style.setProperty('flex-direction', 'column', 'important');
-              section.style.setProperty('visibility', 'visible', 'important');
-              section.style.setProperty('opacity', '1', 'important');
-              section.style.setProperty('position', 'relative', 'important');
-              section.style.setProperty('z-index', '10', 'important');
-              section.style.setProperty('padding-left', '0', 'important');
-              section.style.setProperty('padding-right', '0', 'important');
-              section.style.setProperty('height', '80px', 'important');
-              section.style.setProperty('min-height', '80px', 'important');
-            });
-          });
-        }
+        });
+      });
         
         // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
         const container = section.querySelector('.highlights-container');
@@ -542,11 +510,6 @@ function updateHighlightsPosition() {
           container.style.setProperty('display', 'flex', 'important');
           // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
           // Width and sizes are set by CSS - we don't change them here
-          // container.style.setProperty('width', '100%', 'important'); // حذف شد
-          // container.style.setProperty('min-width', '100%', 'important'); // حذف شد
-          // container.style.setProperty('max-width', '100%', 'important'); // حذف شد
-          // container.style.setProperty('height', '80px', 'important'); // حذف شد
-          // container.style.setProperty('min-height', '80px', 'important'); // حذف شد
           container.style.setProperty('visibility', 'visible', 'important');
           container.style.setProperty('opacity', '1', 'important');
           container.style.setProperty('justify-content', 'flex-start', 'important');
@@ -566,22 +529,21 @@ function updateHighlightsPosition() {
           circle.style.setProperty('opacity', '1', 'important');
           // عرض، flex، و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
           // Width, flex, and sizes are set by CSS - we don't change them here
-          // circle.style.setProperty('flex-shrink', '0', 'important'); // حذف شد
-          // circle.style.setProperty('flex-grow', '0', 'important'); // حذف شد
-          // همه اندازه‌های ریسپانسیو حذف شدند - با CSS تنظیم می‌شوند
         });
         
-        // Debug logging - همیشه فعال برای troubleshooting
-        console.log('🔍 Highlights position updated:', {
+        // Debug logging - فقط در development
+        if (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') {
+          console.log('🔍 Highlights position updated:', {
             section: section.className,
             marginTop: marginTop,
             isMobile: isMobile,
             isTablet: isTablet,
-          isDesktop: isDesktop,
-          portfolioCard: portfolioCard ? 'found' : 'not found',
-          activeView: activeView ? activeView.id || activeView.className : 'not found',
-          highlightsCount: highlightsSections.length
+            isDesktop: isDesktop,
+            portfolioCard: portfolioCard ? 'found' : 'not found',
+            activeView: activeView ? activeView.id || activeView.className : 'not found',
+            highlightsCount: highlightsSections.length
           });
+        }
       });
     }
   });
