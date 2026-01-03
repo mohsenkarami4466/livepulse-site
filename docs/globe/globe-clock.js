@@ -480,9 +480,12 @@ function updateHighlightsPosition() {
       const isDesktop = window.innerWidth >= 1024;
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
       const marginTop = isDesktop ? '100px' : (isTablet ? '40px' : '10px');
-      section.style.setProperty('margin-top', marginTop, 'important');
-      section.style.setProperty('padding-top', '0', 'important');
-      section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
+      
+      // استفاده از requestAnimationFrame برای جلوگیری از force layout
+      requestAnimationFrame(() => {
+        section.style.setProperty('margin-top', marginTop, 'important');
+        section.style.setProperty('padding-top', '0', 'important');
+        section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
       section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
       section.style.setProperty('visibility', 'visible', 'important');
       section.style.setProperty('opacity', '1', 'important');
