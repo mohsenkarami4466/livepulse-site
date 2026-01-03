@@ -626,6 +626,12 @@ function createUTCClockRing() {
     hourEl.className = 'utc-hour';
     hourEl.dataset.position = i;
     
+    // تنظیم عدد ساعت (0 تا 11)
+    // Set hour number (0 to 11)
+    const displayHour = i;
+    hourEl.textContent = displayHour.toString().padStart(2, '0');
+    hourEl.dataset.hour = displayHour;
+    
     // محاسبه موقعیت روی دایره
     // Calculate position on circle
     const angle = (i * 30) - 90; // هر موقعیت 30 درجه
