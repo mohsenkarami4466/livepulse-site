@@ -80,6 +80,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 10;
 }
 
