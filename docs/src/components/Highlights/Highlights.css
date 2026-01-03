@@ -1,0 +1,226 @@
+/**
+ * ============================================
+ * 🎯 استایل‌های Highlights - Highlights.css
+ * ============================================
+ * 
+ * استایل‌های کامپوننت Highlights
+ * - عرض کامل با 5px padding از هر طرف
+ * - Gap 5px بین highlights
+ * - فاصله 15px از Portfolio Card
+ * - یکسان در همه دستگاه‌ها
+ * 
+ * اولویت بالا برای override کردن CSS های قدیمی
+ */
+
+/* Highlights Section - با selector قوی برای override کردن CSS های قدیمی */
+.layout-main .highlights-section,
+main.layout-main .highlights-section,
+section.highlights-section,
+.highlights-section {
+  display: flex !important;
+  flex-direction: column !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 10 !important; /* بالاتر از view ها (1) اما پایین‌تر از fixed elements */
+  
+  /* عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل */
+  width: calc(100vw - 10px) !important;
+  min-width: calc(100vw - 10px) !important;
+  max-width: calc(100vw - 10px) !important;
+  left: 0 !important; /* اطمینان از شروع از چپ */
+  right: auto !important; /* اطمینان از عدم align به راست */
+  
+  /* ارتفاع ثابت */
+  height: 80px !important;
+  min-height: 80px !important;
+  max-height: 80px !important;
+  
+  /* فاصله‌ها - از JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+  /* margin-top is set by JavaScript (20px below portfolio card) */
+  margin-left: 5px !important; /* override: 0 -> 5px */
+  margin-right: 5px !important; /* override: 0 -> 5px */
+  margin-bottom: 20px !important;
+  
+  /* padding - override کردن sections.css */
+  padding-left: 0 !important; /* override: 5px -> 0 */
+  padding-right: 0 !important; /* override: 5px -> 0 */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  background: transparent !important; /* override: transparent */
+  
+  /* جلوگیری از تغییرات بعدی */
+  transition: none !important; /* بدون transition برای جلوگیری از پرش */
+}
+
+/* Highlights Container - با selector قوی برای override */
+.layout-main .highlights-container,
+main.layout-main .highlights-container,
+.highlights-container {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important; /* شروع از چپ - نه space-between */
+  align-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* عرض کامل */
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  
+  /* ارتفاع */
+  height: 80px !important;
+  min-height: 80px !important;
+  max-height: 80px !important;
+  
+  /* Gap 5px بین highlights - override کردن sections.css */
+  gap: 5px !important;
+  
+  /* سایر */
+  padding: 0 !important;
+  margin: 0 !important;
+  flex-wrap: nowrap !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important; /* برای scroll در صورت نیاز */
+  overflow-y: hidden !important;
+}
+
+/* Highlight Circle - با selector قوی برای override کردن sections.css */
+.layout-main .highlight-circle,
+main.layout-main .highlight-circle,
+.highlight-circle {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* عرض خودکار - تقسیم یکنواخت فضا بین 7 highlights */
+  width: auto !important;
+  flex: 1 1 0 !important; /* تقسیم یکنواخت فضا - override: 0 0 auto -> 1 1 0 */
+  min-width: 0 !important; /* برای flex-shrink */
+  max-width: none !important; /* override: clamp -> none */
+  
+  /* ارتفاع - override کردن sections.css */
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  
+  /* سایر */
+  flex-shrink: 1 !important; /* override: 0 -> 1 */
+  flex-grow: 1 !important; /* override: 0 -> 1 */
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  margin: 0 !important; /* gap فاصله را ایجاد می‌کند */
+  
+  /* استایل */
+  border-radius: 12px !important;
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(30px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(150%) !important;
+  border: 1px solid var(--card-border) !important;
+  cursor: pointer !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  /* متن - فونت یکسان و منظم */
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  font-size: clamp(0.7rem, 1.1vw, 0.85rem) !important;
+  text-align: center !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  
+  /* Shadow */
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Highlight Circle Active */
+.highlight-circle.active {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  transform: scale(1.05) !important;
+  border-color: transparent !important;
+  box-shadow: 
+    0 6px 20px rgba(234, 88, 12, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  z-index: 1 !important;
+}
+
+/* Highlight Circle Hover */
+.highlight-circle:hover:not(.active) {
+  transform: scale(1.02) !important;
+  background: var(--card-bg-hover) !important;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .highlights-section {
+    height: 70px !important;
+    min-height: 70px !important;
+    /* margin-top از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+  }
+  
+  .highlights-container {
+    height: 70px !important;
+    min-height: 70px !important;
+  }
+  
+  .highlight-circle {
+    height: 50px !important;
+    min-height: 50px !important;
+    font-size: clamp(0.65rem, 1.5vw, 0.75rem) !important;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 767px) {
+  .highlights-section {
+    height: 60px !important;
+    min-height: 60px !important;
+    /* margin-top از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+  }
+  
+  .highlights-container {
+    height: 60px !important;
+    min-height: 60px !important;
+    gap: 5px !important; /* همان 5px */
+  }
+  
+  .highlight-circle {
+    height: 45px !important;
+    min-height: 45px !important;
+    font-size: clamp(0.6rem, 2vw, 0.7rem) !important;
+    border-radius: 10px !important;
+  }
+}
+
+/* Responsive - Small Mobile */
+@media (max-width: 480px) {
+  .highlights-section {
+    height: 55px !important;
+    min-height: 55px !important;
+    /* margin-top از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+  }
+  
+  .highlights-container {
+    height: 55px !important;
+    min-height: 55px !important;
+  }
+  
+  .highlight-circle {
+    height: 40px !important;
+    min-height: 40px !important;
+    font-size: clamp(0.55rem, 1.8vw, 0.65rem) !important;
+    border-radius: 8px !important;
+  }
+}
