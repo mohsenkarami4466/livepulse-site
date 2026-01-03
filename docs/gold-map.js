@@ -204,9 +204,12 @@ class WorldGoldMapGlass {
 
     async loadWorldData() {
         try {
-            // استفاده از unpkg به جای jsdelivr برای رفع مشکل CORS
-            // Use unpkg instead of jsdelivr to fix CORS issue
-            const atlasResponse = await fetch('https://unpkg.com/world-atlas@2/countries-110m.json');
+            // استفاده از jsdelivr با mode: 'cors' برای رفع مشکل CORS
+            // Use jsdelivr with mode: 'cors' to fix CORS issue
+            const atlasResponse = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json', {
+                mode: 'cors',
+                credentials: 'omit'
+            });
             this.worldData = await atlasResponse.json();
 
             // داده‌های کشورها از منبع داخلی استفاده می‌شود چون منبع خارجی قابل اعتماد نیست

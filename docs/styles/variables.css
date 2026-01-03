@@ -1,8 +1,8 @@
 /* 🖋️ فونت و تایپوگرافی - باید در ابتدای فایل باشد */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-/* استفاده از unpkg به جای jsdelivr برای رفع مشکل CORS در GitHub Pages */
-/* Use unpkg instead of jsdelivr to fix CORS issue on GitHub Pages */
-@import url('https://unpkg.com/@rastikerdar/vazirmatn-fontface@latest/Vazirmatn-font-face.css');
+/* استفاده از jsdelivr با crossorigin برای رفع مشکل CORS */
+/* Use jsdelivr with crossorigin to fix CORS issue */
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
 
 /* ==================== */
 /* 🛡️ استایل‌های Error Handler */
