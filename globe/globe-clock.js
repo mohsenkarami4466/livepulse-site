@@ -475,11 +475,33 @@ function updateHighlightsPosition() {
   
   highlightsSections.forEach(section => {
     if (section) {
-      // تنظیم margin-top - 40 پیکسل بالاتر از قبل
-      // دسکتاپ: 80px، تبلت: 20px، موبایل: 0px
-      const isDesktop = window.innerWidth >= 1024;
-      const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-      const marginTop = isDesktop ? '80px' : (isTablet ? '20px' : '0px');
+      // محاسبه margin-top بر اساس موقعیت کارت portfolio + 15 پیکسل
+      // Calculate margin-top based on portfolio card position + 15px
+      let marginTop = '0px';
+      
+      if (portfolioCard) {
+        // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
+        // Use getBoundingClientRect to calculate viewport position
+        const portfolioRect = portfolioCard.getBoundingClientRect();
+        const portfolioBottom = portfolioRect.bottom;
+        
+        // پیدا کردن موقعیت بالای layout-main در viewport
+        // Find top position of layout-main in viewport
+        const layoutMain = document.querySelector('.layout-main');
+        const referenceElement = activeView || layoutMain || document.body;
+        const referenceRect = referenceElement.getBoundingClientRect();
+        const referenceTop = referenceRect.top;
+        
+        // محاسبه فاصله از بالای reference element تا پایین portfolio card + 15px
+        // Calculate distance from top of reference element to bottom of portfolio card + 15px
+        const distanceFromTop = portfolioBottom - referenceTop + 15;
+        marginTop = `${Math.max(0, distanceFromTop)}px`;
+      } else {
+        // fallback: اگر portfolio card پیدا نشد
+        // fallback: if portfolio card not found
+        const headerHeight = document.querySelector('header')?.offsetHeight || 60;
+        marginTop = `${headerHeight + 15}px`;
+      }
       
       // استفاده از waitForStylesheets برای جلوگیری از Layout warning
       // Wait for stylesheets before setting styles to prevent Layout warning

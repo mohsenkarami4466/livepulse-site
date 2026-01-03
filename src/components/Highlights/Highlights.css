@@ -36,8 +36,8 @@ section.highlights-section,
   min-height: 80px !important;
   max-height: 80px !important;
   
-  /* فاصله‌ها - override کردن sections.css */
-  margin-top: 80px !important; /* 80px از بالا (40 پیکسل بالاتر از 120px) - فقط دسکتاپ */
+  /* فاصله‌ها - از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+  /* margin-top is set by JavaScript (15px below portfolio card) */
   margin-left: 5px !important; /* override: 0 -> 5px */
   margin-right: 5px !important; /* override: 0 -> 5px */
   margin-bottom: 20px !important;
@@ -167,7 +167,7 @@ main.layout-main .highlight-circle,
   .highlights-section {
     height: 70px !important;
     min-height: 70px !important;
-    margin-top: 20px !important; /* 20px از بالا در تبلت (40 پیکسل بالاتر از 60px) */
+    /* margin-top از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
   }
   
   .highlights-container {
@@ -187,7 +187,7 @@ main.layout-main .highlight-circle,
   .highlights-section {
     height: 60px !important;
     min-height: 60px !important;
-    margin-top: 0px !important; /* 0px از بالا در موبایل (40 پیکسل بالاتر از 30px - حداقل) */
+    /* margin-top از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
   }
   
   .highlights-container {
@@ -209,7 +209,7 @@ main.layout-main .highlight-circle,
   .highlights-section {
     height: 55px !important;
     min-height: 55px !important;
-    margin-top: 20px !important; /* 20px از بالا در موبایل کوچک (40 پیکسل بالاتر از 60px) */
+    /* margin-top از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
   }
   
   .highlights-container {
