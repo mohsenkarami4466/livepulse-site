@@ -55,7 +55,8 @@ div.view section.globe-highlights,
   right: auto !important; /* اطمینان از عدم align به راست */
   height: 80px !important;
   min-height: 80px !important;
-  margin-top: 100px !important; /* 100px از بالا (120px - 20px بالا) - فقط دسکتاپ */
+  /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+  /* margin-top is set by JavaScript (20px below portfolio card) */
   margin-left: 5px !important; /* 5px از چپ */
   margin-right: 5px !important; /* 5px از راست */
   margin-bottom: 20px !important;
@@ -142,7 +143,8 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 40px !important; /* 40px از بالا در تبلت (60px - 20px بالا) */
+    /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+    /* margin-top is set by JavaScript (20px below portfolio card) */
     height: 70px !important;
     min-height: 70px !important;
   }
@@ -173,7 +175,8 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 10px !important; /* 10px از بالا در موبایل (30px - 20px بالا) */
+    /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+    /* margin-top is set by JavaScript (20px below portfolio card) */
     height: 60px !important;
     min-height: 60px !important;
   }
@@ -206,7 +209,8 @@ div.view section.globe-highlights,
   .home-highlights,
   .news-highlights,
   .tools-highlights {
-    margin-top: 10px !important; /* 10px از بالا در موبایل (30px - 20px بالا) */
+    /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+    /* margin-top is set by JavaScript (20px below portfolio card) */
     height: 55px !important;
     min-height: 55px !important;
   }

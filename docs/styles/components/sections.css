@@ -278,9 +278,8 @@
 /* 🔘 هایلایت‌های دایره‌ای */
 /* ==================== */
 
-/* 🔮 هایلایت‌ها - طراحی Liquid Glass */
-/* فاصله یکسان برای همه هایلایت‌ها - مثل صفحه آرامش و آموزش */
-/* برای React components - استفاده از selector دقیق‌تر */
+/* 🔮 هایلایت‌ها - طراحی ساده */
+/* برای همه صفحات */
 .layout-main > .view .highlights-section,
 .layout-main > .view .home-highlights,
 .layout-main > .view .news-highlights,
@@ -288,7 +287,6 @@
 .layout-main > .view .education-highlights,
 .layout-main > .view .relax-highlights,
 .layout-main > .view .globe-highlights,
-/* برای vanilla JS - fallback */
 .highlights-section,
 .home-highlights,
 .news-highlights,
@@ -296,53 +294,75 @@
 .education-highlights,
 .relax-highlights,
 .globe-highlights {
-    z-index: 100;
-    background: transparent;
-    padding-top: 0 !important; /* حذف padding-top - از JavaScript تنظیم می‌شود */
-    padding-bottom: 0;
-    margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) - 5px) !important; /* -5px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
-    margin-bottom: 20px !important; /* فاصله پایین هایلایت تا بالای کارتها - 20px در دسکتاپ */
-    margin-left: 12px !important; /* فاصله یکسان از چپ - ثابت در تمام صفحات */
-    margin-right: 12px !important; /* فاصله یکسان از راست - ثابت در تمام صفحات */
-    width: calc(100% - 24px) !important; /* عرض با فاصله یکسان - 12px چپ + 12px راست = 24px */
-    max-width: calc(100% - 24px) !important; /* max-width هم یکسان */
-    box-sizing: border-box;
-    /* margin-top با JavaScript بر اساس کارت portfolio تنظیم می‌شود */
+    display: flex !important;
+    flex-direction: column !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    /* positioning ساده - JavaScript کنترل می‌کند */
+    position: relative !important;
+    width: calc(100vw - 10px) !important; /* عرض کامل viewport منهای 10px (5px از هر طرف) */
+    min-width: calc(100vw - 10px) !important;
+    max-width: calc(100vw - 10px) !important;
+    left: 0 !important; /* اطمینان از شروع از چپ */
+    right: auto !important; /* اطمینان از عدم align به راست */
+    height: 80px !important; /* ارتفاع ثابت */
+    min-height: 80px !important;
+    max-height: 80px !important;
+    /* margins ساده */
+    /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+    /* margin-top is set by JavaScript (20px below portfolio card) */
+    margin-bottom: 20px !important; /* فاصله از پایین */
+    margin-left: 5px !important; /* 5px از چپ */
+    margin-right: 5px !important; /* 5px از راست */
+    /* override padding از layout-main > .view */
+    padding-left: 0 !important; /* padding حذف شد - margin استفاده می‌شود */
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
+    /* background شفاف */
+    background: transparent !important;
 }
 
 /* موقعیت هایلایت‌ها با JavaScript تنظیم می‌شود - padding-top حذف شد */
 
 .highlight-circle {
-    /* اندازه به صورت خودکار توسط flex تنظیم می‌شود */
-    width: 100%;
-    height: auto;
-    min-width: 60px;
-    max-width: 75px;
-    border-radius: 50%;
-    background: var(--card-bg);
-    backdrop-filter: blur(30px) saturate(150%);
-    -webkit-backdrop-filter: blur(30px) saturate(150%);
-    border: 1px solid var(--card-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: 600;
-    color: var(--text-primary);
-    font-size: clamp(0.6rem, 1.1vw, 0.75rem);
-    text-align: center;
-    padding: 6px;
+    /* تقسیم یکنواخت فضا بین 7 highlights */
+    width: auto !important; /* عرض خودکار برای متن */
+    flex: 1 1 0 !important; /* تقسیم یکنواخت فضا */
+    min-width: 0 !important; /* برای flex-shrink */
+    max-width: none !important; /* بدون محدودیت */
+    height: clamp(55px, 6vw, 70px) !important; /* ارتفاع متناسب */
+    min-height: clamp(55px, 6vw, 70px) !important;
+    flex-shrink: 1 !important; /* می‌تواند کوچک شود */
+    flex-grow: 1 !important; /* می‌تواند بزرگ شود */
+    border-radius: 12px !important; /* مستطیل با گوشه‌های گرد */
+    background: var(--card-bg) !important;
+    backdrop-filter: blur(30px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(150%) !important;
+    border: 1px solid var(--card-border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    font-size: clamp(0.7rem, 1.1vw, 0.9rem) !important; /* فونت متناسب */
+    text-align: center !important;
+    padding: clamp(8px, 1vw, 12px) clamp(12px, 1.5vw, 20px) !important; /* padding متناسب */
+    line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+    white-space: nowrap !important; /* جلوگیری از شکستن خط */
     box-shadow: 
         0 4px 16px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    position: relative;
-    overflow: hidden;
-    will-change: transform;
-    transform-origin: center;
-    flex-shrink: 1;
-    margin: 0 calc(0.1vw);
-    box-sizing: border-box;
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    position: relative !important;
+    overflow: visible !important;
+    will-change: transform !important;
+    transform-origin: center !important;
+    margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
+    box-sizing: border-box !important;
 }
 
 @media (max-width: 1023px) and (min-width: 768px) {
@@ -360,24 +380,34 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) - 0px) !important; /* 0px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
-        margin-left: 12px !important;
-        margin-right: 12px !important;
-        width: calc(100% - 24px) !important;
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
+        margin-left: 8px !important; /* فاصله از چپ */
+        margin-right: 8px !important; /* فاصله از راست */
+        width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
+        height: 70px !important;
+        min-height: 70px !important;
+    }
+    
+    .highlights-container {
+        gap: 5px !important; /* فاصله بین highlights (5px) */
+        height: 70px !important;
+        min-height: 70px !important;
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.4vw)) / 7);
-        max-width: calc((100% - (6 * 0.4vw)) / 7);
-        width: calc((100% - (6 * 0.4vw)) / 7);
-        height: calc((100% - (6 * 0.4vw)) / 7);
-        min-width: 35px !important;
-        max-width: 50px !important;
-        min-height: 35px !important;
-        max-height: 50px !important;
-        margin: 0 calc(0.2vw);
-        font-size: clamp(0.38rem, 0.95vw, 0.5rem) !important;
-        padding: 3px !important;
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: 60px !important;
+        max-width: 120px !important;
+        height: 50px !important;
+        min-height: 50px !important;
+        flex: 0 0 auto !important;
+        margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
+        border-radius: 12px !important; /* مستطیل با گوشه‌های گرد */
+        font-size: clamp(0.6rem, 1vw, 0.75rem) !important; /* فونت متناسب */
+        padding: 8px 14px !important; /* padding متناسب برای مستطیل */
+        line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+        white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
 }
 
@@ -396,24 +426,38 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
-        margin-left: 12px !important;
-        margin-right: 12px !important;
-        width: calc(100% - 24px) !important;
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
+        height: 60px !important;
+        min-height: 60px !important;
+    }
+    
+    .highlights-container {
+        gap: 5px !important; /* فاصله بین highlights (5px) */
+        height: 60px !important;
+        min-height: 60px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.35vw)) / 7);
-        max-width: calc((100% - (6 * 0.35vw)) / 7);
-        width: calc((100% - (6 * 0.35vw)) / 7);
-        height: calc((100% - (6 * 0.35vw)) / 7);
-        min-width: 32px !important;
-        max-width: 45px !important;
-        min-height: 32px !important;
-        max-height: 45px !important;
-        margin: 0 calc(0.175vw);
-        font-size: clamp(0.36rem, 0.85vw, 0.46rem) !important;
-        padding: 2px !important;
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: clamp(50px, 12vw, 80px) !important; /* متناسب برای 7 هایلایت */
+        max-width: clamp(80px, 15vw, 110px) !important;
+        height: clamp(45px, 10vw, 55px) !important;
+        min-height: clamp(45px, 10vw, 55px) !important;
+        flex: 0 0 auto !important;
+        margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
+        border-radius: 10px !important; /* مستطیل با گوشه‌های گرد */
+        font-size: clamp(0.5rem, 2.5vw, 0.7rem) !important; /* فونت متناسب */
+        padding: clamp(5px, 1vw, 8px) clamp(6px, 1.5vw, 12px) !important; /* padding متناسب */
+        line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+        white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
 }
 
@@ -432,24 +476,38 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
-        margin-left: 12px !important;
-        margin-right: 12px !important;
-        width: calc(100% - 24px) !important;
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
+        height: 55px !important;
+        min-height: 55px !important;
+    }
+    
+    .highlights-container {
+        gap: clamp(4px, 1.5vw, 8px) !important; /* فاصله کمتر در موبایل کوچک - متناسب */
+        height: 55px !important;
+        min-height: 55px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.3vw)) / 7);
-        max-width: calc((100% - (6 * 0.3vw)) / 7);
-        width: calc((100% - (6 * 0.3vw)) / 7);
-        height: calc((100% - (6 * 0.3vw)) / 7);
-        min-width: 28px !important;
-        max-width: 40px !important;
-        min-height: 28px !important;
-        max-height: 40px !important;
-        margin: 0 calc(0.15vw);
-        font-size: clamp(0.34rem, 0.75vw, 0.42rem) !important;
-        padding: 2px !important;
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: clamp(45px, 12vw, 70px) !important; /* متناسب برای 7 هایلایت */
+        max-width: clamp(70px, 15vw, 100px) !important;
+        height: clamp(40px, 10vw, 50px) !important;
+        min-height: clamp(40px, 10vw, 50px) !important;
+        flex: 0 0 auto !important;
+        margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
+        border-radius: 8px !important; /* مستطیل با گوشه‌های گرد */
+        font-size: clamp(0.5rem, 2.5vw, 0.7rem) !important; /* فونت متناسب */
+        padding: clamp(4px, 1vw, 6px) clamp(6px, 1.5vw, 10px) !important; /* padding متناسب */
+        line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+        white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
 }
 
@@ -468,24 +526,38 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
-        margin-left: 12px !important;
-        margin-right: 12px !important;
-        width: calc(100% - 24px) !important;
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
+        height: 50px !important;
+        min-height: 50px !important;
+    }
+    
+    .highlights-container {
+        gap: clamp(4px, 1.5vw, 6px) !important; /* فاصله کمتر در موبایل خیلی کوچک - متناسب */
+        height: 50px !important;
+        min-height: 50px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.25vw)) / 7);
-        max-width: calc((100% - (6 * 0.25vw)) / 7);
-        width: calc((100% - (6 * 0.25vw)) / 7);
-        height: calc((100% - (6 * 0.25vw)) / 7);
-        min-width: 26px !important;
-        max-width: 38px !important;
-        min-height: 26px !important;
-        max-height: 38px !important;
-        margin: 0 calc(0.125vw);
-        font-size: clamp(0.32rem, 0.7vw, 0.4rem) !important;
-        padding: 1px !important;
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: clamp(40px, 12vw, 65px) !important; /* متناسب برای 7 هایلایت */
+        max-width: clamp(65px, 15vw, 90px) !important;
+        height: clamp(38px, 10vw, 48px) !important;
+        min-height: clamp(38px, 10vw, 48px) !important;
+        flex: 0 0 auto !important;
+        margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
+        border-radius: 8px !important; /* مستطیل با گوشه‌های گرد */
+        font-size: clamp(0.45rem, 2.5vw, 0.65rem) !important; /* فونت متناسب */
+        padding: clamp(4px, 1vw, 6px) clamp(5px, 1.5vw, 8px) !important; /* padding متناسب */
+        line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+        white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
 }
 
@@ -504,96 +576,224 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: calc(var(--header-height, 60px) + 8px + clamp(55px, 7vw, 85px) + 8px + clamp(40px, 5vw, 55px) + 3px) !important; /* 3px gap - 20px کمتر از قبل برای بالا بردن هایلایت‌ها */
-        margin-left: 12px !important;
-        margin-right: 12px !important;
-        width: calc(100% - 24px) !important;
+        z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
+        position: relative !important; /* برای z-index کار کند */
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important; /* عرض کامل */
+    }
+    
+    .highlights-container {
+        gap: 6px !important; /* فاصله کمتر در موبایل خیلی کوچک */
     }
     
     .highlights-container .highlight-circle {
-        flex: 1 1 calc((100% - (6 * 0.2vw)) / 7);
-        max-width: calc((100% - (6 * 0.2vw)) / 7);
-        width: calc((100% - (6 * 0.2vw)) / 7);
-        height: calc((100% - (6 * 0.2vw)) / 7);
-        min-width: 24px !important;
-        max-width: 35px !important;
-        min-height: 24px !important;
-        max-height: 35px !important;
-        margin: 0 calc(0.1vw);
-        font-size: clamp(0.3rem, 0.65vw, 0.38rem) !important;
-        padding: 1px !important;
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: 40px !important;
+        max-width: 80px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        flex: 0 0 auto !important;
+        margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
+        border-radius: 8px !important; /* مستطیل با گوشه‌های گرد */
+        font-size: clamp(0.4rem, 0.85vw, 0.55rem) !important; /* فونت متناسب */
+        padding: 4px 6px !important; /* padding متناسب برای مستطیل */
+        line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+        white-space: nowrap !important; /* جلوگیری از شکستن خط */
     }
 }
 
 
 .highlights-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0;
-    flex-wrap: nowrap;
-    transition: all 0.3s ease;
-    min-height: 80px;
-    padding: 0;
-    margin-bottom: 25px;
-    width: 100%;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important; /* تغییر از space-between به flex-start - برای جلوگیری از collapse */
+    align-items: center !important;
+    gap: 10px !important; /* فاصله بین highlights */
+    flex-wrap: nowrap !important;
+    transition: all 0.3s ease !important;
+    min-height: 80px !important;
+    height: 80px !important; /* ارتفاع ثابت */
+    padding: 0 !important;
+    margin-bottom: 20px !important; /* یکسان با دسکتاپ */
+    width: 100% !important;
+    min-width: 100% !important; /* اضافه شد */
+    max-width: 100% !important; /* اضافه شد */
+    box-sizing: border-box !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important; /* اضافه شد */
     /* تقسیم یکنواخت فضا بین 7 هایلایت */
 }
 
 .highlights-container .highlight-circle {
-    /* هر هایلایت یک هفتم فضا را می‌گیرد (منهای gap) - محدود به max-width */
-    flex: 1 1 calc((100% - (6 * 0.1vw)) / 7);
-    max-width: 75px;
-    width: calc((100% - (6 * 0.1vw)) / 7);
-    height: calc((100% - (6 * 0.1vw)) / 7);
-    min-width: 60px;
-    min-height: 60px;
-    max-height: 75px;
-    aspect-ratio: 1;
+    /* مستطیل با عرض خودکار برای متن */
+    width: auto !important; /* عرض خودکار برای متن */
+    min-width: 70px !important;
+    max-width: 140px !important;
+    flex: 0 0 auto !important; /* عرض خودکار */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    height: 60px !important; /* ارتفاع ثابت */
+    min-width: 70px !important;
+    min-height: 60px !important;
+    max-width: 140px !important;
+    max-height: 75px !important;
+    border-radius: 12px !important; /* مستطیل با گوشه‌های گرد */
+    padding: 8px 16px !important; /* padding متناسب برای مستطیل */
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem) !important; /* فونت متناسب */
+    line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+    white-space: nowrap !important; /* جلوگیری از شکستن خط */
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
 }
 
 @media (max-width: 1024px) {
     .highlights-container {
-        gap: 0;
-        min-height: 40px;
+        gap: 10px !important; /* فاصله بین highlights */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
-        margin-bottom: 18px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: 60px !important;
+        max-width: 120px !important;
+        height: 50px !important;
+        min-height: 50px !important;
+        flex: 0 0 auto !important;
+        border-radius: 12px !important;
+        padding: 8px 14px !important;
+        font-size: clamp(0.6rem, 1vw, 0.75rem) !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
     }
 }
 
 @media (max-width: 768px) {
     .highlights-container {
-        gap: 0;
-        min-height: 36px;
+        gap: 10px !important; /* فاصله بین highlights */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
-        margin-bottom: 15px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: 50px !important;
+        max-width: 100px !important;
+        height: 45px !important;
+        min-height: 45px !important;
+        flex: 0 0 auto !important;
+        border-radius: 10px !important;
+        padding: 6px 10px !important;
+        font-size: clamp(0.5rem, 0.9vw, 0.65rem) !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
     }
 }
 
 @media (max-width: 480px) {
     .highlights-container {
-        gap: 0;
-        min-height: 32px;
+        gap: 10px !important; /* فاصله بین highlights */
+        min-height: 80px !important;
+        height: 80px !important;
         padding: 0;
-        margin-bottom: 12px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: 45px !important;
+        max-width: 90px !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        flex: 0 0 auto !important;
+        border-radius: 8px !important;
+        padding: 5px 8px !important;
+        font-size: clamp(0.45rem, 0.85vw, 0.6rem) !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
     }
 }
 
 @media (max-width: 390px) {
     .highlights-container {
-        gap: 0;
-        min-height: 30px;
+        gap: 6px !important; /* فاصله کمتر در موبایل خیلی کوچک */
+        min-height: 50px !important;
+        height: 50px !important;
         padding: 0;
-        margin-bottom: 12px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
+        width: 100% !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: 40px !important;
+        max-width: 80px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        flex: 0 0 auto !important;
+        border-radius: 8px !important;
+        padding: 4px 6px !important;
+        font-size: clamp(0.4rem, 0.85vw, 0.55rem) !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
     }
 }
 
 @media (max-width: 320px) {
     .highlights-container {
-        gap: 0;
-        min-height: 28px;
+        gap: 6px !important; /* فاصله کمتر در موبایل خیلی کوچک */
+        min-height: 50px !important;
+        height: 50px !important;
         padding: 0;
-        margin-bottom: 10px;
+        margin-bottom: 20px !important; /* یکسان با دسکتاپ */
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important; /* تغییر از space-between */
+        overflow: visible !important;
+    }
+    
+    .highlights-container .highlight-circle {
+        width: auto !important; /* عرض خودکار برای متن */
+        min-width: 40px !important;
+        max-width: 80px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        flex: 0 0 auto !important;
+        border-radius: 8px !important;
+        padding: 4px 6px !important;
+        font-size: clamp(0.4rem, 0.85vw, 0.55rem) !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
     }
 }
 
@@ -694,30 +894,104 @@
 }
 
 /* ==================== */
+/* 📐 تنظیمات Layout Main */
+/* ==================== */
+
+.layout-main {
+  /* padding-top بر اساس پایین‌ترین کارت fixed - کاهش یافته */
+
+  /* دسکتاپ: Header(60px) + GlobeClock(180px) + gap(10px) = 250px */
+  padding-top: 250px !important;
+
+  /* تبلت: Header(60px) + GlobeClock(120px) + gap(15px) = 195px */
+  @media (max-width: 1023px) and (min-width: 768px) {
+    padding-top: 195px !important;
+  }
+
+  /* موبایل: Header(60px) + GlobeClock(80px) + gap(10px) = 150px */
+  @media (max-width: 767px) {
+    padding-top: 150px !important;
+  }
+
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* ==================== */
 /* 🖥️ مدیریت View ها */
 /* ==================== */
 
+/* در React Router، همه viewها render می‌شوند - فقط یکی در هر زمان نمایش داده می‌شود */
 .view {
-    display: none;
-    opacity: 0;
-    transform: translateY(10px);
+    display: block !important; /* در React Router همه viewها باید نمایش داده شوند */
+    opacity: 1 !important;
+    transform: translateY(0) !important;
     transition: opacity 0.3s ease, transform 0.3s ease;
     min-height: 100vh;
 }
 
+/* برای vanilla JS - اگر کلاس active-view وجود داشت */
 .view.active-view {
     display: block;
     opacity: 1;
     transform: translateY(0);
 }
 
-/* اطمینان از اینکه هایلایت‌های هر صفحه فقط در همان صفحه نمایش داده شوند */
-.view:not(.active-view) .highlights-section {
-    display: none !important;
+/* این قسمت حذف شد - تداخل ایجاد می‌کرد */
+
+/* اطمینان از نمایش highlights-container */
+.view .highlights-container,
+.layout-main > .view .highlights-container,
+#homeView .highlights-container,
+.highlights-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important; /* شروع از چپ */
+    align-items: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 5px !important; /* فاصله 5px بین highlights */
+    flex-wrap: nowrap !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important; /* برای scroll در صورت نیاز */
+    overflow-y: hidden !important;
 }
 
-.view.active-view .highlights-section {
-    display: block;
+/* اطمینان از نمایش highlight-circle - مستطیل با فاصله */
+.view .highlight-circle,
+.layout-main > .view .highlight-circle,
+#homeView .highlight-circle,
+.highlight-circle {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important; /* عرض خودکار برای متن */
+    min-width: 70px !important;
+    max-width: 140px !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    flex: 0 0 auto !important; /* عرض خودکار */
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    margin: 0 !important; /* حذف margin - gap فاصله را ایجاد می‌کند */
+    border-radius: 12px !important; /* مستطیل با گوشه‌های گرد */
+    padding: 8px 16px !important; /* padding متناسب برای مستطیل */
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem) !important; /* فونت متناسب */
+    line-height: 1.3 !important; /* ارتفاع خط برای خوانایی بهتر */
+    white-space: nowrap !important; /* جلوگیری از شکستن خط */
+    overflow: visible !important;
+    text-align: center !important;
 }
 
 /* 🎯 بخش‌های مشترک - همیشه نمایش داده می‌شوند در تمام صفحات */
@@ -966,7 +1240,7 @@
 }
 
 .news-item:hover {
-  transform: translateX(-5px);
+  transform: translateX(+20px);
   background: var(--glass-bg);
 }
 
@@ -1031,11 +1305,7 @@
     opacity: 0.8;
 }
 
-/* صفحه اخبار */
-#newsView {
-    margin-top: 0;
-    padding: 0 20px 20px;
-}
+/* همه صفحات padding یکسانی دارند */
 
 /* فیلترهای اخبار */
 .news-filters {
@@ -1627,7 +1897,7 @@
 }
 
 .news-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(+20px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
@@ -3081,7 +3351,7 @@
 /* هدر */
 [data-theme="light"] .glass-header,
 [data-theme="light"] .header-container {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.75) !important; /* مثل کارت جفت ارزها */
     border-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -4158,7 +4428,6 @@ body.modal-open {
     height: 36px;
     border-radius: 50%;
     background: rgba(239, 68, 68, 0.9);
-    display: none;
     border: none;
     color: white;
     font-size: 1.4rem;
@@ -4173,4 +4442,68 @@ body.modal-open {
 .close-modal:hover {
     background: #ef4444;
     transform: scale(1.1);
+}
+
+/* ==================== */
+/* 🔥 FORCE DISPLAY HIGHLIGHTS - بالاترین اولویت */
+/* ==================== */
+/* این قسمت حذف شد - تداخل ایجاد می‌کرد */
+
+.highlights-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important; /* تغییر از space-between به flex-start - برای جلوگیری از collapse */
+    align-items: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    min-width: 100% !important; /* حداقل عرض */
+    max-width: 100% !important;
+    min-height: 80px !important;
+    height: 80px !important; /* ارتفاع ثابت - نه auto */
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 10px !important; /* فاصله بین highlights */
+    flex-wrap: nowrap !important;
+    box-sizing: border-box !important;
+    overflow: visible !important; /* اضافه شد */
+}
+
+.highlight-circle {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 60px !important; /* عرض ثابت - نه auto */
+    height: 60px !important; /* ارتفاع ثابت - نه auto */
+    min-width: 60px !important;
+    min-height: 60px !important;
+    max-width: 75px !important;
+    max-height: 75px !important;
+    flex: 0 0 60px !important; /* نه flex: 1 - عرض ثابت 60px */
+    flex-shrink: 0 !important; /* نه shrink */
+    flex-grow: 0 !important; /* نه grow */
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    border-radius: 12px !important; /* مستطیل با گوشه‌های گرد */
+    background: var(--card-bg) !important;
+    backdrop-filter: blur(30px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(150%) !important;
+    border: 1px solid var(--card-border) !important;
+    cursor: pointer !important;
+    padding: 6px !important;
+    box-sizing: border-box !important;
+    margin: 0 4px !important; /* فاصله بین circles */
+    overflow: visible !important;
+}
+
+/* اطمینان از نمایش span داخل highlight-circle */
+.highlight-circle span {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
 }

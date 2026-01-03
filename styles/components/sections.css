@@ -310,8 +310,8 @@
     min-height: 80px !important;
     max-height: 80px !important;
     /* margins ساده */
-    /* margin-top با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card + 65px اضافی) */
-    margin-top: 100px !important; /* 100px از بالا (120px - 20px بالا) - فقط دسکتاپ */
+    /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+    /* margin-top is set by JavaScript (20px below portfolio card) */
     margin-bottom: 20px !important; /* فاصله از پایین */
     margin-left: 5px !important; /* 5px از چپ */
     margin-right: 5px !important; /* 5px از راست */
@@ -380,7 +380,8 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 40px !important; /* فاصله 40px از بالا در تبلت (60px - 20px بالا) */
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
         margin-left: 8px !important; /* فاصله از چپ */
         margin-right: 8px !important; /* فاصله از راست */
         width: calc(100% - 16px) !important; /* عرض با margin (8px چپ + 8px راست) */
@@ -425,7 +426,8 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 10px !important; /* 10px از بالا + با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
         margin-left: 0 !important;
         margin-right: 0 !important;
         padding-left: 12px !important;
@@ -474,7 +476,8 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 10px !important; /* 10px از بالا + با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
         margin-left: 0 !important;
         margin-right: 0 !important;
         padding-left: 12px !important;
@@ -523,7 +526,8 @@
     .education-highlights,
     .relax-highlights,
     .globe-highlights {
-        margin-top: 10px !important; /* 10px از بالا + با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
         margin-left: 0 !important;
         margin-right: 0 !important;
         padding-left: 12px !important;
@@ -574,7 +578,8 @@
     .globe-highlights {
         z-index: 996 !important; /* پایین‌تر از کارت portfolio (997)، کره (998/999) و کارت جفت ارزها (998) */
         position: relative !important; /* برای z-index کار کند */
-        margin-top: 0 !important; /* با JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
+        /* margin-top با JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+        /* margin-top is set by JavaScript (20px below portfolio card) */
         margin-left: 0 !important;
         margin-right: 0 !important;
         padding-left: 12px !important;

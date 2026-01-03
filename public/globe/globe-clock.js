@@ -475,8 +475,12 @@ function updateHighlightsPosition() {
   
   highlightsSections.forEach(section => {
     if (section) {
-      // محاسبه margin-top بر اساس موقعیت کارت portfolio + 15 پیکسل
-      // Calculate margin-top based on portfolio card position + 15px
+      // فاصله ثابت 20px از portfolio card - ریسپانسیو خودکار
+      // Fixed 20px spacing from portfolio card - automatically responsive
+      const spacing = 20;
+      
+      // محاسبه margin-top بر اساس موقعیت کارت portfolio + spacing
+      // Calculate margin-top based on portfolio card position + spacing
       let marginTop = '0px';
       
       if (portfolioCard) {
@@ -494,15 +498,15 @@ function updateHighlightsPosition() {
         const referenceRect = referenceElement.getBoundingClientRect();
         const referenceTop = referenceRect.top + window.scrollY;
         
-        // محاسبه فاصله از بالای reference element تا پایین portfolio card + 15px
-        // Calculate distance from top of reference element to bottom of portfolio card + 15px
-        const distanceFromTop = portfolioBottom - referenceTop + 15;
-        marginTop = `${Math.max(15, distanceFromTop)}px`; // حداقل 15px
+        // محاسبه فاصله از بالای reference element تا پایین portfolio card + spacing
+        // Calculate distance from top of reference element to bottom of portfolio card + spacing
+        const distanceFromTop = portfolioBottom - referenceTop + spacing;
+        marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
       } else {
         // fallback: اگر portfolio card پیدا نشد
         // fallback: if portfolio card not found
         const headerHeight = document.querySelector('header')?.offsetHeight || 60;
-        marginTop = `${headerHeight + 15}px`;
+        marginTop = `${headerHeight + spacing}px`;
       }
       
       // استفاده از waitForStylesheets برای جلوگیری از Layout warning

@@ -36,8 +36,8 @@ section.highlights-section,
   min-height: 80px !important;
   max-height: 80px !important;
   
-  /* فاصله‌ها - از JavaScript تنظیم می‌شود (15px پایین‌تر از portfolio card) */
-  /* margin-top is set by JavaScript (15px below portfolio card) */
+  /* فاصله‌ها - از JavaScript تنظیم می‌شود (20px پایین‌تر از portfolio card) */
+  /* margin-top is set by JavaScript (20px below portfolio card) */
   margin-left: 5px !important; /* override: 0 -> 5px */
   margin-right: 5px !important; /* override: 0 -> 5px */
   margin-bottom: 20px !important;
