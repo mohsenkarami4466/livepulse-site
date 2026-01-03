@@ -617,19 +617,18 @@ function createUTCClockRing() {
   
   ring.innerHTML = '';
   
-  // ۲۴ موقعیت برای نمایش ساعت (هر ۱۵ درجه)
-  // 24 positions for hour display (every 15 degrees)
-  const positions = 24;
+  // ۱۲ موقعیت برای نمایش ساعت (هر ۳۰ درجه)
+  // 12 positions for hour display (every 30 degrees)
+  const positions = 12;
   
   for (let i = 0; i < positions; i++) {
     const hourEl = document.createElement('span');
     hourEl.className = 'utc-hour';
     hourEl.dataset.position = i;
-    hourEl.dataset.hour = i; // هر موقعیت ساعت خودش را نشان می‌دهد
     
     // محاسبه موقعیت روی دایره
     // Calculate position on circle
-    const angle = (i * 15) - 90; // هر موقعیت 15 درجه
+    const angle = (i * 30) - 90; // هر موقعیت 30 درجه
     const radian = angle * (Math.PI / 180);
     const radius = 44;
     
@@ -649,9 +648,9 @@ function createUTCClockRing() {
       dotEl.className = 'half-hour-dot';
       dotEl.dataset.position = i;
       
-      // موقعیت نقطه در وسط دو عدد (7.5 درجه بعد از هر عدد)
-      // Dot position in middle of two numbers (7.5 degrees after each number)
-      const dotAngle = ((i * 15) + 7.5) - 90;
+      // موقعیت نقطه در وسط دو عدد (15 درجه بعد از هر عدد)
+      // Dot position in middle of two numbers (15 degrees after each number)
+      const dotAngle = ((i * 30) + 15) - 90;
       const dotRadian = dotAngle * (Math.PI / 180);
       const dotRadius = 44;
       
@@ -687,17 +686,17 @@ function updateUTCClock() {
   const currentMinutes = now.getUTCMinutes();
   const isHalfHour = currentMinutes >= 30;
   
-  // آپدیت اعداد - هر موقعیت ساعت فعلی را نشان می‌دهد
-  // Update numbers - each position shows current hour
-  document.querySelectorAll('.utc-hour').forEach((el) => {
-    const position = parseInt(el.dataset.position) || 0;
-    // هر موقعیت ساعت فعلی را نشان می‌دهد
-    // Each position shows current hour
-    el.textContent = currentHour.toString().padStart(2, '0');
+  // آپدیت اعداد - هر موقعیت ساعت متناظر خودش را نشان می‌دهد
+  // Update numbers - each position shows its corresponding hour
+  document.querySelectorAll('.utc-hour').forEach((el, index) => {
+    const displayHour = (index * 2) % 24;
+    el.textContent = displayHour.toString().padStart(2, '0');
+    el.dataset.hour = displayHour;
     
-    // هایلایت ساعت فعلی - فقط موقعیتی که با ساعت فعلی مطابقت دارد
-    // Highlight current hour - only position that matches current hour
-    if (position === currentHour) {
+    // هایلایت ساعت فعلی
+    // Highlight current hour
+    const hourRange = [displayHour, (displayHour + 1) % 24];
+    if (hourRange.includes(currentHour)) {
       el.classList.add('active');
     } else {
       el.classList.remove('active');
@@ -707,11 +706,9 @@ function updateUTCClock() {
   // آپدیت نقطه‌های چشمک‌زن - نشان‌دهنده نیم ساعت
   // Update blinking dots - indicating half hour
   document.querySelectorAll('.half-hour-dot').forEach((el, index) => {
-    const hour1 = index;
-    const hour2 = (index + 1) % 24;
+    const hour1 = (index * 2) % 24;
+    const hour2 = ((index * 2) + 1) % 24;
     
-    // نقطه چشمک می‌زند اگر نیم ساعت باشد و ساعت فعلی یکی از دو ساعت مجاور باشد
-    // Dot blinks if half hour and current hour is one of the two adjacent hours
     if (isHalfHour && (currentHour === hour1 || currentHour === hour2)) {
       el.classList.add('active');
     } else {
