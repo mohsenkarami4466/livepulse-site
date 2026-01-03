@@ -159,8 +159,8 @@
   .globe-clock-wrapper {
     top: auto !important; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
     left: 5px !important;
-    width: 80px !important;
-    height: 80px !important;
+    width: 120px !important;
+    height: 120px !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -172,9 +172,9 @@
   }
   
   .utc-hour {
-    font-size: 0.32rem;
-    width: 12px;
-    height: 12px;
+    font-size: 0.52rem !important;
+    width: 20px !important;
+    height: 20px !important;
   }
 }
 
@@ -182,8 +182,8 @@
   .globe-clock-wrapper {
     top: auto !important; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
     left: 4px !important;
-    width: 70px !important;
-    height: 70px !important;
+    width: 110px !important;
+    height: 110px !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -195,9 +195,9 @@
   }
   
   .utc-hour {
-    font-size: 0.28rem;
-    width: 11px;
-    height: 11px;
+    font-size: 0.48rem !important;
+    width: 19px !important;
+    height: 19px !important;
   }
   
   /* اطمینان از نمایش دکمه سیار در موبایل کوچک */
@@ -214,17 +214,17 @@
   .globe-clock-wrapper {
     top: auto !important; /* به صورت خودکار زیر شاخص‌ها قرار می‌گیرد */
     left: 3px !important;
-    width: 65px !important;
-    height: 65px !important;
+    width: 105px !important;
+    height: 105px !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
   
   .utc-hour {
-    font-size: 0.26rem;
-    width: 10px;
-    height: 10px;
+    font-size: 0.46rem !important;
+    width: 18px !important;
+    height: 18px !important;
   }
   
   /* اطمینان از نمایش دکمه سیار در موبایل خیلی کوچک */

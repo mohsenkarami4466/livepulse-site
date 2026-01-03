@@ -37,7 +37,7 @@ section.highlights-section,
   max-height: 80px !important;
   
   /* فاصله‌ها - override کردن sections.css */
-  margin-top: 100px !important; /* 100px از بالا (120px - 20px بالا) - فقط دسکتاپ */
+  margin-top: 125px !important; /* 125px از بالا (25 پیکسل پایین‌تر از قبل) - فقط دسکتاپ */
   margin-left: 5px !important; /* override: 0 -> 5px */
   margin-right: 5px !important; /* override: 0 -> 5px */
   margin-bottom: 20px !important;
@@ -167,7 +167,7 @@ main.layout-main .highlight-circle,
   .highlights-section {
     height: 70px !important;
     min-height: 70px !important;
-    margin-top: 40px !important; /* 40px از بالا در تبلت (60px - 20px بالا) */
+    margin-top: 65px !important; /* 65px از بالا در تبلت (25 پیکسل پایین‌تر از قبل) */
   }
   
   .highlights-container {
@@ -187,7 +187,7 @@ main.layout-main .highlight-circle,
   .highlights-section {
     height: 60px !important;
     min-height: 60px !important;
-    margin-top: 10px !important; /* 10px از بالا در موبایل (30px - 20px بالا) */
+    margin-top: 35px !important; /* 35px از بالا در موبایل (25 پیکسل پایین‌تر از قبل) */
   }
   
   .highlights-container {
@@ -209,7 +209,7 @@ main.layout-main .highlight-circle,
   .highlights-section {
     height: 55px !important;
     min-height: 55px !important;
-    margin-top: 60px !important; /* 60px از بالا در موبایل کوچک (80px قبلی - 20px بالا) */
+    margin-top: 35px !important; /* 35px از بالا در موبایل کوچک (25 پیکسل پایین‌تر از قبل) */
   }
   
   .highlights-container {

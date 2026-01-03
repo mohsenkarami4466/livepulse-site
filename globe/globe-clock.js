@@ -475,11 +475,11 @@ function updateHighlightsPosition() {
   
   highlightsSections.forEach(section => {
     if (section) {
-      // تنظیم margin-top به 100px از بالا (120px - 20px بالا) - فقط دسکتاپ
-      // در تبلت 40px و در موبایل 10px
+      // تنظیم margin-top - 25 پیکسل پایین‌تر از قبل
+      // دسکتاپ: 125px، تبلت: 65px، موبایل: 35px
       const isDesktop = window.innerWidth >= 1024;
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-      const marginTop = isDesktop ? '100px' : (isTablet ? '40px' : '10px');
+      const marginTop = isDesktop ? '125px' : (isTablet ? '65px' : '35px');
       
       // استفاده از waitForStylesheets برای جلوگیری از Layout warning
       // Wait for stylesheets before setting styles to prevent Layout warning
