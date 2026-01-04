@@ -397,60 +397,34 @@ function updateHighlightsPosition() {
     if (section) {
       // فاصله از portfolio card - همیشه 20px در همه حالت‌ها (موبایل، تبلت، دسکتاپ)
       // Spacing from portfolio card - always 20px in all states (mobile, tablet, desktop)
-      // این فاصله ریسپانسیو است و با موقعیت کارت portfolio محاسبه می‌شود
-      // This spacing is responsive and calculated based on portfolio card position
       const spacing = 20;
       
-      // محاسبه margin-top بر اساس موقعیت کارت portfolio + spacing
-      // Calculate margin-top based on portfolio card position + spacing
+      // محاسبه ساده: margin-top = فاصله از بالای layout-main تا پایین portfolio card + 20px
+      // Simple calculation: margin-top = distance from top of layout-main to bottom of portfolio card + 20px
       let marginTop = '0px';
-      
-      // تعریف متغیرها در scope بالاتر برای استفاده در debug logging
-      // Define variables in higher scope for use in debug logging
-      let portfolioRect = null;
-      let referenceElement = null;
-      let referenceTop = null;
-      let distanceFromTop = null;
       
       if (portfolioCard) {
         // portfolio card با position: fixed است - در viewport است
         // portfolio card is position: fixed - it's in viewport
-        portfolioRect = portfolioCard.getBoundingClientRect();
+        const portfolioRect = portfolioCard.getBoundingClientRect();
         const portfolioBottomViewport = portfolioRect.bottom;
         
         // پیدا کردن layout-main (که highlights در آن هستند)
         // Find layout-main (where highlights are)
         const layoutMain = document.querySelector('.layout-main');
-        referenceElement = layoutMain || document.body;
         
-        if (!layoutMain) {
-          // fallback: اگر layout-main پیدا نشد
-          const headerHeight = document.querySelector('header')?.offsetHeight || 60;
-          marginTop = `${headerHeight + spacing}px`;
-        } else {
+        if (layoutMain) {
           // محاسبه موقعیت layout-main در viewport
           // Calculate layout-main position in viewport
           const layoutMainRect = layoutMain.getBoundingClientRect();
           const layoutMainTopViewport = layoutMainRect.top;
           
-          // محاسبه فاصله از بالای layout-main (در viewport) تا پایین portfolio card (در viewport)
-          // Calculate distance from top of layout-main (in viewport) to bottom of portfolio card (in viewport)
-          // این فاصله در viewport است
-          // This distance is in viewport
-          const distanceInViewport = portfolioBottomViewport - layoutMainTopViewport;
+          // محاسبه ساده: فاصله از بالای layout-main تا پایین portfolio card + spacing
+          // Simple calculation: distance from top of layout-main to bottom of portfolio card + spacing
+          const distanceFromTop = portfolioBottomViewport - layoutMainTopViewport + spacing;
           
-          // highlights در layout-main هستند و margin-top باید نسبت به بالای layout-main باشد
-          // Highlights are in layout-main and margin-top should be relative to top of layout-main
-          // پس margin-top = فاصله از بالای layout-main تا پایین portfolio card + spacing
-          // So margin-top = distance from top of layout-main to bottom of portfolio card + spacing
-          // این فاصله در viewport است، اما چون highlights در layout-main هستند، می‌توانیم مستقیماً استفاده کنیم
-          // This distance is in viewport, but since highlights are in layout-main, we can use it directly
-          distanceFromTop = distanceInViewport + spacing;
-          
-          // margin-top باید فاصله از بالای layout-main تا پایین portfolio card + spacing باشد
-          // margin-top should be distance from top of layout-main to bottom of portfolio card + spacing
-          // حداقل spacing برای اطمینان از فاصله کافی
-          // Minimum spacing to ensure sufficient distance
+          // margin-top باید حداقل spacing باشد
+          // margin-top should be at least spacing
           marginTop = `${Math.max(spacing, distanceFromTop)}px`;
           
           // Debug: بررسی محاسبات
