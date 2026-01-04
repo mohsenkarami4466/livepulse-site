@@ -488,14 +488,14 @@ function updateHighlightsPosition() {
               computedMarginTop: computedStyle.marginTop,
               portfolioCard: portfolioCard ? {
                 found: true,
-                bottom: portfolioRect.bottom,
+                bottom: portfolioRect ? portfolioRect.bottom : 'N/A',
                 scrollY: window.scrollY
               } : 'not found',
               referenceElement: referenceElement ? {
                 tag: referenceElement.tagName,
-                top: referenceTop
+                top: referenceTop !== null ? referenceTop : 'N/A'
               } : 'not found',
-              distanceFromTop: portfolioCard ? distanceFromTop : 'N/A',
+              distanceFromTop: distanceFromTop !== null ? distanceFromTop : 'N/A',
               spacing: spacing,
               highlightsCount: highlightsSections.length
             });
