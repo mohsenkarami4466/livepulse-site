@@ -1,0 +1,149 @@
+/* ==================== */
+/* 🎨 بهینه‌سازی تم تاریک و روشن */
+/* ==================== */
+
+/* هدر - شیشه‌ای مات بدون خط دور */
+.glass-header,
+.header-container {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important;
+}
+
+/* تم تاریک - هدر */
+[data-theme="dark"] .glass-header,
+[data-theme="dark"] .header-container {
+    background: var(--glass-bg) !important;
+}
+
+/* تم روشن - هدر */
+[data-theme="light"] .glass-header,
+[data-theme="light"] .header-container {
+    background: var(--glass-bg) !important;
+}
+
+/* فوتر - شیشه‌ای مات بدون خط دور */
+.main-footer {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    border-top: none !important;
+    box-shadow: var(--shadow) !important;
+}
+
+/* شاخص‌ها (جفت ارزها) - شیشه‌ای مات بدون خط دور */
+.indicators-glass-card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important;
+}
+
+/* پورتفولیو - شیشه‌ای مات بدون خط دور */
+.portfolio-summary-card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important;
+}
+
+/* هایلایت‌ها - شیشه‌ای مات بدون خط دور - یکسان با کارت جفت ارزها */
+.highlight-circle {
+    background: var(--glass-bg) !important; /* همان رنگ کارت جفت ارزها */
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important; /* همان shadow کارت جفت ارزها */
+}
+
+/* کارت‌های قیمت - شیشه‌ای مات بدون خط دور - یکسان با کارت جفت ارزها */
+.price-card,
+.card {
+    background: var(--glass-bg) !important; /* همان رنگ کارت جفت ارزها */
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important; /* همان shadow کارت جفت ارزها */
+}
+
+/* کارت‌های اخبار - شیشه‌ای مات بدون خط دور - یکسان با کارت جفت ارزها */
+.news-card {
+    background: var(--glass-bg) !important; /* همان رنگ کارت جفت ارزها */
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important; /* همان shadow کارت جفت ارزها */
+}
+
+/* کارت‌های ابزار - شیشه‌ای مات بدون خط دور - یکسان با کارت جفت ارزها */
+.tool-card {
+    background: var(--glass-bg) !important; /* همان رنگ کارت جفت ارزها */
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important; /* همان shadow کارت جفت ارزها */
+}
+
+/* نقشه 2D - شیشه‌ای مات بدون خط دور */
+.gold-map-container,
+.gold-map-visual,
+.map-visual-area {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important;
+}
+
+/* نقشه 2D در حالت باز شده - شیشه‌ای مات بدون خط دور */
+.gold-map-visual.expanded,
+.map-visual-area.expanded {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important;
+}
+
+/* چت AI - شیشه‌ای مات بدون خط دور - یکسان با کارت جفت ارزها */
+.ai-chat-container,
+.ai-advisor {
+    background: var(--glass-bg) !important; /* همان رنگ کارت جفت ارزها */
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important; /* همان shadow کارت جفت ارزها */
+}
+
+/* مودال‌ها - شیشه‌ای مات بدون خط دور */
+.modal-overlay {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.price-detail-modal,
+.modal-content {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    -webkit-backdrop-filter: var(--glass-blur) !important;
+    border: none !important; /* بدون خط دور */
+    box-shadow: var(--shadow) !important;
+}
+
+/* دکمه‌ها - سایه نئونی نارنجی در hover */
+button:hover,
+.btn-primary:hover,
+.btn-secondary:hover {
+    box-shadow: var(--neon-orange) !important;
+}
+
+/* لینک‌ها - سایه نئونی نارنجی در hover */
+a:hover {
+    text-shadow: var(--neon-orange) !important;
+}
+

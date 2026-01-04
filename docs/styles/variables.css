@@ -1,0 +1,239 @@
+/* 🖋️ فونت و تایپوگرافی - باید در ابتدای فایل باشد */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* استفاده از jsdelivr با crossorigin برای رفع مشکل CORS */
+/* Use jsdelivr with crossorigin to fix CORS issue */
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+/* ==================== */
+/* 🛡️ استایل‌های Error Handler */
+/* ==================== */
+.error-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 400px;
+    z-index: 10000;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.error-notification-content {
+    background: var(--accent-red);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.error-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.error-text {
+    flex: 1;
+}
+
+.error-text strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+
+.error-text p {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.error-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.error-close:hover {
+    opacity: 1;
+}
+
+.user-error-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10001;
+    animation: fadeInScale 0.3s ease-out;
+}
+
+.user-error-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 400px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.user-error-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.user-error-text {
+    flex: 1;
+}
+
+.user-error-text strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.125rem;
+    color: var(--text-primary);
+}
+
+.user-error-text p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+}
+
+.user-error-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.user-error-close:hover {
+    opacity: 1;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* ==================== */
+/* 🎯 استایل‌های اصلی با پالت جدید */
+/* ==================== */
+
+/* 🎨 پالت رنگی تم روشن - بهینه شده */
+[data-theme="light"] {
+    /* زمینه اصلی - تیره‌تر از کارت جفت ارزها و مجموع دارایی‌ها */
+    --bg-primary: #e8eef5; /* تیره‌تر از کارت‌ها */
+    --bg-secondary: #f0f4f8;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    
+    /* رنگ نارنجی یکدست */
+    --accent-blue: #ea580c;
+    --accent-green: #059669;
+    --accent-red: #dc2626;
+    --accent-teal: #0d9488;
+    
+    /* شیشه‌ای مات بدون خط دور - یکسان با کارت جفت ارزها و مجموع دارایی‌ها */
+    --glass-bg: rgba(255, 255, 255, 0.75); /* کمی روشن‌تر برای تم روشن */
+    --glass-border: transparent; /* بدون خط دور */
+    --glass-blur: blur(20px) saturate(150%); /* همان blur کارت جفت ارزها */
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* همان shadow کارت جفت ارزها */
+    
+    /* رنگ‌های کارت - یکسان با کارت جفت ارزها و مجموع دارایی‌ها */
+    --card-bg: rgba(255, 255, 255, 0.75); /* همان رنگ کارت جفت ارزها */
+    --card-border: transparent; /* بدون خط دور */
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* همان shadow کارت جفت ارزها */
+    --card-text: #0f172a;
+    --card-text-secondary: #475569;
+    
+    /* سایه‌های نئونی نارنجی */
+    --neon-orange: 0 0 20px rgba(234, 88, 12, 0.2), 0 0 40px rgba(234, 88, 12, 0.15), 0 0 60px rgba(234, 88, 12, 0.1);
+    
+    /* Tool Highlight Colors */
+    --gold-color: #eab308;
+    --diamond-color: #06b6d4;
+    --silver-color: #94a3b8;
+    --pearl-color: #f8fafc;
+    --gem-color: #92400e;
+    --currency-color: #ea580c;
+}
+
+/* 🌙 پالت رنگی تم تاریک - بهینه شده */
+[data-theme="dark"] {
+    /* زمینه اصلی - تیره‌تر از کارت جفت ارزها و مجموع دارایی‌ها */
+    --bg-primary: #050505; /* تیره‌تر از rgba(18, 18, 18, 0.6) */
+    --bg-secondary: #080808;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    
+    /* رنگ نارنجی یکدست */
+    --accent-blue: #fb923c;
+    --accent-green: #34d399;
+    --accent-red: #f87171;
+    --accent-teal: #2dd4bf;
+    
+    /* شیشه‌ای مات بدون خط دور - یکسان با کارت جفت ارزها و مجموع دارایی‌ها */
+    --glass-bg: rgba(18, 18, 18, 0.6); /* همان رنگ کارت جفت ارزها */
+    --glass-border: transparent; /* بدون خط دور */
+    --glass-blur: blur(20px) saturate(150%); /* همان blur کارت جفت ارزها */
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* همان shadow کارت جفت ارزها */
+    
+    /* رنگ‌های کارت - یکسان با کارت جفت ارزها و مجموع دارایی‌ها */
+    --card-bg: rgba(18, 18, 18, 0.6); /* همان رنگ کارت جفت ارزها */
+    --card-border: transparent; /* بدون خط دور */
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* همان shadow کارت جفت ارزها */
+    --card-text: #e2e8f0;
+    --card-text-secondary: #94a3b8;
+    
+    /* سایه‌های نئونی نارنجی */
+    --neon-orange: 0 0 20px rgba(251, 146, 60, 0.3), 0 0 40px rgba(251, 146, 60, 0.2), 0 0 60px rgba(251, 146, 60, 0.1);
+    
+    /* Tool Highlight Colors - Dark Mode */
+    --gold-color: #FFC400;
+    --diamond-color: #99E6FF;
+    --silver-color: #A0A0A0;
+    --pearl-color: #E8E8E8;
+    --gem-color: #6B3410;
+    --currency-color: #fb923c;
+}
+/* متغیرها و رنگ‌ها استخراج شدند */
