@@ -96,29 +96,20 @@ function Layout({ children }) {
     // تابع برای فراخوانی updateHighlightsPosition
     const callUpdateHighlights = () => {
       if (typeof window !== 'undefined') {
-        // Debug logging
-        console.log('🔍 callUpdateHighlights called:', {
-          updateHighlightsPositionSafe: typeof window.updateHighlightsPositionSafe,
-          updateHighlightsPosition: typeof window.updateHighlightsPosition
-        });
-        
-        if (typeof window.updateHighlightsPositionSafe === 'function') {
-          console.log('✅ Calling updateHighlightsPositionSafe');
-          window.updateHighlightsPositionSafe()
-        } else if (typeof window.updateHighlightsPosition === 'function') {
-          console.log('✅ Calling updateHighlightsPosition');
+        // استفاده مستقیم از updateHighlightsPosition (بدون Safe wrapper برای کاهش تاخیر)
+        if (typeof window.updateHighlightsPosition === 'function') {
           window.updateHighlightsPosition()
-        } else {
-          console.warn('⚠️ updateHighlightsPosition functions not found!');
+        } else if (typeof window.updateHighlightsPositionSafe === 'function') {
+          // Fallback به Safe wrapper اگر تابع اصلی پیدا نشد
+          window.updateHighlightsPositionSafe()
         }
       }
     }
     
-    // فراخوانی اولیه با تاخیر بیشتر برای اطمینان از لود شدن globe-clock.js
+    // فراخوانی اولیه با تاخیر برای اطمینان از لود شدن globe-clock.js
     const timeoutId = setTimeout(() => {
-      console.log('🔍 Initial callUpdateHighlights after timeout');
       callUpdateHighlights()
-    }, 500) // افزایش تاخیر به 500ms
+    }, 300) // کاهش تاخیر از 500ms به 300ms
     
     // فراخوانی در resize برای ریسپانسیو بودن
     const handleResize = () => {
@@ -126,7 +117,7 @@ function Layout({ children }) {
       clearTimeout(window.highlightsResizeTimeout)
       window.highlightsResizeTimeout = setTimeout(() => {
         callUpdateHighlights()
-      }, 150)
+      }, 200) // افزایش debounce از 150ms به 200ms برای بهبود performance
     }
     
     window.addEventListener('resize', handleResize)
