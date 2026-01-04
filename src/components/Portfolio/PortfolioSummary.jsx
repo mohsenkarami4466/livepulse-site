@@ -279,8 +279,15 @@ function PortfolioSummary() {
     // فقط resize listener - بدون timeout های اضافی
     const handleResize = () => {
       updatePosition()
-      // به‌روزرسانی highlights فقط در resize (نه در mount)
-      // حذف شد - highlights فقط یکبار در App.jsx تنظیم می‌شوند
+      // به‌روزرسانی highlights بعد از تغییر موقعیت کارت portfolio
+      // Update highlights after portfolio card position changes
+      if (typeof window !== 'undefined') {
+        if (typeof window.updateHighlightsPositionSafe === 'function') {
+          window.updateHighlightsPositionSafe()
+        } else if (typeof window.updateHighlightsPosition === 'function') {
+          window.updateHighlightsPosition()
+        }
+      }
     }
     
     window.addEventListener('resize', handleResize)

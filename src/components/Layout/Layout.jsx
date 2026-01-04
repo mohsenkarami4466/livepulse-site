@@ -91,10 +91,10 @@ function Layout({ children }) {
    * - window.navigate باید قبل از لود شدن vanilla JS تنظیم شود
    * - این برای backward compatibility با کدهای vanilla JS است
    */
-  // Effect: فراخوانی updateHighlightsPosition بعد از render
+  // Effect: فراخوانی updateHighlightsPosition بعد از render و در resize
   React.useEffect(() => {
-    // استفاده از updateHighlightsPositionSafe که منتظر stylesheet‌ها می‌ماند
-    const timeoutId = setTimeout(() => {
+    // تابع برای فراخوانی updateHighlightsPosition
+    const callUpdateHighlights = () => {
       if (typeof window !== 'undefined') {
         if (typeof window.updateHighlightsPositionSafe === 'function') {
           window.updateHighlightsPositionSafe()
@@ -102,9 +102,29 @@ function Layout({ children }) {
           window.updateHighlightsPosition()
         }
       }
+    }
+    
+    // فراخوانی اولیه با تاخیر برای اطمینان از render شدن DOM
+    const timeoutId = setTimeout(() => {
+      callUpdateHighlights()
     }, 100)
     
-    return () => clearTimeout(timeoutId)
+    // فراخوانی در resize برای ریسپانسیو بودن
+    const handleResize = () => {
+      // استفاده از debounce برای جلوگیری از فراخوانی زیاد
+      clearTimeout(window.highlightsResizeTimeout)
+      window.highlightsResizeTimeout = setTimeout(() => {
+        callUpdateHighlights()
+      }, 150)
+    }
+    
+    window.addEventListener('resize', handleResize)
+    
+    return () => {
+      clearTimeout(timeoutId)
+      clearTimeout(window.highlightsResizeTimeout)
+      window.removeEventListener('resize', handleResize)
+    }
   }, []) // فقط یکبار هنگام mount
 
   React.useEffect(() => {
