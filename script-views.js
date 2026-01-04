@@ -130,11 +130,13 @@ function showView(view) {
         appState.currentView = view;
         
         // تنظیم موقعیت هایلایت‌ها بعد از تغییر صفحه - یکسان کردن فاصله
-        setTimeout(() => {
-            if (typeof updateHighlightsPosition === 'function') {
-                updateHighlightsPosition();
-            }
-        }, 150);
+        // حذف شد: updateHighlightsPosition در Layout.jsx فراخوانی می‌شود
+        // Removed: updateHighlightsPosition is called in Layout.jsx
+        // setTimeout(() => {
+        //     if (typeof updateHighlightsPosition === 'function') {
+        //         updateHighlightsPosition();
+        //     }
+        // }, 150);
 
         // ریست اسکرول به بالای صفحه - با smooth scroll
         window.scrollTo({ top: 0, behavior: 'smooth' });

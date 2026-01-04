@@ -130,11 +130,13 @@ function showView(view) {
         appState.currentView = view;
         
         // تنظیم موقعیت هایلایت‌ها بعد از تغییر صفحه - یکسان کردن فاصله
-        setTimeout(() => {
-            if (typeof updateHighlightsPosition === 'function') {
-                updateHighlightsPosition();
-            }
-        }, 150);
+        // حذف شد: updateHighlightsPosition در Layout.jsx فراخوانی می‌شود
+        // Removed: updateHighlightsPosition is called in Layout.jsx
+        // setTimeout(() => {
+        //     if (typeof updateHighlightsPosition === 'function') {
+        //         updateHighlightsPosition();
+        //     }
+        // }, 150);
 
         // ریست اسکرول به بالای صفحه - با smooth scroll
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -195,6 +197,10 @@ function showView(view) {
             });
         });
 
+        // ⚠️ انتقال highlights غیرفعال شد - Highlights در Layout.jsx مدیریت می‌شوند
+        // Highlights دیگر در view ها نیستند، در layout-main قرار دارند
+        // این کد باعث می‌شد highlights دوباره تشکیل شوند و جابجا شوند
+        /*
         // انتقال هایلایت‌های اصلی فقط به صفحات اصلی - با insertBefore برای قرارگیری در ابتدا
         // صفحاتی که هایلایت‌های مخصوص خودشان را دارند نباید هایلایت‌های اصلی را بگیرند
         if (!['tools', 'news', 'tutorial', 'relax', 'globe'].includes(view)) {
@@ -242,6 +248,7 @@ function showView(view) {
                 }
             }
         }
+        */
 
         // تنظیم ایونت‌لیستنر برای کارت‌های این صفحه - با تاخیر برای transition
         setTimeout(() => {

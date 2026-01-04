@@ -277,17 +277,12 @@ function PortfolioSummary() {
     }, 500)
     
     // فقط resize listener - بدون timeout های اضافی
+    // حذف شد: updateHighlightsPosition در Layout.jsx فراخوانی می‌شود
+    // Removed: updateHighlightsPosition is called in Layout.jsx
     const handleResize = () => {
       updatePosition()
-      // به‌روزرسانی highlights بعد از تغییر موقعیت کارت portfolio
-      // Update highlights after portfolio card position changes
-      if (typeof window !== 'undefined') {
-        if (typeof window.updateHighlightsPositionSafe === 'function') {
-          window.updateHighlightsPositionSafe()
-        } else if (typeof window.updateHighlightsPosition === 'function') {
-          window.updateHighlightsPosition()
-        }
-      }
+      // updateHighlightsPosition در Layout.jsx با resize listener فراخوانی می‌شود
+      // updateHighlightsPosition is called in Layout.jsx with resize listener
     }
     
     window.addEventListener('resize', handleResize)
