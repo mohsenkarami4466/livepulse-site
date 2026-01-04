@@ -395,9 +395,9 @@ function updateHighlightsPosition() {
   
   highlightsSections.forEach(section => {
     if (section) {
-      // فاصله از portfolio card - همیشه 20px در همه حالت‌ها (موبایل، تبلت، دسکتاپ)
-      // Spacing from portfolio card - always 20px in all states (mobile, tablet, desktop)
-      const spacing = 20;
+      // فاصله از portfolio card - 10px برای تست (قبلاً 20px بود)
+      // Spacing from portfolio card - 10px for testing (previously 20px)
+      const spacing = 10;
       
       // محاسبه ساده: margin-top = فاصله از بالای layout-main تا پایین portfolio card + 20px
       // Simple calculation: margin-top = distance from top of layout-main to bottom of portfolio card + 20px
