@@ -403,6 +403,8 @@ function updateHighlightsPosition() {
       // Simple calculation: margin-top = distance from top of layout-main to bottom of portfolio card + 20px
       let marginTop = '0px';
       let portfolioRect = null; // تعریف در scope بالاتر برای استفاده در debug logging
+      let distanceFromTop = null; // تعریف در scope بالاتر برای استفاده در debug logging
+      let layoutMain = null; // تعریف در scope بالاتر برای استفاده در debug logging
       
       if (portfolioCard) {
         // portfolio card با position: fixed است - در viewport است
@@ -412,8 +414,7 @@ function updateHighlightsPosition() {
         
         // پیدا کردن layout-main (که highlights در آن هستند)
         // Find layout-main (where highlights are)
-        const layoutMain = document.querySelector('.layout-main');
-        let distanceFromTop = null; // تعریف در scope بالاتر برای استفاده در debug logging
+        layoutMain = document.querySelector('.layout-main');
         
         if (layoutMain) {
           // محاسبه موقعیت layout-main در viewport
