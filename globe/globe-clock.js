@@ -531,9 +531,9 @@ function updateHighlightsPosition() {
                 bottom: portfolioRect ? portfolioRect.bottom : 'N/A',
                 scrollY: window.scrollY
               } : 'not found',
-              referenceElement: referenceElement ? {
-                tag: referenceElement.tagName,
-                top: referenceTop !== null ? referenceTop : 'N/A'
+              layoutMain: layoutMain ? {
+                tag: layoutMain.tagName,
+                top: layoutMain ? layoutMain.getBoundingClientRect().top : 'N/A'
               } : 'not found',
               distanceFromTop: distanceFromTop !== null ? distanceFromTop : 'N/A',
               spacing: spacing,
