@@ -475,13 +475,11 @@ function updateHighlightsPosition() {
   
   highlightsSections.forEach(section => {
     if (section) {
-      // فاصله از portfolio card بر اساس فاصله بین کارت جفت ارزها و کارت مجموع دارایی‌ها
-      // Spacing from portfolio card based on gap between currency pairs card and portfolio summary card
-      // در تبلت و موبایل: 8px (همان فاصله بین کارت‌ها)
-      // در دسکتاپ: 24px (دو برابر فاصله بین کارت‌ها که 12px است)
-      // Tablet/Mobile: 8px (same as gap between cards)
-      // Desktop: 24px (double the gap between cards which is 12px)
-      const spacing = isDesktop ? 24 : 8;
+      // فاصله از portfolio card - همیشه 20px در همه حالت‌ها (موبایل، تبلت، دسکتاپ)
+      // Spacing from portfolio card - always 20px in all states (mobile, tablet, desktop)
+      // این فاصله ریسپانسیو است و با موقعیت کارت portfolio محاسبه می‌شود
+      // This spacing is responsive and calculated based on portfolio card position
+      const spacing = 20;
       
       // محاسبه margin-top بر اساس موقعیت کارت portfolio + spacing
       // Calculate margin-top based on portfolio card position + spacing
