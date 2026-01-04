@@ -150,14 +150,15 @@ function Highlights() {
   useEffect(() => {
     const firstHighlight = currentHighlights[0]
     if (firstHighlight) {
-      // تنظیم state - state باعث re-render و update DOM می‌شود
-      if (currentPage === 'home') {
+      // تنظیم state فقط اگر با state فعلی متفاوت باشد - جلوگیری از infinite loop
+      if (currentPage === 'home' && currentCategory !== firstHighlight.id) {
         setCategory(firstHighlight.id)
-      } else if (currentPage === 'tools') {
+      } else if (currentPage === 'tools' && currentTool !== firstHighlight.id) {
         setTool(firstHighlight.id)
       }
     }
-  }, [currentPage, currentHighlights, setCategory, setTool]) // فقط با تغییر صفحه
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]) // فقط با تغییر صفحه - setCategory و setTool stable هستند
   
   
   // Debug: بررسی render شدن (فقط در development) - فقط یکبار log می‌کنیم
