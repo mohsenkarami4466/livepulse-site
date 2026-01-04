@@ -413,6 +413,7 @@ function updateHighlightsPosition() {
         // پیدا کردن layout-main (که highlights در آن هستند)
         // Find layout-main (where highlights are)
         const layoutMain = document.querySelector('.layout-main');
+        let distanceFromTop = null; // تعریف در scope بالاتر برای استفاده در debug logging
         
         if (layoutMain) {
           // محاسبه موقعیت layout-main در viewport
@@ -422,7 +423,7 @@ function updateHighlightsPosition() {
           
           // محاسبه ساده: فاصله از بالای layout-main تا پایین portfolio card + spacing
           // Simple calculation: distance from top of layout-main to bottom of portfolio card + spacing
-          const distanceFromTop = portfolioBottomViewport - layoutMainTopViewport + spacing;
+          distanceFromTop = portfolioBottomViewport - layoutMainTopViewport + spacing;
           
           // margin-top باید حداقل spacing باشد
           // margin-top should be at least spacing
