@@ -468,27 +468,32 @@ function updateHighlightsPosition() {
         section.style.marginTop = marginTop;
         section.style.setProperty('margin-top', marginTop, 'important');
         
-        // اطمینان از اینکه margin-top override نمی‌شود
-        // Ensure margin-top is not overridden
-        const appliedMarginTop = window.getComputedStyle(section).marginTop;
-        if (appliedMarginTop !== marginTop && appliedMarginTop !== marginTop.replace('px', '') + 'px') {
-          // اگر override شد، دوباره اعمال کن
-          // If overridden, apply again
-          section.style.marginTop = marginTop;
-          section.style.setProperty('margin-top', marginTop, 'important');
-        }
-          
-          // تست: بررسی اینکه آیا margin-top اعمال شد
-          // Test: check if margin-top was applied
+        // تست: بررسی اینکه آیا margin-top اعمال شد
+        // Test: check if margin-top was applied
+        if (isDev) {
           const appliedMarginTop = window.getComputedStyle(section).marginTop;
-          if (isDev) {
-            console.log('🔧 Margin-top applied:', {
-              requested: marginTop,
-              applied: appliedMarginTop,
-              match: appliedMarginTop === marginTop || appliedMarginTop === marginTop.replace('px', '') + 'px'
-            });
+          console.log('🔧 Margin-top applied:', {
+            requested: marginTop,
+            applied: appliedMarginTop,
+            match: appliedMarginTop === marginTop || appliedMarginTop === marginTop.replace('px', '') + 'px'
+          });
+        }
+        
+        // اطمینان از اینکه margin-top override نمی‌شود - چک مجدد بعد از یک frame
+        // Ensure margin-top is not overridden - recheck after one frame
+        requestAnimationFrame(() => {
+          const appliedMarginTop = window.getComputedStyle(section).marginTop;
+          if (appliedMarginTop !== marginTop && appliedMarginTop !== marginTop.replace('px', '') + 'px') {
+            // اگر override شد، دوباره اعمال کن
+            // If overridden, apply again
+            section.style.marginTop = marginTop;
+            section.style.setProperty('margin-top', marginTop, 'important');
           }
-          section.style.setProperty('padding-top', '0', 'important');
+        });
+        
+        // تنظیم استایل‌های دیگر - فقط یکبار
+        // Set other styles - only once
+        section.style.setProperty('padding-top', '0', 'important');
           section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
           section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
           section.style.setProperty('visibility', 'visible', 'important');
