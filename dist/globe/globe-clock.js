@@ -433,24 +433,25 @@ function updateHighlightsPosition() {
           const layoutMainRect = layoutMain.getBoundingClientRect();
           const layoutMainTopViewport = layoutMainRect.top;
           
-          // محاسبه فاصله از پایین portfolio card تا بالای layout-main + spacing
-          // Calculate distance from bottom of portfolio card to top of layout-main + spacing
-          // این فاصله در viewport است، اما highlights در document flow هستند
-          // This distance is in viewport, but highlights are in document flow
-          // پس باید این فاصله را به margin-top تبدیل کنیم
-          // So we need to convert this distance to margin-top
-          // نکته: highlights در layout-main هستند، پس margin-top باید نسبت به layout-main باشد
-          // Note: highlights are in layout-main, so margin-top should be relative to layout-main
-          // اما چون layout-main padding-top دارد، باید فاصله از بالای layout-main تا پایین portfolio card را محاسبه کنیم
-          // But since layout-main has padding-top, we need to calculate distance from top of layout-main to bottom of portfolio card
-          const distanceFromLayoutMainTop = portfolioBottomViewport - layoutMainTopViewport + spacing;
+          // محاسبه فاصله از بالای layout-main (در viewport) تا پایین portfolio card (در viewport)
+          // Calculate distance from top of layout-main (in viewport) to bottom of portfolio card (in viewport)
+          // این فاصله در viewport است
+          // This distance is in viewport
+          const distanceInViewport = portfolioBottomViewport - layoutMainTopViewport;
+          
+          // highlights در layout-main هستند و margin-top باید نسبت به بالای layout-main باشد
+          // Highlights are in layout-main and margin-top should be relative to top of layout-main
+          // پس margin-top = فاصله از بالای layout-main تا پایین portfolio card + spacing
+          // So margin-top = distance from top of layout-main to bottom of portfolio card + spacing
+          // این فاصله در viewport است، اما چون highlights در layout-main هستند، می‌توانیم مستقیماً استفاده کنیم
+          // This distance is in viewport, but since highlights are in layout-main, we can use it directly
+          distanceFromTop = distanceInViewport + spacing;
           
           // margin-top باید فاصله از بالای layout-main تا پایین portfolio card + spacing باشد
           // margin-top should be distance from top of layout-main to bottom of portfolio card + spacing
-          // اما اگر portfolio card بالاتر از layout-main باشد (منفی)، حداقل spacing استفاده می‌شود
-          // But if portfolio card is above layout-main (negative), minimum spacing is used
-          distanceFromTop = distanceFromLayoutMainTop;
-          marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
+          // حداقل spacing برای اطمینان از فاصله کافی
+          // Minimum spacing to ensure sufficient distance
+          marginTop = `${Math.max(spacing, distanceFromTop)}px`;
           
           // Debug: بررسی محاسبات
           if (isDev) {
