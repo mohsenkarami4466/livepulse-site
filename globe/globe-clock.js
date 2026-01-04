@@ -380,97 +380,17 @@ function updateHighlightsPosition() {
   const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
   const headerHeight = header ? header.offsetHeight : 60;
   const portfolioCard = document.querySelector('.portfolio-summary-card');
-  const _indicatorsCard = document.querySelector('.indicators-glass-card');
-  const _globeWrapper = document.getElementById('globeClockWrapper');
   
-  const isMobile = window.innerWidth < 768;
-  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-  const isDesktop = window.innerWidth >= 1024;
+  // Debug logging - فقط در development
+  const isDev = (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') || 
+                (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development');
   
-  let marginTop;
-  
-  if (isDesktop) {
-    // در دسکتاپ: محاسبه بر اساس موقعیت واقعی کارت portfolio
-    // Desktop: calculate based on actual portfolio card position
-    if (portfolioCard) {
-      // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
-      // portfolioCard با position: fixed است، پس باید از getBoundingClientRect استفاده کنیم
-      const portfolioRect = portfolioCard.getBoundingClientRect();
-      const portfolioBottom = portfolioRect.bottom;
-      
-      // پیدا کردن موقعیت بالای layout-main در viewport (یا activeView اگر موجود باشد)
-      const layoutMain = document.querySelector('.layout-main');
-      const referenceElement = activeView || layoutMain || document.body;
-      const referenceRect = referenceElement.getBoundingClientRect();
-      const referenceTop = referenceRect.top;
-      
-      // محاسبه فاصله از بالای reference element تا پایین کارت portfolio + 15px gap
-      // چون هر دو در viewport هستند، می‌توانیم مستقیماً تفریق کنیم
-      const calculatedMargin = portfolioBottom - referenceTop + 15;
-      marginTop = `${Math.max(calculatedMargin, 15)}px`; // حداقل 15px
-      
-      // فقط در development log کن
-      // Check if we're in development mode (works in both browser and Node.js)
-      const isDev = (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') || 
-                    (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development');
-      if (isDev) {
-        console.log('🔍 Desktop margin calculation (viewport):', {
-          portfolioBottom,
-          referenceTop: referenceTop,
-          calculatedMargin,
-          finalMargin: marginTop
-        });
-      }
-    } else {
-      // fallback: محاسبه بر اساس ارتفاع‌های ثابت
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 6vw, 80px) + 12px + clamp(55px, 6.5vw, 70px) + 15px)`;
-      // فقط در development log کن
-      const isDev = (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') || 
-                    (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development');
-      if (isDev) {
-        console.warn('⚠️ Portfolio card not found, using fallback margin');
-      }
-    }
-  } else if (isTablet) {
-    // در تبلت: پایین کارت portfolio + 20px gap
-    // Tablet: below portfolio card + 20px gap
-    if (portfolioCard) {
-      // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
-      const portfolioRect = portfolioCard.getBoundingClientRect();
-      const portfolioBottom = portfolioRect.bottom;
-      
-      const layoutMain = document.querySelector('.layout-main');
-      const referenceElement = activeView || layoutMain || document.body;
-      const referenceRect = referenceElement.getBoundingClientRect();
-      const referenceTop = referenceRect.top;
-      
-      const calculatedMargin = portfolioBottom - referenceTop + 20;
-      marginTop = `${Math.max(calculatedMargin, 20)}px`; // حداقل 20px
-    } else {
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 80px) + 8px + clamp(40px, 4vw, 60px) + 15px)`;
-    }
-  } else if (isMobile) {
-    // در موبایل: محاسبه بر اساس موقعیت واقعی کارت portfolio
-    // Mobile: calculate based on actual portfolio card position
-    if (portfolioCard) {
-      // استفاده از getBoundingClientRect برای محاسبه موقعیت viewport
-      const portfolioRect = portfolioCard.getBoundingClientRect();
-      const portfolioBottom = portfolioRect.bottom;
-      
-      const layoutMain = document.querySelector('.layout-main');
-      const referenceElement = activeView || layoutMain || document.body;
-      const referenceRect = referenceElement.getBoundingClientRect();
-      const referenceTop = referenceRect.top;
-      
-      const calculatedMargin = portfolioBottom - referenceTop + 20;
-      marginTop = `${Math.max(calculatedMargin, 20)}px`; // حداقل 20px
-    } else {
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(60px, 8vw, 90px) + 8px + clamp(45px, 5.5vw, 60px) + 15px)`;
-    }
-  } else {
-    // fallback برای سایر حالت‌ها
-    // fallback for other cases
-      marginTop = `calc(var(--header-height, ${headerHeight}px) + 8px + clamp(50px, 6vw, 70px) + 12px + clamp(55px, 6.5vw, 70px) + 15px)`;
+  if (isDev) {
+    console.log('🔍 updateHighlightsPosition called:', {
+      highlightsCount: highlightsSections.length,
+      portfolioCard: portfolioCard ? 'found' : 'not found',
+      activeView: activeView ? activeView.id || activeView.className : 'not found'
+    });
   }
   
   highlightsSections.forEach(section => {
@@ -560,15 +480,23 @@ function updateHighlightsPosition() {
           });
           
           // Debug logging - فقط در development
-          if (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') {
+          if (isDev) {
+            const computedStyle = window.getComputedStyle(section);
             console.log('🔍 Highlights position updated:', {
               section: section.className,
               marginTop: marginTop,
-              isMobile: isMobile,
-              isTablet: isTablet,
-              isDesktop: isDesktop,
-              portfolioCard: portfolioCard ? 'found' : 'not found',
-              activeView: activeView ? activeView.id || activeView.className : 'not found',
+              computedMarginTop: computedStyle.marginTop,
+              portfolioCard: portfolioCard ? {
+                found: true,
+                bottom: portfolioRect.bottom,
+                scrollY: window.scrollY
+              } : 'not found',
+              referenceElement: referenceElement ? {
+                tag: referenceElement.tagName,
+                top: referenceTop
+              } : 'not found',
+              distanceFromTop: portfolioCard ? distanceFromTop : 'N/A',
+              spacing: spacing,
               highlightsCount: highlightsSections.length
             });
           }
