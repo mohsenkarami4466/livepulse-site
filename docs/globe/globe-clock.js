@@ -559,11 +559,6 @@ function updateHighlightsPosition() {
         }); // پایان requestAnimationFrame اصلی
       } // پایان if (section)
     }); // پایان forEach
-  
-  // اگر highlights پیدا نشد، خروج کن - بدون log (normal در React Router)
-  if (highlightsSections.length === 0) {
-    return;
-  }
 }
 
 // تابع wrapper برای انتظار stylesheet‌ها قبل از اجرا
