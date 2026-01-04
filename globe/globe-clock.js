@@ -418,43 +418,60 @@ function updateHighlightsPosition() {
         portfolioRect = portfolioCard.getBoundingClientRect();
         const portfolioBottomViewport = portfolioRect.bottom;
         
-        // پیدا کردن موقعیت بالای layout-main در viewport
-        // Find top position of layout-main in viewport
+        // پیدا کردن layout-main (که highlights در آن هستند)
+        // Find layout-main (where highlights are)
         const layoutMain = document.querySelector('.layout-main');
-        referenceElement = activeView || layoutMain || document.body;
-        const referenceRect = referenceElement.getBoundingClientRect();
-        // هر دو در viewport هستند - portfolio card (fixed) و layout-main (در document flow اما در viewport قابل مشاهده است)
-        // Both are in viewport - portfolio card (fixed) and layout-main (in document flow but visible in viewport)
-        const referenceTopViewport = referenceRect.top;
+        referenceElement = layoutMain || document.body;
         
-        // محاسبه فاصله از بالای reference element (در viewport) تا پایین portfolio card (در viewport) + spacing
-        // Calculate distance from top of reference element (in viewport) to bottom of portfolio card (in viewport) + spacing
-        // نکته: highlights در document flow هستند، پس باید margin-top را نسبت به reference element محاسبه کنیم
-        // Note: highlights are in document flow, so we need to calculate margin-top relative to reference element
-        // اما چون highlights در layout-main هستند، باید فاصله از بالای layout-main تا پایین portfolio card را محاسبه کنیم
-        // But since highlights are in layout-main, we need to calculate distance from top of layout-main to bottom of portfolio card
-        distanceFromTop = portfolioBottomViewport - referenceTopViewport + spacing;
-        
-        // تبدیل به document coordinates برای margin-top (چون highlights در document flow هستند)
-        // Convert to document coordinates for margin-top (since highlights are in document flow)
-        // اما در واقع highlights در layout-main هستند که خودش در document flow است
-        // But actually highlights are in layout-main which itself is in document flow
-        // پس margin-top باید نسبت به layout-main باشد
-        // So margin-top should be relative to layout-main
-        marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
-        
-        // Debug: بررسی محاسبات
-        if (isDev) {
-          console.log('🔧 Position calculation:', {
-            portfolioBottomViewport: portfolioBottomViewport,
-            referenceTopViewport: referenceTopViewport,
-            scrollY: window.scrollY,
-            spacing: spacing,
-            distanceFromTop: distanceFromTop,
-            calculatedMarginTop: marginTop,
-            portfolioCardHeight: portfolioRect.height,
-            referenceElementHeight: referenceRect.height
-          });
+        if (!layoutMain) {
+          // fallback: اگر layout-main پیدا نشد
+          const headerHeight = document.querySelector('header')?.offsetHeight || 60;
+          marginTop = `${headerHeight + spacing}px`;
+        } else {
+          // محاسبه موقعیت layout-main در viewport
+          // Calculate layout-main position in viewport
+          const layoutMainRect = layoutMain.getBoundingClientRect();
+          const layoutMainTopViewport = layoutMainRect.top;
+          
+          // محاسبه فاصله از پایین portfolio card تا بالای layout-main + spacing
+          // Calculate distance from bottom of portfolio card to top of layout-main + spacing
+          // این فاصله در viewport است، اما highlights در document flow هستند
+          // This distance is in viewport, but highlights are in document flow
+          // پس باید این فاصله را به margin-top تبدیل کنیم
+          // So we need to convert this distance to margin-top
+          // نکته: highlights در layout-main هستند، پس margin-top باید نسبت به layout-main باشد
+          // Note: highlights are in layout-main, so margin-top should be relative to layout-main
+          // اما چون layout-main padding-top دارد، باید فاصله از بالای layout-main تا پایین portfolio card را محاسبه کنیم
+          // But since layout-main has padding-top, we need to calculate distance from top of layout-main to bottom of portfolio card
+          const distanceFromLayoutMainTop = portfolioBottomViewport - layoutMainTopViewport + spacing;
+          
+          // margin-top باید فاصله از بالای layout-main تا پایین portfolio card + spacing باشد
+          // margin-top should be distance from top of layout-main to bottom of portfolio card + spacing
+          // اما اگر portfolio card بالاتر از layout-main باشد (منفی)، حداقل spacing استفاده می‌شود
+          // But if portfolio card is above layout-main (negative), minimum spacing is used
+          distanceFromTop = distanceFromLayoutMainTop;
+          marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
+          
+          // Debug: بررسی محاسبات
+          if (isDev) {
+            const windowWidth = window.innerWidth;
+            const isMobile = windowWidth < 768;
+            const isTablet = windowWidth >= 768 && windowWidth < 1024;
+            const deviceType = isMobile ? 'mobile' : (isTablet ? 'tablet' : 'desktop');
+            
+            console.log('🔧 Position calculation:', {
+              deviceType: deviceType,
+              windowWidth: windowWidth,
+              portfolioBottomViewport: portfolioBottomViewport,
+              layoutMainTopViewport: layoutMainTopViewport,
+              scrollY: window.scrollY,
+              spacing: spacing,
+              distanceFromTop: distanceFromTop,
+              calculatedMarginTop: marginTop,
+              portfolioCardHeight: portfolioRect.height,
+              layoutMainPaddingTop: window.getComputedStyle(layoutMain).paddingTop
+            });
+          }
         }
       } else {
         // fallback: اگر portfolio card پیدا نشد
