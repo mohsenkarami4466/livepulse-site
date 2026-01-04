@@ -414,33 +414,38 @@ function updateHighlightsPosition() {
       
       if (portfolioCard) {
         // portfolio card با position: fixed است
-        // باید از getBoundingClientRect استفاده کنیم و scroll را در نظر بگیریم
         // portfolio card is position: fixed
-        // we need to use getBoundingClientRect and account for scroll
         portfolioRect = portfolioCard.getBoundingClientRect();
-        const portfolioBottom = portfolioRect.bottom + window.scrollY;
+        // portfolio card در viewport است، پس bottom آن نسبت به viewport است
+        // portfolio card is in viewport, so its bottom is relative to viewport
+        const portfolioBottomViewport = portfolioRect.bottom;
         
-        // پیدا کردن موقعیت بالای layout-main (با scroll)
-        // Find top position of layout-main (with scroll)
+        // پیدا کردن موقعیت بالای layout-main در viewport
+        // Find top position of layout-main in viewport
         const layoutMain = document.querySelector('.layout-main');
         referenceElement = activeView || layoutMain || document.body;
         const referenceRect = referenceElement.getBoundingClientRect();
+        // reference element در document flow است، پس باید scroll را در نظر بگیریم
+        // reference element is in document flow, so we need to account for scroll
         referenceTop = referenceRect.top + window.scrollY;
         
-        // محاسبه فاصله از بالای reference element تا پایین portfolio card + spacing
-        // Calculate distance from top of reference element to bottom of portfolio card + spacing
-        // نکته: portfolio card با position: fixed است، پس موقعیت آن در viewport ثابت است
-        // اما highlights در document flow هستند، پس باید از موقعیت absolute استفاده کنیم
-        // Note: portfolio card is position: fixed, so its position in viewport is fixed
-        // but highlights are in document flow, so we need to use absolute position
-        distanceFromTop = portfolioBottom - referenceTop + spacing;
+        // محاسبه فاصله از بالای reference element (در document) تا پایین portfolio card (در viewport) + spacing
+        // Calculate distance from top of reference element (in document) to bottom of portfolio card (in viewport) + spacing
+        // نکته مهم: portfolio card در viewport است (fixed)، اما highlights در document flow هستند
+        // پس باید موقعیت portfolio card را به document coordinates تبدیل کنیم
+        // Important note: portfolio card is in viewport (fixed), but highlights are in document flow
+        // so we need to convert portfolio card position to document coordinates
+        const portfolioBottomDocument = portfolioBottomViewport + window.scrollY;
+        distanceFromTop = portfolioBottomDocument - referenceTop + spacing;
         marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
         
         // Debug: بررسی محاسبات
         if (isDev) {
           console.log('🔧 Position calculation:', {
-            portfolioBottom: portfolioBottom,
+            portfolioBottomViewport: portfolioBottomViewport,
+            portfolioBottomDocument: portfolioBottomDocument,
             referenceTop: referenceTop,
+            scrollY: window.scrollY,
             spacing: spacing,
             distanceFromTop: distanceFromTop,
             calculatedMarginTop: marginTop
