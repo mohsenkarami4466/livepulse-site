@@ -429,8 +429,23 @@ function updateHighlightsPosition() {
         
         // محاسبه فاصله از بالای reference element تا پایین portfolio card + spacing
         // Calculate distance from top of reference element to bottom of portfolio card + spacing
+        // نکته: portfolio card با position: fixed است، پس موقعیت آن در viewport ثابت است
+        // اما highlights در document flow هستند، پس باید از موقعیت absolute استفاده کنیم
+        // Note: portfolio card is position: fixed, so its position in viewport is fixed
+        // but highlights are in document flow, so we need to use absolute position
         distanceFromTop = portfolioBottom - referenceTop + spacing;
         marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
+        
+        // Debug: بررسی محاسبات
+        if (isDev) {
+          console.log('🔧 Position calculation:', {
+            portfolioBottom: portfolioBottom,
+            referenceTop: referenceTop,
+            spacing: spacing,
+            distanceFromTop: distanceFromTop,
+            calculatedMarginTop: marginTop
+          });
+        }
       } else {
         // fallback: اگر portfolio card پیدا نشد
         // fallback: if portfolio card not found
@@ -443,7 +458,21 @@ function updateHighlightsPosition() {
       waitForStylesheets(() => {
         // استفاده از requestAnimationFrame برای جلوگیری از force layout
         requestAnimationFrame(() => {
+          // اعمال مستقیم margin-top - بدون تاخیر اضافی
+          // Apply margin-top directly - without additional delay
+          section.style.marginTop = marginTop;
           section.style.setProperty('margin-top', marginTop, 'important');
+          
+          // تست: بررسی اینکه آیا margin-top اعمال شد
+          // Test: check if margin-top was applied
+          const appliedMarginTop = window.getComputedStyle(section).marginTop;
+          if (isDev) {
+            console.log('🔧 Margin-top applied:', {
+              requested: marginTop,
+              applied: appliedMarginTop,
+              match: appliedMarginTop === marginTop || appliedMarginTop === marginTop.replace('px', '') + 'px'
+            });
+          }
           section.style.setProperty('padding-top', '0', 'important');
           section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
           section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
