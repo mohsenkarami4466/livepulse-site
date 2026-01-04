@@ -34,44 +34,6 @@
     
     <!-- html2canvas برای تولید عکس -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
-    <!-- Utilities - باید قبل از React app لود شوند -->
-    <script src="/livepulse-site/utils/logger.js"></script>
-    <script src="/livepulse-site/utils/error-handler.js"></script>
-    <script src="/livepulse-site/utils/performance.js"></script>
-    <script src="/livepulse-site/utils/globe-helpers.js"></script>
-    <script src="/livepulse-site/utils/state-manager.js"></script>
-    <script src="/livepulse-site/config.js"></script>
-    
-    <!-- Main Scripts - برای integration با React -->
-    <script src="/livepulse-site/script-main.js"></script>
-    <script src="/livepulse-site/script-views.js"></script>
-    <script src="/livepulse-site/script-cards.js"></script>
-    
-    <!-- Globe Scripts - تقسیم شده به فایل‌های کوچک‌تر -->
-    <!-- Globe Globals - متغیرهای global -->
-    <script src="/livepulse-site/globe/globals.js"></script>
-    <!-- Globe Helpers - توابع کمکی -->
-    <script src="/livepulse-site/globe/globe-helpers.js"></script>
-    <!-- Globe Clock - کره کوچک و ساعت بازار -->
-    <script src="/livepulse-site/globe/globe-clock.js"></script>
-    <!-- Globe Markets - توابع بازار -->
-    <script src="/livepulse-site/globe/globe-markets.js"></script>
-    <!-- Globe Modals - توابع مودال -->
-    <script src="/livepulse-site/globe/globe-modals.js"></script>
-    <!-- Globe Simple - ساخت کره ساده -->
-    <script src="/livepulse-site/globe/globe-simple.js"></script>
-    <!-- Globe Resources - توابع کره منابع -->
-    <script src="/livepulse-site/globe/globe-resources.js"></script>
-    <!-- Globe 3D - توابع کره‌های 3D -->
-    <script src="/livepulse-site/globe/globe-3d.js"></script>
-    
-    <script src="/livepulse-site/script-ui.js"></script>
-    <script src="/livepulse-site/script-tools.js"></script>
-    <script src="/livepulse-site/data/countries-data.js"></script>
-    <script src="/livepulse-site/gold-map.js"></script>
-    <script src="/livepulse-site/data/geo-borders.js"></script>
-    <script src="/livepulse-site/script-init.js"></script>
   <link rel="stylesheet" crossorigin href="/livepulse-site/assets/index-CGXiQpoU.css">
 </head>
 <body data-theme="light" style="margin: 0; padding: 0;">
@@ -141,7 +103,45 @@
         })();
     </script>
 
-    <!-- React Bundle - باید بعد از همه کتابخانه‌ها لود شود -->
+    <!-- Utilities - باید بعد از کتابخانه‌های خارجی لود شوند -->
+    <script src="/livepulse-site/utils/logger.js"></script>
+    <script src="/livepulse-site/utils/error-handler.js"></script>
+    <script src="/livepulse-site/utils/performance.js"></script>
+    <script src="/livepulse-site/utils/globe-helpers.js"></script>
+    <script src="/livepulse-site/utils/state-manager.js"></script>
+    <script src="/livepulse-site/config.js"></script>
+    
+    <!-- Main Scripts - برای integration با React -->
+    <script src="/livepulse-site/script-main.js"></script>
+    <script src="/livepulse-site/script-views.js"></script>
+    <script src="/livepulse-site/script-cards.js"></script>
+    
+    <!-- Globe Scripts - تقسیم شده به فایل‌های کوچک‌تر -->
+    <!-- Globe Globals - متغیرهای global -->
+    <script src="/livepulse-site/globe/globals.js"></script>
+    <!-- Globe Helpers - توابع کمکی -->
+    <script src="/livepulse-site/globe/globe-helpers.js"></script>
+    <!-- Globe Clock - کره کوچک و ساعت بازار -->
+    <script src="/livepulse-site/globe/globe-clock.js"></script>
+    <!-- Globe Markets - توابع بازار -->
+    <script src="/livepulse-site/globe/globe-markets.js"></script>
+    <!-- Globe Modals - توابع مودال -->
+    <script src="/livepulse-site/globe/globe-modals.js"></script>
+    <!-- Globe Simple - ساخت کره ساده -->
+    <script src="/livepulse-site/globe/globe-simple.js"></script>
+    <!-- Globe Resources - توابع کره منابع -->
+    <script src="/livepulse-site/globe/globe-resources.js"></script>
+    <!-- Globe 3D - توابع کره‌های 3D -->
+    <script src="/livepulse-site/globe/globe-3d.js"></script>
+    
+    <script src="/livepulse-site/script-ui.js"></script>
+    <script src="/livepulse-site/script-tools.js"></script>
+    <script src="/livepulse-site/data/countries-data.js"></script>
+    <script src="/livepulse-site/gold-map.js"></script>
+    <script src="/livepulse-site/data/geo-borders.js"></script>
+    <script src="/livepulse-site/script-init.js"></script>
+
+    <!-- React Bundle - باید بعد از همه کتابخانه‌ها و فایل‌های vanilla JS لود شود -->
     <script type="module" crossorigin src="/livepulse-site/assets/index-DGHD_Dxj.js"></script>
 
 </body>
