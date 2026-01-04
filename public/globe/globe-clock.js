@@ -405,24 +405,31 @@ function updateHighlightsPosition() {
       // Calculate margin-top based on portfolio card position + spacing
       let marginTop = '0px';
       
+      // تعریف متغیرها در scope بالاتر برای استفاده در debug logging
+      // Define variables in higher scope for use in debug logging
+      let portfolioRect = null;
+      let referenceElement = null;
+      let referenceTop = null;
+      let distanceFromTop = null;
+      
       if (portfolioCard) {
         // portfolio card با position: fixed است
         // باید از getBoundingClientRect استفاده کنیم و scroll را در نظر بگیریم
         // portfolio card is position: fixed
         // we need to use getBoundingClientRect and account for scroll
-        const portfolioRect = portfolioCard.getBoundingClientRect();
+        portfolioRect = portfolioCard.getBoundingClientRect();
         const portfolioBottom = portfolioRect.bottom + window.scrollY;
         
         // پیدا کردن موقعیت بالای layout-main (با scroll)
         // Find top position of layout-main (with scroll)
         const layoutMain = document.querySelector('.layout-main');
-        const referenceElement = activeView || layoutMain || document.body;
+        referenceElement = activeView || layoutMain || document.body;
         const referenceRect = referenceElement.getBoundingClientRect();
-        const referenceTop = referenceRect.top + window.scrollY;
+        referenceTop = referenceRect.top + window.scrollY;
         
         // محاسبه فاصله از بالای reference element تا پایین portfolio card + spacing
         // Calculate distance from top of reference element to bottom of portfolio card + spacing
-        const distanceFromTop = portfolioBottom - referenceTop + spacing;
+        distanceFromTop = portfolioBottom - referenceTop + spacing;
         marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
       } else {
         // fallback: اگر portfolio card پیدا نشد
