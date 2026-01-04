@@ -480,15 +480,23 @@ function updateHighlightsPosition() {
           });
           
           // Debug logging - فقط در development
-          if (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') {
+          if (isDev) {
+            const computedStyle = window.getComputedStyle(section);
             console.log('🔍 Highlights position updated:', {
               section: section.className,
               marginTop: marginTop,
-              isMobile: isMobile,
-              isTablet: isTablet,
-              isDesktop: isDesktop,
-              portfolioCard: portfolioCard ? 'found' : 'not found',
-              activeView: activeView ? activeView.id || activeView.className : 'not found',
+              computedMarginTop: computedStyle.marginTop,
+              portfolioCard: portfolioCard ? {
+                found: true,
+                bottom: portfolioRect.bottom,
+                scrollY: window.scrollY
+              } : 'not found',
+              referenceElement: referenceElement ? {
+                tag: referenceElement.tagName,
+                top: referenceTop
+              } : 'not found',
+              distanceFromTop: portfolioCard ? distanceFromTop : 'N/A',
+              spacing: spacing,
               highlightsCount: highlightsSections.length
             });
           }
@@ -517,7 +525,16 @@ function updateHighlightsPositionSafe() {
 // در دسترس قرار دادن تابع برای استفاده در جاهای دیگر
 // Export function for use elsewhere
 if (typeof window !== 'undefined') {
-  window.updateHighlightsPosition = updateHighlightsPositionSafe;
+  window.updateHighlightsPosition = updateHighlightsPosition;
+  window.updateHighlightsPositionSafe = updateHighlightsPositionSafe;
+  
+  // Debug: بررسی اینکه تابع درست export شده است
+  if (window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.log('✅ updateHighlightsPosition exported:', {
+      updateHighlightsPosition: typeof window.updateHighlightsPosition,
+      updateHighlightsPositionSafe: typeof window.updateHighlightsPositionSafe
+    });
+  }
 }
 
 /* ========== توابع ساعت UTC / UTC Clock Functions ========== */

@@ -96,18 +96,29 @@ function Layout({ children }) {
     // تابع برای فراخوانی updateHighlightsPosition
     const callUpdateHighlights = () => {
       if (typeof window !== 'undefined') {
+        // Debug logging
+        console.log('🔍 callUpdateHighlights called:', {
+          updateHighlightsPositionSafe: typeof window.updateHighlightsPositionSafe,
+          updateHighlightsPosition: typeof window.updateHighlightsPosition
+        });
+        
         if (typeof window.updateHighlightsPositionSafe === 'function') {
+          console.log('✅ Calling updateHighlightsPositionSafe');
           window.updateHighlightsPositionSafe()
         } else if (typeof window.updateHighlightsPosition === 'function') {
+          console.log('✅ Calling updateHighlightsPosition');
           window.updateHighlightsPosition()
+        } else {
+          console.warn('⚠️ updateHighlightsPosition functions not found!');
         }
       }
     }
     
-    // فراخوانی اولیه با تاخیر برای اطمینان از render شدن DOM
+    // فراخوانی اولیه با تاخیر بیشتر برای اطمینان از لود شدن globe-clock.js
     const timeoutId = setTimeout(() => {
+      console.log('🔍 Initial callUpdateHighlights after timeout');
       callUpdateHighlights()
-    }, 100)
+    }, 500) // افزایش تاخیر به 500ms
     
     // فراخوانی در resize برای ریسپانسیو بودن
     const handleResize = () => {

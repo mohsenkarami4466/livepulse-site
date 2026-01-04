@@ -525,7 +525,16 @@ function updateHighlightsPositionSafe() {
 // در دسترس قرار دادن تابع برای استفاده در جاهای دیگر
 // Export function for use elsewhere
 if (typeof window !== 'undefined') {
-  window.updateHighlightsPosition = updateHighlightsPositionSafe;
+  window.updateHighlightsPosition = updateHighlightsPosition;
+  window.updateHighlightsPositionSafe = updateHighlightsPositionSafe;
+  
+  // Debug: بررسی اینکه تابع درست export شده است
+  if (window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    console.log('✅ updateHighlightsPosition exported:', {
+      updateHighlightsPosition: typeof window.updateHighlightsPosition,
+      updateHighlightsPositionSafe: typeof window.updateHighlightsPositionSafe
+    });
+  }
 }
 
 /* ========== توابع ساعت UTC / UTC Clock Functions ========== */
