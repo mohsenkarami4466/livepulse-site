@@ -458,15 +458,25 @@ function updateHighlightsPosition() {
         marginTop = `${headerHeight + spacing}px`;
       }
       
-      // استفاده از waitForStylesheets برای جلوگیری از Layout warning
-      // Wait for stylesheets before setting styles to prevent Layout warning
-      waitForStylesheets(() => {
-        // استفاده از requestAnimationFrame برای جلوگیری از force layout
-        requestAnimationFrame(() => {
-          // اعمال مستقیم margin-top - بدون تاخیر اضافی
-          // Apply margin-top directly - without additional delay
+      // اعمال مستقیم margin-top - بدون waitForStylesheets برای جلوگیری از تاخیر
+      // Apply margin-top directly - without waitForStylesheets to prevent delay
+      // استفاده از requestAnimationFrame برای اطمینان از render شدن
+      // Use requestAnimationFrame to ensure rendering
+      requestAnimationFrame(() => {
+        // اعمال margin-top - فقط یکبار
+        // Apply margin-top - only once
+        section.style.marginTop = marginTop;
+        section.style.setProperty('margin-top', marginTop, 'important');
+        
+        // اطمینان از اینکه margin-top override نمی‌شود
+        // Ensure margin-top is not overridden
+        const appliedMarginTop = window.getComputedStyle(section).marginTop;
+        if (appliedMarginTop !== marginTop && appliedMarginTop !== marginTop.replace('px', '') + 'px') {
+          // اگر override شد، دوباره اعمال کن
+          // If overridden, apply again
           section.style.marginTop = marginTop;
           section.style.setProperty('margin-top', marginTop, 'important');
+        }
           
           // تست: بررسی اینکه آیا margin-top اعمال شد
           // Test: check if margin-top was applied
