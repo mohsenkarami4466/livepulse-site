@@ -116,28 +116,19 @@ function Highlights() {
   
   /**
    * Handler: کلیک روی هایلایت - memoize شده
+   * استفاده از state به جای querySelector برای بهبود performance
    */
   const handleHighlightClick = useCallback((highlight) => {
     const { id, dataAttr } = highlight
     
-    // فعال کردن highlight
-    const circles = document.querySelectorAll(`.highlight-circle[data-${dataAttr}]`)
-    circles.forEach(circle => {
-      if (circle.getAttribute(`data-${dataAttr}`) === id) {
-        circle.classList.add('active')
-      } else {
-        circle.classList.remove('active')
-      }
-    })
-    
-    // به‌روزرسانی state بر اساس نوع صفحه
+    // به‌روزرسانی state بر اساس نوع صفحه - state باعث re-render و update DOM می‌شود
     if (currentPage === 'home') {
       setCategory(id)
     } else if (currentPage === 'tools') {
       setTool(id)
     }
     
-    // هماهنگی با vanilla JS
+    // هماهنگی با vanilla JS - فقط برای موارد خاص
     if (typeof window !== 'undefined') {
       // برای صفحه tools
       if (currentPage === 'tools' && window.activateTool) {
@@ -154,42 +145,20 @@ function Highlights() {
   
   /**
    * Effect: تنظیم highlight فعال به صورت پیش‌فرض
-   * فقط با تغییر صفحه - نه با هر render
+   * فقط با تغییر صفحه - استفاده از state به جای querySelector
    */
   useEffect(() => {
-    // تاخیر کوتاه برای اطمینان از render شدن
-    const timeoutId = setTimeout(() => {
-      const firstHighlight = currentHighlights[0]
-      if (firstHighlight) {
-        // فعال کردن highlight اول
-        const circles = document.querySelectorAll(`.highlight-circle[data-${firstHighlight.dataAttr}]`)
-        circles.forEach(circle => {
-          if (circle.getAttribute(`data-${firstHighlight.dataAttr}`) === firstHighlight.id) {
-            circle.classList.add('active')
-          } else {
-            circle.classList.remove('active')
-          }
-        })
-        
-        // تنظیم state
-        if (currentPage === 'home') {
-          setCategory(firstHighlight.id)
-        } else if (currentPage === 'tools') {
-          setTool(firstHighlight.id)
-        }
+    const firstHighlight = currentHighlights[0]
+    if (firstHighlight) {
+      // تنظیم state - state باعث re-render و update DOM می‌شود
+      if (currentPage === 'home') {
+        setCategory(firstHighlight.id)
+      } else if (currentPage === 'tools') {
+        setTool(firstHighlight.id)
       }
-    }, 100)
-    
-    return () => clearTimeout(timeoutId)
-  }, [currentPage]) // فقط با تغییر صفحه - setCategory و setTool stable هستند
+    }
+  }, [currentPage, currentHighlights, setCategory, setTool]) // فقط با تغییر صفحه
   
-  /**
-   * Effect: به‌روزرسانی موقعیت highlights بعد از render
-   * حذف شد - highlights با CSS (35px) تنظیم می‌شوند
-   */
-  // useEffect(() => {
-  //   // حذف شد - highlights با CSS تنظیم می‌شوند
-  // }, [])
   
   // Debug: بررسی render شدن (فقط در development) - فقط یکبار log می‌کنیم
   useEffect(() => {

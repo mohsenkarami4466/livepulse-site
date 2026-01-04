@@ -91,46 +91,14 @@ export function forceShowHighlights() {
   console.log(`✅ Highlights fixed - ${highlightsSections.length} sections, ${highlightsContainers.length} containers, ${circles.length} circles`)
 }
 
-  // اجرای خودکار بعد از load شدن صفحه
-if (typeof window !== 'undefined') {
-  // اجرای فوری و مکرر
-  const runFix = () => {
-    forceShowHighlights()
-  }
-
-  // اجرای فوری - فقط یکبار و با تاخیر محدود
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      runFix()
-      setTimeout(runFix, 500) // فقط یکبار بعد از تاخیر
-    })
-  } else {
-    runFix()
-    setTimeout(runFix, 500) // فقط یکبار بعد از تاخیر
-  }
-
-  // حذف MutationObserver - باعث rebuild مداوم می‌شد
-  // اجرا فقط یکبار بعد از load
-  // حذف resize event - باعث تغییر width می‌شد
-  // resize event removed - was causing width changes
-  // let resizeTimeout = null
-  // window.addEventListener('resize', () => {
-  //   if (resizeTimeout) clearTimeout(resizeTimeout)
-  //   resizeTimeout = setTimeout(() => {
-  //     runFix() // فقط forceShowHighlights
-  //     // updateHighlightsPosition در PortfolioSummary.jsx با resize فراخوانی می‌شود
-  //   }, 300) // debounce
-  // })
-
-  // حذف setInterval - دیگر نیازی نیست
-  // const interval = setInterval(runFix, 2000) // حذف شد
-
   // اضافه کردن به window برای دسترسی از جاهای دیگر
-  window.forceShowHighlights = forceShowHighlights
-
-  // Cleanup
-  window.addEventListener('beforeunload', () => {
-    if (resizeTimeout) clearTimeout(resizeTimeout)
-  })
-}
+  // Add to window for access from other places
+  if (typeof window !== 'undefined') {
+    window.forceShowHighlights = forceShowHighlights
+    
+    // اجرای خودکار حذف شد - برای جلوگیری از تداخل با updateHighlightsPosition
+    // Auto-execution removed - to prevent interference with updateHighlightsPosition
+    // forceShowHighlights فقط باید به صورت دستی فراخوانی شود یا در مواقع خاص
+    // forceShowHighlights should only be called manually or in special cases
+  }
 

@@ -463,8 +463,8 @@ function updateHighlightsPosition() {
       // استفاده از requestAnimationFrame برای اطمینان از render شدن
       // Use requestAnimationFrame to ensure rendering
       requestAnimationFrame(() => {
-        // اعمال margin-top - فقط یکبار
-        // Apply margin-top - only once
+        // اعمال margin-top - فقط یکبار با !important برای اطمینان از اعمال
+        // Apply margin-top - only once with !important to ensure application
         section.style.marginTop = marginTop;
         section.style.setProperty('margin-top', marginTop, 'important');
         
@@ -478,18 +478,6 @@ function updateHighlightsPosition() {
             match: appliedMarginTop === marginTop || appliedMarginTop === marginTop.replace('px', '') + 'px'
           });
         }
-        
-        // اطمینان از اینکه margin-top override نمی‌شود - چک مجدد بعد از یک frame
-        // Ensure margin-top is not overridden - recheck after one frame
-        requestAnimationFrame(() => {
-          const appliedMarginTop = window.getComputedStyle(section).marginTop;
-          if (appliedMarginTop !== marginTop && appliedMarginTop !== marginTop.replace('px', '') + 'px') {
-            // اگر override شد، دوباره اعمال کن
-            // If overridden, apply again
-            section.style.marginTop = marginTop;
-            section.style.setProperty('margin-top', marginTop, 'important');
-          }
-        });
         
         // تنظیم استایل‌های دیگر - فقط یکبار
         // Set other styles - only once

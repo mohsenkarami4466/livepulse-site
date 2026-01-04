@@ -272,17 +272,11 @@ function PortfolioSummary() {
     // اجرای اولیه با تاخیر برای اطمینان از render شدن DOM
     const timeoutId = setTimeout(() => {
       updatePosition()
-      // به‌روزرسانی highlights فقط یکبار بعد از تنظیم موقعیت (فقط در resize)
-      // حذف شد - updateHighlightsPosition در App.jsx فراخوانی می‌شود
     }, 500)
     
-    // فقط resize listener - بدون timeout های اضافی
-    // حذف شد: updateHighlightsPosition در Layout.jsx فراخوانی می‌شود
-    // Removed: updateHighlightsPosition is called in Layout.jsx
+    // فقط resize listener
     const handleResize = () => {
       updatePosition()
-      // updateHighlightsPosition در Layout.jsx با resize listener فراخوانی می‌شود
-      // updateHighlightsPosition is called in Layout.jsx with resize listener
     }
     
     window.addEventListener('resize', handleResize)
