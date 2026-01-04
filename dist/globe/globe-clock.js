@@ -413,11 +413,9 @@ function updateHighlightsPosition() {
       let distanceFromTop = null;
       
       if (portfolioCard) {
-        // portfolio card با position: fixed است
-        // portfolio card is position: fixed
+        // portfolio card با position: fixed است - در viewport است
+        // portfolio card is position: fixed - it's in viewport
         portfolioRect = portfolioCard.getBoundingClientRect();
-        // portfolio card در viewport است، پس bottom آن نسبت به viewport است
-        // portfolio card is in viewport, so its bottom is relative to viewport
         const portfolioBottomViewport = portfolioRect.bottom;
         
         // پیدا کردن موقعیت بالای layout-main در viewport
@@ -425,30 +423,37 @@ function updateHighlightsPosition() {
         const layoutMain = document.querySelector('.layout-main');
         referenceElement = activeView || layoutMain || document.body;
         const referenceRect = referenceElement.getBoundingClientRect();
-        // reference element در document flow است، پس باید scroll را در نظر بگیریم
-        // reference element is in document flow, so we need to account for scroll
-        referenceTop = referenceRect.top + window.scrollY;
+        // هر دو در viewport هستند - portfolio card (fixed) و layout-main (در document flow اما در viewport قابل مشاهده است)
+        // Both are in viewport - portfolio card (fixed) and layout-main (in document flow but visible in viewport)
+        const referenceTopViewport = referenceRect.top;
         
-        // محاسبه فاصله از بالای reference element (در document) تا پایین portfolio card (در viewport) + spacing
-        // Calculate distance from top of reference element (in document) to bottom of portfolio card (in viewport) + spacing
-        // نکته مهم: portfolio card در viewport است (fixed)، اما highlights در document flow هستند
-        // پس باید موقعیت portfolio card را به document coordinates تبدیل کنیم
-        // Important note: portfolio card is in viewport (fixed), but highlights are in document flow
-        // so we need to convert portfolio card position to document coordinates
-        const portfolioBottomDocument = portfolioBottomViewport + window.scrollY;
-        distanceFromTop = portfolioBottomDocument - referenceTop + spacing;
+        // محاسبه فاصله از بالای reference element (در viewport) تا پایین portfolio card (در viewport) + spacing
+        // Calculate distance from top of reference element (in viewport) to bottom of portfolio card (in viewport) + spacing
+        // نکته: highlights در document flow هستند، پس باید margin-top را نسبت به reference element محاسبه کنیم
+        // Note: highlights are in document flow, so we need to calculate margin-top relative to reference element
+        // اما چون highlights در layout-main هستند، باید فاصله از بالای layout-main تا پایین portfolio card را محاسبه کنیم
+        // But since highlights are in layout-main, we need to calculate distance from top of layout-main to bottom of portfolio card
+        distanceFromTop = portfolioBottomViewport - referenceTopViewport + spacing;
+        
+        // تبدیل به document coordinates برای margin-top (چون highlights در document flow هستند)
+        // Convert to document coordinates for margin-top (since highlights are in document flow)
+        // اما در واقع highlights در layout-main هستند که خودش در document flow است
+        // But actually highlights are in layout-main which itself is in document flow
+        // پس margin-top باید نسبت به layout-main باشد
+        // So margin-top should be relative to layout-main
         marginTop = `${Math.max(spacing, distanceFromTop)}px`; // حداقل spacing
         
         // Debug: بررسی محاسبات
         if (isDev) {
           console.log('🔧 Position calculation:', {
             portfolioBottomViewport: portfolioBottomViewport,
-            portfolioBottomDocument: portfolioBottomDocument,
-            referenceTop: referenceTop,
+            referenceTopViewport: referenceTopViewport,
             scrollY: window.scrollY,
             spacing: spacing,
             distanceFromTop: distanceFromTop,
-            calculatedMarginTop: marginTop
+            calculatedMarginTop: marginTop,
+            portfolioCardHeight: portfolioRect.height,
+            referenceElementHeight: referenceRect.height
           });
         }
       } else {
