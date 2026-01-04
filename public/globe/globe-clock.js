@@ -402,11 +402,12 @@ function updateHighlightsPosition() {
       // محاسبه ساده: margin-top = فاصله از بالای layout-main تا پایین portfolio card + 20px
       // Simple calculation: margin-top = distance from top of layout-main to bottom of portfolio card + 20px
       let marginTop = '0px';
+      let portfolioRect = null; // تعریف در scope بالاتر برای استفاده در debug logging
       
       if (portfolioCard) {
         // portfolio card با position: fixed است - در viewport است
         // portfolio card is position: fixed - it's in viewport
-        const portfolioRect = portfolioCard.getBoundingClientRect();
+        portfolioRect = portfolioCard.getBoundingClientRect();
         const portfolioBottomViewport = portfolioRect.bottom;
         
         // پیدا کردن layout-main (که highlights در آن هستند)
