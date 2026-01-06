@@ -272,11 +272,15 @@ function PortfolioSummary() {
     // اجرای اولیه با تاخیر برای اطمینان از render شدن DOM
     const timeoutId = setTimeout(() => {
       updatePosition()
+      // حذف شد: highlights دیگر وابسته به portfolio card نیست
+      // Removed: highlights no longer depend on portfolio card
     }, 500)
     
     // فقط resize listener
     const handleResize = () => {
       updatePosition()
+      // حذف شد: highlights دیگر وابسته به portfolio card نیست
+      // Removed: highlights no longer depend on portfolio card
     }
     
     window.addEventListener('resize', handleResize)
