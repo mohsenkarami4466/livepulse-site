@@ -460,8 +460,14 @@ function openPriceDetail(item) {
 
     const modalContent = document.getElementById('priceModalContent');
     if (!modalContent) {
-        const log = window.logger || { warn: console.warn };
-        log.warn('⚠️ priceModalContent element not found');
+        // در React از PriceModal استفاده می‌شود - این warning طبیعی است
+        const log = window.logger || { debug: console.debug };
+        log.debug('ℹ️ priceModalContent element not found - استفاده از React PriceModal');
+        // اگر React PriceModal موجود است، از آن استفاده می‌شود
+        if (typeof window !== 'undefined' && window.openPriceDetailReact) {
+            window.openPriceDetailReact(item);
+            return;
+        }
         return;
     }
 

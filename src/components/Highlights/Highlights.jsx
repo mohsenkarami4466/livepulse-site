@@ -55,13 +55,13 @@ const highlightsData = {
     { id: 'currencyTool', name: 'تبدیل ارز', dataAttr: 'tool' }
   ],
   globe: [
-    { id: 'resources', name: 'منابع', dataAttr: 'globe' },
-    { id: 'financial', name: 'مالی', dataAttr: 'globe' },
-    { id: 'conflicts', name: 'درگیری‌ها', dataAttr: 'globe' },
-    { id: 'trade', name: 'تجارت', dataAttr: 'globe' },
-    { id: 'population', name: 'جمعیت', dataAttr: 'globe' },
-    { id: 'gdp', name: 'تولید ناخالص', dataAttr: 'globe' },
-    { id: 'borders', name: 'مرزها', dataAttr: 'globe' }
+    { id: 'resources', name: 'منابع کشورها', dataAttr: 'globe' },
+    { id: 'weather', name: 'آب و هوا', dataAttr: 'globe' },
+    { id: 'military', name: 'نظامی', dataAttr: 'globe' },
+    { id: 'universities', name: 'دانشگاه‌ها', dataAttr: 'globe' },
+    { id: 'historical', name: 'تاریخی', dataAttr: 'globe' },
+    { id: 'earthquake', name: 'زلزله', dataAttr: 'globe' },
+    { id: 'natural-resources', name: 'منابع طبیعی', dataAttr: 'globe' }
   ],
   tutorial: [
     { id: 'basics', name: 'مبانی', dataAttr: 'edu' },
@@ -139,6 +139,11 @@ function Highlights() {
       if (currentPage === 'news') {
         // dispatch event برای news
         window.dispatchEvent(new CustomEvent('newsCategoryChanged', { detail: { category: id } }))
+      }
+      
+      // برای صفحه globe - dispatch event برای تغییر activeGlobe
+      if (currentPage === 'globe') {
+        window.dispatchEvent(new CustomEvent('globeHighlightChanged', { detail: { globeId: id } }))
       }
     }
   }, [currentPage, setCategory, setTool])

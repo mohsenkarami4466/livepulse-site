@@ -58,14 +58,18 @@ function Globe() {
   const [activeGlobe, setActiveGlobe] = useState('resources') // کره فعال
 
   /**
-   * Effect: تنظیم اولین هایلایت به صورت پیش‌فرض
+   * Effect: تنظیم اولین هایلایت به صورت پیش‌فرض و گوش دادن به تغییرات highlight
    * 
    * این effect:
    * 1. هنگام mount شدن صفحه، اولین هایلایت (resources) را فعال می‌کند
+   * 2. به event تغییر highlight گوش می‌دهد و activeGlobe را به‌روزرسانی می‌کند
+   * 3. بررسی می‌کند که window.openResourcesGlobe و window.open3DGlobe تعریف شده‌اند
    */
   useEffect(() => {
     // هماهنگی با vanilla JS
     if (typeof window !== 'undefined') {
+      const log = window.logger || { info: console.log, warn: console.warn }
+      
       setTimeout(() => {
         // فعال کردن highlight circle اول
         const firstCircle = document.querySelector('.highlight-circle[data-globe="resources"]')
@@ -73,7 +77,43 @@ function Globe() {
           firstCircle.classList.add('active')
         }
         
-      }, 100)
+        // بررسی وجود توابع باز کردن کره
+        if (typeof window.openResourcesGlobe !== 'function') {
+          log.warn('⚠️ window.openResourcesGlobe هنوز تعریف نشده است')
+        } else {
+          log.info('✅ window.openResourcesGlobe موجود است')
+        }
+        
+        if (typeof window.open3DGlobe !== 'function') {
+          log.warn('⚠️ window.open3DGlobe هنوز تعریف نشده است')
+        } else {
+          log.info('✅ window.open3DGlobe موجود است')
+        }
+      }, 500) // افزایش تاخیر برای اطمینان از تعریف شدن توابع
+      
+      // گوش دادن به تغییرات highlight از Highlights component
+      const handleGlobeHighlightChange = (event) => {
+        const { globeId } = event.detail
+        if (globeId) {
+          setActiveGlobe(globeId)
+          // هماهنگی با vanilla JS - فعال کردن highlight circle
+          const circles = document.querySelectorAll('.highlight-circle[data-globe]')
+          circles.forEach(circle => {
+            if (circle.getAttribute('data-globe') === globeId) {
+              circle.classList.add('active')
+            } else {
+              circle.classList.remove('active')
+            }
+          })
+        }
+      }
+      
+      window.addEventListener('globeHighlightChanged', handleGlobeHighlightChange)
+      
+      // Cleanup
+      return () => {
+        window.removeEventListener('globeHighlightChanged', handleGlobeHighlightChange)
+      }
     }
   }, []) // فقط یک بار هنگام mount
 
@@ -147,34 +187,71 @@ function Globe() {
    * Handler: کلیک روی کارت کره
    */
   const handleCardClick = (item) => {
+    const log = window.logger || { info: console.log, error: console.error, warn: console.warn }
+    
+    log.info('🔍 handleCardClick called:', { 
+      isGlobeButton: item.isGlobeButton, 
+      globeAction: item.globeAction,
+      globeId: item.globeId 
+    })
+    
     if (item.isGlobeButton && item.globeAction) {
       // باز کردن کره 3D
       const action = item.globeAction
       
-    if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined') {
+        log.info(`🌍 Attempting to open globe with action: ${action}`)
+        
         // کره منابع از تابع جداگانه استفاده می‌کند
-      if (action === 'open-resources') {
-        if (typeof window.openResourcesGlobe === 'function') {
-          window.openResourcesGlobe()
+        if (action === 'open-resources') {
+          log.info('🌍 Opening resources globe...')
+          if (typeof window.openResourcesGlobe === 'function') {
+            try {
+              window.openResourcesGlobe()
+              log.info('✅ window.openResourcesGlobe called successfully')
+            } catch (error) {
+              log.error('❌ Error calling window.openResourcesGlobe:', error)
+            }
+          } else {
+            log.error('❌ window.openResourcesGlobe پیدا نشد!')
+            log.warn('Available functions:', Object.keys(window).filter(k => k.includes('Globe')))
+          }
+          return
         }
-        return
-      }
-      
-      // سایر کره‌ها از open3DGlobe استفاده می‌کنند
-      const actionToType = {
-        'open-weather': 'weather',
-        'open-military': 'military',
-        'open-universities': 'universities',
-        'open-historical': 'historical',
-        'open-earthquake': 'earthquake',
-        'open-natural-resources': 'natural-resources'
-      }
-      
-      const globeType = actionToType[action]
-      if (globeType && typeof window.open3DGlobe === 'function') {
-        window.open3DGlobe(globeType)
+        
+        // سایر کره‌ها از open3DGlobe استفاده می‌کنند
+        const actionToType = {
+          'open-weather': 'weather',
+          'open-military': 'military',
+          'open-universities': 'universities',
+          'open-historical': 'historical',
+          'open-earthquake': 'earthquake',
+          'open-natural-resources': 'natural-resources'
         }
+        
+        const globeType = actionToType[action]
+        if (globeType) {
+          log.info(`🌍 Opening 3D globe with type: ${globeType}`)
+          if (typeof window.open3DGlobe === 'function') {
+            try {
+              window.open3DGlobe(globeType)
+              log.info(`✅ window.open3DGlobe(${globeType}) called successfully`)
+            } catch (error) {
+              log.error('❌ Error calling window.open3DGlobe:', error)
+            }
+          } else {
+            log.error('❌ window.open3DGlobe پیدا نشد!')
+            log.warn('Available functions:', Object.keys(window).filter(k => k.includes('Globe')))
+          }
+        } else {
+          log.warn(`⚠️ globeType برای action ${action} پیدا نشد!`)
+          log.warn('Available actions:', Object.keys(actionToType))
+        }
+      } else {
+        log.error('❌ window is undefined!')
       }
+    } else {
+      log.warn('⚠️ Card is not a globe button or missing globeAction:', item)
     }
   }
 
@@ -187,7 +264,11 @@ function Globe() {
         <CardContainer 
           items={cards} 
           className={`globe-cards`}
-          onCardClick={handleCardClick}
+          onCardClick={(item) => {
+            const log = window.logger || { info: console.log }
+            log.info('🔍 CardContainer onCardClick called with:', item)
+            handleCardClick(item)
+          }}
         />
       </div>
     </div>

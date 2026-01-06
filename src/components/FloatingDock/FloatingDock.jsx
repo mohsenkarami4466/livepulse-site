@@ -458,13 +458,21 @@ function FloatingDock({
                 
                 // اول onClick رو اجرا کن (navigate)
                 if (item.onClick) {
-                  console.log('FloatingDock: اجرای onClick برای:', item.id)
+                  console.log('FloatingDock: اجرای onClick برای:', item.id, item.label)
                   try {
-                    // اجرای navigate
-                    item.onClick()
-                    console.log('FloatingDock: onClick (navigate) اجرا شد')
+                    // اجرای navigate - با setTimeout برای اطمینان از اجرا
+                    const result = item.onClick()
+                    console.log('FloatingDock: onClick (navigate) اجرا شد، نتیجه:', result)
+                    
+                    // اگر promise است، منتظر بمان
+                    if (result && typeof result.then === 'function') {
+                      result.catch(err => {
+                        console.error('FloatingDock: خطا در navigate promise:', err)
+                      })
+                    }
                   } catch (error) {
                     console.error('FloatingDock: خطا در onClick:', error)
+                    console.error('FloatingDock: Stack trace:', error.stack)
                   }
                 } else {
                   console.warn('FloatingDock: onClick تعریف نشده برای:', item.id)

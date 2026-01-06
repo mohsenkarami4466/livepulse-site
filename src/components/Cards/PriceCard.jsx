@@ -52,7 +52,13 @@ function PriceCard({ item, onClick }) {
   
   const lastUpdate = useMemo(() => getLastUpdateTime(), [])
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    // جلوگیری از propagation برای globe buttons
+    if (item.isGlobeButton) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    
     if (onClick) {
       onClick(item)
     } else {

@@ -114,6 +114,20 @@ function ResourcesGlobeModal({ isOpen, onClose }) {
   ], [onClose])
 
   useEffect(() => {
+    // اضافه/حذف class به body برای جلوگیری از اسکرول
+    if (isOpen) {
+      document.body.classList.add('globe-modal-open')
+    } else {
+      document.body.classList.remove('globe-modal-open')
+    }
+    
+    // Cleanup
+    return () => {
+      document.body.classList.remove('globe-modal-open')
+    }
+  }, [isOpen])
+
+  useEffect(() => {
     if (!isOpen) {
       return
     }
@@ -151,6 +165,12 @@ function ResourcesGlobeModal({ isOpen, onClose }) {
     }
   }, [isOpen])
 
+  // Debug logging
+  useEffect(() => {
+    const log = window.logger || { info: console.log }
+    log.info(`🌍 ResourcesGlobeModal render: isOpen=${isOpen}`)
+  }, [isOpen])
+
   // همیشه render می‌شود اما hidden است تا vanilla JS بتواند آن را پیدا کند
   return (
     <div 
@@ -160,7 +180,13 @@ function ResourcesGlobeModal({ isOpen, onClose }) {
       style={{ 
         display: isOpen ? 'block' : 'none',
         visibility: isOpen ? 'visible' : 'hidden',
-        opacity: isOpen ? '1' : '0'
+        opacity: isOpen ? '1' : '0',
+        zIndex: isOpen ? 9999 : -1,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh'
       }}
       onClick={(e) => {
         if (e.target === modalRef.current) {

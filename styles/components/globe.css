@@ -275,6 +275,40 @@
 
 /* اضافه کردن این استایل‌ها به style.css موجود */
 
+/* استایل پایه برای مودال کره‌ها */
+.globe-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh; /* برای موبایل */
+  background: linear-gradient(
+    135deg,
+    rgba(10, 15, 30, 0.98) 0%,
+    rgba(20, 30, 50, 0.98) 100%
+  );
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  z-index: 9999;
+  /* display, visibility, opacity توسط inline style کنترل می‌شوند */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  overflow: hidden;
+}
+
+.globe-modal.active {
+  /* وقتی active است، inline style نمایش را کنترل می‌کند */
+}
+
+/* جلوگیری از اسکرول وقتی مودال باز است */
+body.globe-modal-open {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
 /* استایل‌های tooltip */
 .tooltip {
   background: rgba(15, 23, 42, 0.95);

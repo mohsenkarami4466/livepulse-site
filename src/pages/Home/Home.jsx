@@ -201,39 +201,85 @@ function Home() {
     if (typeof window !== 'undefined' && window.initGoldMap) {
       let retryCount = 0
       const maxRetries = 20 // افزایش تعداد تلاش‌ها
-      const initMap = () => {
-        const container = document.getElementById('goldMapGlass')
-        if (container && container.offsetWidth > 0 && container.offsetHeight > 0) {
-          // بررسی اینکه container واقعاً render شده و اندازه دارد
-          try {
-            window.initGoldMap()
-            const log = window.logger || { info: console.log }
-            log.info('✅ Gold Map initialized successfully')
-          } catch (error) {
-            const log = window.logger || { error: console.error }
-            log.error('خطا در initGoldMap:', error)
+      // تابع برای بررسی load شدن stylesheets
+      const ensureStylesheetsLoaded = () => {
+        return new Promise((resolve) => {
+          if (document.readyState === 'complete') {
+            // بررسی اینکه آیا stylesheets load شده‌اند
+            const stylesheets = Array.from(document.styleSheets);
+            const allLoaded = stylesheets.every(sheet => {
+              try {
+                return sheet.cssRules || sheet.rules;
+              } catch (e) {
+                // CORS error - ignore
+                return true;
+              }
+            });
+            
+            if (allLoaded || stylesheets.length === 0) {
+              resolve();
+            } else {
+              setTimeout(() => resolve(), 100);
+            }
+          } else {
+            window.addEventListener('load', () => resolve(), { once: true });
           }
-        } else if (retryCount < maxRetries) {
-          // اگر container پیدا نشد یا هنوز render نشده، دوباره تلاش کن
-          retryCount++
-          setTimeout(initMap, 300) // کاهش تاخیر برای سریع‌تر شدن
-        } else {
-          const log = window.logger || { warn: console.warn }
-          log.warn('⚠️ Container #goldMapGlass بعد از 20 تلاش پیدا نشد')
-        }
+        });
+      };
+
+      const initMap = async () => {
+        // صبر کردن تا stylesheets load شوند
+        await ensureStylesheetsLoaded();
+        
+        // استفاده از requestAnimationFrame برای اطمینان از render شدن
+        // استفاده از double RAF برای اطمینان از اینکه layout کامل شده است
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const container = document.getElementById('goldMapGlass')
+            if (container) {
+              // بررسی وجود container بدون force کردن layout
+              // فقط بررسی می‌کنیم که container در DOM وجود دارد
+              // اندازه‌گیری در gold-map.js انجام می‌شود بعد از load شدن stylesheets
+              try {
+                window.initGoldMap()
+                const log = window.logger || { info: console.log }
+                log.info('✅ Gold Map initialized successfully')
+              } catch (error) {
+                const log = window.logger || { error: console.error }
+                log.error('خطا در initGoldMap:', error)
+              }
+            } else if (retryCount < maxRetries) {
+              // اگر container پیدا نشد، دوباره تلاش کن
+              retryCount++
+              setTimeout(() => initMap(), 300)
+            } else {
+              const log = window.logger || { warn: console.warn }
+              log.warn('⚠️ Container #goldMapGlass بعد از 20 تلاش پیدا نشد')
+            }
+          });
+        });
       }
       setTimeout(initMap, 1500) // افزایش delay اولیه برای اطمینان از render شدن React
     }
     
-    // Cleanup: حذف event listener ها هنگام unmount
+    // Cleanup: حذف event listener ها و پاکسازی نقشه هنگام unmount
     return () => {
       if (typeof window !== 'undefined') {
-        // Event listener ها در Layout.jsx هستند - حذف شدند
-        // window.removeEventListener('financialGlobeOpen', handleFinancialGlobeOpen) // حذف شد
-        // window.removeEventListener('resourcesGlobeOpen', handleResourcesGlobeOpen) // حذف شد
+        // پاکسازی worldGoldMapGlass instance
+        if (window.worldGoldMapGlass && typeof window.worldGoldMapGlass.destroy === 'function') {
+          try {
+            window.worldGoldMapGlass.destroy();
+            window.worldGoldMapGlass = null;
+            const log = window.logger || { info: console.log };
+            log.info('✅ Gold Map cleaned up on unmount');
+          } catch (error) {
+            const log = window.logger || { error: console.error };
+            log.error('خطا در cleanup نقشه:', error);
+          }
+        }
       }
     }
-  }, [currentCategory])
+  }, []) // فقط یک بار initialize شود - تغییر از [currentCategory]
 
   /**
    * Handler: کلیک روی کارت قیمت

@@ -33,10 +33,11 @@ class WorldGoldMapGlass {
             this.setupThemeObserver();
             
             // اطمینان از اینکه event listener ها بعد از render شدن DOM اضافه شوند
+            // افزایش تاخیر برای اطمینان از render شدن React components
             setTimeout(() => {
                 this.setupCompareEvents();
                 this.setupFullscreenEvents();
-            }, 500);
+            }, 1000);
         } catch (error) {
             const log = window.logger || { error: console.error };
             log.error('خطا در بارگذاری نقشه:', error);
@@ -80,22 +81,49 @@ class WorldGoldMapGlass {
     }
     
     setupFullscreenEvents() {
-        const fullscreenToggle = document.getElementById('mapFullscreenToggle');
-        if (!fullscreenToggle) return;
+        // Retry mechanism برای پیدا کردن دکمه
+        let retryCount = 0;
+        const maxRetries = 10;
         
-        // حذف event listener های قبلی
-        const newToggle = fullscreenToggle.cloneNode(true);
-        fullscreenToggle.parentNode.replaceChild(newToggle, fullscreenToggle);
+        const setupEvents = () => {
+            const fullscreenToggle = document.getElementById('mapFullscreenToggle');
+            if (!fullscreenToggle) {
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                    setTimeout(setupEvents, 200);
+                    return;
+                } else {
+                    const log = window.logger || { warn: console.warn };
+                    log.warn('⚠️ دکمه mapFullscreenToggle پیدا نشد');
+                    return;
+                }
+            }
+            
+            // حذف event listener های قبلی
+            const newToggle = fullscreenToggle.cloneNode(true);
+            fullscreenToggle.parentNode.replaceChild(newToggle, fullscreenToggle);
+            
+            newToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleFullscreen();
+            });
+            
+            // گوش دادن به تغییرات fullscreen - فقط یک بار اضافه می‌شود
+            if (!this.fullscreenChangeHandlersAdded) {
+                this.fullscreenChangeHandler = () => this.handleFullscreenChange();
+                document.addEventListener('fullscreenchange', this.fullscreenChangeHandler);
+                document.addEventListener('webkitfullscreenchange', this.fullscreenChangeHandler);
+                document.addEventListener('mozfullscreenchange', this.fullscreenChangeHandler);
+                document.addEventListener('MSFullscreenChange', this.fullscreenChangeHandler);
+                this.fullscreenChangeHandlersAdded = true;
+            }
+            
+            const log = window.logger || { info: console.log };
+            log.info('✅ Fullscreen events setup completed');
+        };
         
-        newToggle.addEventListener('click', () => {
-            this.toggleFullscreen();
-        });
-        
-        // گوش دادن به تغییرات fullscreen
-        document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
-        document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
-        document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
-        document.addEventListener('MSFullscreenChange', () => this.handleFullscreenChange());
+        setupEvents();
     }
     
     toggleFullscreen() {
@@ -333,8 +361,60 @@ class WorldGoldMapGlass {
             return;
         }
 
-        const width = container.clientWidth;
-        const height = this.isMobile ? 300 : 500;
+        // صبر کردن تا stylesheets load شوند برای جلوگیری از layout force
+        // Wait for stylesheets to load to prevent layout force warning
+        const getContainerSize = () => {
+            // استفاده از requestAnimationFrame برای اطمینان از render شدن
+            return new Promise((resolve) => {
+                requestAnimationFrame(() => {
+                    const width = container.clientWidth || container.offsetWidth || 800;
+                    const height = this.isMobile ? 300 : 500;
+                    resolve({ width, height });
+                });
+            });
+        };
+
+        // اگر stylesheets هنوز load نشده‌اند، صبر می‌کنیم
+        const ensureStylesheetsLoaded = () => {
+            return new Promise((resolve) => {
+                if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                    // بررسی اینکه آیا stylesheets load شده‌اند
+                    const stylesheets = Array.from(document.styleSheets);
+                    const allLoaded = stylesheets.every(sheet => {
+                        try {
+                            return sheet.cssRules || sheet.rules;
+                        } catch (e) {
+                            // CORS error - ignore
+                            return true;
+                        }
+                    });
+                    
+                    if (allLoaded || stylesheets.length === 0) {
+                        resolve();
+                    } else {
+                        setTimeout(() => resolve(), 100);
+                    }
+                } else {
+                    window.addEventListener('load', () => resolve(), { once: true });
+                }
+            });
+        };
+
+        // اجرای async
+        (async () => {
+            await ensureStylesheetsLoaded();
+            const { width, height } = await getContainerSize();
+            this.createMapWithSize(width, height, container);
+        })();
+        
+        return; // خروج زودهنگام - ادامه در createMapWithSize
+    }
+
+    createMapWithSize(width, height, container) {
+        if (!container) {
+            container = document.getElementById('goldMapGlass');
+            if (!container) return;
+        }
 
         // پاکسازی قبلی
         container.innerHTML = '';
@@ -528,16 +608,17 @@ class WorldGoldMapGlass {
         
         // دکمه مقایسه و بستن - در setupCompareEvents اضافه می‌شوند
         
-        // ریسایز
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
+        // ریسایز - ذخیره handler برای cleanup
+        this.resizeTimer = null;
+        this.resizeHandler = () => {
+            clearTimeout(this.resizeTimer);
+            this.resizeTimer = setTimeout(() => {
                 this.isMobile = window.innerWidth <= 768;
                 this.createMap();
                 this.updateAll();
             }, 250);
-        });
+        };
+        window.addEventListener('resize', this.resizeHandler);
     }
 
     setActiveFilter(btn) {
@@ -1664,6 +1745,58 @@ class WorldGoldMapGlass {
         });
         
         return baseData;
+    }
+
+    /**
+     * پاکسازی منابع و event listener ها
+     * Cleanup resources and event listeners
+     */
+    destroy() {
+        // حذف resize event listener
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+            this.resizeHandler = null;
+        }
+        
+        // حذف fullscreen event listeners
+        if (this.fullscreenChangeHandler) {
+            document.removeEventListener('fullscreenchange', this.fullscreenChangeHandler);
+            document.removeEventListener('webkitfullscreenchange', this.fullscreenChangeHandler);
+            document.removeEventListener('mozfullscreenchange', this.fullscreenChangeHandler);
+            document.removeEventListener('MSFullscreenChange', this.fullscreenChangeHandler);
+            this.fullscreenChangeHandler = null;
+            this.fullscreenChangeHandlersAdded = false;
+        }
+        
+        // پاک کردن timer
+        if (this.resizeTimer) {
+            clearTimeout(this.resizeTimer);
+            this.resizeTimer = null;
+        }
+        
+        // پاک کردن SVG
+        if (this.svg) {
+            this.svg.selectAll('*').remove();
+            this.svg = null;
+        }
+        
+        // پاک کردن tooltip
+        if (this.tooltip) {
+            this.tooltip.remove();
+            this.tooltip = null;
+        }
+        
+        // پاک کردن legend
+        d3.select('.map-color-legend').remove();
+        
+        // Reset state
+        this.g = null;
+        this.projection = null;
+        this.path = null;
+        this.zoom = null;
+        
+        const log = window.logger || { info: console.log };
+        log.info('✅ WorldGoldMapGlass destroyed and cleaned up');
     }
 }
 

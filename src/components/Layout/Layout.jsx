@@ -91,43 +91,8 @@ function Layout({ children }) {
    * - window.navigate باید قبل از لود شدن vanilla JS تنظیم شود
    * - این برای backward compatibility با کدهای vanilla JS است
    */
-  // Effect: فراخوانی updateHighlightsPosition بعد از render و در resize
-  React.useEffect(() => {
-    // تابع برای فراخوانی updateHighlightsPosition
-    const callUpdateHighlights = () => {
-      if (typeof window !== 'undefined') {
-        // استفاده مستقیم از updateHighlightsPosition (بدون Safe wrapper برای کاهش تاخیر)
-        if (typeof window.updateHighlightsPosition === 'function') {
-          window.updateHighlightsPosition()
-        } else if (typeof window.updateHighlightsPositionSafe === 'function') {
-          // Fallback به Safe wrapper اگر تابع اصلی پیدا نشد
-          window.updateHighlightsPositionSafe()
-        }
-      }
-    }
-    
-    // فراخوانی اولیه با تاخیر برای اطمینان از لود شدن globe-clock.js
-    const timeoutId = setTimeout(() => {
-      callUpdateHighlights()
-    }, 300) // کاهش تاخیر از 500ms به 300ms
-    
-    // فراخوانی در resize برای ریسپانسیو بودن
-    const handleResize = () => {
-      // استفاده از debounce برای جلوگیری از فراخوانی زیاد
-      clearTimeout(window.highlightsResizeTimeout)
-      window.highlightsResizeTimeout = setTimeout(() => {
-        callUpdateHighlights()
-      }, 200) // افزایش debounce از 150ms به 200ms برای بهبود performance
-    }
-    
-    window.addEventListener('resize', handleResize)
-    
-    return () => {
-      clearTimeout(timeoutId)
-      clearTimeout(window.highlightsResizeTimeout)
-      window.removeEventListener('resize', handleResize)
-    }
-  }, []) // فقط یکبار هنگام mount
+  // highlights با CSS موقعیت‌یابی می‌شود - نیازی به JavaScript نیست
+  // Highlights are positioned with CSS - no JavaScript needed
 
   React.useEffect(() => {
     // Handler های باز شدن Globe Modals
@@ -196,18 +161,17 @@ function Layout({ children }) {
       
       window.openResourcesGlobe = () => {
         log.info('🔍 window.openResourcesGlobe called - opening via React')
-        // استفاده از functional update برای دسترسی به state فعلی
-        setOpen3DGlobeType(null) // ابتدا همه کره‌های دیگر را ببند
+        // ابتدا همه کره‌های دیگر را ببند
+        setOpen3DGlobeType(null)
         setIsFinancialGlobeOpen(false)
-        setIsResourcesGlobeOpen(prev => {
-          if (prev) {
-            // اگر قبلاً باز است، ابتدا ببند و دوباره باز کن
-            setTimeout(() => setIsResourcesGlobeOpen(true), 100)
-            return false
-          } else {
-            return true
-          }
-        })
+        
+        // همیشه state را به‌روزرسانی کن - حتی اگر قبلاً باز باشد
+        setIsResourcesGlobeOpen(false) // ابتدا ببند
+        setTimeout(() => {
+          setIsResourcesGlobeOpen(true) // سپس باز کن
+          log.info('✅ setIsResourcesGlobeOpen(true) called')
+        }, 50)
+        
         // Dispatch event هم برای backward compatibility
         window.dispatchEvent(new Event('resourcesGlobeOpen'))
       }
@@ -222,25 +186,30 @@ function Layout({ children }) {
         // ابتدا همه کره‌های دیگر را ببند
         setIsFinancialGlobeOpen(false)
         setIsResourcesGlobeOpen(false)
-        // استفاده از functional update برای دسترسی به state فعلی
-        setOpen3DGlobeType(prevType => {
-          // اگر همان type قبلی است، ابتدا null می‌کنیم تا state تغییر کند
-          if (prevType === type) {
-            // بستن و باز کردن مجدد برای force re-render
-            setTimeout(() => {
-              setOpen3DGlobeType(null)
-              setTimeout(() => setOpen3DGlobeType(type), 50)
-            }, 10)
-            return null
-          }
-          return type
-        })
+        
+        // همیشه state را به‌روزرسانی کن - حتی اگر همان type باشد
+        setOpen3DGlobeType(null) // ابتدا ببند
+        setTimeout(() => {
+          setOpen3DGlobeType(type) // سپس باز کن
+          log.info(`✅ setOpen3DGlobeType(${type}) called`)
+        }, 50)
       }
       
-      log.debug('✅ window.navigate تنظیم شد')
+      log.debug('✅ window.navigate و توابع باز کردن کره تنظیم شدند')
+      
+      // Debug: بررسی وجود توابع
+      setTimeout(() => {
+        log.info('🔍 بررسی توابع:', {
+          hasOpenResourcesGlobe: typeof window.openResourcesGlobe === 'function',
+          hasOpen3DGlobe: typeof window.open3DGlobe === 'function',
+          hasOpenFinancialGlobe: typeof window.openFinancialGlobe === 'function'
+        })
+      }, 100)
     }
     
     // Cleanup: پاک کردن event listener ها و window.navigate هنگام unmount
+    // نکته: window.openResourcesGlobe و window.open3DGlobe را حذف نمی‌کنیم
+    // چون ممکن است در صفحات دیگر استفاده شوند
     return () => {
       if (typeof window !== 'undefined') {
         delete window.navigate
@@ -248,6 +217,8 @@ function Layout({ children }) {
         removeEventListener(events.resourcesGlobeOpen, handleResourcesGlobeOpen)
         removeEventListener(events.marketHoursOpen, handleMarketHoursOpen)
         delete window.openMarketHoursModal
+        // حذف نکنیم: window.openResourcesGlobe, window.open3DGlobe, window.openFinancialGlobe
+        // چون ممکن است در صفحات دیگر استفاده شوند
       }
     }
   }, [navigate])
@@ -312,17 +283,26 @@ function Layout({ children }) {
       />
       <ResourcesGlobeModal 
         isOpen={isResourcesGlobeOpen} 
-        onClose={() => setIsResourcesGlobeOpen(false)} 
+        onClose={() => {
+          const log = window.logger || { info: console.log }
+          log.info('🔍 ResourcesGlobeModal onClose called')
+          setIsResourcesGlobeOpen(false)
+        }} 
       />
       
       {/* مودال‌های کره‌های 3D - همیشه render می‌شوند اما hidden هستند */}
       {open3DGlobeType && (
-      <Globe3DModal 
+        <Globe3DModal 
           type={open3DGlobeType} 
-          isOpen={Boolean(open3DGlobeType)} 
-        onClose={() => setOpen3DGlobeType(null)} 
-      />
+          isOpen={true}
+          onClose={() => {
+            const log = window.logger || { info: console.log }
+            log.info('🔍 Globe3DModal onClose called')
+            setOpen3DGlobeType(null)
+          }} 
+        />
       )}
+      
       
       {/* Market Hours Modal (gcModal) - باز می‌شود با کلیک روی کره کوچک */}
       {isMarketHoursModalOpen && (
