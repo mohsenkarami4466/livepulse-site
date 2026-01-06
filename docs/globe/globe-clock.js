@@ -472,10 +472,30 @@ function updateHighlightsPosition() {
         // Test: check if margin-top was applied
         if (isDev) {
           const appliedMarginTop = window.getComputedStyle(section).marginTop;
+          const inlineStyle = section.style.marginTop;
+          const getPropertyValue = section.style.getPropertyValue('margin-top');
+          
           console.log('🔧 Margin-top applied:', {
             requested: marginTop,
-            applied: appliedMarginTop,
-            match: appliedMarginTop === marginTop || appliedMarginTop === marginTop.replace('px', '') + 'px'
+            inlineStyle: inlineStyle,
+            getPropertyValue: getPropertyValue,
+            computedStyle: appliedMarginTop,
+            match: appliedMarginTop === marginTop || appliedMarginTop === marginTop.replace('px', '') + 'px',
+            sectionId: section.id || section.className,
+            sectionElement: section
+          });
+          
+          // بررسی اینکه آیا CSS دیگری override می‌کند
+          const allStyles = window.getComputedStyle(section);
+          console.log('🔍 All computed styles for highlights-section:', {
+            marginTop: allStyles.marginTop,
+            marginBottom: allStyles.marginBottom,
+            marginLeft: allStyles.marginLeft,
+            marginRight: allStyles.marginRight,
+            paddingTop: allStyles.paddingTop,
+            position: allStyles.position,
+            top: allStyles.top,
+            transform: allStyles.transform
           });
         }
         

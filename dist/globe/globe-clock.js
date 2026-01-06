@@ -317,247 +317,57 @@ function waitForStylesheets(callback, maxWait = 3000) {
 }
 
 /**
- * تنظیم موقعیت هایلایت‌ها - محاسبه بر اساس موقعیت کارت portfolio
- * Set highlights position - calculate based on portfolio card position
- * 
- * وابستگی‌ها / Dependencies:
- * - .view.active-view (view فعال)
- * - .highlights-section, .home-highlights, etc. (بخش‌های هایلایت)
- * - .portfolio-summary-card (کارت portfolio)
- * - header (هدر)
- * 
- * استفاده / Usage:
- * این تابع موقعیت بخش‌های هایلایت را بر اساس موقعیت کارت portfolio تنظیم می‌کند.
- * This function sets highlights sections position based on portfolio card position.
+ * تنظیم موقعیت highlights - ساده و فقط وابسته به هدر
+ * Set highlights position - simple and only dependent on header
  */
+// Flag برای جلوگیری از اجرای همزمان چندین بار
+// Flag to prevent simultaneous multiple executions
+let isUpdatingHighlightsPosition = false;
+
 function updateHighlightsPosition() {
-  // پیدا کردن view فعال - در React Router همه viewها render می‌شوند
-  // Find active view - in React Router all views are rendered
-  // اول سعی می‌کنیم view فعال را پیدا کنیم (برای vanilla JS)
-  let activeView = document.querySelector('.view.active-view');
-  
-  // اگر view فعال پیدا نشد، همه viewها را بررسی می‌کنیم (برای React Router)
-  // If active view not found, check all views (for React Router)
-  if (!activeView) {
-    // در React Router، view فعال view ای است که در layout-main است و display: block دارد
-    const allViews = document.querySelectorAll('.layout-main > .view, .view');
-    for (const view of allViews) {
-      const computedStyle = window.getComputedStyle(view);
-      if (computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden') {
-        activeView = view;
-        break;
-      }
-    }
+  // جلوگیری از اجرای همزمان
+  if (isUpdatingHighlightsPosition) {
+    return;
   }
+  isUpdatingHighlightsPosition = true;
   
-  // در React Router، activeView اختیاری است - highlights در .layout-main هستند
-  // In React Router, activeView is optional - highlights are in .layout-main
-  // فقط در development log کن - در React Router activeView ممکن است پیدا نشود
-  // Only log in development - in React Router activeView might not be found
-  
-  // پیدا کردن highlights - در React Router highlights در .layout-main است (نه در .view)
-  // Find highlights - in React Router highlights are in .layout-main (not in .view)
-  let highlightsSections = [];
-  
-  // اول در .layout-main جستجو کن (جایی که highlights واقعاً هستند)
+  // پیدا کردن highlights section
   const layoutMain = document.querySelector('.layout-main');
-  if (layoutMain) {
-    highlightsSections = layoutMain.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
-  }
-  
-  // اگر پیدا نشد، در کل document جستجو کن (fallback)
-  if (highlightsSections.length === 0) {
-    highlightsSections = document.querySelectorAll('.highlights-section, .home-highlights, .news-highlights, .tools-highlights, .education-highlights, .relax-highlights, .globe-highlights');
-  }
-  
-  if (highlightsSections.length === 0) {
-    // اگر highlights پیدا نشد، خروج کن - بدون log (normal در React Router)
+  if (!layoutMain) {
+    isUpdatingHighlightsPosition = false;
     return;
   }
   
-  // پیدا کردن المان‌های مورد نیاز برای محاسبه
-  // Find elements needed for calculation
-  const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
-  const headerHeight = header ? header.offsetHeight : 60;
-  const portfolioCard = document.querySelector('.portfolio-summary-card');
-  
-  // Debug logging - فقط در development
-  const isDev = (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost') || 
-                (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development');
-  
-  if (isDev) {
-    console.log('🔍 updateHighlightsPosition called:', {
-      highlightsCount: highlightsSections.length,
-      portfolioCard: portfolioCard ? 'found' : 'not found',
-      activeView: activeView ? activeView.id || activeView.className : 'not found'
-    });
+  const highlightsSection = layoutMain.querySelector('.highlights-section');
+  if (!highlightsSection) {
+    isUpdatingHighlightsPosition = false;
+    return;
   }
   
-  highlightsSections.forEach(section => {
-    if (section) {
-      // فاصله از portfolio card - 10px برای تست (قبلاً 20px بود)
-      // Spacing from portfolio card - 10px for testing (previously 20px)
-      const spacing = 10;
-      
-      // محاسبه ساده: margin-top = فاصله از بالای layout-main تا پایین portfolio card + 20px
-      // Simple calculation: margin-top = distance from top of layout-main to bottom of portfolio card + 20px
-      let marginTop = '0px';
-      let portfolioRect = null; // تعریف در scope بالاتر برای استفاده در debug logging
-      let distanceFromTop = null; // تعریف در scope بالاتر برای استفاده در debug logging
-      let layoutMain = null; // تعریف در scope بالاتر برای استفاده در debug logging
-      
-      if (portfolioCard) {
-        // portfolio card با position: fixed است - در viewport است
-        // portfolio card is position: fixed - it's in viewport
-        portfolioRect = portfolioCard.getBoundingClientRect();
-        const portfolioBottomViewport = portfolioRect.bottom;
-        
-        // پیدا کردن layout-main (که highlights در آن هستند)
-        // Find layout-main (where highlights are)
-        layoutMain = document.querySelector('.layout-main');
-        
-        if (layoutMain) {
-          // محاسبه موقعیت layout-main در viewport
-          // Calculate layout-main position in viewport
-          const layoutMainRect = layoutMain.getBoundingClientRect();
-          const layoutMainTopViewport = layoutMainRect.top;
-          
-          // محاسبه ساده: فاصله از بالای layout-main تا پایین portfolio card + spacing
-          // Simple calculation: distance from top of layout-main to bottom of portfolio card + spacing
-          distanceFromTop = portfolioBottomViewport - layoutMainTopViewport + spacing;
-          
-          // margin-top باید حداقل spacing باشد
-          // margin-top should be at least spacing
-          marginTop = `${Math.max(spacing, distanceFromTop)}px`;
-          
-          // Debug: بررسی محاسبات
-          if (isDev) {
-            const windowWidth = window.innerWidth;
-            const isMobile = windowWidth < 768;
-            const isTablet = windowWidth >= 768 && windowWidth < 1024;
-            const deviceType = isMobile ? 'mobile' : (isTablet ? 'tablet' : 'desktop');
-            
-            console.log('🔧 Position calculation:', {
-              deviceType: deviceType,
-              windowWidth: windowWidth,
-              portfolioBottomViewport: portfolioBottomViewport,
-              layoutMainTopViewport: layoutMainTopViewport,
-              scrollY: window.scrollY,
-              spacing: spacing,
-              distanceFromTop: distanceFromTop,
-              calculatedMarginTop: marginTop,
-              portfolioCardHeight: portfolioRect.height,
-              layoutMainPaddingTop: window.getComputedStyle(layoutMain).paddingTop
-            });
-          }
-        }
-      } else {
-        // fallback: اگر portfolio card پیدا نشد
-        // fallback: if portfolio card not found
-        const headerHeight = document.querySelector('header')?.offsetHeight || 60;
-        marginTop = `${headerHeight + spacing}px`;
-      }
-      
-      // اعمال مستقیم margin-top - بدون waitForStylesheets برای جلوگیری از تاخیر
-      // Apply margin-top directly - without waitForStylesheets to prevent delay
-      // استفاده از requestAnimationFrame برای اطمینان از render شدن
-      // Use requestAnimationFrame to ensure rendering
-      requestAnimationFrame(() => {
-        // اعمال margin-top - فقط یکبار با !important برای اطمینان از اعمال
-        // Apply margin-top - only once with !important to ensure application
-        section.style.marginTop = marginTop;
-        section.style.setProperty('margin-top', marginTop, 'important');
-        
-        // تست: بررسی اینکه آیا margin-top اعمال شد
-        // Test: check if margin-top was applied
-        if (isDev) {
-          const appliedMarginTop = window.getComputedStyle(section).marginTop;
-          console.log('🔧 Margin-top applied:', {
-            requested: marginTop,
-            applied: appliedMarginTop,
-            match: appliedMarginTop === marginTop || appliedMarginTop === marginTop.replace('px', '') + 'px'
-          });
-        }
-        
-        // تنظیم استایل‌های دیگر - فقط یکبار
-        // Set other styles - only once
-        section.style.setProperty('padding-top', '0', 'important');
-          section.style.setProperty('display', 'flex', 'important'); // تغییر از block به flex - برای highlights-container
-          section.style.setProperty('flex-direction', 'column', 'important'); // برای highlights-container
-          section.style.setProperty('visibility', 'visible', 'important');
-          section.style.setProperty('opacity', '1', 'important');
-          section.style.setProperty('position', 'relative', 'important');
-          section.style.setProperty('z-index', '10', 'important'); // بالاتر از view ها (1) اما پایین‌تر از fixed elements
-          // عرض کامل با 5px margin از هر طرف - استفاده از 100vw برای اطمینان از عرض کامل
-          // عرض با CSS تنظیم می‌شود - اینجا فقط margin-top را تنظیم می‌کنیم
-          // Width is set by CSS - we only set margin-top here
-          section.style.setProperty('padding-left', '0', 'important'); // padding حذف شد - margin استفاده می‌شود
-          section.style.setProperty('padding-right', '0', 'important');
-          section.style.setProperty('height', '80px', 'important'); // ارتفاع ثابت
-          section.style.setProperty('min-height', '80px', 'important');
-          
-          // اطمینان از نمایش highlights-container - فقط استایل‌های ضروری (نه width)
-          const container = section.querySelector('.highlights-container');
-          if (container) {
-            container.style.setProperty('display', 'flex', 'important');
-            // عرض و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
-            // Width and sizes are set by CSS - we don't change them here
-            container.style.setProperty('visibility', 'visible', 'important');
-            container.style.setProperty('opacity', '1', 'important');
-            container.style.setProperty('justify-content', 'flex-start', 'important');
-            container.style.setProperty('align-items', 'center', 'important');
-            container.style.setProperty('flex-wrap', 'nowrap', 'important');
-            container.style.setProperty('overflow-x', 'auto', 'important');
-            container.style.setProperty('overflow-y', 'hidden', 'important');
-            container.style.setProperty('gap', '5px', 'important'); // gap ثابت 5px بین هایلایت‌ها
-          }
-          
-          // اطمینان از نمایش highlight-circle ها - فقط استایل‌های ضروری (نه width یا اندازه)
-          const circles = section.querySelectorAll('.highlight-circle');
-          
-          circles.forEach(circle => {
-            circle.style.setProperty('display', 'flex', 'important');
-            circle.style.setProperty('visibility', 'visible', 'important');
-            circle.style.setProperty('opacity', '1', 'important');
-            // عرض، flex، و اندازه‌ها با CSS تنظیم می‌شوند - اینجا تغییر نمی‌دهیم
-            // Width, flex, and sizes are set by CSS - we don't change them here
-          });
-          
-          // Debug logging - فقط در development
-          if (isDev) {
-            const computedStyle = window.getComputedStyle(section);
-            console.log('🔍 Highlights position updated:', {
-              section: section.className,
-              marginTop: marginTop,
-              computedMarginTop: computedStyle.marginTop,
-              portfolioCard: portfolioCard ? {
-                found: true,
-                bottom: portfolioRect ? portfolioRect.bottom : 'N/A',
-                scrollY: window.scrollY
-              } : 'not found',
-              layoutMain: layoutMain ? {
-                tag: layoutMain.tagName,
-                top: layoutMain ? layoutMain.getBoundingClientRect().top : 'N/A'
-              } : 'not found',
-              distanceFromTop: distanceFromTop !== null ? distanceFromTop : 'N/A',
-              spacing: spacing,
-              highlightsCount: highlightsSections.length
-            });
-          }
-        }); // پایان requestAnimationFrame اصلی
-      } // پایان if (section)
-    }); // پایان forEach
+  // محاسبه موقعیت: فقط وابسته به هدر - 220px پایین‌تر از هدر
+  // پیدا کردن هدر
+  const header = document.querySelector('.glass-header, .header-container')?.parentElement || document.querySelector('header');
+  const headerHeight = header ? header.offsetHeight : 60;
+  
+  // گرفتن padding-top layout-main
+  const layoutMainStyle = window.getComputedStyle(layoutMain);
+  const layoutMainPaddingTop = parseFloat(layoutMainStyle.paddingTop) || 0;
+  
+  // محاسبه ساده: highlights باید 220px از header فاصله داشته باشد
+  const spacing = 220;
+  const marginTop = Math.max(0, headerHeight + spacing - layoutMainPaddingTop);
+  
+  // اعمال margin-top - ساده و مستقیم
+  highlightsSection.style.marginTop = `${marginTop}px`;
+  highlightsSection.style.setProperty('margin-top', `${marginTop}px`, 'important');
+  
+  // آزاد کردن flag
+  isUpdatingHighlightsPosition = false;
 }
 
-// تابع wrapper برای انتظار stylesheet‌ها قبل از اجرا
-// Wrapper function to wait for stylesheets before execution
+// تابع wrapper ساده - فقط برای backward compatibility
 function updateHighlightsPositionSafe() {
-  waitForStylesheets(() => {
-    // تاخیر اضافی برای اطمینان از render شدن
-    setTimeout(() => {
-      updateHighlightsPosition();
-    }, 100);
-  });
+  updateHighlightsPosition();
 }
 
 // در دسترس قرار دادن تابع برای استفاده در جاهای دیگر
