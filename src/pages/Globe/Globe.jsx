@@ -199,15 +199,15 @@ function Globe() {
       // باز کردن کره 3D
       const action = item.globeAction
       
-      if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
         log.info(`🌍 Attempting to open globe with action: ${action}`)
         
         // کره منابع از تابع جداگانه استفاده می‌کند
-        if (action === 'open-resources') {
+      if (action === 'open-resources') {
           log.info('🌍 Opening resources globe...')
-          if (typeof window.openResourcesGlobe === 'function') {
+        if (typeof window.openResourcesGlobe === 'function') {
             try {
-              window.openResourcesGlobe()
+          window.openResourcesGlobe()
               log.info('✅ window.openResourcesGlobe called successfully')
             } catch (error) {
               log.error('❌ Error calling window.openResourcesGlobe:', error)
@@ -215,26 +215,26 @@ function Globe() {
           } else {
             log.error('❌ window.openResourcesGlobe پیدا نشد!')
             log.warn('Available functions:', Object.keys(window).filter(k => k.includes('Globe')))
-          }
-          return
         }
-        
-        // سایر کره‌ها از open3DGlobe استفاده می‌کنند
-        const actionToType = {
-          'open-weather': 'weather',
-          'open-military': 'military',
-          'open-universities': 'universities',
-          'open-historical': 'historical',
-          'open-earthquake': 'earthquake',
-          'open-natural-resources': 'natural-resources'
-        }
-        
-        const globeType = actionToType[action]
+        return
+      }
+      
+      // سایر کره‌ها از open3DGlobe استفاده می‌کنند
+      const actionToType = {
+        'open-weather': 'weather',
+        'open-military': 'military',
+        'open-universities': 'universities',
+        'open-historical': 'historical',
+        'open-earthquake': 'earthquake',
+        'open-natural-resources': 'natural-resources'
+      }
+      
+      const globeType = actionToType[action]
         if (globeType) {
           log.info(`🌍 Opening 3D globe with type: ${globeType}`)
           if (typeof window.open3DGlobe === 'function') {
             try {
-              window.open3DGlobe(globeType)
+        window.open3DGlobe(globeType)
               log.info(`✅ window.open3DGlobe(${globeType}) called successfully`)
             } catch (error) {
               log.error('❌ Error calling window.open3DGlobe:', error)

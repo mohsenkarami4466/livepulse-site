@@ -352,7 +352,7 @@ function updateHighlightsPosition() {
   // گرفتن padding-top layout-main
   const layoutMainStyle = window.getComputedStyle(layoutMain);
   const layoutMainPaddingTop = parseFloat(layoutMainStyle.paddingTop) || 0;
-  
+          
   // محاسبه ساده: highlights باید 220px از header فاصله داشته باشد
   const spacing = 220;
   const marginTop = Math.max(0, headerHeight + spacing - layoutMainPaddingTop);
@@ -363,11 +363,11 @@ function updateHighlightsPosition() {
   
   // آزاد کردن flag
   isUpdatingHighlightsPosition = false;
-}
-
+          }
+          
 // تابع wrapper ساده - فقط برای backward compatibility
 function updateHighlightsPositionSafe() {
-  updateHighlightsPosition();
+      updateHighlightsPosition();
 }
 
 // در دسترس قرار دادن تابع برای استفاده در جاهای دیگر

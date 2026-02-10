@@ -235,27 +235,27 @@ function Home() {
         // استفاده از double RAF برای اطمینان از اینکه layout کامل شده است
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            const container = document.getElementById('goldMapGlass')
+        const container = document.getElementById('goldMapGlass')
             if (container) {
               // بررسی وجود container بدون force کردن layout
               // فقط بررسی می‌کنیم که container در DOM وجود دارد
               // اندازه‌گیری در gold-map.js انجام می‌شود بعد از load شدن stylesheets
-              try {
-                window.initGoldMap()
-                const log = window.logger || { info: console.log }
-                log.info('✅ Gold Map initialized successfully')
-              } catch (error) {
-                const log = window.logger || { error: console.error }
-                log.error('خطا در initGoldMap:', error)
-              }
-            } else if (retryCount < maxRetries) {
+          try {
+            window.initGoldMap()
+            const log = window.logger || { info: console.log }
+            log.info('✅ Gold Map initialized successfully')
+          } catch (error) {
+            const log = window.logger || { error: console.error }
+            log.error('خطا در initGoldMap:', error)
+          }
+        } else if (retryCount < maxRetries) {
               // اگر container پیدا نشد، دوباره تلاش کن
-              retryCount++
+          retryCount++
               setTimeout(() => initMap(), 300)
-            } else {
-              const log = window.logger || { warn: console.warn }
-              log.warn('⚠️ Container #goldMapGlass بعد از 20 تلاش پیدا نشد')
-            }
+        } else {
+          const log = window.logger || { warn: console.warn }
+          log.warn('⚠️ Container #goldMapGlass بعد از 20 تلاش پیدا نشد')
+        }
           });
         });
       }

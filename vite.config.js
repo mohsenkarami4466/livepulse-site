@@ -4,14 +4,14 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  // ================= اصلاح مهم اینجاست =================
-  // تشخیص می‌دهیم آیا در محیط Vercel در حال Build هستیم یا نه
+
+  // ================= اصلاح نهایی =================
+  // تشخیص محیط: اگر متغیر محیطی VERCEL وجود داشت، یعنی در Vercel هستیم
   const isVercel = process.env.VERCEL === '1'
-  
-  // اگر در Vercel هستیم، base را './' می‌گذاریم، در غیر این صورت برای GitHub Pages
+  // اگر در Vercel هستیم base را './' می‌گذاریم (برای دامنه اصلی)، در غیر این صورت برای GitHub Pages
   const base = isVercel ? './' : (command === 'serve' ? '/' : '/livepulse-site/')
-  // ====================================================
-  
+  // ==============================================
+
   return {
     plugins: [
       react(),
@@ -19,9 +19,12 @@ export default defineConfig(({ command, mode }) => {
       ...(isVercel ? [] : [{
         name: 'transform-static-paths',
         transformIndexHtml(html, ctx) {
+
+          // این پلاگین فقط برای GitHub Pages اجرا می‌شود
           if (command === 'build') {
             const buildBase = '/livepulse-site/'
-            // ... کد تبدیل مسیرهای شما (همان کد قبلی) ...
+            // تبدیل مسیرهای نسبی به مطلق برای GitHub Pages
+
             let transformed = html.replace(
               /(src|href)="\.\/([^"]+)"/g,
               (match, attr, path) => {
@@ -31,14 +34,31 @@ export default defineConfig(({ command, mode }) => {
                 return `${attr}="${buildBase}${path}"`
               }
             )
-            // ... کد اضافه کردن لینک‌های CSS ...
+
+            // برای GitHub Pages، لینک‌های CSS قدیمی را نگه می‌داریم
+            const cssLinks = [
+              '<link rel="stylesheet" href="/livepulse-site/styles/variables.css?v=2.9">',
+              // ... بقیه لینک‌های CSS شما
+            ]
+            if (!transformed.includes('variables.css')) {
+              const titleMatch = transformed.match(/<title>.*?<\/title>/)
+              if (titleMatch) {
+                transformed = transformed.replace(
+                  titleMatch[0],
+                  titleMatch[0] + '\n    ' + cssLinks.join('\n    ')
+                )
+              }
+            }
+
             return transformed
           }
           return html
         }
       }])
     ],
-    base: base, // حالا در Vercel: './'، در GitHub Pages: '/livepulse-site/'
+
+    base: base, // هوشمند: در Vercel: './'، در GitHub Pages: '/livepulse-site/'
+
     root: '.',
     resolve: {
       alias: {
@@ -60,11 +80,19 @@ export default defineConfig(({ command, mode }) => {
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
-      sourcemap: true
+
+      sourcemap: true,
+      // یک تنظیم مهم: به Vite می‌گوید فایل‌های CSS/JS قدیمی را به bundle اضافه نکند
+      rollupOptions: {
+        external: [], // این آرایه را خالی می‌گذاریم تا همه چیز باندل شود
+      }
+
     },
     publicDir: 'public',
     optimizeDeps: {
       include: ['three', 'd3', 'gsap']
     }
   }
+
 })
+

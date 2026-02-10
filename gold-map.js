@@ -86,7 +86,7 @@ class WorldGoldMapGlass {
         const maxRetries = 10;
         
         const setupEvents = () => {
-            const fullscreenToggle = document.getElementById('mapFullscreenToggle');
+        const fullscreenToggle = document.getElementById('mapFullscreenToggle');
             if (!fullscreenToggle) {
                 if (retryCount < maxRetries) {
                     retryCount++;
@@ -98,17 +98,17 @@ class WorldGoldMapGlass {
                     return;
                 }
             }
-            
-            // حذف event listener های قبلی
-            const newToggle = fullscreenToggle.cloneNode(true);
-            fullscreenToggle.parentNode.replaceChild(newToggle, fullscreenToggle);
-            
+        
+        // حذف event listener های قبلی
+        const newToggle = fullscreenToggle.cloneNode(true);
+        fullscreenToggle.parentNode.replaceChild(newToggle, fullscreenToggle);
+        
             newToggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                this.toggleFullscreen();
-            });
-            
+            this.toggleFullscreen();
+        });
+        
             // گوش دادن به تغییرات fullscreen - فقط یک بار اضافه می‌شود
             if (!this.fullscreenChangeHandlersAdded) {
                 this.fullscreenChangeHandler = () => this.handleFullscreenChange();
@@ -368,7 +368,7 @@ class WorldGoldMapGlass {
             return new Promise((resolve) => {
                 requestAnimationFrame(() => {
                     const width = container.clientWidth || container.offsetWidth || 800;
-                    const height = this.isMobile ? 300 : 500;
+        const height = this.isMobile ? 300 : 500;
                     resolve({ width, height });
                 });
             });
